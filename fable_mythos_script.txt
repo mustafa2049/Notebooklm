@@ -1,27 +1,17 @@
 Haziran iki bin yirmi altı. Yapay zeka dünyasında beklenmedik bir deprem yaşandı.
 
-Anthropic'in en güçlü iki modeli... Fable Beş ve Mythos Beş... Birden ortadan kayboldu.
+Entropik şirketinin en güçlü iki modeli... Feybıl Beş ve Maythos Beş... Birden ortadan kayboldu.
 
-Peki ne oldu? Ve bu kararın arkasında gerçekte kim var?
+Her şey Amazın'ın bir iç araştırmasıyla başladı. Araştırmacılar, Feybıl Beş'i ceylbreyk ederek siber saldırılarda kullanılabilecek hassas bilgilere ulaşabildiklerini keşfetti.
 
-Her şey Amazon'un bir iç araştırmasıyla başladı.
+Bu bulgu, Amazın yöneticisi Endi Cezi'nin masasına düştü. Cezi, derhal ABD Hazine Bakanı Skot Besent ve Tramp yönetimiyle görüştü.
 
-Amazon araştırmacıları, Fable Beş üzerinde güvenlik testleri yaparken çarpıcı bir şey keşfetti. Model, belirli bir sırayla sorulan sorularla jailbreak edilebiliyordu. Ve siber saldırılarda kullanılabilecek hassas teknik bilgileri açıklıyordu.
+Mesaj netti: Bu modeller ulusal güvenlik için ciddi tehdit oluşturuyor.
 
-Bu bulgu, Amazon CEO'su Andy Jassy'nin masasına düştü. Jassy, derhal ABD Hazine Bakanı Scott Bessent ve Trump yönetiminin diğer üyeleriyle görüştü.
+Dokuz Haziran'da kullanıma açılan Feybıl Beş, sadece üç gün sonra ihracat kontrol direktifiyle askıya alındı. Maythos Beş de aynı kaderi paylaştı. Entropik, dünyadaki tüm kullanıcıların erişimini kesmek zorunda kaldı.
 
-Mesaj son derece netti: Bu modeller, ulusal güvenlik için ciddi bir tehdit oluşturuyor.
+Bu olay tarihi bir emsal oluşturdu. Bir hükümetin, dünyanın en gelişmiş yapay zeka modellerini kapatabileceği ilk kez kanıtlandı.
 
-ABD hükümeti harekete geçti.
+Amazın'ın on üç milyar dolar yatırım yaptığı ortağını bizzat ihbar etmesi ise... ayrı bir hikaye.
 
-Dokuz Haziran'da genel kullanıma açılan Fable Beş, sadece üç gün sonra, on iki Haziran'da ihracat kontrol direktifiyle askıya alındı. Sınırlı erişimde olan Mythos Beş de aynı kaderi paylaştı.
-
-Anthropic, dünyanın dört bir yanındaki tüm kullanıcıların erişimini kesmek zorunda kaldı. Sadece yabancı uyrukluların değil... Herkesin.
-
-Bu olay, yapay zeka tarihinde kritik bir emsal oluşturdu. Bir hükümetin, dünyanın en gelişmiş yapay zeka modellerini tamamen kapatabileceği ilk kez bu kadar açık biçimde kanıtlandı.
-
-Amazon'un on üç milyar dolar yatırım yaptığı ortağının ürününü bizzat ihbar etmesi ise... ayrı ve derin bir hikaye.
-
-Yapay zekanın geleceği artık sadece teknolojik değil, jeopolitik bir mesele.
-
-Ve bu yolculuk daha yeni başlıyor.
+Yapay zekanın geleceği artık jeopolitik bir mesele. Ve bu yolculuk daha yeni başlıyor.
