@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTA Top-Down Araba Oyunu</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a1e; }
+  canvas { display: block; }
+  #hint {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.55); font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px; letter-spacing: 1px; pointer-events: none; user-select: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hint">WASD / OK TUŞLARI — SÜR &nbsp;•&nbsp; PARALARI TOPLA</div>
+<script>
+(function () {
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const COLS = 6, ROWS = 6, BLOCK = 520, ROAD = 150;
+  const CELL = BLOCK + ROAD;
+  const WORLD_W = COLS * CELL + ROAD;
+  const WORLD_H = ROWS * CELL + ROAD;
+
+  let seed = 1337;
+  function rand() {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  const buildingColors = ["#8d6e63", "#78909c", "#a1887f", "#90a4ae", "#6d4c41", "#607d8b", "#95867a", "#7e8a93"];
+  const roofColors = ["#5d4037", "#546e7a", "#4e342e", "#455a64", "#3e2723", "#37474f", "#6b5d52", "#59636b"];
+
+  const buildings = [];
+  const grassPatches = [];
+
+  for (let gx = 0; gx < COLS; gx++) {
+    for (let gy = 0; gy < ROWS; gy++) {
+      const bx = gx * CELL + ROAD;
+      const by = gy * CELL + ROAD;
+      if (rand() < 0.14) {
+        grassPatches.push({ x: bx, y: by, w: BLOCK, h: BLOCK });
+        continue;
+      }
+      const splitX = rand() < 0.5;
+      const splitY = rand() < 0.5;
+      const nx = splitX ? 2 : 1;
+      const ny = splitY ? 2 : 1;
+      const gap = 26;
+      const cw = (BLOCK - gap * (nx + 1)) / nx;
+      const ch = (BLOCK - gap * (ny + 1)) / ny;
+      for (let i = 0; i < nx; i++) {
+        for (let j = 0; j < ny; j++) {
+          const insetW = rand() * cw * 0.25;
+          const insetH = rand() * ch * 0.25;
+          const ci = Math.floor(rand() * buildingColors.length);
+          buildings.push({
+            x: bx + gap + i * (cw + gap) + insetW / 2,
+            y: by + gap + j * (ch + gap) + insetH / 2,
+            w: cw - insetW,
+            h: ch - insetH,
+            color: buildingColors[ci],
+            roof: roofColors[ci]
+          });
+        }
+      }
+    }
+  }
+
+  const coins = [];
+  for (let gx = 0; gx <= COLS; gx++) {
+    for (let gy = 0; gy <= ROWS; gy++) {
+      if (rand() < 0.55) {
+        coins.push({ x: gx * CELL + ROAD / 2, y: gy * CELL + ROAD / 2, taken: false });
+      }
+    }
+  }
+  for (let gx = 0; gx <= COLS; gx++) {
+    for (let gy = 0; gy < ROWS; gy++) {
+      if (rand() < 0.35) {
+        coins.push({ x: gx * CELL + ROAD / 2, y: gy * CELL + ROAD + BLOCK / 2, taken: false });
+      }
+    }
+  }
+  for (let gy = 0; gy <= ROWS; gy++) {
+    for (let gx = 0; gx < COLS; gx++) {
+      if (rand() < 0.35) {
+        coins.push({ x: gx * CELL + ROAD + BLOCK / 2, y: gy * CELL + ROAD / 2, taken: false });
+      }
+    }
+  }
+
+  const car = {
+    x: 3 * CELL + ROAD / 2,
+    y: 3 * CELL + ROAD / 2,
+    angle: 0,
+    vx: 0,
+    vy: 0,
+    w: 46,
+    h: 24,
+    radius: 17
+  };
+
+  const cam = { x: car.x, y: car.y };
+  let score = 0;
+
+  const THRUST = 620;
+  const REVERSE_THRUST = 320;
+  const BRAKE_DRAG = 4.5;
+  const FORWARD_DRAG = 0.55;
+  const LATERAL_GRIP = 7.5;
+  const TURN_RATE = 3.1;
+  const MAX_SPEED = 520;
+  const WALL_BOUNCE = 0.25;
+
+  const keys = {};
+  window.addEventListener("keydown", function (e) {
+    keys[e.code] = true;
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].indexOf(e.code) !== -1) e.preventDefault();
+  });
+  window.addEventListener("keyup", function (e) {
+    keys[e.code] = false;
+  });
+
+  function input() {
+    return {
+      up: keys["KeyW"] || keys["ArrowUp"],
+      down: keys["KeyS"] || keys["ArrowDown"],
+      left: keys["KeyA"] || keys["ArrowLeft"],
+      right: keys["KeyD"] || keys["ArrowRight"]
+    };
+  }
+
+  function circleRectHit(cx, cy, r, rect) {
+    const nx = Math.max(rect.x, Math.min(cx, rect.x + rect.w));
+    const ny = Math.max(rect.y, Math.min(cy, rect.y + rect.h));
+    const dx = cx - nx;
+    const dy = cy - ny;
+    const distSq = dx * dx + dy * dy;
+    if (distSq >= r * r) return null;
+    const dist = Math.sqrt(distSq) || 0.0001;
+    return { nx: dx / dist, ny: dy / dist, depth: r - dist };
+  }
+
+  function resolveCollisions() {
+    for (let i = 0; i < buildings.length; i++) {
+      const b = buildings[i];
+      if (car.x + car.radius < b.x || car.x - car.radius > b.x + b.w) continue;
+      if (car.y + car.radius < b.y || car.y - car.radius > b.y + b.h) continue;
+      const hit = circleRectHit(car.x, car.y, car.radius, b);
+      if (hit) {
+        car.x += hit.nx * hit.depth;
+        car.y += hit.ny * hit.depth;
+        const dot = car.vx * hit.nx + car.vy * hit.ny;
+        if (dot < 0) {
+          car.vx -= (1 + WALL_BOUNCE) * dot * hit.nx;
+          car.vy -= (1 + WALL_BOUNCE) * dot * hit.ny;
+          car.vx *= 0.9;
+          car.vy *= 0.9;
+        }
+      }
+    }
+    if (car.x < car.radius) { car.x = car.radius; car.vx = Math.abs(car.vx) * WALL_BOUNCE; }
+    if (car.y < car.radius) { car.y = car.radius; car.vy = Math.abs(car.vy) * WALL_BOUNCE; }
+    if (car.x > WORLD_W - car.radius) { car.x = WORLD_W - car.radius; car.vx = -Math.abs(car.vx) * WALL_BOUNCE; }
+    if (car.y > WORLD_H - car.radius) { car.y = WORLD_H - car.radius; car.vy = -Math.abs(car.vy) * WALL_BOUNCE; }
+  }
+
+  function update(dt) {
+    const k = input();
+    const cos = Math.cos(car.angle);
+    const sin = Math.sin(car.angle);
+
+    let vF = car.vx * cos + car.vy * sin;
+    let vL = -car.vx * sin + car.vy * cos;
+
+    if (k.up) vF += THRUST * dt;
+    if (k.down) {
+      if (vF > 20) vF -= vF * BRAKE_DRAG * dt + 200 * dt;
+      else vF -= REVERSE_THRUST * dt;
+    }
+
+    vF -= vF * FORWARD_DRAG * dt;
+    vL -= vL * LATERAL_GRIP * dt;
+
+    if (vF > MAX_SPEED) vF = MAX_SPEED;
+    if (vF < -MAX_SPEED * 0.4) vF = -MAX_SPEED * 0.4;
+
+    const speedFactor = Math.min(1, Math.abs(vF) / 180);
+    let steer = 0;
+    if (k.left) steer -= 1;
+    if (k.right) steer += 1;
+    car.angle += steer * TURN_RATE * speedFactor * dt * (vF < -5 ? -1 : 1);
+
+    const nc = Math.cos(car.angle);
+    const ns = Math.sin(car.angle);
+    car.vx = vF * nc - vL * ns;
+    car.vy = vF * ns + vL * nc;
+
+    car.x += car.vx * dt;
+    car.y += car.vy * dt;
+
+    resolveCollisions();
+
+    for (let i = 0; i < coins.length; i++) {
+      const c = coins[i];
+      if (c.taken) continue;
+      const dx = c.x - car.x;
+      const dy = c.y - car.y;
+      if (dx * dx + dy * dy < 34 * 34) {
+        c.taken = true;
+        score += 100;
+      }
+    }
+
+    const speed = Math.hypot(car.vx, car.vy);
+    const lookAhead = Math.min(120, speed * 0.28);
+    const tx = car.x + Math.cos(car.angle) * lookAhead;
+    const ty = car.y + Math.sin(car.angle) * lookAhead;
+    cam.x += (tx - cam.x) * Math.min(1, 5 * dt);
+    cam.y += (ty - cam.y) * Math.min(1, 5 * dt);
+  }
+
+  function drawRoads(vx, vy, vw, vh) {
+    ctx.fillStyle = "#3b3b41";
+    ctx.fillRect(vx, vy, vw, vh);
+
+    ctx.strokeStyle = "rgba(255, 214, 64, 0.85)";
+    ctx.lineWidth = 4;
+    ctx.setLineDash([34, 26]);
+    ctx.lineCap = "butt";
+
+    for (let gx = 0; gx <= COLS; gx++) {
+      const cx = gx * CELL + ROAD / 2;
+      if (cx < vx - 10 || cx > vx + vw + 10) continue;
+      ctx.beginPath();
+      ctx.moveTo(cx, vy);
+      ctx.lineTo(cx, vy + vh);
+      ctx.stroke();
+    }
+    for (let gy = 0; gy <= ROWS; gy++) {
+      const cy = gy * CELL + ROAD / 2;
+      if (cy < vy - 10 || cy > vy + vh + 10) continue;
+      ctx.beginPath();
+      ctx.moveTo(vx, cy);
+      ctx.lineTo(vx + vw, cy);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
+
+  function drawBlocks(vx, vy, vw, vh) {
+    for (let gx = 0; gx < COLS; gx++) {
+      for (let gy = 0; gy < ROWS; gy++) {
+        const bx = gx * CELL + ROAD;
+        const by = gy * CELL + ROAD;
+        if (bx + BLOCK < vx || bx > vx + vw || by + BLOCK < vy || by > vy + vh) continue;
+        ctx.fillStyle = "#55555c";
+        ctx.fillRect(bx, by, BLOCK, BLOCK);
+        ctx.fillStyle = "#61616a";
+        ctx.fillRect(bx + 8, by + 8, BLOCK - 16, BLOCK - 16);
+      }
+    }
+    for (let i = 0; i < grassPatches.length; i++) {
+      const g = grassPatches[i];
+      if (g.x + g.w < vx || g.x > vx + vw || g.y + g.h < vy || g.y > vy + vh) continue;
+      ctx.fillStyle = "#3f6b3f";
+      ctx.fillRect(g.x + 14, g.y + 14, g.w - 28, g.h - 28);
+      ctx.fillStyle = "#487a48";
+      ctx.fillRect(g.x + 40, g.y + 40, g.w - 80, g.h - 80);
+    }
+  }
+
+  function drawBuildings(vx, vy, vw, vh) {
+    for (let i = 0; i < buildings.length; i++) {
+      const b = buildings[i];
+      if (b.x + b.w < vx || b.x > vx + vw || b.y + b.h < vy || b.y > vy + vh) continue;
+      ctx.fillStyle = "rgba(0,0,0,0.3)";
+      ctx.fillRect(b.x + 8, b.y + 8, b.w, b.h);
+      ctx.fillStyle = b.color;
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.fillStyle = b.roof;
+      ctx.fillRect(b.x + 12, b.y + 12, b.w - 24, b.h - 24);
+      ctx.strokeStyle = "rgba(0,0,0,0.25)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(b.x, b.y, b.w, b.h);
+    }
+  }
+
+  function drawCoins(vx, vy, vw, vh, t) {
+    for (let i = 0; i < coins.length; i++) {
+      const c = coins[i];
+      if (c.taken) continue;
+      if (c.x < vx - 30 || c.x > vx + vw + 30 || c.y < vy - 30 || c.y > vy + vh + 30) continue;
+      const pulse = 1 + Math.sin(t * 4 + i) * 0.12;
+      const r = 13 * pulse;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y + 4, r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(0,0,0,0.25)";
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffc928";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#b8860b";
+      ctx.stroke();
+      ctx.fillStyle = "#8a6508";
+      ctx.font = "bold " + Math.round(15 * pulse) + "px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("$", c.x, c.y + 1);
+    }
+  }
+
+  function drawCar() {
+    ctx.save();
+    ctx.translate(car.x, car.y);
+    ctx.rotate(car.angle);
+
+    ctx.fillStyle = "rgba(0,0,0,0.35)";
+    ctx.fillRect(-car.w / 2 + 4, -car.h / 2 + 5, car.w, car.h);
+
+    ctx.fillStyle = "#111";
+    ctx.fillRect(-car.w / 2 + 4, -car.h / 2 - 3, 10, 6);
+    ctx.fillRect(car.w / 2 - 15, -car.h / 2 - 3, 10, 6);
+    ctx.fillRect(-car.w / 2 + 4, car.h / 2 - 3, 10, 6);
+    ctx.fillRect(car.w / 2 - 15, car.h / 2 - 3, 10, 6);
+
+    ctx.fillStyle = "#d32f2f";
+    ctx.beginPath();
+    ctx.moveTo(-car.w / 2, -car.h / 2 + 4);
+    ctx.quadraticCurveTo(-car.w / 2, -car.h / 2, -car.w / 2 + 6, -car.h / 2);
+    ctx.lineTo(car.w / 2 - 8, -car.h / 2);
+    ctx.quadraticCurveTo(car.w / 2, -car.h / 2, car.w / 2, -car.h / 2 + 6);
+    ctx.lineTo(car.w / 2, car.h / 2 - 6);
+    ctx.quadraticCurveTo(car.w / 2, car.h / 2, car.w / 2 - 8, car.h / 2);
+    ctx.lineTo(-car.w / 2 + 6, car.h / 2);
+    ctx.quadraticCurveTo(-car.w / 2, car.h / 2, -car.w / 2, car.h / 2 - 4);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#9a1f1f";
+    ctx.fillRect(-car.w / 2 + 2, -car.h / 2 + 2, 6, car.h - 4);
+
+    ctx.fillStyle = "#263238";
+    ctx.fillRect(2, -car.h / 2 + 3, 9, car.h - 6);
+    ctx.fillRect(-14, -car.h / 2 + 3, 7, car.h - 6);
+
+    ctx.fillStyle = "#ffe082";
+    ctx.fillRect(car.w / 2 - 3, -car.h / 2 + 3, 3, 5);
+    ctx.fillRect(car.w / 2 - 3, car.h / 2 - 8, 3, 5);
+
+    ctx.restore();
+  }
+
+  function drawHUD() {
+    const speed = Math.hypot(car.vx, car.vy);
+    const kmh = Math.round(speed * 0.35);
+
+    ctx.save();
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "rgba(0,0,0,0.55)";
+    ctx.fillRect(18, 18, 190, 52);
+    ctx.strokeStyle = "rgba(255,201,40,0.6)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(18, 18, 190, 52);
+    ctx.fillStyle = "#ffc928";
+    ctx.font = "bold 15px 'Segoe UI', Arial";
+    ctx.fillText("SKOR", 32, 27);
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 24px 'Segoe UI', Arial";
+    ctx.fillText("$" + score, 90, 33);
+
+    const gx = canvas.width - 100;
+    const gy = canvas.height - 92;
+    const gr = 62;
+
+    ctx.beginPath();
+    ctx.arc(gx, gy, gr + 12, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.55)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.2)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    const a0 = Math.PI * 0.75;
+    const a1 = Math.PI * 2.25;
+
+    ctx.beginPath();
+    ctx.arc(gx, gy, gr, a0, a1);
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.lineWidth = 8;
+    ctx.stroke();
+
+    const frac = Math.min(1, speed / MAX_SPEED);
+    if (frac > 0.005) {
+      ctx.beginPath();
+      ctx.arc(gx, gy, gr, a0, a0 + (a1 - a0) * frac);
+      ctx.strokeStyle = frac > 0.8 ? "#ff5252" : "#4fc3f7";
+      ctx.lineWidth = 8;
+      ctx.stroke();
+    }
+
+    for (let i = 0; i <= 8; i++) {
+      const ta = a0 + (a1 - a0) * (i / 8);
+      const c1 = Math.cos(ta), s1 = Math.sin(ta);
+      ctx.beginPath();
+      ctx.moveTo(gx + c1 * (gr - 10), gy + s1 * (gr - 10));
+      ctx.lineTo(gx + c1 * (gr - 18), gy + s1 * (gr - 18));
+      ctx.strokeStyle = "rgba(255,255,255,0.5)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    const na = a0 + (a1 - a0) * frac;
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+    ctx.lineTo(gx + Math.cos(na) * (gr - 16), gy + Math.sin(na) * (gr - 16));
+    ctx.strokeStyle = "#ff5252";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(gx, gy, 5, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff5252";
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 22px 'Segoe UI', Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(kmh, gx, gy + 22);
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.font = "11px 'Segoe UI', Arial";
+    ctx.fillText("km/h", gx, gy + 44);
+    ctx.restore();
+  }
+
+  function draw(t) {
+    ctx.fillStyle = "#1a1a1e";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(Math.round(canvas.width / 2 - cam.x), Math.round(canvas.height / 2 - cam.y));
+
+    const vx = cam.x - canvas.width / 2 - 40;
+    const vy = cam.y - canvas.height / 2 - 40;
+    const vw = canvas.width + 80;
+    const vh = canvas.height + 80;
+
+    drawRoads(Math.max(0, vx), Math.max(0, vy), Math.min(vw, WORLD_W - Math.max(0, vx)), Math.min(vh, WORLD_H - Math.max(0, vy)));
+    drawBlocks(vx, vy, vw, vh);
+    drawCoins(vx, vy, vw, vh, t);
+    drawBuildings(vx, vy, vw, vh);
+    drawCar();
+
+    ctx.restore();
+    drawHUD();
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    update(dt);
+    draw(now / 1000);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
