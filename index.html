@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Takvimli NoFap — Seri Takibi</title>
+<meta name="description" content="Takvim üzerinden seri takibi, kayma günlüğü, istatistik ve rozetler. Tamamen çevrimdışı çalışır, veriler cihazından çıkmaz.">
+<meta name="theme-color" content="#0f1115">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6c2.6 3.4 6.2 5.5 6.2 10.1A6.2 6.2 0 0 1 12 18.9a6.2 6.2 0 0 1-6.2-6.2C5.8 8.1 9.4 6 12 2.6Z"/></svg>
+    <span>Takvimli NoFap</span>
+  </div>
+  <div class="topbar-actions">
+    <button id="panicBtn" class="btn btn-danger" type="button">Acil Durum</button>
+    <button id="themeBtn" class="btn btn-icon" type="button" title="Tema değiştir" aria-label="Tema değiştir">◐</button>
+    <button id="settingsBtn" class="btn btn-icon" type="button" title="Ayarlar" aria-label="Ayarlar">⚙</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ÖZET -->
+  <section class="hero card">
+    <div class="ring-wrap">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+        <circle id="ringFg" class="ring-fg" cx="60" cy="60" r="52"></circle>
+      </svg>
+      <div class="ring-center">
+        <div id="streakDays" class="ring-num">0</div>
+        <div class="ring-label">gün</div>
+      </div>
+    </div>
+    <div class="hero-info">
+      <h1 id="streakTitle">Güncel serin</h1>
+      <p id="streakSub" class="muted">Başlamak için takvimden bir gün seç.</p>
+      <div class="hero-meta">
+        <div><span id="goalText">0 / 90</span> <small class="muted">hedef</small></div>
+        <div><span id="nextMilestone">—</span> <small class="muted">sıradaki rozet</small></div>
+      </div>
+      <div class="hero-btns">
+        <button id="checkinBtn" class="btn btn-primary" type="button">Bugünü İşaretle</button>
+        <button id="relapseBtn" class="btn btn-ghost" type="button">Kayma Kaydet</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- İSTATİSTİK -->
+  <section class="stats">
+    <div class="card stat"><div class="stat-num" id="stLongest">0</div><div class="stat-lbl">En uzun seri</div></div>
+    <div class="card stat"><div class="stat-num" id="stClean">0</div><div class="stat-lbl">Temiz gün</div></div>
+    <div class="card stat"><div class="stat-num" id="stRelapse">0</div><div class="stat-lbl">Kayma</div></div>
+    <div class="card stat"><div class="stat-num" id="stRate">%0</div><div class="stat-lbl">Başarı oranı</div></div>
+  </section>
+
+  <!-- TAKVİM -->
+  <section class="card">
+    <div class="cal-head">
+      <button id="prevMonth" class="btn btn-icon" type="button" aria-label="Önceki ay">‹</button>
+      <h2 id="monthLabel">—</h2>
+      <button id="nextMonth" class="btn btn-icon" type="button" aria-label="Sonraki ay">›</button>
+      <button id="todayBtn" class="btn btn-ghost btn-sm" type="button">Bugün</button>
+    </div>
+    <div class="cal-dow" aria-hidden="true">
+      <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+    </div>
+    <div id="calGrid" class="cal-grid"></div>
+    <div class="legend">
+      <span><i class="dot dot-clean"></i> Temiz</span>
+      <span><i class="dot dot-relapse"></i> Kayma</span>
+      <span><i class="dot dot-note"></i> Notlu</span>
+      <span><i class="dot dot-idle"></i> Kayıt yok</span>
+    </div>
+  </section>
+
+  <!-- YILLIK ISI HARİTASI -->
+  <section class="card">
+    <div class="cal-head">
+      <button id="prevYear" class="btn btn-icon" type="button" aria-label="Önceki yıl">‹</button>
+      <h2 id="yearLabel">—</h2>
+      <button id="nextYear" class="btn btn-icon" type="button" aria-label="Sonraki yıl">›</button>
+    </div>
+    <div class="heat-scroll">
+      <div id="heatMonths" class="heat-months"></div>
+      <div id="heatGrid" class="heat-grid"></div>
+    </div>
+    <p id="yearSummary" class="muted small"></p>
+  </section>
+
+  <!-- ROZETLER -->
+  <section class="card">
+    <h2 class="sec-title">Rozetler</h2>
+    <div id="badges" class="badges"></div>
+  </section>
+
+  <!-- GÜNLÜK -->
+  <section class="card">
+    <h2 class="sec-title">Günlük</h2>
+    <div id="journal" class="journal"></div>
+  </section>
+
+  <footer class="foot muted small">
+    Tüm veriler yalnızca bu cihazın tarayıcısında saklanır. Sunucuya hiçbir şey gönderilmez.
+  </footer>
+</main>
+
+<!-- GÜN DÜZENLEME -->
+<div id="dayModal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="dayTitle">
+    <div class="modal-head">
+      <h3 id="dayTitle">Gün</h3>
+      <button class="btn btn-icon close" data-close type="button" aria-label="Kapat">✕</button>
+    </div>
+
+    <div class="field">
+      <label>Durum</label>
+      <div class="seg" id="statusSeg">
+        <button type="button" data-status="clean">Temiz</button>
+        <button type="button" data-status="relapse">Kayma</button>
+        <button type="button" data-status="none">Kayıt yok</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Ruh hâli</label>
+      <div class="moods" id="moodRow">
+        <button type="button" data-mood="1" title="Çok kötü">😣</button>
+        <button type="button" data-mood="2" title="Kötü">🙁</button>
+        <button type="button" data-mood="3" title="Normal">😐</button>
+        <button type="button" data-mood="4" title="İyi">🙂</button>
+        <button type="button" data-mood="5" title="Harika">😄</button>
+      </div>
+    </div>
+
+    <div class="field" id="triggerField">
+      <label>Tetikleyiciler</label>
+      <div class="chips" id="triggerRow"></div>
+    </div>
+
+    <div class="field">
+      <label for="dayNote">Not</label>
+      <textarea id="dayNote" rows="3" placeholder="Bugün nasıl geçti? Ne işe yaradı?"></textarea>
+    </div>
+
+    <div class="modal-foot">
+      <button id="dayDelete" class="btn btn-ghost" type="button">Kaydı sil</button>
+      <button id="daySave" class="btn btn-primary" type="button">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- AYARLAR -->
+<div id="settingsModal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <div class="modal-head">
+      <h3 id="setTitle">Ayarlar</h3>
+      <button class="btn btn-icon close" data-close type="button" aria-label="Kapat">✕</button>
+    </div>
+
+    <div class="field">
+      <label for="startDate">Başlangıç tarihi</label>
+      <input type="date" id="startDate">
+      <small class="muted">İstatistikler bu tarihten itibaren hesaplanır.</small>
+    </div>
+
+    <div class="field">
+      <label for="goalInput">Hedef (gün)</label>
+      <input type="number" id="goalInput" min="1" max="3650" step="1">
+    </div>
+
+    <div class="field">
+      <label>Veri</label>
+      <div class="row-btns">
+        <button id="exportBtn" class="btn btn-ghost" type="button">Dışa aktar (JSON)</button>
+        <button id="importBtn" class="btn btn-ghost" type="button">İçe aktar</button>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Tehlikeli bölge</label>
+      <button id="resetBtn" class="btn btn-danger" type="button">Tüm verileri sil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACİL DURUM -->
+<div id="panicModal" class="modal" hidden>
+  <div class="modal-card panic" role="dialog" aria-modal="true" aria-labelledby="panicTitle">
+    <div class="modal-head">
+      <h3 id="panicTitle">Nefes al, geçecek</h3>
+      <button class="btn btn-icon close" data-close type="button" aria-label="Kapat">✕</button>
+    </div>
+    <div class="breath">
+      <div id="breathCircle" class="breath-circle"><span id="breathText">Hazır</span></div>
+    </div>
+    <p id="breathCount" class="muted center small">4 saniye al · 7 saniye tut · 8 saniye ver</p>
+    <blockquote id="quote" class="quote"></blockquote>
+    <div class="modal-foot">
+      <button id="quoteBtn" class="btn btn-ghost" type="button">Başka bir söz</button>
+      <button id="breathBtn" class="btn btn-primary" type="button">Nefes egzersizi</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
