@@ -1,7 +1,7 @@
 import JSZip from 'jszip';
 import { decodeEntities, htmlToText } from './html2text';
 import { normalizeText } from './normalize';
-import type { ExtractedDocument } from './fromPdf';
+import type { ExtractedDocument } from './types';
 
 /**
  * EPUB'dan metin çıkarır.

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
 import { countWordsInText, normalizeText } from '@/ingest/normalize';
 import { extractUrl } from '@/ingest/fromUrl';
-import { pickAndExtract } from '@/ingest/pickFile';
+import { PDF_SUPPORTED, pickAndExtract } from '@/ingest/pickFile';
 import { useSettings } from '@/store/SettingsContext';
 import { addDocument, type DocumentSource } from '@/storage/documents';
 import { Icon } from '@/ui/Icon';
@@ -115,10 +115,11 @@ export default function ImportScreen() {
         <View style={{ gap: theme.space(3) }}>
           <Card style={{ gap: theme.space(2) }}>
             <Icon name="file" size={28} color={theme.colors.textDim} />
-            <Txt variant="heading">TXT, PDF veya EPUB</Txt>
+            <Txt variant="heading">{PDF_SUPPORTED ? 'TXT, PDF veya EPUB' : 'TXT veya EPUB'}</Txt>
             <Txt variant="dim">
-              PDF’lerde yalnızca metin katmanı okunur; taranmış (fotoğraf) belgeler
-              desteklenmiyor. EPUB’larda bölümler sırayla birleştirilir.
+              {PDF_SUPPORTED
+                ? 'PDF’lerde yalnızca metin katmanı okunur; taranmış (fotoğraf) belgeler desteklenmiyor. EPUB’larda bölümler sırayla birleştirilir.'
+                : 'EPUB’larda bölümler sırayla birleştirilir. PDF okuma şu an yalnızca web sürümünde çalışıyor — pdf.js telefonun JavaScript motorunda çalışmıyor.'}
             </Txt>
           </Card>
           <Button

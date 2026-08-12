@@ -1,7 +1,9 @@
 import * as DocumentPicker from 'expo-document-picker';
+import { Platform } from 'react-native';
 import { extractEpub } from './fromEpub';
-import { extractPdf, type ExtractedDocument } from './fromPdf';
+import { extractPdf } from './fromPdf';
 import { normalizeText } from './normalize';
+import type { ExtractedDocument } from './types';
 
 export type PickedKind = 'txt' | 'pdf' | 'epub';
 
@@ -10,11 +12,14 @@ export interface PickedDocument extends ExtractedDocument {
   fileName: string;
 }
 
+/** PDF okuma yalnızca web'de mümkün (bkz. `types.PdfNotSupportedError`). */
+export const PDF_SUPPORTED = Platform.OS === 'web';
+
 const MIME_TYPES = [
   'text/plain',
   'text/markdown',
-  'application/pdf',
   'application/epub+zip',
+  ...(PDF_SUPPORTED ? ['application/pdf'] : []),
 ];
 
 /**

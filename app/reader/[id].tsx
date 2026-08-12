@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, View } from 'react-native';
+import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { countWords } from '@/core/chunker';
 import type { ReaderMode } from '@/core/types';
@@ -17,6 +17,7 @@ import {
   saveProgress,
   type DocumentMeta,
 } from '@/storage/documents';
+import { haptics } from '@/ui/haptics';
 import { Chip, IconButton, Txt } from '@/ui/primitives';
 
 const MODE_LABEL: Record<ReaderMode, string> = {
@@ -155,6 +156,41 @@ function Reader({
     activeMs: engine.activeMs,
   });
 
+  // Titreşim yalnızca kullanıcının başlattığı eylemlerde: her kelimede
+  // titretmek pili tüketir ve okumayı dağıtır
+  const toggle = useCallback(() => {
+    haptics.tap(settings.haptics);
+    engine.toggle();
+  }, [engine, settings.haptics]);
+
+  const previousSentence = useCallback(() => {
+    haptics.step(settings.haptics);
+    engine.previousSentence();
+  }, [engine, settings.haptics]);
+
+  const nextSentence = useCallback(() => {
+    haptics.step(settings.haptics);
+    engine.nextSentence();
+  }, [engine, settings.haptics]);
+
+  // Metin bitince tek bir başarı titreşimi
+  useEffect(() => {
+    if (engine.finished) haptics.success(settings.haptics);
+  }, [engine.finished, settings.haptics]);
+
+  // Android'de geri tuşu: odak modundaysa önce odaktan çık, sonra ekrandan
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (focusMode) {
+        setFocusMode(false);
+        return true;
+      }
+      return false;
+    });
+    return () => subscription.remove();
+  }, [focusMode, setFocusMode]);
+
   // Web klavye kısayolları
   useEffect(() => {
     if (Platform.OS !== 'web') return;
@@ -268,17 +304,17 @@ function Reader({
         )}
 
         <Pressable
-          onPress={engine.previousSentence}
+          onPress={previousSentence}
           style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '20%' }}
           accessibilityLabel="Önceki cümle"
         />
         <Pressable
-          onPress={engine.toggle}
+          onPress={toggle}
           style={{ position: 'absolute', left: '20%', right: '20%', top: 0, bottom: 0 }}
           accessibilityLabel="Oynat veya duraklat"
         />
         <Pressable
-          onPress={engine.nextSentence}
+          onPress={nextSentence}
           style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '20%' }}
           accessibilityLabel="Sonraki cümle"
         />
@@ -304,10 +340,10 @@ function Reader({
           wordsRead={engine.wordsRead}
           totalWords={totalWords}
           remainingMs={engine.remainingMs}
-          onToggle={engine.toggle}
+          onToggle={toggle}
           onRestart={engine.restart}
-          onPreviousSentence={engine.previousSentence}
-          onNextSentence={engine.nextSentence}
+          onPreviousSentence={previousSentence}
+          onNextSentence={nextSentence}
           onSeek={engine.seekRatio}
         />
       </View>

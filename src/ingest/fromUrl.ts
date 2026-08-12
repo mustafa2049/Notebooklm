@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { htmlTitle, htmlToText } from './html2text';
 import { normalizeText } from './normalize';
-import type { ExtractedDocument } from './fromPdf';
+import type { ExtractedDocument } from './types';
 
 /**
  * Bir bağlantıdan makale metni çeker.
