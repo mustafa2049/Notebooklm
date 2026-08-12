@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@expo-google-fonts/atkinson-hyperlegible-next": "^0.4.1",
     "@expo/metro-runtime": "~57.0.9",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "babel-preset-expo": "~57.0.0",
     "expo": "~57.0.12",
     "expo-constants": "~57.0.10",
     "expo-document-picker": "~57.0.1",

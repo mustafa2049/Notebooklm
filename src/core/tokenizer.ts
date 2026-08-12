@@ -171,6 +171,23 @@ export function countSentences(tokens: Token[]): number {
   return tokens.length === 0 ? 0 : tokens[tokens.length - 1].sentenceIndex + 1;
 }
 
+/**
+ * Karakter offsetine denk gelen token indeksi.
+ * İlerleme karakter offseti olarak saklandığı için (bkz. `core/progress`)
+ * "okunan bölümden soru üret" gibi işlerde bu dönüşüm gerekiyor.
+ */
+export function tokenIndexForCharOffset(tokens: Token[], offset: number): number {
+  if (tokens.length === 0) return 0;
+  let low = 0;
+  let high = tokens.length - 1;
+  while (low < high) {
+    const mid = (low + high) >> 1;
+    if (tokens[mid].end <= offset) low = mid + 1;
+    else high = mid;
+  }
+  return low;
+}
+
 /** Verilen token aralığının kaynak metindeki düz hâli. */
 export function tokensToText(tokens: Token[]): string {
   return tokens.map((t) => t.text).join(' ');
