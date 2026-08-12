@@ -5,9 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlowView } from '@/reader/FlowView';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
+import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useSettings } from '@/store/SettingsContext';
 import { getDocumentText, loadProgress, saveProgress } from '@/storage/documents';
-import { recordSession } from '@/storage/stats';
 import { exerciseById, nextPhaseInMs, phaseAt } from '@/train/exercises';
 import { Button, IconButton, ProgressBar, Txt } from '@/ui/primitives';
 import { formatNumber } from '@/ui/format';
@@ -135,26 +135,15 @@ function TrainingSession({
     else pauseRef.current();
   }, [running, done]);
 
+  useSessionRecorder({
+    docId,
+    mode: settings.mode,
+    targetWpm: settings.wpm,
+    words: engine.wordsRead,
+    activeMs: engine.activeMs,
+  });
+
   const startWords = useRef(engine.wordsRead);
-  const wordsRef = useRef(engine.wordsRead);
-  wordsRef.current = engine.wordsRead;
-  const activeMs = useRef(engine.activeMs);
-  activeMs.current = engine.activeMs;
-
-  useEffect(() => {
-    return () => {
-      void recordSession({
-        docId,
-        mode: settings.mode,
-        at: Date.now(),
-        ms: activeMs.current(),
-        words: Math.max(0, wordsRef.current - startWords.current),
-        targetWpm: settings.wpm,
-      });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const wordsThisSession = Math.max(0, engine.wordsRead - startWords.current);
   const flowMode = settings.mode === 'bionic' || settings.mode === 'highlight';
 

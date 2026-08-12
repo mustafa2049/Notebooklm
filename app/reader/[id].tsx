@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { countWords } from '@/core/chunker';
@@ -8,6 +8,7 @@ import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
+import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useSettings } from '@/store/SettingsContext';
 import {
   getDocument,
@@ -16,7 +17,6 @@ import {
   saveProgress,
   type DocumentMeta,
 } from '@/storage/documents';
-import { recordSession } from '@/storage/stats';
 import { Chip, IconButton, Txt } from '@/ui/primitives';
 
 const MODE_LABEL: Record<ReaderMode, string> = {
@@ -147,27 +147,13 @@ function Reader({
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
 
-  // Oturum istatistiği: ekrandan ayrılırken okunan kelime ve süre kaydedilir
-  const sessionStartWords = useRef(engine.wordsRead);
-  const wordsRef = useRef(engine.wordsRead);
-  wordsRef.current = engine.wordsRead;
-  const activeMsRef = useRef(engine.activeMs);
-  activeMsRef.current = engine.activeMs;
-
-  useEffect(() => {
-    return () => {
-      void recordSession({
-        docId,
-        mode,
-        at: Date.now(),
-        ms: activeMsRef.current(),
-        words: Math.max(0, wordsRef.current - sessionStartWords.current),
-        targetWpm: settings.wpm,
-      });
-    };
-    // Yalnızca ekran kapanırken çalışmalı
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useSessionRecorder({
+    docId,
+    mode,
+    targetWpm: settings.wpm,
+    words: engine.wordsRead,
+    activeMs: engine.activeMs,
+  });
 
   // Web klavye kısayolları
   useEffect(() => {

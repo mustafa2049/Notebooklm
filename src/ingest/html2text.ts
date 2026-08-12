@@ -57,12 +57,28 @@ function stripNoise(html: string): string {
     .replace(/<(nav|header|footer|aside)[\s\S]*?<\/\1>/gi, '');
 }
 
+/**
+ * Dipnot ve düzenleme işaretlerini atar.
+ *
+ * Wikipedia benzeri kaynaklarda metnin içine "[4]" gibi kaynak numaraları ve
+ * "[değiştir]" bağlantıları gömülü geliyor. Bunlar okuma akışında kelime gibi
+ * gösterilip tempoyu bozuyor. Yalnızca en fazla üç haneli sayılar ve bilinen
+ * düzenleme etiketleri siliniyor; sıradan köşeli parantez kullanımı korunuyor.
+ */
+function stripReferenceMarkers(text: string): string {
+  return text
+    .replace(/\[\d{1,3}\]/g, '')
+    .replace(/\[(değiştir|düzenle|kaynak belirtilmeli|kaynak gerekli|edit)[^\]]*\]/gi, '');
+}
+
 function tagsToText(html: string): string {
-  return decodeEntities(
-    html
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(new RegExp(`</(${BLOCK_TAGS})>`, 'gi'), '\n\n')
-      .replace(/<[^>]+>/g, '')
+  return stripReferenceMarkers(
+    decodeEntities(
+      html
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(new RegExp(`</(${BLOCK_TAGS})>`, 'gi'), '\n\n')
+        .replace(/<[^>]+>/g, '')
+    )
   )
     .replace(/[ \t]+/g, ' ')
     .split('\n')

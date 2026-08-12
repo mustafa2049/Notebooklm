@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countSentences, tokenize } from './tokenizer';
+import { trLower, trUpper } from './turkish';
 
 describe('tokenize — Türkçe cümle bölme', () => {
   it('kısaltmalardan sonra cümleyi bölmez', () => {
@@ -64,5 +65,21 @@ describe('tokenize — Türkçe cümle bölme', () => {
     // "VB." büyük harfle yazıldığında da kısaltma sayılmalı
     const tokens = tokenize('Elma armut VB. şeyler aldı. Bitti.');
     expect(countSentences(tokens)).toBe(2);
+  });
+});
+
+describe('trUpper / trLower — Türkçe büyük-küçük harf', () => {
+  it('noktalı İ ve noktasız ı kurallarını korur', () => {
+    expect(trUpper('en iyi hız')).toBe('EN İYİ HIZ');
+    expect(trUpper('gün serisi')).toBe('GÜN SERİSİ');
+    expect(trUpper('istatistik')).toBe('İSTATİSTİK');
+    expect(trLower('IYI')).toBe('ıyı');
+    expect(trLower('İSTANBUL')).toBe('istanbul');
+  });
+
+  it('ingilizce toUpperCase davranışından farklı sonuç verir', () => {
+    // Bu ayrım olmasa arayüzde "EN IYI HIZ" yazardı
+    expect('iyi'.toUpperCase()).toBe('IYI');
+    expect(trUpper('iyi')).toBe('İYİ');
   });
 });

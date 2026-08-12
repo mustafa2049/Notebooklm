@@ -49,6 +49,16 @@ export function trLower(s: string): string {
   return s.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase();
 }
 
+/**
+ * Türkçe kurallarına göre büyük harfe çevirir.
+ * `'iyi'.toUpperCase()` "IYI" verir; Türkçede "İYİ" olmalı. Arayüzdeki büyük
+ * harfli etiketler için CSS `textTransform: uppercase` yerine bu kullanılıyor:
+ * o dönüşüm dil bilmiyor ve noktalı İ'yi kaybediyor.
+ */
+export function trUpper(s: string): string {
+  return s.replace(/i/g, 'İ').replace(/ı/g, 'I').toUpperCase();
+}
+
 /** Kelimenin başındaki ve sonundaki noktalama/tırnak işaretlerini atar. */
 const TRIM_CHARS = '.,;:!?…"\'`´()[]{}«»“”‘’–—-*_~/\\|<>+=&%#@¡¿';
 const TRIM_SET = new Set([...TRIM_CHARS]);

@@ -46,7 +46,13 @@ export default function StatsScreen() {
 
           <View style={{ flexDirection: 'row', gap: theme.space(3), marginTop: theme.space(3) }}>
             <Stat label="Ortalama hız" value={formatNumber(summary.averageWpm)} unit="kel/dk" />
-            <Stat label="En iyi hız" value={formatNumber(summary.bestWpm)} unit="kel/dk" />
+            {/* En iyi hız yalnızca 100+ kelimelik oturumlardan sayılıyor;
+                henüz öyle bir oturum yoksa 0 göstermek yanıltıcı olur */}
+            <Stat
+              label="En iyi hız"
+              value={summary.bestWpm > 0 ? formatNumber(summary.bestWpm) : '—'}
+              unit={summary.bestWpm > 0 ? 'kel/dk' : '100+ kelime gerek'}
+            />
           </View>
 
           <SectionHeader title="Son 14 gün" hint="Günlük okunan kelime sayısı" />

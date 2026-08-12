@@ -10,6 +10,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { trUpper } from '@/core/turkish';
 import { useTheme } from '@/store/SettingsContext';
 import { Icon, type IconName } from './Icon';
 import { fontStyle } from './theme';
@@ -77,15 +78,19 @@ export function Txt({
     heading: { fontSize: 18, color: theme.colors.text, ...fontStyle(theme, '700') },
     body: { fontSize: 15, color: theme.colors.text, lineHeight: 22, ...fontStyle(theme) },
     dim: { fontSize: 14, color: theme.colors.textDim, lineHeight: 20, ...fontStyle(theme) },
+    // Büyük harfe çevirme CSS ile değil `trUpper` ile yapılıyor (aşağıda):
+    // textTransform dil bilmediği için "iyi" → "IYI" veriyordu, Türkçede "İYİ".
     label: {
       fontSize: 11,
       color: theme.colors.textFaint,
       letterSpacing: 1,
-      textTransform: 'uppercase',
       ...fontStyle(theme, '700'),
     },
     mono: { fontSize: 15, color: theme.colors.text, fontFamily: theme.font.mono },
   };
+
+  const content =
+    variant === 'label' && typeof children === 'string' ? trUpper(children) : children;
 
   return (
     <Text
@@ -94,7 +99,7 @@ export function Txt({
       suppressHighlighting={onPress ? true : undefined}
       style={[variants[variant], style]}
     >
-      {children}
+      {content}
     </Text>
   );
 }
