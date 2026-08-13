@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+# Aynı dala yeni bir push gelirse süren koşuyu iptal et: sıra beklemesin
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tip kontrolü, testler ve web derlemesi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Bağımlılıklar
+        run: npm ci
+
+      - name: Tip kontrolü
+        run: npm run typecheck
+
+      - name: Testler
+        run: npm test
+
+      # Derleme adımı testlerin yakalamadığı şeyi yakalıyor: paketleyici
+      # hataları (platform dosyaları, dinamik import'lar, eksik varlıklar).
+      - name: Web derlemesi
+        run: npm run build:web
+
+      - name: Derleme çıktısını sakla
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+          retention-days: 7
+
+  deploy:
+    name: Netlify'a yayınla
+    needs: test
+    runs-on: ubuntu-latest
+    # Yalnızca ana dal; dal dallarında yayına çıkmıyoruz
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # Gizli anahtarlar tanımlı değilse adımlar atlanıyor: depoyu klonlayan
+      # herkesin CI'ı kırmızı olmasın.
+      - name: Bağımlılıklar
+        if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
+        run: npm ci
+
+      - name: Web derlemesi
+        if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
+        run: npm run build:web
+
+      - name: Yayınla
+        if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
+        run: npx --yes netlify-cli@17 deploy --dir=dist --prod --message "${{ github.sha }}"
+
+      - name: Gizli anahtar yoksa açıklama
+        if: env.NETLIFY_AUTH_TOKEN == '' || env.NETLIFY_SITE_ID == ''
+        run: |
+          echo "Netlify yayını atlandı: NETLIFY_AUTH_TOKEN ve/veya NETLIFY_SITE_ID tanımlı değil."
+          echo "Depo ayarları → Secrets and variables → Actions bölümünden ekleyebilirsin."

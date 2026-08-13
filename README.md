@@ -176,6 +176,28 @@ ne geldiği görünüyor ve ekleme kararı kullanıcıda kalıyor.
 Aynı parametreler derin bağlantıyla da çalışıyor:
 `hizliokuma://import?sharedText=...` veya `?sharedUrl=...`.
 
+## CI ve dağıtım
+
+`.github/workflows/ci.yml` her push'ta üç şeyi koşuyor: tip kontrolü, testler ve
+**web derlemesi**. Derleme adımı testlerin yakalamadığı hataları yakalıyor —
+paketleyici sorunları (platform dosyaları, dinamik `import()`'lar, eksik
+varlıklar) yalnızca gerçek derlemede ortaya çıkıyor. Çıktı `web-dist` adıyla
+saklanıyor.
+
+Netlify yayını `main` dalına push'ta çalışıyor ama iki gizli anahtar
+gerektiriyor: depo ayarlarında **Secrets and variables → Actions** altına
+`NETLIFY_AUTH_TOKEN` ve `NETLIFY_SITE_ID` eklenmeli. Anahtarlar yokken adım
+sessizce atlanıyor (CI kırmızıya düşmüyor) ve günlükte nedenini yazıyor.
+Alternatif olarak Netlify'a depo doğrudan bağlanabilir; `netlify.toml` bunun için
+hazır duruyor.
+
+## Web ilk yükleme
+
+pdf.js ve jszip artık **kullanıldıklarında** yükleniyor (`await import(...)`).
+Metro bunları ayrı parçalara ayırdığı için ilk yüklemede inen paket
+3,33 MB'tan **1,43 MB**'a düştü; PDF içe aktaran kullanıcı pdf.js parçalarını o
+anda indiriyor, hiç PDF açmayan hiç indirmiyor.
+
 ## Veri
 
 Metinler, ilerleme ve istatistikler yalnızca cihazda tutulur; hiçbir sunucuya

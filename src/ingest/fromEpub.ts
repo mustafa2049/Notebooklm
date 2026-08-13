@@ -1,4 +1,4 @@
-import JSZip from 'jszip';
+import type JSZipType from 'jszip';
 import { decodeEntities, htmlTitle, htmlToText } from './html2text';
 import { normalizeText } from './normalize';
 import type { ExtractedChapter, ExtractedDocument } from './types';
@@ -14,6 +14,9 @@ import type { ExtractedChapter, ExtractedDocument } from './types';
  * makine tarafından üretildiği için yapıları öngörülebilir.
  */
 export async function extractEpub(data: Uint8Array): Promise<ExtractedDocument> {
+  // jszip yalnızca EPUB açılırken yükleniyor: uygulamayı açan herkese
+  // ödetmemek için (bkz. fromPdf.web.ts'deki aynı gerekçe)
+  const { default: JSZip } = await import('jszip');
   const zip = await JSZip.loadAsync(data);
 
   const opfPath = await findOpfPath(zip);
@@ -62,7 +65,7 @@ export async function extractEpub(data: Uint8Array): Promise<ExtractedDocument> 
  * içindekilerdeki başlıklar bölümün kendi `<h1>`'inden genelde daha temiz.
  */
 async function readNavTitles(
-  zip: JSZip,
+  zip: JSZipType,
   basePath: string,
   manifest: Map<string, string>,
   opf: string
@@ -109,12 +112,12 @@ function normalizeHref(href: string): string {
   return decoded.slice(decoded.lastIndexOf('/') + 1).toLowerCase();
 }
 
-async function readFile(zip: JSZip, path: string): Promise<string | null> {
+async function readFile(zip: JSZipType, path: string): Promise<string | null> {
   const entry = zip.file(path) ?? zip.file(decodeURIComponent(path));
   return entry ? entry.async('string') : null;
 }
 
-async function findOpfPath(zip: JSZip): Promise<string | null> {
+async function findOpfPath(zip: JSZipType): Promise<string | null> {
   const container = await readFile(zip, 'META-INF/container.xml');
   const fromContainer = container?.match(/full-path\s*=\s*["']([^"']+)["']/i)?.[1];
   if (fromContainer) return fromContainer;

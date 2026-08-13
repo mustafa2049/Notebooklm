@@ -1,18 +1,33 @@
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-// Worker modülünü statik olarak alıp global'e koyuyoruz. Sebep: pdf.js normalde
-// worker dosyasını `import(workerSrc)` ile dinamik yükler; Metro dinamik yol
-// çözemediği için bu başarısız olur. pdf.js `globalThis.pdfjsWorker` varsa
-// doğrudan onu kullanıyor — böylece paketleyiciye worker URL'i tanıtmak
-// gerekmiyor. Karşılığında ayrıştırma ana iş parçacığında çalışır; çok büyük
-// PDF'lerde arayüz kısa süre takılabilir.
-import * as pdfjsWorker from 'pdfjs-dist/legacy/build/pdf.worker.mjs';
-
+import type * as Pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { normalizeText } from './normalize';
 import { NoTextLayerError, type ExtractedDocument } from './types';
 
-(globalThis as unknown as { pdfjsWorker: unknown }).pdfjsWorker = pdfjsWorker;
-// pdf.js bu alan boşsa hata atıyor; gerçek worker kullanılmadığı için değeri önemsiz
-pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.mjs';
+/**
+ * pdf.js **kullanıldığında** yükleniyor.
+ *
+ * Paketin sıkıştırılmamış boyutu tek başına birkaç megabayt; uygulamayı açan
+ * herkese ödetmek yerine yalnızca PDF içe aktaran kullanıcı bekliyor. İlk
+ * çağrıda yüklenip saklanıyor, sonraki çağrılar anında dönüyor.
+ */
+let loading: Promise<typeof Pdfjs> | null = null;
+
+function loadPdfjs(): Promise<typeof Pdfjs> {
+  loading ??= (async () => {
+    const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    // Worker modülünü alıp global'e koyuyoruz. Sebep: pdf.js normalde worker
+    // dosyasını `import(workerSrc)` ile dinamik yükler; Metro çalışma anında
+    // üretilen bu yolu çözemediği için başarısız olur. pdf.js
+    // `globalThis.pdfjsWorker` varsa doğrudan onu kullanıyor — böylece
+    // paketleyiciye worker URL'i tanıtmak gerekmiyor. Karşılığında ayrıştırma
+    // ana iş parçacığında çalışır; çok büyük PDF'lerde arayüz kısa süre takılır.
+    const pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
+    (globalThis as unknown as { pdfjsWorker: unknown }).pdfjsWorker = pdfjsWorker;
+    // pdf.js bu alan boşsa hata atıyor; gerçek worker kullanılmadığı için değeri önemsiz
+    pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.mjs';
+    return pdfjs as unknown as typeof Pdfjs;
+  })();
+  return loading;
+}
 
 /**
  * PDF'den metin çıkarır (yalnızca web).
@@ -22,6 +37,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.mjs';
  * satır yüksekliğinin belirgin üstündeyse yeni paragraf sayılır.
  */
 export async function extractPdf(data: Uint8Array): Promise<ExtractedDocument> {
+  const pdfjs = await loadPdfjs();
   const doc = await pdfjs.getDocument({
     data,
     // Görsel çizim yapmıyoruz; font yüklemeye gerek yok
@@ -80,7 +96,7 @@ function median(values: number[]): number {
   return sorted[Math.floor(sorted.length / 2)];
 }
 
-async function safeMetadata(doc: pdfjs.PDFDocumentProxy): Promise<string | undefined> {
+async function safeMetadata(doc: Pdfjs.PDFDocumentProxy): Promise<string | undefined> {
   try {
     const info = await doc.getMetadata();
     const title = (info.info as { Title?: string } | undefined)?.Title?.trim();
