@@ -10,7 +10,8 @@ import { trLower } from './turkish';
  * kullanıcıya "ne kadar hızda okuyup ne kadar tuttum" karşılaştırması verir.
  */
 
-const STOPWORDS = new Set(
+/** Anlam taşımayan kelimeler — cloze boşluğu açılmaz, arama skorunda sayılmaz. */
+export const STOPWORDS = new Set(
   [
     've', 'ile', 'ama', 'fakat', 'ancak', 'çünkü', 'gibi', 'için', 'kadar', 'daha',
     'çok', 'az', 'bir', 'bu', 'şu', 'o', 'ben', 'sen', 'biz', 'siz', 'onlar',

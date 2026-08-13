@@ -1,10 +1,13 @@
 import React from 'react';
 import {
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
+  type KeyboardTypeOptions,
   type StyleProp,
   type TextStyle,
   type ViewStyle,
@@ -341,6 +344,84 @@ export function Divider() {
   const theme = useTheme();
   return (
     <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: theme.colors.border }} />
+  );
+}
+
+/**
+ * Tarayıcı, odaklanan girdinin çevresine kendi çerçevesini çiziyor ve bu
+ * kutunun kendi kenarlığıyla çakışıyor. Yalnızca web'de kapatılıyor; native
+ * tarafta stil hiç eklenmiyor.
+ */
+const NO_OUTLINE: TextStyle = Platform.OS === 'web' ? { outlineWidth: 0 } : {};
+
+/** Etiketli metin alanı — ayarlarda tekrar eden giriş kutusu. */
+export function Field({
+  label,
+  hint,
+  value,
+  onChangeText,
+  placeholder,
+  secure,
+  keyboardType,
+  multiline,
+  right,
+}: {
+  label?: string;
+  hint?: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  secure?: boolean;
+  keyboardType?: KeyboardTypeOptions;
+  multiline?: boolean;
+  /** Alanın sağında gösterilecek düğme (örn. "göster") */
+  right?: React.ReactNode;
+}) {
+  const theme = useTheme();
+  return (
+    <View style={{ gap: theme.space(1.5) }}>
+      {label ? <Txt variant="body">{label}</Txt> : null}
+      {hint ? (
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          {hint}
+        </Txt>
+      ) : null}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: theme.space(2),
+          backgroundColor: theme.colors.surfaceAlt,
+          borderRadius: theme.radius.sm,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.colors.border,
+          paddingHorizontal: theme.space(3),
+        }}
+      >
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor={theme.colors.textFaint}
+          secureTextEntry={secure}
+          keyboardType={keyboardType}
+          multiline={multiline}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={{
+            flex: 1,
+            color: theme.colors.text,
+            fontSize: 14,
+            paddingVertical: theme.space(3),
+            minHeight: multiline ? 80 : undefined,
+            textAlignVertical: multiline ? 'top' : 'center',
+            ...NO_OUTLINE,
+            ...fontStyle(theme),
+          }}
+        />
+        {right}
+      </View>
+    </View>
   );
 }
 

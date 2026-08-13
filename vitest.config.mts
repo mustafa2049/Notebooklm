@@ -11,7 +11,13 @@ export default defineConfig({
   },
   test: {
     // Yalnızca saf TypeScript katmanları: motor ve metin işleme
-    include: ['src/core/**/*.test.ts', 'src/ingest/**/*.test.ts', 'src/train/**/*.test.ts'],
+    include: [
+      'src/core/**/*.test.ts',
+      'src/ingest/**/*.test.ts',
+      'src/train/**/*.test.ts',
+      // AI katmanı: bağdaştırıcılar `react-native` içe aktarmıyor, testler ağa çıkmıyor
+      'src/ai/**/*.test.ts',
+    ],
     environment: 'node',
   },
 });

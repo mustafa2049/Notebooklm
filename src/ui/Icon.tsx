@@ -25,7 +25,10 @@ export type IconName =
   | 'globe'
   | 'file'
   | 'paste'
-  | 'focus';
+  | 'focus'
+  | 'sparkle'
+  | 'chat'
+  | 'book';
 
 interface IconProps {
   name: IconName;
@@ -141,6 +144,22 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
         <>
           <Circle cx={12} cy={12} r={3} fill={color} />
           <Path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16" {...stroke} />
+        </>
+      )}
+      {name === 'sparkle' && (
+        <>
+          <Path d="M12 3l1.8 4.9L18.7 9.7l-4.9 1.8L12 16.4l-1.8-4.9L5.3 9.7l4.9-1.8z" fill={color} />
+          <Path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z" fill={color} />
+        </>
+      )}
+      {name === 'chat' && (
+        <Path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4H6.5A2.5 2.5 0 0 1 4 13.5z" {...stroke} />
+      )}
+      {name === 'book' && (
+        <>
+          <Path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 1 5 19.5z" {...stroke} />
+          <Line x1={9} y1={7} x2={15} y2={7} {...stroke} />
+          <Line x1={9} y1={11} x2={15} y2={11} {...stroke} />
         </>
       )}
     </Svg>

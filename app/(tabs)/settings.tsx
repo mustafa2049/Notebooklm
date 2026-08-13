@@ -1,22 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
-import { Platform, TextInput, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import type { ReaderMode } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
 import { KEYS } from '@/storage/keys';
 import type { ThemePreference } from '@/storage/settings';
+import { AiSettings } from '@/ui/AiSettings';
 import { Slider } from '@/ui/Slider';
 import {
   Button,
   Card,
   Chip,
   Divider,
+  Field,
   Screen,
   SectionHeader,
   Toggle,
   Txt,
 } from '@/ui/primitives';
-import { fontStyle } from '@/ui/theme';
 
 const MODE_LABEL: Record<ReaderMode, string> = {
   rsvp: 'Kelime akışı',
@@ -179,21 +180,14 @@ export default function SettingsScreen() {
         hint="Tarayıcılar başka sitelere doğrudan istek atmayı engeller (CORS). Web sürümünde sayfalar bu vekil sunucu üzerinden çekilir; telefonda doğrudan indirildiği için bu alan kullanılmaz."
       />
       <Card>
-        <TextInput
+        <Field
           value={settings.urlProxy}
           onChangeText={(urlProxy) => update({ urlProxy })}
-          autoCapitalize="none"
-          autoCorrect={false}
           placeholder="https://r.jina.ai/"
-          placeholderTextColor={theme.colors.textFaint}
-          style={{
-            color: theme.colors.text,
-            fontSize: 14,
-            paddingVertical: theme.space(2),
-            ...fontStyle(theme),
-          }}
         />
       </Card>
+
+      <AiSettings />
 
       <SectionHeader title="Veriler" />
       <Card style={{ gap: theme.space(3) }}>

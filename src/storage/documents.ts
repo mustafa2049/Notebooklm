@@ -85,6 +85,7 @@ export async function removeDocument(id: string): Promise<void> {
   const documents = await listDocuments();
   await writeIndex(documents.filter((d) => d.id !== id));
   await AsyncStorage.removeItem(KEYS.progress(id));
+  await AsyncStorage.removeItem(KEYS.aiCache(id));
   await deleteText(id);
 }
 
