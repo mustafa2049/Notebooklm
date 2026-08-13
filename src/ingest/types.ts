@@ -1,8 +1,21 @@
 /** İçe aktarma katmanının platformdan bağımsız tipleri ve hataları. */
 
+export interface ExtractedChapter {
+  title: string;
+  /** Bölümün metni (normalleştirilmemiş) */
+  text: string;
+}
+
 export interface ExtractedDocument {
   title?: string;
   text: string;
+  /**
+   * Kaynakta gerçek bölüm sınırı varsa (EPUB'da spine öğeleri) bölümler burada.
+   * Karakter konumu bilerek verilmiyor: metin kaydedilirken normalleştirildiği
+   * için konumlar kayıyor — konumlar birleştirme sırasında hesaplanıyor
+   * (bkz. `joinChapters`).
+   */
+  chapters?: ExtractedChapter[];
 }
 
 export class NoTextLayerError extends Error {

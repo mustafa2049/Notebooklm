@@ -18,6 +18,7 @@ import {
   getDocumentText,
   loadProgress,
   saveProgress,
+  type DocumentChapter,
   type DocumentMeta,
 } from '@/storage/documents';
 import { haptics } from '@/ui/haptics';
@@ -103,6 +104,7 @@ export default function ReaderScreen() {
     <Reader
       docId={id!}
       title={meta?.title ?? 'Okuma'}
+      chapters={meta?.chapters}
       text={text}
       startOffset={startOffset}
       onProgress={onProgress}
@@ -118,6 +120,8 @@ export default function ReaderScreen() {
 interface ReaderProps {
   docId: string;
   title: string;
+  /** Kaynağın kendi bölümleri (EPUB) */
+  chapters?: DocumentChapter[];
   text: string;
   startOffset: number;
   onProgress: (charOffset: number, ratio: number) => void;
@@ -131,6 +135,7 @@ interface ReaderProps {
 function Reader({
   docId,
   title,
+  chapters,
   text,
   startOffset,
   onProgress,
@@ -154,6 +159,21 @@ function Reader({
 
   // AI kapalıyken panel yine açılıyor ama yalnızca kelime defteri sekmesiyle
   const aiReady = isAiConfigured(settings);
+
+  /**
+   * Okunan bölümün sırası ("3/12"). Bölümler karakter konumuna göre sıralı
+   * olduğu için geçerli konumdan küçük olan son bölüm aranıyor.
+   */
+  const chapterLabel = React.useMemo(() => {
+    if (!chapters?.length) return null;
+    const offset = engine.chunk?.charStart ?? 0;
+    let index = 0;
+    for (let i = 0; i < chapters.length; i++) {
+      if (chapters[i].charOffset <= offset) index = i;
+      else break;
+    }
+    return `${index + 1}/${chapters.length}`;
+  }, [chapters, engine.chunk]);
 
   /** Kelime açıklaması için: ekrandaki kelimeler ve içinde geçtiği cümle. */
   const context = React.useMemo(() => {
@@ -265,6 +285,7 @@ function Reader({
         <IconButton name="chevronLeft" onPress={onBack} accessibilityLabel="Geri" emphasis="strong" />
         <Txt variant="dim" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
           {title}
+          {chapterLabel ? ` · ${chapterLabel}` : ''}
         </Txt>
         <Pressable onPress={() => setShowModes((value) => !value)} hitSlop={8}>
           <Txt variant="dim" style={{ fontSize: 13, color: theme.colors.accent }}>
@@ -275,7 +296,7 @@ function Reader({
           name={aiReady ? 'sparkle' : 'book'}
           onPress={() => {
             engine.pause();
-            setAiTab(aiReady ? 'summary' : 'word');
+            setAiTab(aiReady ? 'summary' : chapters?.length ? 'sections' : 'word');
           }}
           accessibilityLabel={aiReady ? 'Yapay zekâ paneli' : 'Kelime defteri'}
           emphasis="faint"
@@ -389,6 +410,7 @@ function Reader({
         onClose={() => setAiTab(null)}
         docId={docId}
         docTitle={title}
+        fileChapters={chapters}
         text={text}
         charOffset={engine.chunk?.charStart ?? 0}
         words={context.words}

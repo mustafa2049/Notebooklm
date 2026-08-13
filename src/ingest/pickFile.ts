@@ -53,6 +53,8 @@ export async function pickAndExtract(): Promise<PickedDocument | null> {
     fileName,
     text: extracted.text,
     title: extracted.title ?? stripExtension(fileName),
+    // EPUB'un kendi bölümleri; konumları çağıran hesaplıyor (bkz. joinChapters)
+    chapters: extracted.chapters,
   };
 }
 

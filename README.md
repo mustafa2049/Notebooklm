@@ -124,6 +124,20 @@ soruları, kelime açıklaması, metinle sohbet ve bölümlere ayırma açılıy
   `response_format` desteklemiyorsa istek bu alanlar düşürülüp yeniden deneniyor;
   istem JSON biçimini zaten tarif ediyor ve yanıt çalışma anında doğrulanıyor.
 
+## EPUB bölümleri
+
+EPUB'lar artık tek metne düz biçimde birleşmiyor: bölüm başlıkları dosyanın
+içindekiler tablosundan (EPUB 3'te `nav.xhtml`, EPUB 2'de `toc.ncx`; yoksa
+bölümün `<h1>`/`<title>`'ı) okunuyor ve okuyucuda bölüm listesi açılıyor.
+Başlıkta kaçıncı bölümde olduğun yazıyor ("3/12"), listeden dokununca o bölüme
+atlıyor. Bu bölümler yapay zekâ bölümlemesinden farklı: dosyanın kendi
+verisinden geldikleri için AI gerekmiyor ve AI açıkken bile bunlar
+gösteriliyor — var olan bilgi için para harcanmıyor.
+
+Bölüm konumları, her bölüm **ayrı ayrı** normalleştirilip birleştirilerek
+hesaplanıyor (`joinChapters`); önce birleştirip sonra normalleştirmek konumları
+kaydırırdı.
+
 ## Günlük hedef ve hatırlatıcı
 
 Ayarlar → Alışkanlık'tan günlük kelime hedefi verilebiliyor; kütüphanenin

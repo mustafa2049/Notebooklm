@@ -107,3 +107,35 @@ export function countWordsInText(text: string): number {
   const matches = text.trim().match(/\S+/g);
   return matches ? matches.length : 0;
 }
+
+export interface JoinedChapter {
+  title: string;
+  /** Birleştirilmiş metindeki başlangıç karakter konumu */
+  charOffset: number;
+}
+
+/**
+ * Bölümleri tek metne birleştirir ve her bölümün karakter konumunu döndürür.
+ *
+ * Neden burada: her bölüm **ayrı ayrı** normalleştirilip sonra birleştiriliyor.
+ * Önce birleştirip sonra normalleştirmek konumları kaydırırdı (sarmalanmış
+ * satırlar açılırken metin kısalıyor), bölüm listesi de yanlış yere atlardı.
+ */
+export function joinChapters(
+  chapters: { title: string; text: string }[]
+): { text: string; chapters: JoinedChapter[] } {
+  const separator = '\n\n';
+  const pieces: string[] = [];
+  const marks: JoinedChapter[] = [];
+  let offset = 0;
+
+  for (const chapter of chapters) {
+    const text = normalizeText(chapter.text);
+    if (!text.trim()) continue;
+    marks.push({ title: chapter.title, charOffset: offset });
+    pieces.push(text);
+    offset += text.length + separator.length;
+  }
+
+  return { text: pieces.join(separator), chapters: marks };
+}

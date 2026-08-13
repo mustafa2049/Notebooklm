@@ -9,6 +9,12 @@ export type DocumentSource = 'paste' | 'txt' | 'pdf' | 'epub' | 'url';
  * `blobStore`'da tutulur — kütüphane listesini açmak için kitapların tamamını
  * belleğe almak gerekmesin.
  */
+export interface DocumentChapter {
+  title: string;
+  /** Metindeki başlangıç karakter konumu */
+  charOffset: number;
+}
+
 export interface DocumentMeta {
   id: string;
   title: string;
@@ -18,6 +24,11 @@ export interface DocumentMeta {
   charCount: number;
   wordCount: number;
   createdAt: number;
+  /**
+   * Kaynağın kendi bölümleri (EPUB). Yapay zekâ bölümlemesinden farklı: bunlar
+   * uydurma değil, dosyanın içindekiler tablosundan geliyor.
+   */
+  chapters?: DocumentChapter[];
 }
 
 /** Kaldığın yer. Chunk indeksi değil karakter offseti saklanır (bkz. core/progress). */
@@ -57,6 +68,7 @@ export interface NewDocument {
   source: DocumentSource;
   sourceRef?: string;
   wordCount: number;
+  chapters?: DocumentChapter[];
 }
 
 export async function addDocument(input: NewDocument): Promise<DocumentMeta> {
@@ -68,6 +80,7 @@ export async function addDocument(input: NewDocument): Promise<DocumentMeta> {
     charCount: input.text.length,
     wordCount: input.wordCount,
     createdAt: Date.now(),
+    chapters: input.chapters?.length ? input.chapters : undefined,
   };
 
   await writeText(meta.id, input.text);

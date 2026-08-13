@@ -1,11 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
-import { countWordsInText, normalizeText } from '@/ingest/normalize';
+import { countWordsInText, joinChapters, normalizeText } from '@/ingest/normalize';
 import { extractUrl } from '@/ingest/fromUrl';
 import { PDF_SUPPORTED, pickAndExtract } from '@/ingest/pickFile';
 import { useSettings } from '@/store/SettingsContext';
-import { addDocument, type DocumentSource } from '@/storage/documents';
+import { addDocument, type DocumentChapter, type DocumentSource } from '@/storage/documents';
 import { Icon } from '@/ui/Icon';
 import { deriveTitle, formatNumber } from '@/ui/format';
 import { Button, Card, Chip, IconButton, Screen, Txt } from '@/ui/primitives';
@@ -76,14 +76,27 @@ export default function ImportScreen() {
     }
   }, [shared.sharedText, shared.sharedUrl, shared.sharedTitle]);
 
-  const save = async (title: string, text: string, source: DocumentSource, sourceRef?: string) => {
+  const save = async (
+    title: string,
+    text: string,
+    source: DocumentSource,
+    sourceRef?: string,
+    chapters?: DocumentChapter[]
+  ) => {
     const normalized = normalizeText(text);
     const words = countWordsInText(normalized);
     if (words < 5) {
       setError('Metin çok kısa görünüyor.');
       return;
     }
-    const meta = await addDocument({ title, text: normalized, source, sourceRef, wordCount: words });
+    const meta = await addDocument({
+      title,
+      text: normalized,
+      source,
+      sourceRef,
+      wordCount: words,
+      chapters,
+    });
     router.dismissTo('/');
     router.push(`/reader/${meta.id}`);
   };
@@ -196,11 +209,15 @@ export default function ImportScreen() {
               run(async () => {
                 const picked = await pickAndExtract();
                 if (!picked) return;
+                // EPUB bölümleri ayrı ayrı normalleştirilip birleştiriliyor:
+                // konumlar kaydedilen metne göre doğru olsun
+                const joined = picked.chapters?.length ? joinChapters(picked.chapters) : null;
                 await save(
                   picked.title ?? picked.fileName,
-                  picked.text,
+                  joined ? joined.text : picked.text,
                   picked.kind,
-                  picked.fileName
+                  picked.fileName,
+                  joined?.chapters
                 );
               })
             }

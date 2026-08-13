@@ -31,7 +31,7 @@ const TAB_LABEL: Record<AiTab, string> = {
   word: 'Kelime',
 };
 
-/** AI kapalıyken yalnızca kelime defteri görünür. */
+/** AI kapalıyken kelime defteri her zaman, bölümler yalnızca gerçek bölüm varsa. */
 const OFFLINE_TABS: AiTab[] = ['word'];
 
 interface Props {
@@ -50,6 +50,11 @@ interface Props {
   onJumpTo: (charOffset: number) => void;
   /** Kelime defteri kaydında kaynağı göstermek için */
   docTitle?: string;
+  /**
+   * Kaynağın kendi bölümleri (EPUB içindekiler tablosu). Varsa AI bölümlemesi
+   * yerine bunlar gösteriliyor — uydurulmuş değil, dosyadan geliyorlar.
+   */
+  fileChapters?: Section[];
 }
 
 export function ToolSheet({
@@ -63,6 +68,7 @@ export function ToolSheet({
   sentence,
   onJumpTo,
   docTitle,
+  fileChapters,
 }: Props) {
   const { theme } = useSettings();
   const insets = useSafeAreaInsets();
@@ -76,12 +82,17 @@ export function ToolSheet({
   const [wordInfo, setWordInfo] = useState<{ word: string; text: string } | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
-  const tabs = ai.configured ? (Object.keys(TAB_LABEL) as AiTab[]) : OFFLINE_TABS;
+  const hasFileChapters = Boolean(fileChapters?.length);
+  const tabs = ai.configured
+    ? (Object.keys(TAB_LABEL) as AiTab[])
+    : hasFileChapters
+      ? [...OFFLINE_TABS, 'sections' as AiTab]
+      : OFFLINE_TABS;
 
   useEffect(() => {
     if (!visible) return;
     // AI kapalıyken yalnızca kelime sekmesi var; başka bir sekme istenirse ona düş
-    setTab(ai.configured ? initialTab : 'word');
+    setTab(ai.configured || tabs.includes(initialTab) ? initialTab : 'word');
     setSaved(null);
   }, [visible, initialTab, ai.configured]);
 
@@ -165,7 +176,7 @@ export function ToolSheet({
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
           <Txt variant="heading" style={{ flex: 1, fontSize: 18 }}>
-            {ai.configured ? 'Yapay zekâ' : 'Kelime defteri'}
+            {ai.configured ? 'Yapay zekâ' : hasFileChapters ? 'Araçlar' : 'Kelime defteri'}
           </Txt>
           <Pressable onPress={onClose} hitSlop={10}>
             <Txt variant="dim">kapat</Txt>
@@ -210,8 +221,13 @@ export function ToolSheet({
 
           {tab === 'sections' ? (
             <>
-              {sections?.length ? (
-                sections.map((section, index) => (
+              {hasFileChapters ? (
+                <Txt variant="dim" style={{ fontSize: 12 }}>
+                  Bu bölümler dosyanın içindekiler tablosundan geliyor.
+                </Txt>
+              ) : null}
+              {(hasFileChapters ? fileChapters! : (sections ?? [])).length ? (
+                (hasFileChapters ? fileChapters! : sections!).map((section, index) => (
                   <Card
                     key={`${section.charOffset}-${index}`}
                     onPress={() => {
@@ -234,13 +250,16 @@ export function ToolSheet({
                   dokunarak o bölüme atlayabilirsin.
                 </Txt>
               )}
-              <Button
-                label={sections?.length ? 'Yeniden üret' : 'Bölümlere ayır'}
-                icon="sparkle"
-                variant={sections?.length ? 'secondary' : 'primary'}
-                disabled={ai.busy}
-                onPress={makeSections}
-              />
+              {/* Dosyanın kendi bölümleri varken modele para vermenin anlamı yok */}
+              {hasFileChapters ? null : (
+                <Button
+                  label={sections?.length ? 'Yeniden üret' : 'Bölümlere ayır'}
+                  icon="sparkle"
+                  variant={sections?.length ? 'secondary' : 'primary'}
+                  disabled={ai.busy}
+                  onPress={makeSections}
+                />
+              )}
             </>
           ) : null}
 

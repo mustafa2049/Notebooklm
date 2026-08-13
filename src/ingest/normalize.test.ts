@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countWordsInText, normalizeText } from './normalize';
+import { countWordsInText, joinChapters, normalizeText } from './normalize';
 import { countSentences, tokenize } from '@/core/tokenizer';
 
 describe('normalizeText', () => {
@@ -78,5 +78,40 @@ describe('countWordsInText', () => {
   it('kelime sayar', () => {
     expect(countWordsInText('  bir   iki üç  ')).toBe(3);
     expect(countWordsInText('')).toBe(0);
+  });
+});
+
+describe('joinChapters', () => {
+  it('bölüm konumlarını birleştirilmiş metne göre verir', () => {
+    const joined = joinChapters([
+      { title: 'Giriş', text: 'Birinci bölüm metni.' },
+      { title: 'Gelişme', text: 'İkinci bölüm metni.' },
+    ]);
+
+    expect(joined.chapters[0].charOffset).toBe(0);
+    expect(joined.text.slice(joined.chapters[1].charOffset)).toBe('İkinci bölüm metni.');
+  });
+
+  it('boş bölümleri atar ve konumları kaydırmaz', () => {
+    const joined = joinChapters([
+      { title: 'Boş', text: '   ' },
+      { title: 'Dolu', text: 'Metin burada.' },
+    ]);
+
+    expect(joined.chapters).toHaveLength(1);
+    expect(joined.chapters[0]).toEqual({ title: 'Dolu', charOffset: 0 });
+    expect(joined.text).toBe('Metin burada.');
+  });
+
+  it('sert sarmalanmış bölümde de konum doğru kalır', () => {
+    // Normalleştirme satırları birleştirip metni kısaltıyor; konum bundan sonra
+    // hesaplandığı için ikinci bölüm hâlâ tam yerinden başlıyor
+    const wrapped = 'Bu satır burada\nkırılmış ve devam ediyor\nüçüncü satırla.';
+    const joined = joinChapters([
+      { title: 'Bir', text: wrapped },
+      { title: 'İki', text: 'İkinci bölümün ilk cümlesi.' },
+    ]);
+
+    expect(joined.text.slice(joined.chapters[1].charOffset)).toBe('İkinci bölümün ilk cümlesi.');
   });
 });

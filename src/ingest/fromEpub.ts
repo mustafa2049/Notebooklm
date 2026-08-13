@@ -1,7 +1,7 @@
 import JSZip from 'jszip';
-import { decodeEntities, htmlToText } from './html2text';
+import { decodeEntities, htmlTitle, htmlToText } from './html2text';
 import { normalizeText } from './normalize';
-import type { ExtractedDocument } from './types';
+import type { ExtractedChapter, ExtractedDocument } from './types';
 
 /**
  * EPUB'dan metin çıkarır.
@@ -26,22 +26,87 @@ export async function extractEpub(data: Uint8Array): Promise<ExtractedDocument> 
   const manifest = parseManifest(opf);
   const spine = parseSpine(opf);
 
-  const chapters: string[] = [];
+  const navTitles = await readNavTitles(zip, basePath, manifest, opf);
+
+  const chapters: ExtractedChapter[] = [];
   for (const id of spine) {
     const href = manifest.get(id);
     if (!href) continue;
     const file = await readFile(zip, resolvePath(basePath, href));
     if (!file) continue;
     const text = htmlToText(file);
-    if (text.trim().length > 0) chapters.push(text);
+    if (text.trim().length === 0) continue;
+
+    // Başlık sırası: içindekiler → bölümün kendi <h1>/<title> → sıra numarası
+    const title =
+      navTitles.get(normalizeHref(href)) ??
+      htmlTitle(file) ??
+      `Bölüm ${chapters.length + 1}`;
+    chapters.push({ title: title.slice(0, 80), text });
   }
 
   if (chapters.length === 0) throw new Error('EPUB içinde okunabilir bölüm bulunamadı.');
 
   return {
     title: parseTitle(opf),
-    text: normalizeText(chapters.join('\n\n')),
+    text: normalizeText(chapters.map((chapter) => chapter.text).join('\n\n')),
+    chapters,
   };
+}
+
+/**
+ * İçindekiler tablosundan bölüm başlıkları: href → başlık.
+ *
+ * İki biçim var: EPUB 3'te `nav.xhtml` (HTML listesi), EPUB 2'de `toc.ncx`
+ * (XML). İkisini de okuyoruz çünkü elde hangi sürümün olduğu belli değil ve
+ * içindekilerdeki başlıklar bölümün kendi `<h1>`'inden genelde daha temiz.
+ */
+async function readNavTitles(
+  zip: JSZip,
+  basePath: string,
+  manifest: Map<string, string>,
+  opf: string
+): Promise<Map<string, string>> {
+  const titles = new Map<string, string>();
+
+  const navHref =
+    opf.match(/<item\b[^>]*\bproperties\s*=\s*["'][^"']*\bnav\b[^"']*["'][^>]*>/i)?.[0]
+      ?.match(/\bhref\s*=\s*["']([^"']+)["']/i)?.[1] ?? null;
+
+  if (navHref) {
+    const nav = await readFile(zip, resolvePath(basePath, navHref));
+    if (nav) {
+      for (const match of nav.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+        const label = decodeEntities(match[2].replace(/<[^>]+>/g, '')).trim();
+        if (label) titles.set(normalizeHref(match[1]), label);
+      }
+    }
+  }
+
+  const ncxHref = [...manifest.values()].find((href) => href.toLowerCase().endsWith('.ncx'))
+    ?? opf.match(/<item\b[^>]*\bhref\s*=\s*["']([^"']+\.ncx)["'][^>]*>/i)?.[1];
+  if (ncxHref) {
+    const ncx = await readFile(zip, resolvePath(basePath, ncxHref));
+    if (ncx) {
+      for (const match of ncx.matchAll(/<navPoint\b[\s\S]*?<\/navPoint>/gi)) {
+        const block = match[0];
+        const label = decodeEntities(
+          (block.match(/<text[^>]*>([\s\S]*?)<\/text>/i)?.[1] ?? '').replace(/<[^>]+>/g, '')
+        ).trim();
+        const src = block.match(/<content\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
+        if (label && src && !titles.has(normalizeHref(src))) titles.set(normalizeHref(src), label);
+      }
+    }
+  }
+
+  return titles;
+}
+
+/** "text/bolum1.xhtml#baslik" → "bolum1.xhtml" (dosya adı yeterli eşleşme) */
+function normalizeHref(href: string): string {
+  const withoutFragment = href.split('#')[0];
+  const decoded = decodeURIComponent(withoutFragment);
+  return decoded.slice(decoded.lastIndexOf('/') + 1).toLowerCase();
 }
 
 async function readFile(zip: JSZip, path: string): Promise<string | null> {
