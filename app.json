@@ -23,7 +23,10 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "lang": "tr",
+      "themeColor": "#0B0D10",
+      "description": "Metinlerini RSVP, parça parça, Bionic ve yürüyen vurgu ile hızlı oku."
     },
     "plugins": [
       "expo-router",

@@ -93,8 +93,53 @@ kaybetmiyor.
   sitelere doğrudan istek atmayı engelliyor (CORS); varsayılan `r.jina.ai`
   üçüncü taraf bir servis ve Ayarlar'dan değiştirilebilir. Telefonda böyle bir
   kısıt olmadığı için sayfa doğrudan indiriliyor.
-- **Anlama testi yapay zekâ kullanmıyor**; metnin kendi kelimelerinden boşluk
-  doldurma soruları üretiyor, yani anlamayı değil hatırlamayı ölçüyor.
+- **Paylaş menüsü yalnızca kurulu web uygulamasında çıkıyor.** Aşağıya bakın:
+  Android'in paylaş listesinde görünmek için uygulamanın telefona kurulmuş olması
+  gerekiyor. Expo Go ile açılan sürüm paylaş listesine çıkmıyor; çıkması için
+  ACTION_SEND intent filtresi ve intent ekstralarını okuyan bir native modül
+  (dev build) gerekiyor — Expo'nun `Linking` API'si yalnızca bağlantı adresini
+  veriyor, paylaşılan metni vermiyor.
+
+## Yapay zekâ (isteğe bağlı)
+
+Ayarlar → Yapay zekâ bölümünden bir sağlayıcı tanımlanınca özet, gerçek anlama
+soruları, kelime açıklaması, metinle sohbet ve bölümlere ayırma açılıyor. Hiçbir
+şey girilmezse uygulama bunlar olmadan tam çalışıyor.
+
+- **Sağlayıcı seçilebilir.** İki API biçimi destekleniyor: Claude (Anthropic
+  Messages API) ve OpenAI uyumlu `/chat/completions` — yani OpenAI, Gemini
+  uyumluluk adresi, OpenRouter, Groq, DeepSeek ve bilgisayarda çalışan yerel
+  modeller (Ollama, LM Studio). Yeni bir sağlayıcı eklemek `AiProvider`
+  arayüzünü uygulayan tek bir dosya yazmak demek (`src/ai/`).
+- **Anahtar cihazda duruyor.** Hiçbir sunucuya gönderilmiyor, yalnızca seçilen
+  sağlayıcıya gidiyor. Web'de tarayıcı deposunda durduğu için o tarayıcı
+  profiline erişen biri okuyabilir — ortak bilgisayarda kullanılmamalı.
+- **Harcama görünür.** Her çağrıdan sonra kullanılan token yazıyor; Ayarlar'a
+  1M token fiyatı girilirse tahmini tutar da gösteriliyor. Fiyat tablosu koda
+  gömülmedi: sağlayıcı kullanıcının seçimi ve fiyatlar değişiyor, gömülü tablo
+  bir süre sonra yanlış sayı gösterirdi.
+- **Özet, bölümler ve sorular doküman başına saklanıyor**; aynı çıktı için ikinci
+  kez ödeme yapılmıyor.
+- **Model adı kullanıcıdan.** Girilen model `output_config` ya da
+  `response_format` desteklemiyorsa istek bu alanlar düşürülüp yeniden deneniyor;
+  istem JSON biçimini zaten tarif ediyor ve yanıt çalışma anında doğrulanıyor.
+
+## Paylaş → Hızlı Okuma (Android)
+
+Web sürümü PWA olarak kurulabiliyor ve kurulduğunda Android'in paylaş menüsünde
+görünüyor:
+
+1. Netlify adresini Chrome'da aç.
+2. Menü → **Uygulamayı yükle** (ya da "Ana ekrana ekle").
+3. Artık herhangi bir uygulamada **Paylaş → Hızlı Okuma** ile metin veya bağlantı
+   gönderilebiliyor; içerik "Metin ekle" ekranına düşüyor.
+
+Paylaşılan içerik otomatik kaydedilmiyor: Chrome bir sayfayı paylaştığında
+genelde yalnızca başlık ve bağlantı gönderiyor, metnin kendisi gelmiyor. Ekranda
+ne geldiği görünüyor ve ekleme kararı kullanıcıda kalıyor.
+
+Aynı parametreler derin bağlantıyla da çalışıyor:
+`hizliokuma://import?sharedText=...` veya `?sharedUrl=...`.
 
 ## Veri
 

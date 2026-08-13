@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
 import { countWordsInText, normalizeText } from '@/ingest/normalize';
 import { extractUrl } from '@/ingest/fromUrl';
@@ -14,14 +14,67 @@ import { SAMPLE_TEXT } from '@/data/sampleText';
 
 type Tab = 'paste' | 'file' | 'url';
 
+/**
+ * Paylaşımdan gelen parametreler.
+ *
+ * Aynı adları iki yol da kullanıyor: telefona kurulmuş web uygulamasında
+ * Android'in paylaş menüsü (`manifest.json` → `share_target`) ve derin bağlantı
+ * (`hizliokuma://import?sharedText=…`). Böylece iki farklı akış için tek kod var.
+ */
+interface SharedParams {
+  sharedTitle?: string;
+  sharedText?: string;
+  sharedUrl?: string;
+}
+
+function looksLikeUrl(value: string): boolean {
+  return /^https?:\/\/\S+$/i.test(value.trim());
+}
+
 export default function ImportScreen() {
   const router = useRouter();
   const { theme, settings } = useSettings();
+  const shared = useLocalSearchParams() as SharedParams;
   const [tab, setTab] = useState<Tab>('paste');
   const [pasted, setPasted] = useState('');
   const [url, setUrl] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sharedTitle, setSharedTitle] = useState<string | null>(null);
+  const [fromShare, setFromShare] = useState(false);
+  const consumed = useRef(false);
+
+  /**
+   * Paylaşılan içeriği ilgili sekmeye yerleştirir.
+   *
+   * Bilerek otomatik kaydetmiyoruz: Chrome bir sayfayı paylaştığında genelde
+   * yalnızca başlık + bağlantı gönderiyor, metnin kendisi gelmiyor. Kullanıcı
+   * neyin geldiğini görüp "getir"e basmalı — sessizce yanlış şeyi kaydetmek
+   * kütüphaneyi çöpe çevirir.
+   */
+  useEffect(() => {
+    if (consumed.current) return;
+    const text = typeof shared.sharedText === 'string' ? shared.sharedText : '';
+    const link = typeof shared.sharedUrl === 'string' ? shared.sharedUrl : '';
+    const title = typeof shared.sharedTitle === 'string' ? shared.sharedTitle : '';
+    if (!text && !link && !title) return;
+
+    consumed.current = true;
+    setFromShare(true);
+    if (title) setSharedTitle(title);
+
+    // Android bazen bağlantıyı `text` alanında gönderiyor
+    const asUrl = link || (looksLikeUrl(text) ? text.trim() : '');
+    if (asUrl) {
+      setUrl(asUrl);
+      setTab('url');
+      return;
+    }
+    if (text) {
+      setPasted(text);
+      setTab('paste');
+    }
+  }, [shared.sharedText, shared.sharedUrl, shared.sharedTitle]);
 
   const save = async (title: string, text: string, source: DocumentSource, sourceRef?: string) => {
     const normalized = normalizeText(text);
@@ -62,6 +115,17 @@ export default function ImportScreen() {
         <Txt variant="title">Metin ekle</Txt>
         <IconButton name="close" onPress={() => router.back()} accessibilityLabel="Kapat" />
       </View>
+
+      {fromShare ? (
+        <Card style={{ marginBottom: theme.space(4), gap: theme.space(1) }}>
+          <Txt variant="body">Paylaşımdan geldi</Txt>
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            {sharedTitle
+              ? `“${sharedTitle}” · aşağıda kontrol edip ekleyebilirsin.`
+              : 'İçerik aşağıya yerleştirildi; kontrol edip ekleyebilirsin.'}
+          </Txt>
+        </Card>
+      ) : null}
 
       <View style={{ flexDirection: 'row', gap: theme.space(2), marginBottom: theme.space(4) }}>
         <Chip label="Yapıştır" active={tab === 'paste'} onPress={() => setTab('paste')} />
@@ -106,7 +170,9 @@ export default function ImportScreen() {
           <Button
             label="Kütüphaneye ekle ve oku"
             disabled={busy || pasteWords < 5}
-            onPress={() => run(() => save(deriveTitle(pasted), pasted, 'paste'))}
+            onPress={() =>
+              run(() => save(sharedTitle?.trim() || deriveTitle(pasted), pasted, 'paste'))
+            }
           />
         </View>
       ) : null}
@@ -174,7 +240,7 @@ export default function ImportScreen() {
             onPress={() =>
               run(async () => {
                 const article = await extractUrl(url, settings.urlProxy);
-                await save(article.title ?? url, article.text, 'url', url);
+                await save(article.title ?? sharedTitle?.trim() ?? url, article.text, 'url', url);
               })
             }
           />
