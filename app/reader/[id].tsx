@@ -2,8 +2,11 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
+import { stripPunctuation } from '@/core/turkish';
 import type { ReaderMode } from '@/core/types';
+import { AiSheet, type AiTab } from '@/reader/AiSheet';
 import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
 import { RsvpView } from '@/reader/RsvpView';
@@ -139,6 +142,7 @@ function Reader({
 }: ReaderProps) {
   const { theme, settings, update, focusMode, setFocusMode } = useSettings();
   const [showModes, setShowModes] = useState(false);
+  const [aiTab, setAiTab] = useState<AiTab | null>(null);
 
   const engine = useReaderEngine({
     text,
@@ -147,6 +151,21 @@ function Reader({
   });
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
+
+  // AI yapılandırılmamışsa panel hiç görünmez: uygulama AI olmadan tam çalışır
+  const aiReady = isAiConfigured(settings);
+
+  /** Kelime açıklaması için: ekrandaki kelimeler ve içinde geçtiği cümle. */
+  const context = React.useMemo(() => {
+    const chunk = engine.chunk;
+    if (!chunk) return { words: [], sentence: '' };
+    const words = chunk.tokens.map((token) => stripPunctuation(token.text)).filter(Boolean);
+    const sentence = engine.tokens
+      .filter((token) => token.sentenceIndex === chunk.sentenceIndex)
+      .map((token) => token.text)
+      .join(' ');
+    return { words, sentence };
+  }, [engine.chunk, engine.tokens]);
 
   useSessionRecorder({
     docId,
@@ -252,6 +271,18 @@ function Reader({
             {MODE_LABEL[mode]}
           </Txt>
         </Pressable>
+        {aiReady ? (
+          <IconButton
+            name="sparkle"
+            onPress={() => {
+              engine.pause();
+              setAiTab('summary');
+            }}
+            accessibilityLabel="Yapay zekâ paneli"
+            emphasis="faint"
+            size={20}
+          />
+        ) : null}
         <IconButton
           name="focus"
           onPress={() => setFocusMode(!focusMode)}
@@ -310,6 +341,16 @@ function Reader({
         />
         <Pressable
           onPress={toggle}
+          // Uzun bas: ekrandaki kelimeyi bağlamıyla açıklat (AI kapalıysa yok)
+          onLongPress={
+            aiReady
+              ? () => {
+                  engine.pause();
+                  haptics.step(settings.haptics);
+                  setAiTab('word');
+                }
+              : undefined
+          }
           style={{ position: 'absolute', left: '20%', right: '20%', top: 0, bottom: 0 }}
           accessibilityLabel="Oynat veya duraklat"
         />
@@ -347,6 +388,20 @@ function Reader({
           onSeek={engine.seekRatio}
         />
       </View>
+
+      {aiReady ? (
+        <AiSheet
+          visible={aiTab !== null}
+          initialTab={aiTab ?? 'summary'}
+          onClose={() => setAiTab(null)}
+          docId={docId}
+          text={text}
+          charOffset={engine.chunk?.charStart ?? 0}
+          words={context.words}
+          sentence={context.sentence}
+          onJumpTo={engine.seekCharOffset}
+        />
+      ) : null}
     </View>
   );
 }

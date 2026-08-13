@@ -68,6 +68,8 @@ export interface ReaderEngine {
   previousParagraph: () => void;
   restart: () => void;
   seekRatio: (ratio: number) => void;
+  /** Karakter konumuna atla (AI bölüm listesi, kaldığın yer) */
+  seekCharOffset: (offset: number) => void;
   /** Metin bittikten sonra baştan başlamadan devam etmek için */
   jumpToIndex: (index: number) => void;
 }
@@ -241,6 +243,10 @@ export function useReaderEngine(options: ReaderEngineOptions): ReaderEngine {
   const previousParagraph = useCallback(() => move(previousParagraphIndex), [move]);
   const restart = useCallback(() => move(() => 0), [move]);
   const seekRatio = useCallback((ratio: number) => move((list) => indexFromRatio(list, ratio)), [move]);
+  const seekCharOffset = useCallback(
+    (offset: number) => move((list) => indexFromCharOffset(list, offset)),
+    [move]
+  );
   const jumpToIndex = useCallback((index: number) => move(() => index), [move]);
   const activeMs = useCallback(() => activeMsRef.current, []);
 
@@ -266,6 +272,7 @@ export function useReaderEngine(options: ReaderEngineOptions): ReaderEngine {
     previousParagraph,
     restart,
     seekRatio,
+    seekCharOffset,
     jumpToIndex,
   };
 }
