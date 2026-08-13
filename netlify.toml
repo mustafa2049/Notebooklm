@@ -1,0 +1,10 @@
+# Netlify'a depoyu bağlayıp sürekli yayına almak için.
+# Elle sürükle-bırak dağıtımında bu dosyaya gerek yok; yönlendirme kuralı
+# `public/_redirects` içinde ve derleme çıktısına kopyalanıyor.
+
+[build]
+  command = "npx expo export -p web"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
