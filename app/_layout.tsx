@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useReminder } from '@/habit/useReminder';
 import { SettingsProvider, useTheme } from '@/store/SettingsContext';
 
 export default function RootLayout() {
@@ -25,6 +26,9 @@ function RootStack() {
   // Disleksi dostu font isteğe bağlı; yüklenmesini beklemeden uygulamayı
   // açıyoruz, ayar kapalıyken zaten kullanılmıyor
   useFonts({ AtkinsonHyperlegibleNext_400Regular, AtkinsonHyperlegibleNext_700Bold });
+
+  // Hatırlatıcı her açılışta ayarlarla eşitleniyor (bkz. useReminder)
+  useReminder();
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.bg }}>

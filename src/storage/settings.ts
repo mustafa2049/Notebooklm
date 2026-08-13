@@ -37,6 +37,15 @@ export interface Settings {
    */
   urlProxy: string;
 
+  // ---- Alışkanlık ---------------------------------------------------------
+  /** Günlük kelime hedefi (0 = hedef yok) */
+  dailyGoalWords: number;
+  /** Günlük hatırlatıcı (yalnızca telefonda) */
+  reminderEnabled: boolean;
+  /** Hatırlatıcı saati (cihazın yerel saati) */
+  reminderHour: number;
+  reminderMinute: number;
+
   // ---- AI (isteğe bağlı) -------------------------------------------------
   /**
    * Hangi API biçimi kullanılacak. `anthropic` = Claude Messages API,
@@ -75,6 +84,10 @@ export const DEFAULT_SETTINGS: Settings = {
   hyperlegible: false,
   haptics: true,
   urlProxy: 'https://r.jina.ai/',
+  dailyGoalWords: 2000,
+  reminderEnabled: false,
+  reminderHour: 20,
+  reminderMinute: 0,
   aiProvider: 'anthropic',
   aiApiKey: '',
   aiBaseUrl: '',

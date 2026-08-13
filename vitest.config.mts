@@ -17,6 +17,7 @@ export default defineConfig({
       'src/train/**/*.test.ts',
       // AI katmanı: bağdaştırıcılar `react-native` içe aktarmıyor, testler ağa çıkmıyor
       'src/ai/**/*.test.ts',
+      'src/habit/**/*.test.ts',
     ],
     environment: 'node',
   },

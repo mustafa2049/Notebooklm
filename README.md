@@ -124,6 +124,18 @@ soruları, kelime açıklaması, metinle sohbet ve bölümlere ayırma açılıy
   `response_format` desteklemiyorsa istek bu alanlar düşürülüp yeniden deneniyor;
   istem JSON biçimini zaten tarif ediyor ve yanıt çalışma anında doğrulanıyor.
 
+## Günlük hedef ve hatırlatıcı
+
+Ayarlar → Alışkanlık'tan günlük kelime hedefi verilebiliyor; kütüphanenin
+üstünde bugünün ilerlemesi, kalan kelime ve hedef hızında kalan süre görünüyor.
+Hedef sıfıra çekilirse kart hiç çizilmiyor.
+
+Günlük hatırlatıcı **yalnızca telefon uygulamasında** çalışıyor
+(`expo-notifications`, günlük yerel bildirim). Tarayıcıda zamanlanmış bildirim
+sunucu tarafı gerektirdiği için web sürümünde bu ayar yerine bunu açıklayan bir
+not duruyor. Bildirim metni günlük hedefi içerdiği için uygulama her açılışta
+hatırlatıcıyı yeniden planlıyor.
+
 ## Kelime defteri
 
 Okurken kelimeye uzun basılınca açılan panelden kelime, **geçtiği cümleyle

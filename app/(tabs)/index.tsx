@@ -1,6 +1,7 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Alert, Platform, View } from 'react-native';
+import { goalProgress, remainingMinutes } from '@/habit/goal';
 import { useSettings } from '@/store/SettingsContext';
 import {
   listDocumentsWithProgress,
@@ -8,6 +9,7 @@ import {
   type DocumentMeta,
   type DocumentProgress,
 } from '@/storage/documents';
+import { listSessions, summarize } from '@/storage/stats';
 import { Icon } from '@/ui/Icon';
 import { formatNumber, formatPercent, formatShortDuration } from '@/ui/format';
 import { Button, Card, IconButton, ProgressBar, Screen, Txt } from '@/ui/primitives';
@@ -25,11 +27,19 @@ export default function LibraryScreen() {
   const { theme, settings } = useSettings();
   const [items, setItems] = useState<{ meta: DocumentMeta; progress: DocumentProgress | null }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [todayWords, setTodayWords] = useState(0);
+  const [streak, setStreak] = useState(0);
 
   const refresh = useCallback(() => {
     listDocumentsWithProgress().then((next) => {
       setItems(next);
       setLoading(false);
+    });
+    // Günlük hedef kartı için: oturumlar okuyucudan dönünce güncellenmiş olur
+    listSessions().then((sessions) => {
+      const summary = summarize(sessions);
+      setTodayWords(summary.todayWords);
+      setStreak(summary.streak);
     });
   }, []);
 
@@ -71,6 +81,13 @@ export default function LibraryScreen() {
           accessibilityLabel="Metin ekle"
         />
       </View>
+
+      <DailyGoal
+        todayWords={todayWords}
+        goalWords={settings.dailyGoalWords}
+        wpm={settings.wpm}
+        streak={streak}
+      />
 
       {loading ? null : items.length === 0 ? (
         <EmptyState onAdd={() => router.push('/import')} />
@@ -131,6 +148,51 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
         Bir metin yapıştır, dosya yükle ya da bağlantı ver — hemen hızlı okumaya başla.
       </Txt>
       <Button label="Metin ekle" icon="plus" onPress={onAdd} style={{ marginTop: theme.space(2) }} />
+    </Card>
+  );
+}
+
+/**
+ * Günlük hedef kartı.
+ *
+ * Hedef tanımlı değilse hiç çizilmiyor — kullanılmayan bir özellik için ekranda
+ * yer tutmuyoruz. Hedef bittiğinde "devam etme" baskısı kurmuyor, günü kapatıyor.
+ */
+function DailyGoal({
+  todayWords,
+  goalWords,
+  wpm,
+  streak,
+}: {
+  todayWords: number;
+  goalWords: number;
+  wpm: number;
+  streak: number;
+}) {
+  const { theme } = useSettings();
+  const progress = goalProgress(todayWords, goalWords);
+  if (!progress.active) return null;
+
+  const minutes = remainingMinutes(progress.remaining, wpm);
+
+  return (
+    <Card style={{ marginBottom: theme.space(4), gap: theme.space(2) }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Txt variant="body" style={{ flex: 1 }}>
+          {progress.done ? 'Bugünün hedefi tamam' : 'Bugün'}
+        </Txt>
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          {formatNumber(todayWords)} / {formatNumber(goalWords)} kelime
+        </Txt>
+      </View>
+      <ProgressBar ratio={progress.ratio} />
+      <Txt variant="dim" style={{ fontSize: 12 }}>
+        {progress.done
+          ? streak > 1
+            ? `${streak} gün üst üste. Bugünlük bu kadar yeter.`
+            : 'Bugünlük bu kadar yeter.'
+          : `${formatNumber(progress.remaining)} kelime kaldı · hedef hızında yaklaşık ${minutes} dk`}
+      </Txt>
     </Card>
   );
 }

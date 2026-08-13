@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Platform, View } from 'react-native';
 import type { ReaderMode } from '@/core/types';
+import { formatClock } from '@/habit/goal';
+import { REMINDER_SUPPORTED } from '@/habit/reminder';
 import { useSettings } from '@/store/SettingsContext';
 import { KEYS } from '@/storage/keys';
 import type { ThemePreference } from '@/storage/settings';
@@ -173,6 +175,70 @@ export default function SettingsScreen() {
             />
           </>
         ) : null}
+      </Card>
+
+      <SectionHeader
+        title="Alışkanlık"
+        hint="Günlük hedef, seriyi anlamlı kılan şey: gün kapanabilir olsun. Hedefi sıfıra çekersen kart hiç görünmez."
+      />
+      <Card style={{ gap: theme.space(1) }}>
+        <Slider
+          value={settings.dailyGoalWords}
+          min={0}
+          max={20000}
+          step={250}
+          onChange={(dailyGoalWords) => update({ dailyGoalWords })}
+          label="Günlük hedef"
+          format={(words) => (words === 0 ? 'hedef yok' : `${words} kelime`)}
+        />
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          {settings.dailyGoalWords === 0
+            ? 'Hedef kapalı: kütüphanede günlük kart görünmüyor.'
+            : `Hedef hızında (${settings.wpm} kelime/dk) yaklaşık ${Math.max(
+                1,
+                Math.round(settings.dailyGoalWords / settings.wpm)
+              )} dakika.`}
+        </Txt>
+
+        <Divider />
+        {REMINDER_SUPPORTED ? (
+          <>
+            <Toggle
+              label="Günlük hatırlatıcı"
+              hint={`Her gün ${formatClock(settings.reminderHour, settings.reminderMinute)} saatinde bildirim gönderilir. İzin vermezsen bildirim gönderilmez.`}
+              value={settings.reminderEnabled}
+              onChange={(reminderEnabled) => update({ reminderEnabled })}
+            />
+            {settings.reminderEnabled ? (
+              <>
+                <Slider
+                  value={settings.reminderHour}
+                  min={0}
+                  max={23}
+                  step={1}
+                  onChange={(reminderHour) => update({ reminderHour })}
+                  label="Saat"
+                  format={(hour) => formatClock(hour, settings.reminderMinute)}
+                />
+                <Slider
+                  value={settings.reminderMinute}
+                  min={0}
+                  max={45}
+                  step={15}
+                  onChange={(reminderMinute) => update({ reminderMinute })}
+                  label="Dakika"
+                  format={(minute) => formatClock(settings.reminderHour, minute)}
+                />
+              </>
+            ) : null}
+          </>
+        ) : (
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            Hatırlatıcı yalnızca telefon uygulamasında çalışıyor. Tarayıcıda zamanlanmış
+            bildirim için sunucu tarafı gerekiyor; bu uygulama her şeyi cihazda tuttuğu için
+            web sürümünde bildirim yok.
+          </Txt>
+        )}
       </Card>
 
       <SectionHeader
