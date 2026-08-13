@@ -3,7 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
 import { countWordsInText, joinChapters, normalizeText } from '@/ingest/normalize';
 import { extractUrl } from '@/ingest/fromUrl';
-import { PDF_SUPPORTED, pickAndExtract } from '@/ingest/pickFile';
+import { PdfBridge } from '@/ingest/PdfBridge';
+import { PDF_VIA_WEBVIEW, pickAndExtract } from '@/ingest/pickFile';
+import type { ExtractedDocument } from '@/ingest/types';
 import { useSettings } from '@/store/SettingsContext';
 import { addDocument, type DocumentChapter, type DocumentSource } from '@/storage/documents';
 import { Icon } from '@/ui/Icon';
@@ -43,6 +45,9 @@ export default function ImportScreen() {
   const [sharedTitle, setSharedTitle] = useState<string | null>(null);
   const [fromShare, setFromShare] = useState(false);
   const consumed = useRef(false);
+  /** Telefonda PDF: köprüye verilecek base64 ve ilerleme */
+  const [pdfJob, setPdfJob] = useState<{ base64: string; fileName: string } | null>(null);
+  const [pdfProgress, setPdfProgress] = useState<{ page: number; total: number } | null>(null);
 
   /**
    * Paylaşılan içeriği ilgili sekmeye yerleştirir.
@@ -194,11 +199,13 @@ export default function ImportScreen() {
         <View style={{ gap: theme.space(3) }}>
           <Card style={{ gap: theme.space(2) }}>
             <Icon name="file" size={28} color={theme.colors.textDim} />
-            <Txt variant="heading">{PDF_SUPPORTED ? 'TXT, PDF veya EPUB' : 'TXT veya EPUB'}</Txt>
+            <Txt variant="heading">TXT, PDF veya EPUB</Txt>
             <Txt variant="dim">
-              {PDF_SUPPORTED
-                ? 'PDF’lerde yalnızca metin katmanı okunur; taranmış (fotoğraf) belgeler desteklenmiyor. EPUB’larda bölümler sırayla birleştirilir.'
-                : 'EPUB’larda bölümler sırayla birleştirilir. PDF okuma şu an yalnızca web sürümünde çalışıyor — pdf.js telefonun JavaScript motorunda çalışmıyor.'}
+              PDF’lerde yalnızca metin katmanı okunur; taranmış (fotoğraf) belgeler
+              desteklenmiyor. EPUB’larda bölümler ve içindekiler tablosu korunur.
+              {PDF_VIA_WEBVIEW
+                ? ' Telefonda PDF, gizli bir tarayıcı görünümünde çözülüyor; ilk açılışta birkaç saniye sürebilir.'
+                : ''}
             </Txt>
           </Card>
           <Button
@@ -209,6 +216,14 @@ export default function ImportScreen() {
               run(async () => {
                 const picked = await pickAndExtract();
                 if (!picked) return;
+
+                // Telefonda PDF metni gizli WebView'de çıkarılıyor
+                if (picked.pdfBase64) {
+                  setPdfProgress(null);
+                  setPdfJob({ base64: picked.pdfBase64, fileName: picked.fileName });
+                  return;
+                }
+
                 // EPUB bölümleri ayrı ayrı normalleştirilip birleştiriliyor:
                 // konumlar kaydedilen metne göre doğru olsun
                 const joined = picked.chapters?.length ? joinChapters(picked.chapters) : null;
@@ -262,6 +277,42 @@ export default function ImportScreen() {
             }
           />
         </View>
+      ) : null}
+
+      {pdfJob ? (
+        <>
+          <View style={{ flexDirection: 'row', gap: theme.space(3), marginTop: theme.space(5) }}>
+            <ActivityIndicator color={theme.colors.accent} />
+            <Txt variant="dim">
+              {pdfProgress
+                ? `PDF okunuyor · ${pdfProgress.page}/${pdfProgress.total} sayfa`
+                : 'PDF okuyucu hazırlanıyor…'}
+            </Txt>
+          </View>
+          <PdfBridge
+            base64={pdfJob.base64}
+            onProgress={(page, total) => setPdfProgress({ page, total })}
+            onResult={(document: ExtractedDocument) => {
+              const job = pdfJob;
+              setPdfJob(null);
+              setPdfProgress(null);
+              if (!job) return;
+              void run(() =>
+                save(
+                  document.title ?? job.fileName.replace(/\.[^.]+$/, ''),
+                  document.text,
+                  'pdf',
+                  job.fileName
+                )
+              );
+            }}
+            onError={(message) => {
+              setPdfJob(null);
+              setPdfProgress(null);
+              setError(message);
+            }}
+          />
+        </>
       ) : null}
 
       {busy ? (

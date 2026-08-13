@@ -10,17 +10,18 @@ export type PickedKind = 'txt' | 'pdf' | 'epub';
 export interface PickedDocument extends ExtractedDocument {
   kind: PickedKind;
   fileName: string;
+  /**
+   * Telefonda PDF'in metni burada çıkarılmıyor: pdf.js Hermes'te çalışmadığı
+   * için baytlar base64 olarak dönüyor ve `PdfBridge` gizli bir WebView'de
+   * çıkarıyor. Web'de bu alan boş, `text` dolu.
+   */
+  pdfBase64?: string;
 }
 
-/** PDF okuma yalnızca web'de mümkün (bkz. `types.PdfNotSupportedError`). */
-export const PDF_SUPPORTED = Platform.OS === 'web';
+/** Telefonda PDF gizli bir WebView'de çözülüyor (bkz. `PdfBridge`). */
+export const PDF_VIA_WEBVIEW = Platform.OS !== 'web';
 
-const MIME_TYPES = [
-  'text/plain',
-  'text/markdown',
-  'application/epub+zip',
-  ...(PDF_SUPPORTED ? ['application/pdf'] : []),
-];
+const MIME_TYPES = ['text/plain', 'text/markdown', 'application/epub+zip', 'application/pdf'];
 
 /**
  * Dosya seçtirip metnini çıkarır. Kullanıcı vazgeçerse `null` döner.
@@ -44,6 +45,17 @@ export async function pickAndExtract(): Promise<PickedDocument | null> {
   if (kind === 'txt') {
     const text = await readAssetText(asset);
     return { kind, fileName, text: normalizeText(text), title: stripExtension(fileName) };
+  }
+
+  if (kind === 'pdf' && PDF_VIA_WEBVIEW) {
+    // Metin çıkarımı köprüde yapılacak; burada yalnızca baytları taşıyoruz
+    return {
+      kind,
+      fileName,
+      text: '',
+      title: stripExtension(fileName),
+      pdfBase64: await readAssetBase64(asset),
+    };
   }
 
   const bytes = await readAssetBytes(asset);
@@ -81,4 +93,10 @@ async function readAssetBytes(asset: Asset): Promise<Uint8Array> {
   if (asset.file) return new Uint8Array(await asset.file.arrayBuffer());
   const { File } = await import('expo-file-system');
   return new File(asset.uri).bytes();
+}
+
+/** WebView'e metin dışında bir şey geçirilemediği için PDF base64'e çevriliyor. */
+async function readAssetBase64(asset: Asset): Promise<string> {
+  const { File } = await import('expo-file-system');
+  return new File(asset.uri).base64();
 }

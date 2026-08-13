@@ -1,13 +1,21 @@
 import type * as Pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { normalizeText } from './normalize';
-import { NoTextLayerError, type ExtractedDocument } from './types';
+import { pagesToDocument, type PdfTextItem } from './pdfText';
+import type { ExtractedDocument } from './types';
+
+/**
+ * PDF'den metin çıkarır (web).
+ *
+ * Bu dosyanın işi yalnızca pdf.js'i çalıştırıp **metin öğelerini** toplamak;
+ * öğelerden okunabilir metin üretmek `pdfText.ts`'nin işi. Aynı algoritma
+ * telefonda WebView köprüsünden gelen öğeler için de kullanılıyor.
+ */
 
 /**
  * pdf.js **kullanıldığında** yükleniyor.
  *
- * Paketin sıkıştırılmamış boyutu tek başına birkaç megabayt; uygulamayı açan
- * herkese ödetmek yerine yalnızca PDF içe aktaran kullanıcı bekliyor. İlk
- * çağrıda yüklenip saklanıyor, sonraki çağrılar anında dönüyor.
+ * Paketin boyutu tek başına megabaytlarla ölçülüyor; uygulamayı açan herkese
+ * ödetmek yerine yalnızca PDF içe aktaran kullanıcı bekliyor. İlk çağrıda
+ * yüklenip saklanıyor, sonraki çağrılar anında dönüyor.
  */
 let loading: Promise<typeof Pdfjs> | null = null;
 
@@ -29,13 +37,6 @@ function loadPdfjs(): Promise<typeof Pdfjs> {
   return loading;
 }
 
-/**
- * PDF'den metin çıkarır (yalnızca web).
- *
- * Satır sonlarını pdf.js'in `hasEOL` bilgisinden, paragraf sonlarını ise dikey
- * boşluk sıçramasından tespit ediyoruz: iki satır arası, o sayfadaki tipik
- * satır yüksekliğinin belirgin üstündeyse yeni paragraf sayılır.
- */
 export async function extractPdf(data: Uint8Array): Promise<ExtractedDocument> {
   const pdfjs = await loadPdfjs();
   const doc = await pdfjs.getDocument({
@@ -46,54 +47,26 @@ export async function extractPdf(data: Uint8Array): Promise<ExtractedDocument> {
     verbosity: 0,
   }).promise;
 
-  const pages: string[] = [];
+  const pages: PdfTextItem[][] = [];
 
   for (let pageNumber = 1; pageNumber <= doc.numPages; pageNumber++) {
     const page = await doc.getPage(pageNumber);
     const content = await page.getTextContent();
 
-    let out = '';
-    let previousY: number | null = null;
-    const gaps: number[] = [];
-
+    const items: PdfTextItem[] = [];
     for (const item of content.items) {
       if (!('str' in item)) continue;
-      const y = item.transform?.[5] ?? null;
-
-      if (previousY !== null && y !== null) {
-        const gap = previousY - y;
-        if (gap > 0) gaps.push(gap);
-      }
-
-      out += item.str;
-      if (item.hasEOL) {
-        // Tipik satır aralığının 1,6 katından büyük boşluk = paragraf sonu
-        const typical = median(gaps);
-        const gap = previousY !== null && y !== null ? previousY - y : 0;
-        out += typical > 0 && gap > typical * 1.6 ? '\n\n' : '\n';
-      }
-      if (y !== null) previousY = y;
+      items.push({ str: item.str, hasEOL: Boolean(item.hasEOL), y: item.transform?.[5] ?? null });
     }
 
-    pages.push(out);
+    pages.push(items);
     page.cleanup();
   }
 
-  const raw = pages.join('\n\n');
-  const pageCount = doc.numPages;
   const title = await safeMetadata(doc);
   await doc.loadingTask.destroy();
 
-  // Sayfa başına ortalama 20 karakterden az metin = metin katmanı yok
-  if (raw.replace(/\s/g, '').length < pageCount * 20) throw new NoTextLayerError();
-
-  return { title, text: normalizeText(raw) };
-}
-
-function median(values: number[]): number {
-  if (values.length === 0) return 0;
-  const sorted = [...values].sort((a, b) => a - b);
-  return sorted[Math.floor(sorted.length / 2)];
+  return pagesToDocument({ pages, title });
 }
 
 async function safeMetadata(doc: Pdfjs.PDFDocumentProxy): Promise<string | undefined> {

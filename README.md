@@ -82,11 +82,13 @@ kaybetmiyor.
 
 ## Bilinen sınırlar
 
-- **PDF yalnızca web sürümünde okunuyor.** pdf.js tarayıcı için yazılmış bir
-  kütüphane (dinamik `import()`, WebAssembly, `ImageData`); telefonun JavaScript
-  motoru Hermes onu derleyemiyor. Telefonda TXT, EPUB ve bağlantı çalışıyor.
-  Çözüm yolu: pdf.js'i gizli bir WebView içinde çalıştırıp metni `postMessage`
-  ile geri almak.
+- **Telefonda PDF gizli bir WebView üzerinden okunuyor ve henüz gerçek cihazda
+  denenmedi.** pdf.js tarayıcı için yazılmış (dinamik `import()`, WebAssembly,
+  `ImageData`) ve Hermes onu derleyemiyor; bu yüzden telefonda kod Android'in
+  WebView'inde (Chromium) çalışıyor. Köprünün sayfası ve paylaşılan metin
+  üretme algoritması gerçek Chromium'da test edildi, ama React Native
+  tarafındaki bağlantı (varlık okuma, `postMessage`) yalnızca cihazda
+  doğrulanabilir. Web'de pdf.js doğrudan uygulamada çalışıyor.
 - **Taranmış PDF'lerde metin katmanı olmadığı için okuma yapılamıyor**; uygulama
   bunu açıkça söylüyor, OCR yok.
 - **Bağlantıdan okuma web'de vekil sunucu gerektiriyor.** Tarayıcılar başka
@@ -190,6 +192,25 @@ gerektiriyor: depo ayarlarında **Secrets and variables → Actions** altına
 sessizce atlanıyor (CI kırmızıya düşmüyor) ve günlükte nedenini yazıyor.
 Alternatif olarak Netlify'a depo doğrudan bağlanabilir; `netlify.toml` bunun için
 hazır duruyor.
+
+## Telefonda PDF (WebView köprüsü)
+
+Akış: dosya seçiliyor → baytlar base64'e çevriliyor → 0×0 boyutlu gizli bir
+WebView, içine pdf.js ve PDF gömülmüş bir sayfa açıyor → sayfa **metin
+öğelerini** (`str`, `hasEOL`, dikey konum) `postMessage` ile geri gönderiyor →
+öğelerden metin üretme işi `src/ingest/pdfText.ts`'de yapılıyor.
+
+Neden öğeler geri gönderiliyor da metin değil: algoritma tek yerde duruyor ve
+testli; web ile telefon aynı kodu kullanıyor, davranış farkı olmuyor. Aynı PDF
+iki yolda da 148 kelime verdi.
+
+pdf.js kodu (`pdf.min.mjs` + `pdf.worker.min.mjs`) `npm run vendor:pdfjs` ile
+`assets/pdfjs/*.txt` altına kopyalanıyor ve uygulama varlığı olarak
+paketleniyor. CDN'den indirmek PDF açmayı internete ve üçüncü bir tarafa
+bağlardı; `.txt` uzantısı Metro'nun bu dosyaları kaynak modül sanmaması için
+(bkz. `metro.config.js`). Bileşen platforma göre ayrık: `PdfBridge.web.tsx` boş
+döndüğü için 1,8 MB'lık varlıklar ve `react-native-webview` web paketine hiç
+girmiyor.
 
 ## Web ilk yükleme
 
