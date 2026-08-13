@@ -5,16 +5,20 @@ import { askAboutText, explainWord, generateSections, generateSummary, type Sect
 import { useAi } from '@/ai/useAi';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache, type AiChatTurn } from '@/storage/ai';
+import { addVocab } from '@/storage/vocab';
 import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
 
 /**
- * Okuyucunun yapay zekâ paneli: özet, bölümler, sohbet ve kelime açıklaması.
+ * Okuyucunun araç paneli: kelime defteri her zaman, özet / bölümler / sohbet
+ * ise yalnızca yapay zekâ ayarlıysa.
  *
- * İki kural panelin tamamına hâkim:
- * 1. **Bir kez üretilir, saklanır.** Özet ve bölümler doküman başına
+ * Üç kural panelin tamamına hâkim:
+ * 1. **AI olmadan da işe yarar.** Kelime sekmesi anahtar gerektirmiyor:
+ *    kelimeyi cümlesiyle deftere kaydetmek için modele ihtiyaç yok.
+ * 2. **Bir kez üretilir, saklanır.** Özet ve bölümler doküman başına
  *    önbelleğe yazılır; her açılışta yeniden para harcanmaz. Kullanıcı isterse
  *    "yeniden üret" ile ödemeyi kendisi seçer.
- * 2. **Harcama görünür.** Her çağrıdan sonra kullanılan token (ve fiyat
+ * 3. **Harcama görünür.** Her çağrıdan sonra kullanılan token (ve fiyat
  *    girilmişse tutar) panelin altında yazar.
  */
 
@@ -26,6 +30,9 @@ const TAB_LABEL: Record<AiTab, string> = {
   chat: 'Sohbet',
   word: 'Kelime',
 };
+
+/** AI kapalıyken yalnızca kelime defteri görünür. */
+const OFFLINE_TABS: AiTab[] = ['word'];
 
 interface Props {
   visible: boolean;
@@ -41,9 +48,11 @@ interface Props {
   sentence: string;
   /** Bölüm başına atlama */
   onJumpTo: (charOffset: number) => void;
+  /** Kelime defteri kaydında kaynağı göstermek için */
+  docTitle?: string;
 }
 
-export function AiSheet({
+export function ToolSheet({
   visible,
   onClose,
   docId,
@@ -53,6 +62,7 @@ export function AiSheet({
   words,
   sentence,
   onJumpTo,
+  docTitle,
 }: Props) {
   const { theme } = useSettings();
   const insets = useSafeAreaInsets();
@@ -64,20 +74,26 @@ export function AiSheet({
   const [chat, setChat] = useState<AiChatTurn[]>([]);
   const [question, setQuestion] = useState('');
   const [wordInfo, setWordInfo] = useState<{ word: string; text: string } | null>(null);
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const [saved, setSaved] = useState<string | null>(null);
+  const tabs = ai.configured ? (Object.keys(TAB_LABEL) as AiTab[]) : OFFLINE_TABS;
 
   useEffect(() => {
-    if (visible) setTab(initialTab);
-  }, [visible, initialTab]);
+    if (!visible) return;
+    // AI kapalıyken yalnızca kelime sekmesi var; başka bir sekme istenirse ona düş
+    setTab(ai.configured ? initialTab : 'word');
+    setSaved(null);
+  }, [visible, initialTab, ai.configured]);
 
   // Saklanmış çıktıları yükle: aynı özet için ikinci kez ödeme yapılmasın
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || !ai.configured) return;
     loadAiCache(docId).then((cache) => {
       setSummary(cache.summary?.text ?? null);
       setSections(cache.sections?.items ?? null);
       setChat(cache.chat ?? []);
     });
-  }, [visible, docId]);
+  }, [visible, docId, ai.configured]);
 
   const makeSummary = async () => {
     const value = await ai.run((provider, signal) => generateSummary(provider, text, signal));
@@ -120,6 +136,18 @@ export function AiSheet({
     setWordInfo({ word, text: value });
   };
 
+  const save = async (word: string) => {
+    await addVocab({
+      word,
+      sentence,
+      // Kelime o an açıklanmışsa açıklama nota geçer
+      note: wordInfo?.word === word ? wordInfo.text : undefined,
+      docId,
+      docTitle,
+    });
+    setSaved(word);
+  };
+
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={{ flex: 1, backgroundColor: '#000000AA' }} onPress={onClose} />
@@ -137,7 +165,7 @@ export function AiSheet({
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
           <Txt variant="heading" style={{ flex: 1, fontSize: 18 }}>
-            Yapay zekâ
+            {ai.configured ? 'Yapay zekâ' : 'Kelime defteri'}
           </Txt>
           <Pressable onPress={onClose} hitSlop={10}>
             <Txt variant="dim">kapat</Txt>
@@ -145,7 +173,7 @@ export function AiSheet({
         </View>
 
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
-          {(Object.keys(TAB_LABEL) as AiTab[]).map((option) => (
+          {tabs.map((option) => (
             <Chip
               key={option}
               label={TAB_LABEL[option]}
@@ -252,18 +280,44 @@ export function AiSheet({
           {tab === 'word' ? (
             <>
               <Txt variant="dim">
-                Ekrandaki kelimelerden birine dokun; bulunduğu cümledeki anlamıyla açıklanır.
+                {ai.configured
+                  ? 'Ekrandaki kelimelerden birini seç: deftere kaydedebilir ya da bulunduğu cümledeki anlamını açıklatabilirsin.'
+                  : 'Ekrandaki kelimelerden birini seçip cümlesiyle birlikte deftere kaydet. Açıklama için Ayarlar’dan yapay zekâ tanımlaman gerekiyor.'}
               </Txt>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
                 {words.map((word, index) => (
                   <Chip
                     key={`${word}-${index}`}
                     label={word}
-                    active={wordInfo?.word === word}
-                    onPress={() => explain(word)}
+                    active={selectedWord === word}
+                    onPress={() => {
+                      setSelectedWord(word);
+                      setSaved(null);
+                    }}
                   />
                 ))}
               </View>
+              {selectedWord ? (
+                <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+                  <Button
+                    label={saved === selectedWord ? 'Deftere eklendi' : 'Deftere kaydet'}
+                    icon={saved === selectedWord ? 'check' : 'book'}
+                    variant="secondary"
+                    style={{ flex: 1 }}
+                    disabled={saved === selectedWord}
+                    onPress={() => save(selectedWord)}
+                  />
+                  {ai.configured ? (
+                    <Button
+                      label="Açıkla"
+                      icon="sparkle"
+                      style={{ flex: 1 }}
+                      disabled={ai.busy}
+                      onPress={() => explain(selectedWord)}
+                    />
+                  ) : null}
+                </View>
+              ) : null}
               {wordInfo ? (
                 <Card>
                   <Txt variant="body" style={{ fontSize: 15 }}>

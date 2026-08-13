@@ -6,6 +6,8 @@ export const KEYS = {
   documents: `${PREFIX}/documents`,
   sessions: `${PREFIX}/sessions`,
   progress: (id: string) => `${PREFIX}/progress/${id}`,
+  /** Kelime defteri */
+  vocab: `${PREFIX}/vocab`,
   /** AI token/maliyet sayacı (toplam) */
   aiUsage: `${PREFIX}/ai-usage`,
   /** Doküman başına AI çıktısı önbelleği — aynı özet için iki kez ödenmesin */

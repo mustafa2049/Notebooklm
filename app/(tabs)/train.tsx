@@ -3,7 +3,9 @@ import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/store/SettingsContext';
 import { listDocumentsWithProgress, type DocumentMeta } from '@/storage/documents';
+import { listVocab } from '@/storage/vocab';
 import { EXERCISES } from '@/train/exercises';
+import { dueCount } from '@/train/review';
 import { formatDuration } from '@/ui/format';
 import { Button, Card, Chip, Screen, SectionHeader, Txt } from '@/ui/primitives';
 
@@ -12,6 +14,7 @@ export default function TrainScreen() {
   const { theme, settings } = useSettings();
   const [documents, setDocuments] = useState<DocumentMeta[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+  const [vocab, setVocab] = useState({ total: 0, due: 0 });
 
   useFocusEffect(
     useCallback(() => {
@@ -20,7 +23,31 @@ export default function TrainScreen() {
         setDocuments(metas);
         setSelected((current) => current ?? metas[0]?.id ?? null);
       });
+      listVocab().then((entries) =>
+        setVocab({ total: entries.length, due: dueCount(entries, Date.now()) })
+      );
     }, [])
+  );
+
+  const vocabCard = (
+    <>
+      <SectionHeader
+        title="Kelime defteri"
+        hint="Okurken uzun basıp kaydettiğin kelimeler, geçtikleri cümleyle birlikte burada. Bildiklerin daha seyrek, bilmediklerin daha sık sorulur."
+      />
+      <Button
+        label={
+          vocab.total === 0
+            ? 'Defteri aç (boş)'
+            : vocab.due > 0
+              ? `Tekrar et (${vocab.due} kelime hazır)`
+              : `Defteri aç (${vocab.total} kelime)`
+        }
+        variant="secondary"
+        icon="book"
+        onPress={() => router.push('/vocab')}
+      />
+    </>
   );
 
   if (documents.length === 0) {
@@ -35,6 +62,7 @@ export default function TrainScreen() {
           </Txt>
           <Button label="Metin ekle" icon="plus" onPress={() => router.push('/import')} />
         </Card>
+        {vocabCard}
       </Screen>
     );
   }
@@ -88,6 +116,8 @@ export default function TrainScreen() {
         icon="check"
         onPress={() => router.push(`/training/quiz?docId=${selected}`)}
       />
+
+      {vocabCard}
     </Screen>
   );
 }

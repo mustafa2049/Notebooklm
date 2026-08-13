@@ -6,7 +6,7 @@ import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
 import { stripPunctuation } from '@/core/turkish';
 import type { ReaderMode } from '@/core/types';
-import { AiSheet, type AiTab } from '@/reader/AiSheet';
+import { ToolSheet, type AiTab } from '@/reader/ToolSheet';
 import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
 import { RsvpView } from '@/reader/RsvpView';
@@ -152,7 +152,7 @@ function Reader({
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
 
-  // AI yapılandırılmamışsa panel hiç görünmez: uygulama AI olmadan tam çalışır
+  // AI kapalıyken panel yine açılıyor ama yalnızca kelime defteri sekmesiyle
   const aiReady = isAiConfigured(settings);
 
   /** Kelime açıklaması için: ekrandaki kelimeler ve içinde geçtiği cümle. */
@@ -271,18 +271,16 @@ function Reader({
             {MODE_LABEL[mode]}
           </Txt>
         </Pressable>
-        {aiReady ? (
-          <IconButton
-            name="sparkle"
-            onPress={() => {
-              engine.pause();
-              setAiTab('summary');
-            }}
-            accessibilityLabel="Yapay zekâ paneli"
-            emphasis="faint"
-            size={20}
-          />
-        ) : null}
+        <IconButton
+          name={aiReady ? 'sparkle' : 'book'}
+          onPress={() => {
+            engine.pause();
+            setAiTab(aiReady ? 'summary' : 'word');
+          }}
+          accessibilityLabel={aiReady ? 'Yapay zekâ paneli' : 'Kelime defteri'}
+          emphasis="faint"
+          size={20}
+        />
         <IconButton
           name="focus"
           onPress={() => setFocusMode(!focusMode)}
@@ -341,16 +339,12 @@ function Reader({
         />
         <Pressable
           onPress={toggle}
-          // Uzun bas: ekrandaki kelimeyi bağlamıyla açıklat (AI kapalıysa yok)
-          onLongPress={
-            aiReady
-              ? () => {
-                  engine.pause();
-                  haptics.step(settings.haptics);
-                  setAiTab('word');
-                }
-              : undefined
-          }
+          // Uzun bas: ekrandaki kelimeyi deftere kaydet ya da açıklat
+          onLongPress={() => {
+            engine.pause();
+            haptics.step(settings.haptics);
+            setAiTab('word');
+          }}
           style={{ position: 'absolute', left: '20%', right: '20%', top: 0, bottom: 0 }}
           accessibilityLabel="Oynat veya duraklat"
         />
@@ -389,19 +383,18 @@ function Reader({
         />
       </View>
 
-      {aiReady ? (
-        <AiSheet
-          visible={aiTab !== null}
-          initialTab={aiTab ?? 'summary'}
-          onClose={() => setAiTab(null)}
-          docId={docId}
-          text={text}
-          charOffset={engine.chunk?.charStart ?? 0}
-          words={context.words}
-          sentence={context.sentence}
-          onJumpTo={engine.seekCharOffset}
-        />
-      ) : null}
+      <ToolSheet
+        visible={aiTab !== null}
+        initialTab={aiTab ?? 'summary'}
+        onClose={() => setAiTab(null)}
+        docId={docId}
+        docTitle={title}
+        text={text}
+        charOffset={engine.chunk?.charStart ?? 0}
+        words={context.words}
+        sentence={context.sentence}
+        onJumpTo={engine.seekCharOffset}
+      />
     </View>
   );
 }

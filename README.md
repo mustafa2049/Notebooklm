@@ -124,6 +124,15 @@ soruları, kelime açıklaması, metinle sohbet ve bölümlere ayırma açılıy
   `response_format` desteklemiyorsa istek bu alanlar düşürülüp yeniden deneniyor;
   istem JSON biçimini zaten tarif ediyor ve yanıt çalışma anında doğrulanıyor.
 
+## Kelime defteri
+
+Okurken kelimeye uzun basılınca açılan panelden kelime, **geçtiği cümleyle
+birlikte** deftere kaydediliyor (yapay zekâ gerekmiyor; açıksa açıklama da not
+olarak ekleniyor). Antrenman sekmesinden açılan defterde iki görünüm var: liste
+ve tekrar. Tekrar aralığı basit ve açıklanabilir: bilinen kelime her doğru
+tekrarda iki kat uzun aralıkla (1, 2, 4, 8… gün, en çok 30 gün), bilinmeyen
+kelime aynı gün içinde yeniden soruluyor (`src/train/review.ts`, testli).
+
 ## Paylaş → Hızlı Okuma (Android)
 
 Web sürümü PWA olarak kurulabiliyor ve kurulduğunda Android'in paylaş menüsünde
