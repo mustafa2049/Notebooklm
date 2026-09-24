@@ -28,7 +28,9 @@ cd nefes-app
 npm install
 npx expo prebuild --platform android
 cd android
-./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a -Pexpo.useLegacyPackaging=true
 ```
+
+`expo.useLegacyPackaging=true` yerel kütüphaneleri sıkıştırır. Bu sayede APK yaklaşık 36 MB yerine 21 MB olur.
 
 APK şu konumda oluşur: `nefes-app/android/app/build/outputs/apk/release/app-release.apk`. Bu APK debug anahtarıyla imzalanır. Telefona doğrudan kurulabilir ama Play Store'a yüklenemez.
