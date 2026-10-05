@@ -5,12 +5,14 @@ import { generateQuestions } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { buildCloze } from '@/core/cloze';
 import { tokenize, tokenIndexForCharOffset } from '@/core/tokenizer';
+import { passageById } from '@/content/passages';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache } from '@/storage/ai';
 import { recordAssessment } from '@/storage/assessments';
 import { getDocumentText, loadProgress } from '@/storage/documents';
 import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
 import { QuestionCard } from '@/ui/QuestionCard';
+import { arrangeOptions } from '@/train/shuffle';
 
 /**
  * Anlama testi. İki kaynaktan soru gelebilir:
@@ -32,7 +34,12 @@ interface QuizItem {
 }
 
 export default function QuizScreen() {
-  const { docId } = useLocalSearchParams<{ docId: string }>();
+  const params = useLocalSearchParams<{ docId: string; wpm?: string; program?: string }>();
+  const { docId } = params;
+  /** 4 haftalık programdan gelindiyse: tempo programa ait, ayar önerisi yok */
+  const fromProgram = params.program === '1';
+  /** Gömülü pratik metni: soruları elle yazılmış, metinden kanıtlı */
+  const passage = docId?.startsWith('pratik:') ? passageById(docId.slice('pratik:'.length)) : undefined;
   const router = useRouter();
   const { theme, settings, update } = useSettings();
   const ai = useAi();
@@ -46,6 +53,11 @@ export default function QuizScreen() {
 
   useEffect(() => {
     if (!docId) return;
+    if (passage) {
+      setText(passage.text);
+      setReadUntil(passage.text.length);
+      return;
+    }
     let cancelled = false;
     Promise.all([getDocumentText(docId), loadProgress(docId), loadAiCache(docId)]).then(
       ([content, progress, cache]) => {
@@ -59,7 +71,20 @@ export default function QuizScreen() {
     return () => {
       cancelled = true;
     };
-  }, [docId]);
+  }, [docId, passage]);
+
+  const embeddedItems = useMemo<QuizItem[] | null>(
+    () =>
+      passage
+        ? passage.questions.map((question) => ({
+            prompt: question.prompt,
+            options: arrangeOptions(question.prompt, question.correct, question.wrong),
+            answer: question.correct,
+            evidence: question.evidence,
+          }))
+        : null,
+    [passage]
+  );
 
   const clozeItems = useMemo<QuizItem[]>(() => {
     if (!text) return [];
@@ -78,7 +103,8 @@ export default function QuizScreen() {
     );
   }, [text, readUntil]);
 
-  const questions = aiItems ?? clozeItems;
+  const questions = embeddedItems ?? aiItems ?? clozeItems;
+  const quizWpm = Number(params.wpm) > 0 ? Number(params.wpm) : settings.wpm;
 
   /** Soruları okunan bölümden üret: okumadığı yerden soru sormak anlamsız. */
   const makeAiQuestions = async () => {
@@ -112,13 +138,13 @@ export default function QuizScreen() {
       docId,
       ms: 0,
       words: 0,
-      wpm: settings.wpm,
+      wpm: quizWpm,
       correct: correctCount,
       total: questions.length,
-      source: aiItems ? 'ai' : 'cloze',
+      source: embeddedItems ? 'gömülü' : aiItems ? 'ai' : 'cloze',
       reliable: true,
     });
-  }, [allAnswered, correctCount, questions.length, docId, settings.wpm, aiItems]);
+  }, [allAnswered, correctCount, questions.length, docId, quizWpm, aiItems, embeddedItems]);
 
   if (text === null) {
     return (
@@ -150,7 +176,7 @@ export default function QuizScreen() {
         <IconButton name="close" onPress={() => router.back()} accessibilityLabel="Kapat" />
       </View>
 
-      {ai.configured ? (
+      {ai.configured && !embeddedItems ? (
         <Card style={{ gap: theme.space(2), marginBottom: theme.space(4) }}>
           <Txt variant="body">
             {aiItems ? 'Yapay zekâ soruları' : 'Gerçek anlama soruları'}
@@ -199,7 +225,9 @@ export default function QuizScreen() {
       ) : (
         <>
           <Txt variant="dim" style={{ marginBottom: theme.space(4) }}>
-            {aiItems
+            {embeddedItems
+              ? `Okuduğun metinden ${questions.length} anlama sorusu. Cevapladıktan sonra metindeki kanıt görünür.`
+              : aiItems
               ? `Okuduğun bölümden ${questions.length} anlama sorusu. Cevapladıktan sonra metindeki kanıt cümlesi görünür.`
               : `Okuduğun bölümden ${questions.length} soru. Bu test hatırlamayı ölçer — metni gerçekten yakalayıp yakalamadığının kaba bir göstergesi.`}
           </Txt>
@@ -225,6 +253,12 @@ export default function QuizScreen() {
               <Txt variant="title">
                 {correctCount} / {questions.length}
               </Txt>
+              {fromProgram ? (
+                <Txt variant="dim">
+                  Programın temposu bu sonuca göre ders bitince ayarlanır: %80 ve üstü biraz
+                  hızlandırır, %60'ın altı yavaşlatır.
+                </Txt>
+              ) : (
               <Txt variant="dim">
                 {correctCount === questions.length
                   ? 'Bu hızda anlamayı koruyorsun — hedefi 25 kelime arttırmayı deneyebilirsin.'
@@ -232,7 +266,8 @@ export default function QuizScreen() {
                     ? 'Makul. Aynı hızda bir süre daha çalış, sonra arttır.'
                     : 'Hız fazla gelmiş olabilir. Hedefi biraz düşürüp anlamayı geri kazan.'}
               </Txt>
-              {suggestedWpm !== settings.wpm && !applied ? (
+              )}
+              {!fromProgram && suggestedWpm !== settings.wpm && !applied ? (
                 <Button
                   label={`Hedefi ${suggestedWpm} kelime/dk yap`}
                   onPress={() => {
@@ -248,7 +283,7 @@ export default function QuizScreen() {
                 </Txt>
               ) : null}
               <Button
-                label="Bitir"
+                label={fromProgram ? 'Derse dön' : 'Bitir'}
                 variant="secondary"
                 onPress={() => router.back()}
                 style={{ marginTop: theme.space(2) }}

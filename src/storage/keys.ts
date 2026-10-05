@@ -16,6 +16,8 @@ export const KEYS = {
   highlights: `${PREFIX}/highlights`,
   /** Okuduktan sonra kendi cümleleriyle yazılan özetler */
   recalls: `${PREFIX}/recalls`,
+  /** 4 haftalık program durumu */
+  program: `${PREFIX}/program`,
   /** Kelime defteri */
   vocab: `${PREFIX}/vocab`,
   /** AI token/maliyet sayacı (toplam) */

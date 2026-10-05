@@ -102,6 +102,12 @@ export default function TrainScreen() {
       <Txt variant="title">Antrenman</Txt>
 
       <SectionHeader
+        title="4 haftalık program"
+        hint="Haftada beş kısa ders: ipucu, ısınma, uygulama, anlama kontrolü. Tempo anlamana göre ayarlanır."
+      />
+      <Button label="Programı aç" variant="secondary" icon="award" onPress={() => router.push('/program')} />
+
+      <SectionHeader
         title="Ölçüm"
         hint="Kendi hızında iki dakikalık okuma + beş soru. Haftada bir tekrarla; gerçekten hızlanıp hızlanmadığını bu gösterir."
       />

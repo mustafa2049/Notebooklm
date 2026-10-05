@@ -17,7 +17,10 @@ import { formatNumber } from '@/ui/format';
 const TICK_MS = 200;
 
 export default function TrainingRunScreen() {
-  const { exercise: exerciseId, docId } = useLocalSearchParams<{ exercise: string; docId: string }>();
+  const params = useLocalSearchParams<{ exercise: string; docId: string; wpm?: string; program?: string }>();
+  const { exercise: exerciseId, docId } = params;
+  /** Programdan gelindiyse programın temposu; yoksa ayardaki hedef hız */
+  const baseWpm = Number(params.wpm) > 0 ? Number(params.wpm) : undefined;
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { theme } = useSettings();
@@ -79,8 +82,11 @@ export default function TrainingRunScreen() {
       insetTop={insets.top}
       insetBottom={insets.bottom}
       onExit={() => router.back()}
-      onQuiz={
-        docId?.startsWith('pratik:') ? undefined : () => router.replace(`/training/quiz?docId=${docId}`)
+      baseWpm={baseWpm}
+      onQuiz={() =>
+        router.replace(
+          `/training/quiz?docId=${docId}${baseWpm ? `&wpm=${baseWpm}` : ''}${params.program === '1' ? '&program=1' : ''}`
+        )
       }
     />
   );
@@ -95,7 +101,9 @@ function TrainingSession({
   insetBottom,
   onExit,
   onQuiz,
+  baseWpm,
 }: {
+  baseWpm?: number;
   exerciseId: string;
   docId: string;
   text: string;
@@ -103,10 +111,10 @@ function TrainingSession({
   insetTop: number;
   insetBottom: number;
   onExit: () => void;
-  /** Kütüphane metni değilse (pratik metni) anlama testi yok */
   onQuiz?: () => void;
 }) {
   const { theme, settings } = useSettings();
+  const targetWpm = baseWpm ?? settings.wpm;
   const exercise = exerciseById(exerciseId)!;
 
   const [elapsed, setElapsed] = useState(0);
@@ -119,7 +127,7 @@ function TrainingSession({
   const engine = useReaderEngine({
     text,
     initialCharOffset: startOffset,
-    wpmOverride: Math.round(settings.wpm * phase.wpmFactor),
+    wpmOverride: Math.round(targetWpm * phase.wpmFactor),
     chunkSizeOverride: phase.chunkSize,
     onProgress: (charOffset, ratio) => {
       if (docId.startsWith('pratik:')) return;
@@ -148,7 +156,7 @@ function TrainingSession({
   useSessionRecorder({
     docId,
     mode: settings.mode,
-    targetWpm: settings.wpm,
+    targetWpm,
     words: engine.wordsRead,
     activeMs: engine.activeMs,
   });
@@ -234,7 +242,7 @@ function TrainingSession({
           {phase.label}
         </Txt>
         <Txt variant="dim" style={{ fontSize: 13 }}>
-          {Math.round(settings.wpm * phase.wpmFactor)} kelime/dk
+          {Math.round(targetWpm * phase.wpmFactor)} kelime/dk
           {phase.chunkSize ? ` · ${phase.chunkSize} kelimelik gruplar` : ''}
           {nextIn !== null ? ` · sonraki evre ${Math.ceil(nextIn / 1000)} sn` : ''}
         </Txt>

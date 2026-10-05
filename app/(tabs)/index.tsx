@@ -18,6 +18,8 @@ import { improvement, testDue, type AssessmentRecord } from '@/train/assessment'
 import { dueCount } from '@/train/review';
 import { newBadges, type Badge } from '@/habit/badges';
 import { loadBadges, loadSeenBadges, markBadgesSeen } from '@/storage/badges';
+import { loadProgram } from '@/storage/program';
+import { nextLesson, type Lesson } from '@/train/program';
 import { DailyGoal } from '@/ui/DailyGoal';
 import { formatPercent } from '@/ui/format';
 import { Icon } from '@/ui/Icon';
@@ -38,6 +40,8 @@ interface Snapshot {
   current: { meta: DocumentMeta; progress: DocumentProgress | null } | null;
   booksThisYear: number;
   suggestions: Suggestion[];
+  /** 4 haftalık programın sıradaki dersi (program başlatıldıysa) */
+  lesson: Lesson | null;
 }
 
 function greeting(now: number): string {
@@ -73,7 +77,8 @@ export default function TodayScreen() {
         listVocab(),
         loadBadges(),
         loadSeenBadges(),
-      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen]) => {
+        loadProgram(),
+      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen, program]) => {
         if (cancelled) return;
         // Okumaya devam: en son dokunulan, bitmemiş doküman
         const unfinished = documents
@@ -82,6 +87,7 @@ export default function TodayScreen() {
         const tests = assessments.filter((record) => record.kind === 'test');
 
         setSnapshot({
+          lesson: program ? nextLesson(program) : null,
           freshBadges: newBadges(badges, seen),
           summary: summarize(sessions, now),
           sessions,
@@ -200,10 +206,28 @@ export default function TodayScreen() {
         </Card>
       )}
 
-      {snapshot.suggestions.length > 0 ? (
+      {snapshot.suggestions.length > 0 || snapshot.lesson ? (
         <>
           <SectionHeader title="Bugün için" />
           <View style={{ gap: theme.space(2) }}>
+            {snapshot.lesson ? (
+              <Card
+                onPress={() => router.push('/program/lesson')}
+                style={{ borderColor: theme.colors.accent }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Txt variant="body">
+                      Programın: {snapshot.lesson.week}. hafta, {snapshot.lesson.day}. ders
+                    </Txt>
+                    <Txt variant="dim" style={{ fontSize: 13 }}>
+                      {snapshot.lesson.title} · ~10 dakika
+                    </Txt>
+                  </View>
+                  <Icon name="chevronRight" size={20} color={theme.colors.textFaint} />
+                </View>
+              </Card>
+            ) : null}
             {snapshot.suggestions.map((item) => (
               <Card key={item.id} onPress={() => router.push(item.href as never)}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>
