@@ -18,6 +18,7 @@ export default defineConfig({
       // AI katmanı: bağdaştırıcılar `react-native` içe aktarmıyor, testler ağa çıkmıyor
       'src/ai/**/*.test.ts',
       'src/habit/**/*.test.ts',
+      'src/content/**/*.test.ts',
     ],
     environment: 'node',
   },

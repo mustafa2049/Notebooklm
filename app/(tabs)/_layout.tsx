@@ -64,7 +64,7 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="stats"
-        options={{ title: 'İstatistik', tabBarIcon: tabItem('chart', 'İstatistik') }}
+        options={{ title: 'Gelişim', tabBarIcon: tabItem('chart', 'Gelişim') }}
       />
       <Tabs.Screen
         name="settings"

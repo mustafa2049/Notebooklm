@@ -1,21 +1,41 @@
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/store/SettingsContext';
+import { listAssessments } from '@/storage/assessments';
 import { dayKey, listSessions, summarize, type StatsSummary } from '@/storage/stats';
+import {
+  baselineWpm,
+  effectiveOf,
+  improvement,
+  reliableTests,
+  testDue,
+  type AssessmentRecord,
+} from '@/train/assessment';
 import { BarChart } from '@/ui/BarChart';
 import { formatDuration, formatNumber } from '@/ui/format';
-import { Card, Screen, SectionHeader, Txt } from '@/ui/primitives';
+import { LineChart } from '@/ui/LineChart';
+import { Button, Card, Screen, SectionHeader, Txt } from '@/ui/primitives';
+
+const MONTHS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+
+function shortDate(timestamp: number): string {
+  const date = new Date(timestamp);
+  return `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+}
 
 const WEEKDAYS = ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'];
 
 export default function StatsScreen() {
   const { theme, settings } = useSettings();
+  const router = useRouter();
   const [summary, setSummary] = useState<StatsSummary | null>(null);
+  const [assessments, setAssessments] = useState<AssessmentRecord[]>([]);
 
   useFocusEffect(
     useCallback(() => {
       listSessions().then((sessions) => setSummary(summarize(sessions)));
+      listAssessments().then(setAssessments);
     }, [])
   );
 
@@ -23,11 +43,14 @@ export default function StatsScreen() {
 
   const hasData = summary.totalWords > 0;
   const today = dayKey(Date.now());
+  const baseline = baselineWpm(assessments);
 
   return (
     <Screen>
-      <Txt variant="title">İstatistik</Txt>
-      <Txt variant="dim">Hedef {settings.wpm} kelime/dk</Txt>
+      <Txt variant="title">Gelişim</Txt>
+      <Txt variant="dim">Antrenman temposu {settings.wpm} kelime/dk</Txt>
+
+      <RealProgress assessments={assessments} onTest={() => router.push('/assess')} />
 
       {!hasData ? (
         <Card style={{ marginTop: theme.space(6), gap: theme.space(2) }}>
@@ -45,11 +68,13 @@ export default function StatsScreen() {
           </View>
 
           <View style={{ flexDirection: 'row', gap: theme.space(3), marginTop: theme.space(3) }}>
-            <Stat label="Ortalama hız" value={formatNumber(summary.averageWpm)} unit="kel/dk" />
+            {/* Bu sayı uygulamanın gösterdiği tempo — okuma becerisi değil.
+                Beceri yukarıdaki ölçümlerde. */}
+            <Stat label="Antrenman temposu" value={formatNumber(summary.averageWpm)} unit="kel/dk ort." />
             {/* En iyi hız yalnızca 100+ kelimelik oturumlardan sayılıyor;
                 henüz öyle bir oturum yoksa 0 göstermek yanıltıcı olur */}
             <Stat
-              label="En iyi hız"
+              label="En yüksek tempo"
               value={summary.bestWpm > 0 ? formatNumber(summary.bestWpm) : '—'}
               unit={summary.bestWpm > 0 ? 'kel/dk' : '100+ kelime gerek'}
             />
@@ -72,8 +97,12 @@ export default function StatsScreen() {
             <Row label="Okuma süresi" value={formatDuration(summary.totalMs)} />
             <Row
               label="Kazanılan süre"
-              value={savedTime(summary.totalWords, summary.totalMs)}
-              hint="Aynı metni dakikada 230 kelimeyle okusaydın ne kadar sürerdi karşılaştırması"
+              value={savedTime(summary.totalWords, summary.totalMs, baseline.wpm)}
+              hint={
+                baseline.measured
+                  ? `Aynı metinleri ilk ölçümdeki doğal hızınla (${formatNumber(baseline.wpm)} kel/dk) okusaydın ne kadar sürerdi karşılaştırması`
+                  : 'Ortalama yetişkin hızıyla (230 kel/dk) karşılaştırma — seviye testini yaparsan kendi başlangıç hızın kullanılır'
+              }
             />
           </Card>
         </>
@@ -82,11 +111,8 @@ export default function StatsScreen() {
   );
 }
 
-/** Ortalama bir yetişkin okuma hızı — "kazanılan süre" karşılaştırması için. */
-const BASELINE_WPM = 230;
-
-function savedTime(words: number, actualMs: number): string {
-  const baselineMs = (words / BASELINE_WPM) * 60000;
+function savedTime(words: number, actualMs: number, baselineWpm: number): string {
+  const baselineMs = (words / baselineWpm) * 60000;
   const saved = baselineMs - actualMs;
   if (saved <= 0) return 'henüz yok';
   return formatDuration(saved);
@@ -137,6 +163,120 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
       <Txt variant="mono" style={{ color: theme.colors.accent }}>
         {value}
       </Txt>
+    </View>
+  );
+}
+
+/**
+ * Gerçek gelişim: kendi hızında okuma ölçümleri. Uygulamanın temposundan
+ * bağımsız tek sayı burası — "gerçekten hızlandım mı?" sorusunun cevabı.
+ */
+function RealProgress({
+  assessments,
+  onTest,
+}: {
+  assessments: AssessmentRecord[];
+  onTest: () => void;
+}) {
+  const { theme } = useSettings();
+  const tests = reliableTests(assessments);
+  const latest = tests[tests.length - 1];
+  const change = improvement(assessments);
+  const due = testDue(assessments, Date.now());
+  const quizzes = assessments.filter((record) => record.kind === 'quiz').slice(0, 5);
+  const quizComprehension =
+    quizzes.length > 0
+      ? quizzes.reduce((sum, record) => sum + record.correct / Math.max(1, record.total), 0) /
+        quizzes.length
+      : null;
+
+  return (
+    <>
+      <SectionHeader
+        title="Gerçek gelişim"
+        hint="Kendi hızında okuma ölçümleri. Efektif hız = doğal hız × anlama: anlamadan hızlanmak gelişim sayılmaz."
+      />
+      {!latest ? (
+        <Card style={{ gap: theme.space(3) }}>
+          <Txt variant="heading">Henüz ölçüm yok</Txt>
+          <Txt variant="dim">
+            İki dakikalık bir metin oku, beş soruyu cevapla: doğal hızını ve anlama oranını
+            görelim. Gelişimin bu başlangıç noktasına göre ölçülecek.
+          </Txt>
+          <Button label="Seviye testini yap" icon="check" onPress={onTest} />
+        </Card>
+      ) : (
+        <Card style={{ gap: theme.space(3) }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: theme.space(3) }}>
+            <Figure label="Doğal hız" value={formatNumber(latest.wpm)} unit="kel/dk" />
+            <Figure
+              label="Anlama"
+              value={`%${Math.round((latest.correct / latest.total) * 100)}`}
+              unit=""
+            />
+            <Figure label="Efektif" value={formatNumber(effectiveOf(latest))} unit="kel/dk" accent />
+          </View>
+          {tests.length > 1 ? (
+            <LineChart
+              unit="kel/dk efektif"
+              points={tests.map((record) => ({
+                label: shortDate(record.at),
+                value: effectiveOf(record),
+              }))}
+            />
+          ) : null}
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            {change
+              ? `İlk ölçüme göre efektif hızın ${
+                  Math.abs(change.change) < 0.03
+                    ? 'yaklaşık aynı'
+                    : `${change.change > 0 ? '%' + Math.round(change.change * 100) + ' arttı' : '%' + Math.round(-change.change * 100) + ' azaldı'}`
+                } (${change.tests} ölçüm).`
+              : 'Bir sonraki ölçümden sonra gelişim grafiği burada görünecek.'}
+          </Txt>
+          <Button
+            label={due ? 'Haftalık ölçüm zamanı' : 'Yeniden ölç'}
+            variant={due ? 'primary' : 'secondary'}
+            icon="check"
+            onPress={onTest}
+          />
+        </Card>
+      )}
+      {quizComprehension !== null ? (
+        <Txt variant="dim" style={{ fontSize: 13, marginTop: theme.space(2) }}>
+          Son {quizzes.length} anlama testinde ortalama anlama: %{Math.round(quizComprehension * 100)}
+        </Txt>
+      ) : null}
+    </>
+  );
+}
+
+function Figure({
+  label,
+  value,
+  unit,
+  accent,
+}: {
+  label: string;
+  value: string;
+  unit: string;
+  accent?: boolean;
+}) {
+  const { theme } = useSettings();
+  return (
+    <View style={{ gap: 2 }}>
+      <Txt variant="label">{label}</Txt>
+      <Txt
+        variant="title"
+        style={{ fontSize: 24, color: accent ? theme.colors.accent : theme.colors.text }}
+      >
+        {value}
+      </Txt>
+      {unit ? (
+        <Txt variant="dim" style={{ fontSize: 11 }}>
+          {unit}
+        </Txt>
+      ) : null}
     </View>
   );
 }

@@ -6,6 +6,12 @@ export const KEYS = {
   documents: `${PREFIX}/documents`,
   sessions: `${PREFIX}/sessions`,
   progress: (id: string) => `${PREFIX}/progress/${id}`,
+  /** Seviye testleri ve anlama testi sonuçları */
+  assessments: `${PREFIX}/assessments`,
+  /** Egzersiz sonuçları (Schulte, flaş kelime, tarama, göz gezdirme) */
+  drills: `${PREFIX}/drills`,
+  /** Kullanıcıya duyurulmuş rozetler */
+  badgesSeen: `${PREFIX}/badges-seen`,
   /** Kelime defteri */
   vocab: `${PREFIX}/vocab`,
   /** AI token/maliyet sayacı (toplam) */

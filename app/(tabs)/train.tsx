@@ -29,6 +29,17 @@ export default function TrainScreen() {
     }, [])
   );
 
+  /** Ölçüm her durumda erişilebilir: gömülü metinle yapılıyor, kütüphane gerekmez. */
+  const measureCard = (
+    <>
+      <SectionHeader
+        title="Ölçüm"
+        hint="Kendi hızında iki dakikalık okuma + beş soru. Haftada bir tekrarla; gerçekten hızlanıp hızlanmadığını bu gösterir."
+      />
+      <Button label="Seviye testi / haftalık ölçüm" icon="check" onPress={() => router.push('/assess')} />
+    </>
+  );
+
   const vocabCard = (
     <>
       <SectionHeader
@@ -54,6 +65,7 @@ export default function TrainScreen() {
     return (
       <Screen>
         <Txt variant="title">Antrenman</Txt>
+        {measureCard}
         <Card style={{ marginTop: theme.space(6), gap: theme.space(3) }}>
           <Txt variant="heading">Önce bir metin gerekiyor</Txt>
           <Txt variant="dim">
@@ -73,6 +85,8 @@ export default function TrainScreen() {
       <Txt variant="dim">
         Egzersizler hedef hızın ({settings.wpm} kelime/dk) üzerinden hesaplanır.
       </Txt>
+
+      {measureCard}
 
       <SectionHeader title="Metin" />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>

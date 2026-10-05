@@ -1,14 +1,16 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { generateQuestions } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { buildCloze } from '@/core/cloze';
 import { tokenize, tokenIndexForCharOffset } from '@/core/tokenizer';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache } from '@/storage/ai';
+import { recordAssessment } from '@/storage/assessments';
 import { getDocumentText, loadProgress } from '@/storage/documents';
 import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
+import { QuestionCard } from '@/ui/QuestionCard';
 
 /**
  * Anlama testi. İki kaynaktan soru gelebilir:
@@ -32,8 +34,10 @@ interface QuizItem {
 export default function QuizScreen() {
   const { docId } = useLocalSearchParams<{ docId: string }>();
   const router = useRouter();
-  const { theme } = useSettings();
+  const { theme, settings, update } = useSettings();
   const ai = useAi();
+  const recorded = useRef(false);
+  const [applied, setApplied] = useState(false);
 
   const [text, setText] = useState<string | null>(null);
   const [readUntil, setReadUntil] = useState(0);
@@ -85,9 +89,36 @@ export default function QuizScreen() {
     );
     if (!value) return;
     setAnswers({});
+    recorded.current = false;
     setAiItems(value.map(toQuizItem));
     await patchAiCache(docId, { questions: { items: value, model: '', at: Date.now() } });
   };
+
+  const answeredCount = Object.keys(answers).length;
+  const correctCount = questions.filter((q, index) => answers[index] === q.answer).length;
+  const allAnswered = answeredCount === questions.length && questions.length > 0;
+
+  /**
+   * Sonuç kaydediliyor: anlamanın zaman içindeki seyri Gelişim ekranında
+   * görünsün. Quiz'de hız uygulamanın temposu olduğu için ölçülmüş doğal hız
+   * sayılmaz; yalnızca "bu tempoda ne kadar anladım" sorusunu cevaplar.
+   */
+  useEffect(() => {
+    if (!allAnswered || recorded.current || !docId) return;
+    recorded.current = true;
+    void recordAssessment({
+      kind: 'quiz',
+      at: Date.now(),
+      docId,
+      ms: 0,
+      words: 0,
+      wpm: settings.wpm,
+      correct: correctCount,
+      total: questions.length,
+      source: aiItems ? 'ai' : 'cloze',
+      reliable: true,
+    });
+  }, [allAnswered, correctCount, questions.length, docId, settings.wpm, aiItems]);
 
   if (text === null) {
     return (
@@ -97,9 +128,13 @@ export default function QuizScreen() {
     );
   }
 
-  const answeredCount = Object.keys(answers).length;
-  const correctCount = questions.filter((q, index) => answers[index] === q.answer).length;
-  const allAnswered = answeredCount === questions.length && questions.length > 0;
+  // Tam isabet → biraz hızlan; yarının altı → biraz yavaşla. Yalnızca öneri.
+  const suggestedWpm =
+    correctCount === questions.length
+      ? Math.min(1200, settings.wpm + 25)
+      : correctCount < questions.length / 2
+        ? Math.max(100, settings.wpm - 25)
+        : settings.wpm;
 
   return (
     <Screen>
@@ -170,56 +205,18 @@ export default function QuizScreen() {
           </Txt>
 
           <View style={{ gap: theme.space(4) }}>
-            {questions.map((question, index) => {
-              const chosen = answers[index];
-              return (
-                <Card key={index} style={{ gap: theme.space(3) }}>
-                  <Txt variant="body">
-                    {index + 1}. {question.prompt}
-                  </Txt>
-                  <View style={{ gap: theme.space(2) }}>
-                    {question.options.map((option) => {
-                      const isChosen = chosen === option;
-                      const isCorrect = option === question.answer;
-                      const revealed = chosen !== undefined;
-
-                      const borderColor = !revealed
-                        ? theme.colors.border
-                        : isCorrect
-                          ? theme.colors.success
-                          : isChosen
-                            ? theme.colors.danger
-                            : theme.colors.border;
-
-                      return (
-                        <Pressable
-                          key={option}
-                          disabled={revealed}
-                          onPress={() => setAnswers((current) => ({ ...current, [index]: option }))}
-                          style={({ pressed }) => ({
-                            borderWidth: 1,
-                            borderColor,
-                            borderRadius: theme.radius.sm,
-                            paddingVertical: theme.space(3),
-                            paddingHorizontal: theme.space(3.5),
-                            opacity: pressed ? 0.7 : 1,
-                            backgroundColor:
-                              revealed && isCorrect ? theme.colors.accentSoft : 'transparent',
-                          })}
-                        >
-                          <Txt variant="body">{option}</Txt>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                  {chosen !== undefined && question.evidence ? (
-                    <Txt variant="dim" style={{ fontSize: 12 }}>
-                      Metinden: “{question.evidence}”
-                    </Txt>
-                  ) : null}
-                </Card>
-              );
-            })}
+            {questions.map((question, index) => (
+              <QuestionCard
+                key={index}
+                number={index + 1}
+                prompt={question.prompt}
+                options={question.options}
+                answer={question.answer}
+                chosen={answers[index]}
+                onChoose={(option) => setAnswers((current) => ({ ...current, [index]: option }))}
+                evidence={question.evidence}
+              />
+            ))}
           </View>
 
           {allAnswered ? (
@@ -235,6 +232,21 @@ export default function QuizScreen() {
                     ? 'Makul. Aynı hızda bir süre daha çalış, sonra arttır.'
                     : 'Hız fazla gelmiş olabilir. Hedefi biraz düşürüp anlamayı geri kazan.'}
               </Txt>
+              {suggestedWpm !== settings.wpm && !applied ? (
+                <Button
+                  label={`Hedefi ${suggestedWpm} kelime/dk yap`}
+                  onPress={() => {
+                    update({ wpm: suggestedWpm });
+                    setApplied(true);
+                  }}
+                  style={{ marginTop: theme.space(2) }}
+                />
+              ) : null}
+              {applied ? (
+                <Txt variant="dim" style={{ color: theme.colors.success }}>
+                  Hedef hız {settings.wpm} kelime/dk olarak ayarlandı.
+                </Txt>
+              ) : null}
               <Button
                 label="Bitir"
                 variant="secondary"
