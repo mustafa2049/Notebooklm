@@ -165,12 +165,17 @@ ekrana bakan herkes "600 okumuş" görünür. Bu yüzden gelişim ayrıca ölç�
   "hızlandığını" sanmaya götürür.
 - Gerçekçi olmayan ölçümler (çok hızlı/yavaş, çok düşük anlama) saklanır ama
   trende girmez; nedeni ekranda yazar.
-- **Gömülü metinler**: bu uygulama için yazılmış 12 özgün Türkçe metin (10
-  test, 2 egzersiz), her birinde 5 soru ve tarama görevleri. Test metinlerinin
-  zorluğu Ateşman (1997) okunabilirlik formülüyle denk tutuluyor (hepsi "orta
-  güçlükte", aralarındaki fark 15 puandan az) — haftalık ölçümler
-  karşılaştırılabilir. Egzersizler henüz test edilmemiş metinleri kullanmaz;
-  tanıdık metin ölçümü şişirirdi.
+- **Gömülü metinler ve seviyeler**: bu uygulama için yazılmış 28 özgün Türkçe
+  metin — üç seviyede 26 test metni (8 kolay, 10 orta, 8 zor) ve 2 egzersiz
+  metni; her birinde 5 soru (cevabın metindeki kanıtıyla) ve tarama görevleri.
+  Zorluk Ateşman (1997) okunabilirlik formülüyle ölçülüyor: kolay 70–89, orta
+  50–69, zor 30–49; her seviyede metinler arası fark 15 puandan az. Egzersizler
+  henüz test edilmemiş metinleri kullanmaz; tanıdık metin ölçümü şişirirdi.
+- **Seviye önerisi**: aynı seviyedeki son iki ölçümde anlama %80 ve üstündeyse
+  bir üst, ikisinde de %60'ın altındaysa bir alt seviye önerilir; ölçüm
+  ekranında seviye elle de seçilebilir. **Gelişim yalnızca aynı seviyedeki
+  ölçümler arasında karşılaştırılır** — kolay metindeki hızı zor metindekiyle
+  kıyaslamak zorluk farkını gelişim gibi gösterirdi.
 - Anlama testi sonuçları da kaydediliyor; **Gelişim** sekmesi efektif hızın
   ölçümler boyunca seyrini çiziyor. "Kazanılan süre" kullanıcının kendi
   başlangıç hızına göre hesaplanıyor.
@@ -201,6 +206,52 @@ ekrana bakan herkes "600 okumuş" görünür. Bu yüzden gelişim ayrıca ölç�
 | Tarama | Aranan bilgiyi okumadan bulma | Araştırmalara göre gerçekten işe yarayan "hızlı okuma" becerilerinden |
 | Göz gezdirme | Paragraf başlarından ana fikri yakalama | Okuyucudaki "Önizle" sekmesiyle aynı mantık |
 | Hız egzersizleri | Isınma, hız rampası, göz genişletme, regresyon kırma | Kütüphane boşken gömülü pratik metinleriyle de çalışır |
+
+## 4 haftalık program
+
+Antrenman → 4 haftalık program: haftada beş kısa ders (~10 dakika). Her ders bir
+ipucu, ısınma (Schulte / flaş kelime), uygulama (hız egzersizi, tarama, göz
+gezdirme ya da kendi metninde odak seansı) ve anlama kontrolünden oluşuyor;
+haftanın son dersi ölçüm. Haftaların teması: temel ve geri dönüşler, kelime
+grupları, tempo ve tarama, pekiştirme ve aktarım.
+
+- Adımlar uygulamanın mevcut ekranlarını açar; ders başladıktan sonra kaydedilen
+  sonuçlarla işaretlenir, ekrandan çıkıp dönmek ilerlemeyi kaybettirmez.
+- **Uyarlanır tempo**: anlama %80 ve üstü → program temposu %5 (en az 25) artar,
+  %60–80 → aynı kalır, %60'ın altı → %10 düşer. Normal okuma ayarına dokunmaz.
+- Kaçırılan gün programı sıfırlamaz: sıradaki ders takvime değil sıraya bağlı.
+- Bu bir alıştırma düzeni; sonuç haftalık ölçümlerde görülür, vaat yok.
+
+## Okuduktan sonra: alıntılar ve kendi cümlenle özet
+
+- **Alıntı defteri**: okurken ekrana uzun bas → Alıntı. Cümle isteğe bağlı bir
+  notla kaydedilir; akış modlarında işaretli cümleler hafif zeminle görünür.
+  Antrenman → Alıntılar ve özetler: kitap kitap liste, dokununca metindeki
+  yerine dönülür, kopyala/paylaş, sil.
+- **"Aklında ne kaldı?"**: odak seansı bitince, metin bitince ya da en az 3
+  dakika okuyup çıkarken okuduğunu 1–2 cümleyle anlatman istenir (hatırlama
+  pratiği; bir kez sorar, her zaman geçilebilir, ayardan kapatılabilir). Yapay
+  zekâ tanımlıysa özet **yalnızca o oturumda okunan bölümle** karşılaştırılır:
+  yakaladıkların, kaçanlar ve kısa geri bildirim (şemalı, doğrulanan yanıt).
+
+## Dinleyerek oku
+
+Okuyucu başlığındaki kulaklık düğmesi metni cümle cümle seslendirir ve okunan
+cümleyi akış görünümünde vurgular; hız ayarı konuşma hızına eşlenir. Birim
+**cümle**: kelime sınırı olayı her platformda ve her seste gelmiyor. Türkçe ses
+yoksa ekranda yazar. Dinleme ayrı oturum olarak kaydedilir: günlük süreye
+sayılır, okuma temposu istatistiğine girmez. Bitince okuyucu dinlemenin kaldığı
+cümleden devam eder. Ses çıkışı cihazın konuşma motoruna bağlı; telefonda
+denenmesi gerekiyor.
+
+## Göz molası ve haftanın kartı
+
+- **Göz molası** (Ayarlar → kapalı/20/30 dk): belirlenen süre kadar okuyunca
+  okuma durur ve 20 saniyelik "uzağa bak" sayacı açılır (20-20-20 kuralı).
+  Yalnızca okuma süresi sayılır.
+- **Haftanın kartı** (Gelişim): süre, gün, kelime, seri ve efektif hız. Web'de
+  kart PNG olarak iner; telefonda metin özeti paylaşım menüsüyle gider (görsel
+  paylaşım ek bir yerel modül gerektirdiği için yok).
 
 ## Klasikler
 
@@ -280,3 +331,9 @@ anda indiriyor, hiç PDF açmayan hiç indirmiyor.
 Metinler, ilerleme ve istatistikler yalnızca cihazda tutulur; hiçbir sunucuya
 gönderilmez. Küçük veriler AsyncStorage'da, doküman metinleri web'de IndexedDB
 ve telefonda dosya sisteminde saklanır.
+
+**Yedekleme** (Ayarlar → Veriler): bütün kayıtlar ve metinler tek bir JSON
+dosyasına aktarılır (web'de iner, telefonda paylaşım menüsü açılır). Geri
+yükleme cihazdakilerle **birleştirir**: hiçbir kayıt silinmez, aynı yedeği iki
+kez yüklemek kopya üretmez, ayarlar yalnızca istenirse alınır. API anahtarı
+yedeğe girmez — dosya paylaşılabilir.
