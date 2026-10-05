@@ -1,6 +1,7 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
+import { LEVEL_LABEL } from '@/content/passages';
 import { useSettings } from '@/store/SettingsContext';
 import { listAssessments } from '@/storage/assessments';
 import { heatmapDays, weeklyComparison } from '@/habit/summary';
@@ -16,6 +17,7 @@ import {
   baselineWpm,
   effectiveOf,
   improvement,
+  levelOf,
   reliableTests,
   testDue,
   type AssessmentRecord,
@@ -209,8 +211,12 @@ function RealProgress({
   onTest: () => void;
 }) {
   const { theme } = useSettings();
-  const tests = reliableTests(assessments);
-  const latest = tests[tests.length - 1];
+  const allTests = reliableTests(assessments);
+  const latest = allTests[allTests.length - 1];
+  // Grafik yalnızca son ölçümün seviyesini çizer: farklı zorluk aynı çizgide yanıltır
+  const level = latest ? levelOf(latest) : 'orta';
+  const tests = allTests.filter((record) => levelOf(record) === level);
+  const otherLevels = allTests.length - tests.length;
   const change = improvement(assessments);
   const due = testDue(assessments, Date.now());
   const quizzes = assessments.filter((record) => record.kind === 'quiz').slice(0, 5);
@@ -246,6 +252,10 @@ function RealProgress({
             />
             <Figure label="Efektif" value={formatNumber(effectiveOf(latest))} unit="kel/dk" accent />
           </View>
+          <Txt variant="dim" style={{ fontSize: 12 }}>
+            Seviye: {LEVEL_LABEL[level]}
+            {otherLevels > 0 ? ` · diğer seviyelerde ${otherLevels} ölçüm (grafikte yok)` : ''}
+          </Txt>
           {tests.length > 1 ? (
             <LineChart
               unit="kel/dk efektif"
@@ -257,12 +267,12 @@ function RealProgress({
           ) : null}
           <Txt variant="dim" style={{ fontSize: 13 }}>
             {change
-              ? `İlk ölçüme göre efektif hızın ${
+              ? `Bu seviyedeki ilk ölçüme göre efektif hızın ${
                   Math.abs(change.change) < 0.03
                     ? 'yaklaşık aynı'
                     : `${change.change > 0 ? '%' + Math.round(change.change * 100) + ' arttı' : '%' + Math.round(-change.change * 100) + ' azaldı'}`
                 } (${change.tests} ölçüm).`
-              : 'Bir sonraki ölçümden sonra gelişim grafiği burada görünecek.'}
+              : 'Bu seviyede bir sonraki ölçümden sonra gelişim grafiği burada görünecek.'}
           </Txt>
           <Button
             label={due ? 'Haftalık ölçüm zamanı' : 'Yeniden ölç'}

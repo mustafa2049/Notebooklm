@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readability } from '@/core/readability';
 import { countWordsInText } from '@/ingest/normalize';
-import { PASSAGES, practicePassages, TEST_PASSAGES } from './passages';
+import { PASSAGE_LEVELS, PASSAGES, practicePassages, testPassagesFor, TEST_PASSAGES, type PassageLevel } from './passages';
 
 /**
  * Gömülü metinler elle yazıldı; bu testler yazım hatalarını yakalayan güvence.
@@ -14,8 +14,11 @@ describe('gömülü metinler', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('en az 10 test metni var (haftalık ölçümler tekrarsız dönebilsin)', () => {
-    expect(TEST_PASSAGES.length).toBeGreaterThanOrEqual(10);
+  it('her seviyede en az 8 test metni var (haftalık ölçümler tekrarsız dönebilsin)', () => {
+    for (const level of PASSAGE_LEVELS) {
+      expect(testPassagesFor(level).length, level).toBeGreaterThanOrEqual(8);
+    }
+    expect(TEST_PASSAGES.length).toBeGreaterThanOrEqual(26);
   });
 
   for (const passage of PASSAGES) {
@@ -57,24 +60,33 @@ describe('gömülü metinler', () => {
   }
 });
 
-describe('test metinlerinin zorluğu denk', () => {
-  const scores = TEST_PASSAGES.map((passage) => ({
-    title: passage.title,
-    score: readability(passage.text).score,
-  }));
+/** Ateşman bantları: kolay 70–89, orta 50–69, zor 30–49 */
+const BANDS: Record<PassageLevel, [number, number]> = {
+  kolay: [70, 89],
+  orta: [50, 70],
+  zor: [30, 49],
+};
 
-  it('hepsi Ateşman ölçeğinde "orta güçlükte" bandında (50–70)', () => {
-    for (const { title, score } of scores) {
-      expect(score, title).toBeGreaterThanOrEqual(50);
-      expect(score, title).toBeLessThanOrEqual(70);
-    }
-  });
+for (const level of PASSAGE_LEVELS) {
+  describe(`${level} test metinlerinin zorluğu denk`, () => {
+    const scores = testPassagesFor(level).map((passage) => ({
+      title: passage.title,
+      score: readability(passage.text).score,
+    }));
 
-  it('en kolay ile en zor arasındaki fark 15 puanı geçmiyor', () => {
-    const values = scores.map((entry) => entry.score);
-    expect(Math.max(...values) - Math.min(...values)).toBeLessThanOrEqual(15);
+    it(`hepsi Ateşman ölçeğinde kendi bandında (${BANDS[level].join('–')})`, () => {
+      for (const { title, score } of scores) {
+        expect(score, title).toBeGreaterThanOrEqual(BANDS[level][0]);
+        expect(score, title).toBeLessThanOrEqual(BANDS[level][1]);
+      }
+    });
+
+    it('en kolay ile en zor arasındaki fark 15 puanı geçmiyor', () => {
+      const values = scores.map((entry) => entry.score);
+      expect(Math.max(...values) - Math.min(...values)).toBeLessThanOrEqual(15);
+    });
   });
-});
+}
 
 describe('practicePassages', () => {
   it('test edilmemiş test metnini egzersize koymaz', () => {

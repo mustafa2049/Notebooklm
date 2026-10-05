@@ -1,6 +1,7 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
+import { LEVEL_LABEL } from '@/content/passages';
 import { booksFinishedInYear, finishEstimateDays, yearlyGoalStatus } from '@/habit/books';
 import { dailySuggestions, type Suggestion } from '@/habit/today';
 import { useSettings } from '@/store/SettingsContext';
@@ -234,7 +235,8 @@ export default function TodayScreen() {
               {progressChange.change >= 0 ? '%' : '-%'}
               {Math.round(Math.abs(progressChange.change) * 100)}
             </Txt>{' '}
-            değişti ({progressChange.tests} ölçüm).
+            değişti ({LEVEL_LABEL[progressChange.level].toLocaleLowerCase('tr')} seviye,{' '}
+            {progressChange.tests} ölçüm).
           </Txt>
         </Pressable>
       ) : null}

@@ -5,6 +5,7 @@ import {
   nextTestPassageId,
   reliability,
   scoreAssessment,
+  suggestLevel,
   suggestTargetWpm,
   testDue,
   TEST_INTERVAL_MS,
@@ -145,5 +146,59 @@ describe('baselineWpm', () => {
 
   it('ilk güvenilir ölçümün doğal hızını kullanır', () => {
     expect(baselineWpm([test(5, 300, 4), test(1, 210, 4)])).toEqual({ wpm: 210, measured: true });
+  });
+});
+
+function leveled(at: number, wpm: number, correct: number, level: 'kolay' | 'orta' | 'zor'): AssessmentRecord {
+  return { ...test(at, wpm, correct), level };
+}
+
+describe('suggestLevel', () => {
+  it('ölçüm yoksa ortadan başlar', () => {
+    expect(suggestLevel([])).toBe('orta');
+  });
+
+  it('eski (seviyesiz) kayıtları orta sayar', () => {
+    expect(suggestLevel([test(0, 200, 3)])).toBe('orta');
+  });
+
+  it('iki ölçümde anlama %80 ve üstündeyse bir üst seviye', () => {
+    expect(suggestLevel([leveled(0, 200, 4, 'orta'), leveled(DAY, 210, 5, 'orta')])).toBe('zor');
+  });
+
+  it('tek iyi ölçüm seviye atlatmaz', () => {
+    expect(suggestLevel([leveled(0, 200, 3, 'orta'), leveled(DAY, 210, 5, 'orta')])).toBe('orta');
+  });
+
+  it('iki ölçümde anlama %60’ın altındaysa bir alt seviye', () => {
+    expect(suggestLevel([leveled(0, 200, 2, 'zor'), leveled(DAY, 210, 2, 'zor')])).toBe('orta');
+  });
+
+  it('en üst ve en alt seviyede kalır', () => {
+    expect(suggestLevel([leveled(0, 200, 5, 'zor'), leveled(DAY, 210, 5, 'zor')])).toBe('zor');
+    expect(suggestLevel([leveled(0, 200, 2, 'kolay'), leveled(DAY, 210, 2, 'kolay')])).toBe('kolay');
+  });
+
+  it('güvenilmez ölçümleri saymaz', () => {
+    const unreliable = { ...leveled(DAY, 2000, 5, 'orta'), reliable: false };
+    expect(suggestLevel([leveled(0, 200, 5, 'orta'), unreliable])).toBe('orta');
+  });
+});
+
+describe('improvement — seviyeler', () => {
+  it('yalnızca son ölçümün seviyesindeki testleri karşılaştırır', () => {
+    const history = [
+      leveled(0, 150, 4, 'orta'),
+      leveled(DAY, 300, 5, 'kolay'),
+      leveled(2 * DAY, 180, 4, 'orta'),
+    ];
+    const result = improvement(history);
+    expect(result?.level).toBe('orta');
+    expect(result?.tests).toBe(2);
+    expect(result?.change).toBeCloseTo(0.2);
+  });
+
+  it('yeni seviyede tek ölçüm varken gelişim göstermez', () => {
+    expect(improvement([leveled(0, 150, 4, 'orta'), leveled(DAY, 140, 4, 'zor')])).toBeNull();
   });
 });

@@ -15,6 +15,14 @@
  *   şıklar karıştırılır.
  */
 
+/** Zorluk seviyesi: Ateşman okunabilirlik bandı (kolay 70–89, orta 50–69, zor 30–49) */
+export type PassageLevel = 'kolay' | 'orta' | 'zor';
+
+export const PASSAGE_LEVELS: PassageLevel[] = ['kolay', 'orta', 'zor'];
+
+import { EASY_PASSAGES } from './passagesEasy';
+import { HARD_PASSAGES } from './passagesHard';
+
 export type QuestionKind = 'ayrıntı' | 'çıkarım' | 'anaFikir' | 'kelime';
 
 export interface PassageQuestion {
@@ -38,17 +46,19 @@ export interface Passage {
   genre: 'bilgi' | 'öykü';
   /** `test`: seviye/haftalık ölçüm metni; `drill`: egzersiz metni */
   use: 'test' | 'drill';
+  level: PassageLevel;
   text: string;
   questions: PassageQuestion[];
   scan: ScanTask[];
 }
 
-export const PASSAGES: Passage[] = [
+const MEDIUM_PASSAGES: Passage[] = [
   {
     id: 'arilar',
     title: 'Arıların Dansı',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Bir bal arısı zengin bir çiçek tarlası bulduğunda kovana döner ve bu haberi arkadaşlarına iletir. Ama arıların konuşacak sesleri yoktur; bunun yerine dans ederler. Avusturyalı bilim insanı Karl von Frisch, yıllarca süren gözlemlerle bu dansın gizli bir dil olduğunu gösterdi ve bu çalışması ona Nobel ödülü kazandırdı.
 
 Kovana yakın bir kaynak için arı daireler çizerek döner. Buna yuvarlak dans denir ve diğer arılara yalnızca yakında yiyecek olduğunu söyler. Kaynak uzaktaysa dans değişir. Arı önce düz bir çizgi boyunca yürür ve bu sırada karnını hızla iki yana sallar. Sonra bir yandan dönüp başlangıç noktasına gelir, ardından aynı çizgiyi yeniden yürür. Bu hareketlere sallanma dansı adı verilir.
@@ -112,6 +122,7 @@ Bu keşif, hayvanların iletişimine bakışımızı değiştirdi. Uzun süre ya
     title: 'Deniz Fenerleri',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Yüzyıllar boyunca denizciler için gecenin en büyük tehlikesi görünmeyen kıyılardı. Kayalıklar, sığlıklar ve dar boğazlar, yolunu kaybeden gemileri sessizce bekliyordu. Deniz fenerleri bu tehlikeye karşı insanların bulduğu en eski çözümlerden biridir.
 
 Antik çağın en ünlü feneri İskenderiye'deydi. Rivayete göre kulesinin tepesinde yakılan ateş, gündüz dumanıyla, gece alevleriyle uzaklardan görülüyordu. Bu yapı dünyanın yedi harikasından biri sayıldı; ancak depremler sonunda onu yıktı ve bugün yalnızca anlatılarda yaşıyor.
@@ -183,6 +194,7 @@ Günümüzde gemiler uydu sistemleriyle konumlarını metrelerce hassasiyetle bi
     title: 'Uyku ve Hafıza',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Sınavdan önceki gece sabaha kadar çalışmak, pek çok öğrencinin denediği bir yöntemdir. Mantıklı görünür: ne kadar çok saat, o kadar çok bilgi. Ancak beyin üzerine yapılan araştırmalar, bu hesabın önemli bir eksiği olduğunu gösteriyor. Öğrendiklerimizi kalıcı hâle getiren şeylerden biri, tam da feda ettiğimiz uykudur.
 
 Gün içinde öğrendiğimiz bilgi önce geçici bir biçimde saklanır. Bu kayıtlar kırılgandır ve kolayca silinebilir. Uyku sırasında beyin, gün boyu toplananları yeniden gözden geçirir. Bazı deneylerde, hayvanların gündüz yaptığı bir yol öğrenme görevine ait beyin etkinliğinin gece uykuda kısa aralıklarla yeniden belirdiği görülmüştür. Beyin sanki öğrendiğini prova eder ve önemli olanı daha sağlam bir yere taşır.
@@ -250,6 +262,7 @@ Elbette uyku tek başına mucize yaratmaz. Hiç çalışmadan uyuyan birinin pek
     title: 'Kâğıdın Yolculuğu',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Bugün elimizi uzatınca bulduğumuz kâğıt, insanlık tarihinin büyük bölümünde ya hiç yoktu ya da çok pahalıydı. Eski Mısırlılar Nil kıyısında yetişen papirüs bitkisinin saplarını üst üste dizip kurutarak yazı yüzeyi elde ediyordu. Avrupa'da ve Anadolu'da ise uzun süre hayvan derisinden hazırlanan parşömen kullanıldı. Parşömen dayanıklıydı ama bir kitap için bazen bir sürünün derisi gerekiyordu.
 
 Kâğıt yaklaşık iki bin yıl önce Çin'de ortaya çıktı. Ağaç kabuğu, kenevir lifleri, eski kumaş parçaları suyla dövülüp hamur hâline getiriliyordu. Bu hamur ince bir elek üzerine yayılıyor, su süzülünce geriye birbirine kenetlenmiş lifler kalıyordu. Kuruyan tabaka hafif, ucuz ve üzerine kolayca yazılabilen bir yüzeydi.
@@ -317,6 +330,7 @@ Bugün dijital ekranlar kâğıdın yerini kısmen alıyor. Yine de kâğıdın 
     title: 'Su Döngüsü',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Bir bardak suyun geçmişini izleyebilseydik, şaşırtıcı bir yolculukla karşılaşırdık. Bugün içtiğimiz suyun bir kısmı belki yüzyıllar önce bir buzulda donmuş, bir okyanusta dalgalanmış ya da bir ormanın yapraklarından buharlaşmıştır. Çünkü dünyadaki su sürekli yer değiştirir ama toplam miktarı pek değişmez. Bu kesintisiz dolaşıma su döngüsü denir.
 
 Döngünün motoru güneştir. Güneş ısısı denizlerin, göllerin ve nehirlerin yüzeyindeki suyu buharlaştırır. Bitkiler de köklerinden aldıkları suyun büyük kısmını yapraklarındaki küçük gözeneklerden havaya bırakır. Su buharı gözle görülmez ve sıcak havayla birlikte yükselir.
@@ -380,6 +394,7 @@ Su döngüsü yalnızca suyu taşımaz, ısıyı da taşır. Buharlaşan su, çe
     title: 'Göçmen Kuşlar',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Her sonbahar gökyüzünde uzun bir yolculuk başlar. Leylekler, kırlangıçlar, yırtıcı kuşlar ve daha nice tür, kışı geçirecekleri sıcak bölgelere doğru binlerce kilometre uçar. İlkbaharda da aynı kuşların büyük kısmı, bir önceki yıl ayrıldıkları yuvaların yakınına geri döner. Haritası, pusulası olmayan bu yolcular yollarını nasıl bulur?
 
 Bilim insanları kuşların birden fazla yönlendirme aracı kullandığını düşünüyor. Gündüz uçanlar güneşin konumundan yararlanır. Gece uçan türler ise yıldızlara bakar. Yapılan deneylerde, yapay bir yıldızlı gökyüzü altında büyütülen genç kuşların, gökyüzünün dönüş merkezini öğrenerek yön buldukları görülmüştür. Bunlara ek olarak pek çok kuşun dünyanın manyetik alanını algılayabildiği biliniyor. Bu yetenek, bulutlu ve yıldızsız gecelerde bile yön duygusunu korumalarına yardım eder.
@@ -447,6 +462,7 @@ Yine de her yıl yeniden başlayan bu yolculuk, doğanın en etkileyici düzenle
     title: 'Saat Tamircisi',
     genre: 'öykü',
     use: 'test',
+    level: 'orta',
     text: `Kasabanın çarşısında, bakırcıların arasında sıkışmış küçük bir dükkân vardı. Camındaki solgun yazı çoktandır okunmuyordu ama herkes orayı bilirdi: Rıza Usta'nın saat dükkânı. İçeride duvarları kaplayan onlarca saat, birbirine hiç uymayan tıkırtılarla zamanı sayardı.
 
 Elif o yaz, okul tatilinde dedesinin yanında çalışmaya başladı. İlk gün ona yalnızca bir fırça ve bir kutu vida verildi. Dedesi, önce bakmayı öğrenmesi gerektiğini söyledi. Ona göre aceleyle açılan bir saat, bütün sırlarını saklardı. Elif bu sözü pek anlamadı. Saatleri hızla söküp takmak, çarkları tanımak, bir an önce gerçek bir tamirci olmak istiyordu.
@@ -515,6 +531,7 @@ O yazın sonunda Elif hâlâ hızlı çalışmayı seviyordu. Ama bir saati elin
     title: 'Son Tren',
     genre: 'öykü',
     use: 'test',
+    level: 'orta',
     text: `Kar akşamüstü başlamıştı ve istasyonun saati dokuzu gösterdiğinde perondaki banklar tamamen beyaza bürünmüştü. Mert, son trenin yirmi dakika rötarlı olduğunu bildiren tabelaya baktı ve paltosunun yakasını kaldırdı. Bekleme salonunda kendisinden başka yalnızca iki kişi vardı: elinde örgü şişleriyle yaşlı bir kadın ve sırt çantasına yaslanmış uyuklayan bir genç.
 
 Mert'in aklı ertesi sabahki iş görüşmesindeydi. Aylardır böyle bir fırsat bekliyordu. Trene yetişemezse sabaha şehre varamayacak, belki de bu fırsatı kaçıracaktı. Her iki dakikada bir saatine bakıyor, salonda bir uçtan öbür uca yürüyordu.
@@ -581,6 +598,7 @@ Mert o gece lokomotifin dar kabininde, karla örtülü ovaların arasından şeh
     title: 'Kahvenin Yolculuğu',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Kahvenin nasıl keşfedildiğine dair en bilinen hikâye Etiyopya'nın yaylalarında geçer. Anlatıya göre Kaldi adlı bir keçi çobanı, keçilerinin bir çalının kırmızı meyvelerini yedikten sonra gece boyunca uyumadan zıpladığını fark eder. Bu hikâyenin gerçek olup olmadığını bilmiyoruz; ama kahve bitkisinin anavatanının Etiyopya çevresi olduğu kabul ediliyor.
 
 Kahveyi bugünkü gibi bir içeceğe dönüştürenler büyük olasılıkla Yemenliler oldu. Yemen'deki tasavvuf ehli, uzun gece ibadetlerinde uyanık kalmak için kahve içiyordu. Kızıldeniz kıyısındaki Muha limanı uzun yıllar kahve ticaretinin merkezi oldu. Kahve buradan Mekke'ye, Kahire'ye ve İstanbul'a yayıldı.
@@ -647,6 +665,7 @@ Bugün kahve dünyanın en çok ticareti yapılan ürünlerinden biri. Ama bir f
     title: 'Ahtapotun Zekâsı',
     genre: 'bilgi',
     use: 'test',
+    level: 'orta',
     text: `Denizlerin en tuhaf canlılarından biri sayılan ahtapot, ilk bakışta yalnızca kollardan oluşan yumuşak bir yığın gibi görünür. Ama bu görüntünün ardında, bilim insanlarını yıllardır şaşırtan bir zekâ saklıdır.
 
 Ahtapotun vücudu bize alışık olduğumuz hayvanlardan çok farklı çalışır. Üç kalbi vardır: ikisi kanı solungaçlara pompalar, üçüncüsü bütün vücuda dağıtır. Kanı kırmızı değil mavidir; çünkü oksijeni taşıyan madde demir yerine bakır içerir. İskeleti olmadığı için, gagasından büyük olmayan hemen her deliğe sızabilir.
@@ -713,6 +732,7 @@ Bütün bu yeteneklere karşın ahtapotun ömrü kısadır; çoğu tür yalnızc
     title: 'Peribacalarının Hikâyesi',
     genre: 'bilgi',
     use: 'drill',
+    level: 'orta',
     text: `Kapadokya'yı ilk kez gören biri, bu toprakların başka bir gezegene ait olduğunu düşünebilir. Vadilerden yükselen, tepesinde şapka gibi bir kaya taşıyan sivri sütunlar yüzyıllardır yolcuları şaşırtıyor. Halk bu tuhaf biçimlere peribacası adını vermiş; bir zamanlar orada perilerin yaşadığına inanılırmış.
 
 Peribacalarının hikâyesi milyonlarca yıl önce, bölgedeki yanardağlarla başlar. Erciyes, Hasandağı ve çevredeki diğer yanardağlar defalarca patlayarak bölgeyi kalın kül ve lav katmanlarıyla örttü. Küller zamanla sıkışarak tüf adı verilen yumuşak bir kayaya dönüştü. Tüfün üzerinde yer yer daha sert bir kaya tabakası kaldı.
@@ -773,6 +793,7 @@ Bugün Kapadokya, sıcak hava balonlarının gün doğumunda vadilerin üzerinde
     title: 'Köy Kütüphanesi',
     genre: 'öykü',
     use: 'drill',
+    level: 'orta',
     text: `Öğretmen Selma köye geldiğinde okulun tek odasında bir kara tahta, on iki sıra ve tozlu bir dolap vardı. Dolabın içinde ise yalnızca yırtık kapaklı üç kitap duruyordu. Çocuklar okumayı biliyordu ama okumayı sevmiyordu; onlar için harfler, tahtaya yazılıp silinen işaretlerden ibaretti.
 
 Selma ilk hafta kimseye bir şey söylemedi. Her akşam okulun penceresinin önüne oturup yüksek sesle kitap okudu. Önce kimse aldırmadı. Sonra bir akşam, keçilerini otlaktan döndüren Hasan pencerenin dibinde durdu. Ertesi akşam yanında iki arkadaşı vardı. Bir hafta sonra pencerenin önü, hikâyenin devamını bekleyen çocuklarla doluydu.
@@ -832,7 +853,20 @@ Selma başka bir okula tayin olduğunda kütüphanede yedi yüzden fazla kitap v
   },
 ];
 
+export const PASSAGES: Passage[] = [...EASY_PASSAGES, ...MEDIUM_PASSAGES, ...HARD_PASSAGES];
+
 export const TEST_PASSAGES = PASSAGES.filter((passage) => passage.use === 'test');
+
+/** Bir seviyenin test metinleri */
+export function testPassagesFor(level: PassageLevel): Passage[] {
+  return TEST_PASSAGES.filter((passage) => passage.level === level);
+}
+
+export const LEVEL_LABEL: Record<PassageLevel, string> = {
+  kolay: 'Kolay',
+  orta: 'Orta',
+  zor: 'Zor',
+};
 
 export function passageById(id: string | undefined): Passage | undefined {
   return PASSAGES.find((passage) => passage.id === id);

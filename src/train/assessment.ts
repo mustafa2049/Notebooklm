@@ -7,6 +7,8 @@
  * sanmaya götürür.
  */
 
+import type { PassageLevel } from '@/content/passages';
+
 export type AssessmentKind = 'test' | 'quiz';
 
 export interface AssessmentRecord {
@@ -16,6 +18,8 @@ export interface AssessmentRecord {
   at: number;
   /** Test metni (`kind: 'test'`) ya da quiz'in yapıldığı doküman */
   passageId?: string;
+  /** Test metninin seviyesi. Seviyeler eklenmeden önceki kayıtlar orta seviyedir. */
+  level?: PassageLevel;
   docId?: string;
   /** Okuma süresi (yalnızca test; quiz'de uygulamanın temposu belirli) */
   ms: number;
@@ -104,10 +108,47 @@ export function testDue(history: AssessmentRecord[], now: number): boolean {
   return now - last >= TEST_INTERVAL_MS;
 }
 
+/** Kaydın seviyesi; seviyeler gelmeden önceki testlerin hepsi orta seviyedeydi. */
+export function levelOf(record: AssessmentRecord): PassageLevel {
+  return record.level ?? 'orta';
+}
+
+const LEVEL_ORDER: PassageLevel[] = ['kolay', 'orta', 'zor'];
+
+/** Seviye değiştirmek için kaç ardışık ölçüm gerekir (tek ölçüm gürültülü olabilir) */
+export const LEVEL_EVIDENCE = 2;
+export const LEVEL_UP_COMPREHENSION = 0.8;
+export const LEVEL_DOWN_COMPREHENSION = 0.6;
+
+/**
+ * Sıradaki ölçümün seviyesi. Aynı seviyedeki son iki güvenilir ölçümde anlama
+ * %80 ve üstündeyse bir üst seviye, ikisinde de %60'ın altındaysa bir alt seviye
+ * önerilir. Hiç ölçüm yoksa orta seviyeden başlanır.
+ */
+export function suggestLevel(history: AssessmentRecord[]): PassageLevel {
+  const tests = reliableTests(history);
+  if (!tests.length) return 'orta';
+  const current = levelOf(tests[tests.length - 1]);
+  const recent = tests.filter((record) => levelOf(record) === current).slice(-LEVEL_EVIDENCE);
+  if (recent.length < LEVEL_EVIDENCE) return current;
+
+  const ratios = recent.map((record) => record.correct / Math.max(1, record.total));
+  const index = LEVEL_ORDER.indexOf(current);
+  if (ratios.every((ratio) => ratio >= LEVEL_UP_COMPREHENSION)) {
+    return LEVEL_ORDER[Math.min(LEVEL_ORDER.length - 1, index + 1)];
+  }
+  if (ratios.every((ratio) => ratio < LEVEL_DOWN_COMPREHENSION)) {
+    return LEVEL_ORDER[Math.max(0, index - 1)];
+  }
+  return current;
+}
+
 export interface Improvement {
-  /** İlk güvenilir testin efektif hızı */
+  /** Karşılaştırılan seviye */
+  level: PassageLevel;
+  /** O seviyedeki ilk güvenilir testin efektif hızı */
   baseline: number;
-  /** Son güvenilir testin efektif hızı */
+  /** O seviyedeki son güvenilir testin efektif hızı */
   latest: number;
   /** Oransal değişim (0,18 = %18 artış) */
   change: number;
@@ -115,16 +156,21 @@ export interface Improvement {
 }
 
 /**
- * İlk ölçüme göre gelişim. En az iki güvenilir test gerekir — tek bir ölçümle
- * "gelişim" diye bir şey yoktur.
+ * İlk ölçüme göre gelişim — **yalnızca aynı seviyedeki** testler arasında.
+ * Kolay bir metindeki hızı zor bir metindekiyle karşılaştırmak, zorluk farkını
+ * gelişim (ya da gerileme) diye göstermek olurdu. Son ölçümün seviyesi esas
+ * alınır; o seviyede en az iki güvenilir test gerekir.
  */
 export function improvement(history: AssessmentRecord[]): Improvement | null {
-  const tests = reliableTests(history);
+  const all = reliableTests(history);
+  if (!all.length) return null;
+  const level = levelOf(all[all.length - 1]);
+  const tests = all.filter((record) => levelOf(record) === level);
   if (tests.length < 2) return null;
   const baseline = effectiveOf(tests[0]);
   const latest = effectiveOf(tests[tests.length - 1]);
   if (baseline <= 0) return null;
-  return { baseline, latest, change: (latest - baseline) / baseline, tests: tests.length };
+  return { level, baseline, latest, change: (latest - baseline) / baseline, tests: tests.length };
 }
 
 /** 25'in katına yuvarlar (Ayarlar'daki hız kaydırıcısının adımı). */

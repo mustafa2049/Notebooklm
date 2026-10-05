@@ -1,7 +1,14 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { passageById, TEST_PASSAGES, type Passage } from '@/content/passages';
+import {
+  LEVEL_LABEL,
+  PASSAGE_LEVELS,
+  passageById,
+  testPassagesFor,
+  type Passage,
+  type PassageLevel,
+} from '@/content/passages';
 import { countWordsInText } from '@/ingest/normalize';
 import { useSettings } from '@/store/SettingsContext';
 import { listAssessments, recordAssessment } from '@/storage/assessments';
@@ -9,17 +16,19 @@ import { recordSession } from '@/storage/stats';
 import {
   effectiveOf,
   improvement,
+  levelOf,
   nextTestPassageId,
   reliability,
   reliableTests,
   scoreAssessment,
+  suggestLevel,
   suggestTargetWpm,
   type AssessmentRecord,
   type Score,
 } from '@/train/assessment';
 import { arrangeOptions } from '@/train/shuffle';
 import { formatNumber } from '@/ui/format';
-import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
+import { Button, Card, Chip, IconButton, Screen, Txt } from '@/ui/primitives';
 import { QuestionCard } from '@/ui/QuestionCard';
 import { fontStyle } from '@/ui/theme';
 
@@ -43,18 +52,23 @@ export default function AssessScreen() {
   const { theme } = useSettings();
 
   const [history, setHistory] = useState<AssessmentRecord[] | null>(null);
+  /** Kullanıcı seviyeyi elle değiştirirse; yoksa geçmişe göre önerilen */
+  const [chosenLevel, setChosenLevel] = useState<PassageLevel | null>(null);
 
   useEffect(() => {
     listAssessments().then(setHistory);
   }, []);
 
+  const suggested = useMemo(() => (history ? suggestLevel(history) : 'orta'), [history]);
+  const level = chosenLevel ?? suggested;
+
   const passage = useMemo<Passage | undefined>(() => {
     if (!history) return undefined;
     return (
       passageById(requested) ??
-      passageById(nextTestPassageId(TEST_PASSAGES.map((item) => item.id), history))
+      passageById(nextTestPassageId(testPassagesFor(level).map((item) => item.id), history))
     );
-  }, [history, requested]);
+  }, [history, requested, level]);
 
   if (!history || !passage) {
     return (
@@ -64,16 +78,30 @@ export default function AssessScreen() {
     );
   }
 
-  return <Assessment passage={passage} history={history} onExit={() => router.back()} />;
+  return (
+    <Assessment
+      key={passage.id}
+      passage={passage}
+      history={history}
+      suggestedLevel={suggested}
+      // Belirli bir metin istendiyse seviye seçimi gösterilmez
+      onLevelChange={requested ? undefined : setChosenLevel}
+      onExit={() => router.back()}
+    />
+  );
 }
 
 function Assessment({
   passage,
   history,
+  suggestedLevel,
+  onLevelChange,
   onExit,
 }: {
   passage: Passage;
   history: AssessmentRecord[];
+  suggestedLevel: PassageLevel;
+  onLevelChange?: (level: PassageLevel) => void;
   onExit: () => void;
 }) {
   const { theme, settings, update } = useSettings();
@@ -107,6 +135,7 @@ function Assessment({
       kind: 'test',
       at: Date.now(),
       passageId: passage.id,
+      level: passage.level,
       ms: readMs.current,
       words,
       wpm: score.wpm,
@@ -162,8 +191,27 @@ function Assessment({
               gizlenir ve {questions.length} soru gelir.
             </Txt>
           </Card>
+          {onLevelChange ? (
+            <Card style={{ gap: theme.space(2) }}>
+              <Txt variant="heading">Seviye</Txt>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+                {PASSAGE_LEVELS.map((option) => (
+                  <Chip
+                    key={option}
+                    label={option === suggestedLevel ? `${LEVEL_LABEL[option]} · önerilen` : LEVEL_LABEL[option]}
+                    active={passage.level === option}
+                    onPress={() => onLevelChange(option)}
+                  />
+                ))}
+              </View>
+              <Txt variant="dim" style={{ fontSize: 13 }}>
+                Gelişim yalnızca aynı seviyedeki ölçümler arasında karşılaştırılır. Anlaman iki
+                ölçüm üst üste %80 ve üstündeyse bir üst seviye önerilir.
+              </Txt>
+            </Card>
+          ) : null}
           <Txt variant="dim" style={{ fontSize: 13 }}>
-            Metin: {passage.title} · {formatNumber(words)} kelime · yaklaşık 2 dakika
+            Metin: {passage.title} · {LEVEL_LABEL[passage.level]} · {formatNumber(words)} kelime
           </Txt>
           <Button
             label="Başla"
@@ -260,7 +308,11 @@ function Result({
   const { theme } = useSettings();
   const suggested = suggestTargetWpm(score);
   const progress = improvement(history);
-  const previous = reliableTests(history).filter((item) => item.id !== record.id).pop();
+  // Önceki ölçüm aynı seviyeden olmalı: farklı zorluk, farklı hız demek
+  const previous = reliableTests(history)
+    .filter((item) => item.id !== record.id && levelOf(item) === levelOf(record))
+    .pop();
+  const nextLevel = suggestLevel(history);
 
   return (
     <View style={{ gap: theme.space(4) }}>
@@ -294,14 +346,27 @@ function Result({
       ) : null}
       {progress && progress.tests > 2 ? (
         <Txt variant="dim">
-          İlk ölçümüne göre: {describeChange(progress.change)} ({progress.tests} ölçüm).
+          {LEVEL_LABEL[progress.level]} seviyedeki ilk ölçümüne göre: {describeChange(progress.change)}{' '}
+          ({progress.tests} ölçüm).
         </Txt>
       ) : null}
       {record.reliable && !previous ? (
         <Txt variant="dim">
-          Bu senin başlangıç noktan. Bir hafta sonra yeni bir metinle tekrar ölçeceğiz;
-          gelişimin ancak o zaman görünür.
+          Bu, {LEVEL_LABEL[levelOf(record)].toLocaleLowerCase('tr')} seviyedeki başlangıç noktan.
+          Bir hafta sonra yeni bir metinle tekrar ölçeceğiz; gelişimin ancak o zaman görünür.
         </Txt>
+      ) : null}
+      {record.reliable && nextLevel !== levelOf(record) ? (
+        <Card style={{ gap: theme.space(1), borderColor: theme.colors.accent }}>
+          <Txt variant="body">
+            Sonraki ölçüm {LEVEL_LABEL[nextLevel].toLocaleLowerCase('tr')} seviyeden olacak.
+          </Txt>
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            {PASSAGE_LEVELS.indexOf(nextLevel) > PASSAGE_LEVELS.indexOf(levelOf(record))
+              ? 'Anlaman iki ölçümdür yüksek: biraz daha zor metinlerle devam etmenin zamanı.'
+              : 'Son iki ölçümde anlama düşük kaldı: bir süre daha kolay metinlerle anlamayı sağlamlaştır.'}
+          </Txt>
+        </Card>
       ) : null}
 
       {record.reliable ? (
