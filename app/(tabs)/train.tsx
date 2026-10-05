@@ -5,6 +5,7 @@ import { practicePassages } from '@/content/passages';
 import { useSettings } from '@/store/SettingsContext';
 import { listDocumentsWithProgress, type DocumentMeta } from '@/storage/documents';
 import { listHighlights } from '@/storage/highlights';
+import { listRecalls } from '@/storage/recalls';
 import { listVocab } from '@/storage/vocab';
 import { EXERCISES } from '@/train/exercises';
 import { dueCount } from '@/train/review';
@@ -69,7 +70,9 @@ export default function TrainScreen() {
       listVocab().then((entries) =>
         setVocab({ total: entries.length, due: dueCount(entries, Date.now()) })
       );
-      listHighlights().then((items) => setQuotes(items.length));
+      Promise.all([listHighlights(), listRecalls()]).then(([items, recalls]) =>
+        setQuotes(items.length + recalls.length)
+      );
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
@@ -189,7 +192,7 @@ export default function TrainScreen() {
         onPress={() => router.push('/vocab')}
       />
       <Button
-        label={quotes === 0 ? 'Alıntılar (boş)' : `Alıntılar (${quotes})`}
+        label={quotes === 0 ? 'Alıntılar ve özetler (boş)' : `Alıntılar ve özetler (${quotes})`}
         variant="secondary"
         icon="quote"
         style={{ marginTop: theme.space(2) }}

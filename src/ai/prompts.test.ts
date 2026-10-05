@@ -6,6 +6,8 @@ import {
   QUESTION_SCHEMA,
   sectionsRequest,
   summaryRequest,
+  recallRequest,
+  takeLastWords,
   takeWords,
   wordRequest,
 } from './prompts';
@@ -104,5 +106,27 @@ describe('sectionsRequest', () => {
     const request = sectionsRequest('uzun metin');
     expect(request.system).toContain('firstWords');
     expect(JSON.stringify(request.schema)).not.toContain('charOffset');
+  });
+});
+
+describe('recallRequest', () => {
+  it('şema ister ve özeti metinden ayırır', () => {
+    const request = recallRequest('Okunan bölüm.', 'Benim özetim');
+    expect(request.schema?.name).toBe('hatirlama_degerlendirmesi');
+    expect(request.prompt).toContain('Okunan bölüm.');
+    expect(request.prompt).toContain('Benim özetim');
+  });
+
+  it('uzun bölümde son okunan kısmı gönderir', () => {
+    const words = Array.from({ length: 4000 }, (_, i) => `k${i}`).join(' ');
+    const request = recallRequest(words, 'özet');
+    expect(request.prompt).toContain('k3999');
+    expect(request.prompt).not.toContain('k0 ');
+  });
+});
+
+describe('takeLastWords', () => {
+  it('sondan keser', () => {
+    expect(takeLastWords('a b c d', 2)).toEqual({ text: 'c d', truncated: true });
   });
 });

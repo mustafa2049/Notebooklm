@@ -14,6 +14,8 @@ export const KEYS = {
   badgesSeen: `${PREFIX}/badges-seen`,
   /** Alıntı defteri: altı çizilen cümleler ve notlar */
   highlights: `${PREFIX}/highlights`,
+  /** Okuduktan sonra kendi cümleleriyle yazılan özetler */
+  recalls: `${PREFIX}/recalls`,
   /** Kelime defteri */
   vocab: `${PREFIX}/vocab`,
   /** AI token/maliyet sayacı (toplam) */

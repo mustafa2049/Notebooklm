@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,10 +10,12 @@ import type { ReaderMode } from '@/core/types';
 import { ToolSheet, type AiTab } from '@/reader/ToolSheet';
 import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
+import { RecallCard } from '@/reader/RecallCard';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
 import { useFocusSession } from '@/reader/useFocusSession';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
+import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
 import { useSettings } from '@/store/SettingsContext';
 import {
   getDocument,
@@ -46,6 +48,7 @@ const MODE_CHUNK_SIZE: Partial<Record<ReaderMode, number>> = { rsvp: 1, chunk: 3
 export default function ReaderScreen() {
   const { id, seans, konum } = useLocalSearchParams<{ id: string; seans?: string; konum?: string }>();
   const router = useRouter();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { theme, settings, update, setFocusMode } = useSettings();
 
@@ -131,7 +134,8 @@ export default function ReaderScreen() {
       text={text}
       startOffset={startOffset}
       onProgress={onProgress}
-      onBack={() => router.back()}
+      // Bağlantıyla doğrudan açıldıysa geri gidilecek ekran yok: ana ekrana dön
+      onBack={() => (navigation.canGoBack() ? router.back() : router.replace('/'))}
       insetTop={insets.top}
       insetBottom={insets.bottom}
       focusSeconds={Number(seans) > 0 ? Number(seans) : 0}
@@ -184,6 +188,38 @@ function Reader({
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
   const focus = useFocusSession(engine, focusSeconds);
+
+  // "Kendi cümlenle anlat": bu açılışta okunan aralık için, en fazla bir kez
+  const [recall, setRecall] = useState<RecallTrigger | null>(null);
+  const recallAsked = useRef(false);
+  const promptRecall = useCallback(
+    (trigger: RecallTrigger) => {
+      if (
+        !shouldPromptRecall({
+          trigger,
+          activeMs: engine.activeMs(),
+          alreadyAsked: recallAsked.current,
+          enabled: settings.recallPrompt,
+        })
+      ) {
+        return false;
+      }
+      recallAsked.current = true;
+      engine.pause();
+      setRecall(trigger);
+      return true;
+    },
+    [engine, settings.recallPrompt]
+  );
+  useEffect(() => {
+    if (focus.done) promptRecall('focusDone');
+  }, [focus.done, promptRecall]);
+  useEffect(() => {
+    if (engine.finished) promptRecall('finished');
+  }, [engine.finished, promptRecall]);
+  const leave = useCallback(() => {
+    if (!promptRecall('leave')) onBack();
+  }, [promptRecall, onBack]);
 
   // AI kapalıyken panel yine açılıyor ama yalnızca kelime defteri sekmesiyle
   const aiReady = isAiConfigured(settings);
@@ -268,15 +304,19 @@ function Reader({
         setFocusMode(false);
         return true;
       }
-      return false;
+      return promptRecall('leave');
     });
     return () => subscription.remove();
-  }, [focusMode, setFocusMode]);
+  }, [focusMode, setFocusMode, promptRecall]);
 
   // Web klavye kısayolları
   useEffect(() => {
     if (Platform.OS !== 'web') return;
     const onKey = (event: KeyboardEvent) => {
+      // Not ya da özet yazarken boşluk tuşu okumayı başlatmasın
+      const target = event.target as HTMLElement | null;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+      if (recall !== null) return;
       switch (event.key) {
         case ' ':
           event.preventDefault();
@@ -305,13 +345,13 @@ function Reader({
           setFocusMode(!focusMode);
           break;
         case 'Escape':
-          onBack();
+          leave();
           break;
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [engine, update, settings.wpm, focusMode, setFocusMode, onBack]);
+  }, [engine, update, settings.wpm, focusMode, setFocusMode, leave, recall]);
 
   const flowMode = mode === 'bionic' || mode === 'highlight';
 
@@ -325,7 +365,7 @@ function Reader({
           gap: theme.space(1),
         }}
       >
-        <IconButton name="chevronLeft" onPress={onBack} accessibilityLabel="Geri" emphasis="strong" />
+        <IconButton name="chevronLeft" onPress={leave} accessibilityLabel="Geri" emphasis="strong" />
         <Txt variant="dim" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
           {title}
           {chapterLabel ? ` · ${chapterLabel}` : ''}
@@ -437,7 +477,7 @@ function Reader({
               sayıldı.
             </Txt>
             <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
-              <Button label="Bitir" style={{ flex: 1 }} onPress={onBack} />
+              <Button label="Bitir" style={{ flex: 1 }} onPress={leave} />
               <Button
                 label="Okumaya devam"
                 variant="secondary"
@@ -476,6 +516,21 @@ function Reader({
           onSeek={engine.seekRatio}
         />
       </View>
+
+      <RecallCard
+        visible={recall !== null}
+        docId={docId}
+        docTitle={title}
+        text={text}
+        fromChar={startOffset}
+        toChar={engine.chunk?.charEnd ?? startOffset}
+        leaving={recall === 'leave'}
+        onDone={() => {
+          const wasLeaving = recall === 'leave';
+          setRecall(null);
+          if (wasLeaving) onBack();
+        }}
+      />
 
       <ToolSheet
         visible={aiTab !== null}

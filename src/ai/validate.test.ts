@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AiError } from './types';
-import { parseQuestions, parseSections } from './validate';
+import { parseQuestions, parseRecall, parseSections } from './validate';
 
 const validQuestion = {
   question: 'Yazar hızlı okumanın en büyük engeli olarak neyi gösteriyor?',
@@ -74,5 +74,21 @@ describe('parseSections', () => {
 
   it('dizi değilse hata verir', () => {
     expect(() => parseSections({ sections: 'metin' })).toThrow(AiError);
+  });
+});
+
+describe('parseRecall', () => {
+  it('fazla maddeyi kırpar, boşları atar', () => {
+    const result = parseRecall({
+      caught: ['a', '', 'b', 'c', 'd'],
+      missed: [1, 'e'],
+      feedback: ' İyi. ',
+    });
+    expect(result).toEqual({ caught: ['a', 'b', 'c'], missed: ['e'], feedback: 'İyi.' });
+  });
+
+  it('hiçbir şey yoksa hata verir', () => {
+    expect(() => parseRecall({ caught: [], missed: [], feedback: '' })).toThrow();
+    expect(() => parseRecall('metin')).toThrow();
   });
 });

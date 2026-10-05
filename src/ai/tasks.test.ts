@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   askAboutText,
+  evaluateRecall,
   generateQuestions,
   generateSections,
   generateSummary,
@@ -191,5 +192,40 @@ describe('askAboutText', () => {
     });
 
     expect(provider.seen[0].prompt).toContain('Kahve demleme');
+  });
+});
+
+describe('evaluateRecall', () => {
+  const text = 'Giriş cümlesi burada. Arılar dans ederek yön bildirir. Son cümle burada.';
+
+  it('yalnızca okunan aralığı gönderir ve yanıtı doğrular', async () => {
+    const provider = fakeProvider({
+      text: '',
+      json: { caught: ['Arıların dansla iletişimi'], missed: [], feedback: 'Ana fikri yakaladın.' },
+    });
+    const from = text.indexOf('Arılar');
+    const to = text.indexOf('Son');
+    const result = await evaluateRecall(provider, { text, fromChar: from, toChar: to, summary: 'Arılar dansla anlaşır.' });
+    expect(result.value.caught).toEqual(['Arıların dansla iletişimi']);
+    const prompt = provider.seen[0].prompt;
+    expect(prompt).toContain('Arılar dans ederek');
+    expect(prompt).not.toContain('Giriş cümlesi');
+    expect(prompt).not.toContain('Son cümle');
+    expect(prompt).toContain('Arılar dansla anlaşır.');
+  });
+
+  it('boş özetle modele gitmez', async () => {
+    const provider = fakeProvider({ text: '' });
+    await expect(
+      evaluateRecall(provider, { text, fromChar: 0, toChar: text.length, summary: '  ' })
+    ).rejects.toBeInstanceOf(AiError);
+    expect(provider.seen).toHaveLength(0);
+  });
+
+  it('bozuk yanıtı reddeder', async () => {
+    const provider = fakeProvider({ text: '', json: { caught: 'yanlış' } });
+    await expect(
+      evaluateRecall(provider, { text, fromChar: 0, toChar: text.length, summary: 'özet' })
+    ).rejects.toBeInstanceOf(AiError);
   });
 });

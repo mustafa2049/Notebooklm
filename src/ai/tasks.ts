@@ -2,13 +2,20 @@ import { trLower } from '@/core/turkish';
 import {
   chatRequest,
   questionsRequest,
+  recallRequest,
   sectionsRequest,
   summaryRequest,
   wordRequest,
 } from './prompts';
 import { pickPassages, splitPassages } from './retrieve';
 import { AiError, type AiProvider, type TokenUsage } from './types';
-import { parseQuestions, parseSections, type AiQuestion } from './validate';
+import {
+  parseQuestions,
+  parseRecall,
+  parseSections,
+  type AiQuestion,
+  type RecallFeedback,
+} from './validate';
 
 /**
  * Uygulama seviyesindeki AI işleri.
@@ -56,6 +63,25 @@ export async function explainWord(
 ): Promise<AiResult<string>> {
   const response = await provider.complete(wordRequest(word, sentence), signal);
   return { value: response.text, usage: response.usage, model: response.model };
+}
+
+/**
+ * Okuyucunun kendi cümleleriyle yazdığı özeti okunan bölümle karşılaştırır.
+ * Yalnızca bu oturumda okunan aralık gönderilir — kitabın tamamı değil.
+ */
+export async function evaluateRecall(
+  provider: AiProvider,
+  input: { text: string; fromChar: number; toChar: number; summary: string },
+  signal?: AbortSignal
+): Promise<AiResult<RecallFeedback>> {
+  const from = Math.max(0, Math.min(input.fromChar, input.toChar));
+  const to = Math.min(input.text.length, Math.max(input.fromChar, input.toChar));
+  const passage = input.text.slice(from, to);
+  if (!passage.trim() || !input.summary.trim()) {
+    throw new AiError('Değerlendirilecek bir okuma ya da özet yok.', { retryable: false });
+  }
+  const response = await provider.complete(recallRequest(passage, input.summary), signal);
+  return { value: parseRecall(response.json), usage: response.usage, model: response.model };
 }
 
 export interface ChatTurn {

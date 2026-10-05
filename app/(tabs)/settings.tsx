@@ -270,6 +270,14 @@ export default function SettingsScreen() {
         </View>
 
         <Divider />
+        <Toggle
+          label="Okuduktan sonra özetlet"
+          hint="Odak seansı bitince, metin bitince ya da en az 3 dakika okuyup çıkarken “Aklında ne kaldı?” kartı açılır. Her zaman geçilebilir."
+          value={settings.recallPrompt}
+          onChange={(recallPrompt) => update({ recallPrompt })}
+        />
+
+        <Divider />
         <Txt variant="body">Yıllık kitap hedefi</Txt>
         <Txt variant="dim" style={{ fontSize: 13 }}>
           En az 5.000 kelimelik ve bu yıl bitirilen metinler sayılır.

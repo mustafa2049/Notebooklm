@@ -57,6 +57,8 @@ export interface Settings {
   focusMinutes: number;
   /** Yıllık kitap hedefi (0 = hedef yok) */
   yearlyBookGoal: number;
+  /** Anlamlı bir okumadan sonra "kendi cümlenle anlat" kartı */
+  recallPrompt: boolean;
   /** Günlük hatırlatıcı (yalnızca telefonda) */
   reminderEnabled: boolean;
   /** Hatırlatıcı saati (cihazın yerel saati) */
@@ -108,6 +110,7 @@ export const DEFAULT_SETTINGS: Settings = {
   onboardingDone: false,
   focusMinutes: 10,
   yearlyBookGoal: 0,
+  recallPrompt: true,
   reminderEnabled: false,
   reminderHour: 20,
   reminderMinute: 0,

@@ -4,6 +4,7 @@ import { Platform, Share, View } from 'react-native';
 import { useSettings } from '@/store/SettingsContext';
 import { listDocuments } from '@/storage/documents';
 import { deleteHighlight, listHighlights, type Highlight } from '@/storage/highlights';
+import { deleteRecall, listRecalls, type Recall } from '@/storage/recalls';
 import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
 
 /**
@@ -18,19 +19,22 @@ interface Group {
   title: string;
   available: boolean;
   items: Highlight[];
+  recalls: Recall[];
 }
 
 export default function HighlightsScreen() {
   const router = useRouter();
   const { theme } = useSettings();
   const [items, setItems] = useState<Highlight[] | null>(null);
+  const [recalls, setRecalls] = useState<Recall[]>([]);
   const [docIds, setDocIds] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      Promise.all([listHighlights(), listDocuments()]).then(([highlights, documents]) => {
+      Promise.all([listHighlights(), listDocuments(), listRecalls()]).then(([highlights, documents, saved]) => {
         setItems(highlights);
+        setRecalls(saved);
         setDocIds(new Set(documents.map((doc) => doc.id)));
       });
     }, [])
@@ -38,20 +42,23 @@ export default function HighlightsScreen() {
 
   const groups = useMemo<Group[]>(() => {
     const byDoc = new Map<string, Group>();
-    for (const item of items ?? []) {
-      const group = byDoc.get(item.docId) ?? {
-        docId: item.docId,
-        title: item.docTitle || 'Adsız metin',
-        available: docIds.has(item.docId),
+    const groupOf = (docId: string, title: string) => {
+      const group = byDoc.get(docId) ?? {
+        docId,
+        title: title || 'Adsız metin',
+        available: docIds.has(docId),
         items: [],
+        recalls: [],
       };
-      group.items.push(item);
-      byDoc.set(item.docId, group);
-    }
+      byDoc.set(docId, group);
+      return group;
+    };
+    for (const item of items ?? []) groupOf(item.docId, item.docTitle).items.push(item);
+    for (const recall of recalls) groupOf(recall.docId, recall.docTitle).recalls.push(recall);
     // Kitap içinde metindeki sıraya göre: alıntılar kitabın akışını izlesin
     for (const group of byDoc.values()) group.items.sort((a, b) => a.charOffset - b.charOffset);
     return [...byDoc.values()];
-  }, [items, docIds]);
+  }, [items, recalls, docIds]);
 
   const share = async (item: Highlight) => {
     const text = `“${item.sentence}”\n— ${item.docTitle}${item.note ? `\n\nNotum: ${item.note}` : ''}`;
@@ -65,6 +72,11 @@ export default function HighlightsScreen() {
       return;
     }
     await Share.share({ message: text });
+  };
+
+  const removeRecall = async (id: string) => {
+    await deleteRecall(id);
+    setRecalls((list) => list.filter((item) => item.id !== id));
   };
 
   const remove = async (id: string) => {
@@ -88,7 +100,7 @@ export default function HighlightsScreen() {
 
       {items === null ? (
         <Txt variant="dim">Yükleniyor…</Txt>
-      ) : items.length === 0 ? (
+      ) : items.length === 0 && recalls.length === 0 ? (
         <Card style={{ gap: theme.space(3) }}>
           <Txt variant="heading">Henüz alıntı yok</Txt>
           <Txt variant="dim">
@@ -100,7 +112,7 @@ export default function HighlightsScreen() {
       ) : (
         <View style={{ gap: theme.space(5) }}>
           <Txt variant="dim">
-            {items.length} alıntı · {groups.length} metin
+            {items.length} alıntı{recalls.length ? ` · ${recalls.length} özet` : ''} · {groups.length} metin
           </Txt>
           {groups.map((group) => (
             <View key={group.docId} style={{ gap: theme.space(2) }}>
@@ -148,6 +160,34 @@ export default function HighlightsScreen() {
                       emphasis="faint"
                       accessibilityLabel="Sil"
                       onPress={() => void remove(item.id)}
+                    />
+                  </View>
+                </Card>
+              ))}
+              {group.recalls.map((recall) => (
+                <Card key={recall.id} style={{ gap: theme.space(2) }}>
+                  <Txt variant="dim" style={{ fontSize: 12 }}>
+                    Kendi cümlelerinle ·{' '}
+                    {new Date(recall.at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}
+                  </Txt>
+                  <Txt variant="body">{recall.text}</Txt>
+                  {recall.feedback?.feedback ? (
+                    <Txt variant="dim" style={{ fontSize: 13 }}>
+                      Geri bildirim: {recall.feedback.feedback}
+                    </Txt>
+                  ) : null}
+                  {recall.feedback?.missed.length ? (
+                    <Txt variant="dim" style={{ fontSize: 13 }}>
+                      Gözden kaçanlar: {recall.feedback.missed.join(' · ')}
+                    </Txt>
+                  ) : null}
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    <IconButton
+                      name="trash"
+                      size={18}
+                      emphasis="faint"
+                      accessibilityLabel="Özeti sil"
+                      onPress={() => void removeRecall(recall.id)}
                     />
                   </View>
                 </Card>

@@ -85,3 +85,29 @@ export function parseSections(json: unknown): AiSectionMark[] {
   }
   return sections;
 }
+
+export interface RecallFeedback {
+  caught: string[];
+  missed: string[];
+  feedback: string;
+}
+
+function stringList(value: unknown, max: number): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map(nonEmptyString).filter((item): item is string => item !== null).slice(0, max);
+}
+
+export function parseRecall(json: unknown): RecallFeedback {
+  if (!isRecord(json)) {
+    throw new AiError('Model beklenen biçimde yanıt vermedi.', { retryable: true });
+  }
+  const result: RecallFeedback = {
+    caught: stringList(json.caught, 3),
+    missed: stringList(json.missed, 3),
+    feedback: nonEmptyString(json.feedback) ?? '',
+  };
+  if (!result.feedback && !result.caught.length && !result.missed.length) {
+    throw new AiError('Model geri bildirim üretemedi. Yeniden deneyebilirsin.', { retryable: true });
+  }
+  return result;
+}

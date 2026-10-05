@@ -208,3 +208,59 @@ ${body}
     maxTokens: 3000,
   };
 }
+
+// ------------------------------------------- kendi cümlenle anlatma
+
+export const RECALL_SCHEMA = {
+  name: 'hatirlama_degerlendirmesi',
+  schema: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['caught', 'missed', 'feedback'],
+    properties: {
+      /** Okuyucunun özetinde doğru yakaladığı ana noktalar */
+      caught: { type: 'array', items: { type: 'string' } },
+      /** Metinde olup özette olmayan önemli noktalar */
+      missed: { type: 'array', items: { type: 'string' } },
+      /** Kısa, cesaretlendirici geri bildirim */
+      feedback: { type: 'string' },
+    },
+  },
+} as const;
+
+/** Okunan bölümün en fazla bu kadar kelimesi gönderilir (son okunan kısım). */
+export const RECALL_MAX_WORDS = 3000;
+
+/** Metnin **sonundan** kelime sınırına indirir: hatırlanması gereken en son okunan. */
+export function takeLastWords(text: string, maxWords: number): { text: string; truncated: boolean } {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= maxWords) return { text: text.trim(), truncated: false };
+  return { text: words.slice(-maxWords).join(' '), truncated: true };
+}
+
+export function recallRequest(passage: string, summary: string): AiRequest {
+  const { text: body, truncated } = takeLastWords(passage, RECALL_MAX_WORDS);
+  return {
+    system: `Sen bir okuma koçusun. Okuyucu bir bölümü okudu ve aklında kalanı kendi
+cümleleriyle yazdı. Amaç not vermek değil, neyi kavradığını ve neyi kaçırdığını göstermek.
+
+${COMMON_RULES}
+- Özetteki yanlış bir bilgiyi nazikçe düzelt; metinde dayanağı yoksa söyle.
+- "caught" ve "missed" en fazla 3'er kısa madde olsun (her biri en fazla 12 kelime).
+- "feedback" en fazla 2 cümle; cesaretlendirici ama dürüst.`,
+    prompt: `Okunan bölüm:
+"""
+${body}
+"""
+${truncated ? '\nNot: Bölümün yalnızca son kısmı verildi.\n' : ''}
+Okuyucunun özeti:
+"""
+${summary.trim()}
+"""
+
+Yalnızca şu biçimde JSON döndür, başka hiçbir şey yazma:
+{"caught":["..."],"missed":["..."],"feedback":"..."}`,
+    schema: RECALL_SCHEMA as unknown as AiRequest['schema'],
+    maxTokens: 800,
+  };
+}
