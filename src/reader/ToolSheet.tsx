@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { askAboutText, explainWord, generateSections, generateSummary, type Section } from '@/ai/tasks';
@@ -6,6 +6,7 @@ import { useAi } from '@/ai/useAi';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache, type AiChatTurn } from '@/storage/ai';
 import { addVocab } from '@/storage/vocab';
+import { previewOfText } from '@/train/drills/reading';
 import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
 
 /**
@@ -22,9 +23,10 @@ import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
  *    girilmişse tutar) panelin altında yazar.
  */
 
-export type AiTab = 'summary' | 'sections' | 'chat' | 'word';
+export type AiTab = 'summary' | 'sections' | 'chat' | 'word' | 'preview';
 
 const TAB_LABEL: Record<AiTab, string> = {
+  preview: 'Önizle',
   summary: 'Özet',
   sections: 'Bölümler',
   chat: 'Sohbet',
@@ -32,7 +34,7 @@ const TAB_LABEL: Record<AiTab, string> = {
 };
 
 /** AI kapalıyken kelime defteri her zaman, bölümler yalnızca gerçek bölüm varsa. */
-const OFFLINE_TABS: AiTab[] = ['word'];
+const OFFLINE_TABS: AiTab[] = ['preview', 'word'];
 
 interface Props {
   visible: boolean;
@@ -74,6 +76,8 @@ export function ToolSheet({
   const insets = useSafeAreaInsets();
   const ai = useAi();
   const [tab, setTab] = useState<AiTab>(initialTab);
+  // Önizleme metnin başından: uzun kitapta da hızlı kalsın diye ilk ~60 bin karakter
+  const outline = useMemo(() => (visible ? previewOfText(text.slice(0, 60000)) : []), [visible, text]);
 
   const [summary, setSummary] = useState<string | null>(null);
   const [sections, setSections] = useState<Section[] | null>(null);
@@ -293,6 +297,25 @@ export function ToolSheet({
                 multiline
               />
               <Button label="Sor" icon="chat" disabled={ai.busy || !question.trim()} onPress={ask} />
+            </>
+          ) : null}
+
+          {tab === 'preview' ? (
+            <>
+              <Txt variant="dim">
+                Her paragrafın ilk cümlesi: metnin iskeleti. Okumadan önce bakmak nereye
+                gittiğini bilerek okumanı sağlar.
+              </Txt>
+              {outline.slice(0, 40).map((sentence, index) => (
+                <Txt key={index} variant="body" style={{ fontSize: 14 }}>
+                  {sentence}
+                </Txt>
+              ))}
+              {outline.length > 40 ? (
+                <Txt variant="dim" style={{ fontSize: 12 }}>
+                  … ve {outline.length - 40} paragraf daha
+                </Txt>
+              ) : null}
             </>
           ) : null}
 

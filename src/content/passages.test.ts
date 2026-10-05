@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readability } from '@/core/readability';
 import { countWordsInText } from '@/ingest/normalize';
-import { PASSAGES, TEST_PASSAGES } from './passages';
+import { PASSAGES, practicePassages, TEST_PASSAGES } from './passages';
 
 /**
  * Gömülü metinler elle yazıldı; bu testler yazım hatalarını yakalayan güvence.
@@ -73,5 +73,16 @@ describe('test metinlerinin zorluğu denk', () => {
   it('en kolay ile en zor arasındaki fark 15 puanı geçmiyor', () => {
     const values = scores.map((entry) => entry.score);
     expect(Math.max(...values) - Math.min(...values)).toBeLessThanOrEqual(15);
+  });
+});
+
+describe('practicePassages', () => {
+  it('test edilmemiş test metnini egzersize koymaz', () => {
+    const ids = practicePassages([]).map((passage) => passage.id);
+    expect(ids.every((id) => PASSAGES.find((p) => p.id === id)?.use === 'drill')).toBe(true);
+  });
+
+  it('test edilmiş metni egzersiz havuzuna ekler', () => {
+    expect(practicePassages(['arilar']).map((passage) => passage.id)).toContain('arilar');
   });
 });

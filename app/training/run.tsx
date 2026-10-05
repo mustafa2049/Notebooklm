@@ -7,6 +7,7 @@ import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useSettings } from '@/store/SettingsContext';
+import { passageById } from '@/content/passages';
 import { getDocumentText, loadProgress, saveProgress } from '@/storage/documents';
 import { exerciseById, nextPhaseInMs, phaseAt } from '@/train/exercises';
 import { Button, IconButton, ProgressBar, Txt } from '@/ui/primitives';
@@ -27,6 +28,11 @@ export default function TrainingRunScreen() {
 
   useEffect(() => {
     if (!docId) return;
+    // Gömülü pratik metni: kütüphanede değil, ilerleme de tutulmuyor
+    if (docId.startsWith('pratik:')) {
+      setText(passageById(docId.slice('pratik:'.length))?.text ?? '');
+      return;
+    }
     let cancelled = false;
     Promise.all([getDocumentText(docId), loadProgress(docId)]).then(([content, progress]) => {
       if (cancelled) return;
@@ -73,7 +79,9 @@ export default function TrainingRunScreen() {
       insetTop={insets.top}
       insetBottom={insets.bottom}
       onExit={() => router.back()}
-      onQuiz={() => router.replace(`/training/quiz?docId=${docId}`)}
+      onQuiz={
+        docId?.startsWith('pratik:') ? undefined : () => router.replace(`/training/quiz?docId=${docId}`)
+      }
     />
   );
 }
@@ -95,7 +103,8 @@ function TrainingSession({
   insetTop: number;
   insetBottom: number;
   onExit: () => void;
-  onQuiz: () => void;
+  /** Kütüphane metni değilse (pratik metni) anlama testi yok */
+  onQuiz?: () => void;
 }) {
   const { theme, settings } = useSettings();
   const exercise = exerciseById(exerciseId)!;
@@ -113,6 +122,7 @@ function TrainingSession({
     wpmOverride: Math.round(settings.wpm * phase.wpmFactor),
     chunkSizeOverride: phase.chunkSize,
     onProgress: (charOffset, ratio) => {
+      if (docId.startsWith('pratik:')) return;
       void saveProgress(docId, { charOffset, ratio, updatedAt: Date.now(), finished: ratio >= 0.999 });
     },
   });
@@ -162,7 +172,7 @@ function TrainingSession({
           Şimdi ne kadarını tuttuğuna bak — hız, anlama pahasına yükseliyorsa kazanç değil.
         </Txt>
         <View style={{ gap: theme.space(3), marginTop: theme.space(5), alignSelf: 'stretch' }}>
-          <Button label="Anlama testini çöz" icon="check" onPress={onQuiz} />
+          {onQuiz ? <Button label="Anlama testini çöz" icon="check" onPress={onQuiz} /> : null}
           <Button label="Bitir" variant="secondary" onPress={onExit} />
         </View>
       </Centered>

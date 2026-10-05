@@ -837,3 +837,13 @@ export const TEST_PASSAGES = PASSAGES.filter((passage) => passage.use === 'test'
 export function passageById(id: string | undefined): Passage | undefined {
   return PASSAGES.find((passage) => passage.id === id);
 }
+
+/**
+ * Egzersizlerde kullanılabilecek metinler: egzersiz metinleri + kullanıcının
+ * daha önce test olarak okuduğu metinler. Henüz test edilmemiş bir metni
+ * egzersizde göstermek, o metinle yapılacak ölçümü "tanıdıklık" ile şişirirdi.
+ */
+export function practicePassages(testedIds: Iterable<string>): Passage[] {
+  const tested = new Set(testedIds);
+  return PASSAGES.filter((passage) => passage.use === 'drill' || tested.has(passage.id));
+}
