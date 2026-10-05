@@ -5,6 +5,7 @@ import { askAboutText, explainWord, generateSections, generateSummary, type Sect
 import { useAi } from '@/ai/useAi';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache, type AiChatTurn } from '@/storage/ai';
+import { addHighlight } from '@/storage/highlights';
 import { addVocab } from '@/storage/vocab';
 import { previewOfText } from '@/train/drills/reading';
 import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
@@ -23,7 +24,7 @@ import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
  *    girilmişse tutar) panelin altında yazar.
  */
 
-export type AiTab = 'summary' | 'sections' | 'chat' | 'word' | 'preview';
+export type AiTab = 'summary' | 'sections' | 'chat' | 'word' | 'quote' | 'preview';
 
 const TAB_LABEL: Record<AiTab, string> = {
   preview: 'Önizle',
@@ -31,10 +32,11 @@ const TAB_LABEL: Record<AiTab, string> = {
   sections: 'Bölümler',
   chat: 'Sohbet',
   word: 'Kelime',
+  quote: 'Alıntı',
 };
 
 /** AI kapalıyken kelime defteri her zaman, bölümler yalnızca gerçek bölüm varsa. */
-const OFFLINE_TABS: AiTab[] = ['preview', 'word'];
+const OFFLINE_TABS: AiTab[] = ['preview', 'word', 'quote'];
 
 interface Props {
   visible: boolean;
@@ -48,6 +50,10 @@ interface Props {
   /** Kelime sekmesi için: o an ekranda olan kelimeler ve içinde geçtiği cümle */
   words: string[];
   sentence: string;
+  /** Cümlenin metindeki başlangıcı — alıntıya dokununca buraya dönülür */
+  sentenceOffset: number;
+  /** Alıntı kaydedilince okuyucu işaretleri yenilesin */
+  onHighlightSaved?: () => void;
   /** Bölüm başına atlama */
   onJumpTo: (charOffset: number) => void;
   /** Kelime defteri kaydında kaynağı göstermek için */
@@ -68,6 +74,8 @@ export function ToolSheet({
   charOffset,
   words,
   sentence,
+  sentenceOffset,
+  onHighlightSaved,
   onJumpTo,
   docTitle,
   fileChapters,
@@ -86,6 +94,8 @@ export function ToolSheet({
   const [wordInfo, setWordInfo] = useState<{ word: string; text: string } | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const [quoteNote, setQuoteNote] = useState('');
+  const [quoteSaved, setQuoteSaved] = useState(false);
   const hasFileChapters = Boolean(fileChapters?.length);
   const tabs = ai.configured
     ? (Object.keys(TAB_LABEL) as AiTab[])
@@ -98,6 +108,8 @@ export function ToolSheet({
     // AI kapalıyken yalnızca kelime sekmesi var; başka bir sekme istenirse ona düş
     setTab(ai.configured || tabs.includes(initialTab) ? initialTab : 'word');
     setSaved(null);
+    setQuoteNote('');
+    setQuoteSaved(false);
   }, [visible, initialTab, ai.configured]);
 
   // Saklanmış çıktıları yükle: aynı özet için ikinci kez ödeme yapılmasın
@@ -163,6 +175,18 @@ export function ToolSheet({
     setSaved(word);
   };
 
+  const saveQuote = async () => {
+    await addHighlight({
+      docId,
+      docTitle: docTitle ?? '',
+      charOffset: sentenceOffset,
+      sentence,
+      note: quoteNote.trim() || undefined,
+    });
+    setQuoteSaved(true);
+    onHighlightSaved?.();
+  };
+
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={{ flex: 1, backgroundColor: '#000000AA' }} onPress={onClose} />
@@ -180,7 +204,7 @@ export function ToolSheet({
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
           <Txt variant="heading" style={{ flex: 1, fontSize: 18 }}>
-            {ai.configured ? 'Yapay zekâ' : hasFileChapters ? 'Araçlar' : 'Kelime defteri'}
+            {ai.configured ? 'Yapay zekâ' : 'Araçlar'}
           </Txt>
           <Pressable onPress={onClose} hitSlop={10}>
             <Txt variant="dim">kapat</Txt>
@@ -375,6 +399,37 @@ export function ToolSheet({
                   Bağlam: {sentence}
                 </Txt>
               ) : null}
+            </>
+          ) : null}
+
+          {tab === 'quote' ? (
+            <>
+              <Txt variant="dim">
+                Önemli bulduğun cümlenin altını çiz. Alıntılar defterinde kitap kitap birikir;
+                dokununca metindeki yerine dönersin.
+              </Txt>
+              {sentence ? (
+                <Card style={{ borderLeftWidth: 3, borderLeftColor: theme.colors.accent }}>
+                  <Txt variant="body" style={{ fontSize: 15 }}>
+                    {sentence}
+                  </Txt>
+                </Card>
+              ) : null}
+              <Field
+                value={quoteNote}
+                onChangeText={(value) => {
+                  setQuoteNote(value);
+                  setQuoteSaved(false);
+                }}
+                placeholder="Not ekle (isteğe bağlı): neden önemli?"
+                multiline
+              />
+              <Button
+                label={quoteSaved ? 'Alıntılara eklendi' : 'Alıntıyı kaydet'}
+                icon={quoteSaved ? 'check' : 'quote'}
+                disabled={quoteSaved || !sentence}
+                onPress={() => void saveQuote()}
+              />
             </>
           ) : null}
 

@@ -12,6 +12,8 @@ export const KEYS = {
   drills: `${PREFIX}/drills`,
   /** Kullanıcıya duyurulmuş rozetler */
   badgesSeen: `${PREFIX}/badges-seen`,
+  /** Alıntı defteri: altı çizilen cümleler ve notlar */
+  highlights: `${PREFIX}/highlights`,
   /** Kelime defteri */
   vocab: `${PREFIX}/vocab`,
   /** AI token/maliyet sayacı (toplam) */

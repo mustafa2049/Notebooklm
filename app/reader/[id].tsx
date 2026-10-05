@@ -4,6 +4,7 @@ import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
+import { indexFromCharOffset } from '@/core/progress';
 import { stripPunctuation } from '@/core/turkish';
 import type { ReaderMode } from '@/core/types';
 import { ToolSheet, type AiTab } from '@/reader/ToolSheet';
@@ -22,6 +23,7 @@ import {
   type DocumentChapter,
   type DocumentMeta,
 } from '@/storage/documents';
+import { highlightsForDoc } from '@/storage/highlights';
 import { haptics } from '@/ui/haptics';
 import { Button, Card, Chip, IconButton, Txt } from '@/ui/primitives';
 
@@ -42,7 +44,7 @@ const MODE_LABEL: Record<ReaderMode, string> = {
 const MODE_CHUNK_SIZE: Partial<Record<ReaderMode, number>> = { rsvp: 1, chunk: 3 };
 
 export default function ReaderScreen() {
-  const { id, seans } = useLocalSearchParams<{ id: string; seans?: string }>();
+  const { id, seans, konum } = useLocalSearchParams<{ id: string; seans?: string; konum?: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { theme, settings, update, setFocusMode } = useSettings();
@@ -62,7 +64,15 @@ export default function ReaderScreen() {
         if (cancelled) return;
         setMeta(document);
         setText(content ?? '');
-        setStartOffset(progress?.finished ? 0 : (progress?.charOffset ?? 0));
+        // Alıntı defterinden gelindiyse o cümleden başla
+        const jump = Number(konum);
+        setStartOffset(
+          konum !== undefined && Number.isFinite(jump) && jump >= 0
+            ? jump
+            : progress?.finished
+              ? 0
+              : (progress?.charOffset ?? 0)
+        );
         finishedAt.current = progress?.finishedAt;
         setLoading(false);
       }
@@ -70,7 +80,7 @@ export default function ReaderScreen() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, konum]);
 
   // Okuyucudan çıkınca odak modunu bırak
   useEffect(() => () => setFocusMode(false), [setFocusMode]);
@@ -196,14 +206,29 @@ function Reader({
   /** Kelime açıklaması için: ekrandaki kelimeler ve içinde geçtiği cümle. */
   const context = React.useMemo(() => {
     const chunk = engine.chunk;
-    if (!chunk) return { words: [], sentence: '' };
+    if (!chunk) return { words: [], sentence: '', sentenceOffset: 0 };
     const words = chunk.tokens.map((token) => stripPunctuation(token.text)).filter(Boolean);
-    const sentence = engine.tokens
-      .filter((token) => token.sentenceIndex === chunk.sentenceIndex)
-      .map((token) => token.text)
-      .join(' ');
-    return { words, sentence };
+    const sentenceTokens = engine.tokens.filter(
+      (token) => token.sentenceIndex === chunk.sentenceIndex
+    );
+    const sentence = sentenceTokens.map((token) => token.text).join(' ');
+    return { words, sentence, sentenceOffset: sentenceTokens[0]?.start ?? chunk.charStart };
   }, [engine.chunk, engine.tokens]);
+
+  // Alıntılanmış cümleler akış modlarında hafif zeminle görünsün
+  const [quoteOffsets, setQuoteOffsets] = useState<number[]>([]);
+  const loadQuotes = useCallback(() => {
+    void highlightsForDoc(docId).then((items) => setQuoteOffsets(items.map((item) => item.charOffset)));
+  }, [docId]);
+  useEffect(loadQuotes, [loadQuotes]);
+  const markedSentences = React.useMemo(() => {
+    const marked = new Set<number>();
+    if (!engine.chunks.length) return marked;
+    for (const offset of quoteOffsets) {
+      marked.add(engine.chunks[indexFromCharOffset(engine.chunks, offset)].sentenceIndex);
+    }
+    return marked;
+  }, [quoteOffsets, engine.chunks]);
 
   useSessionRecorder({
     docId,
@@ -365,6 +390,7 @@ function Reader({
               chunks={engine.chunks}
               index={engine.index}
               variant={mode === 'bionic' ? 'bionic' : 'highlight'}
+              markedSentences={markedSentences}
             />
           </View>
         ) : (
@@ -462,6 +488,8 @@ function Reader({
         charOffset={engine.chunk?.charStart ?? 0}
         words={context.words}
         sentence={context.sentence}
+        sentenceOffset={context.sentenceOffset}
+        onHighlightSaved={loadQuotes}
         onJumpTo={engine.seekCharOffset}
       />
     </View>

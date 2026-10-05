@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { practicePassages } from '@/content/passages';
 import { useSettings } from '@/store/SettingsContext';
 import { listDocumentsWithProgress, type DocumentMeta } from '@/storage/documents';
+import { listHighlights } from '@/storage/highlights';
 import { listVocab } from '@/storage/vocab';
 import { EXERCISES } from '@/train/exercises';
 import { dueCount } from '@/train/review';
@@ -55,6 +56,7 @@ export default function TrainScreen() {
   const [documents, setDocuments] = useState<DocumentMeta[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [vocab, setVocab] = useState({ total: 0, due: 0 });
+  const [quotes, setQuotes] = useState(0);
   const practice = practicePassages([]);
 
   useFocusEffect(
@@ -67,6 +69,7 @@ export default function TrainScreen() {
       listVocab().then((entries) =>
         setVocab({ total: entries.length, due: dueCount(entries, Date.now()) })
       );
+      listHighlights().then((items) => setQuotes(items.length));
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
@@ -170,8 +173,8 @@ export default function TrainScreen() {
       ) : null}
 
       <SectionHeader
-        title="Kelime defteri"
-        hint="Okurken uzun basıp kaydettiğin kelimeler, geçtikleri cümleyle birlikte burada."
+        title="Defterler"
+        hint="Okurken uzun basıp kaydettiğin kelimeler ve altını çizdiğin cümleler burada."
       />
       <Button
         label={
@@ -184,6 +187,13 @@ export default function TrainScreen() {
         variant="secondary"
         icon="book"
         onPress={() => router.push('/vocab')}
+      />
+      <Button
+        label={quotes === 0 ? 'Alıntılar (boş)' : `Alıntılar (${quotes})`}
+        variant="secondary"
+        icon="quote"
+        style={{ marginTop: theme.space(2) }}
+        onPress={() => router.push('/highlights')}
       />
     </Screen>
   );

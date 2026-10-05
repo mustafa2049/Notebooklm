@@ -17,10 +17,13 @@ export function FlowView({
   chunks,
   index,
   variant,
+  markedSentences,
 }: {
   chunks: Chunk[];
   index: number;
   variant: 'bionic' | 'highlight';
+  /** Alıntı defterine eklenmiş cümleler (cümle sırası) */
+  markedSentences?: Set<number>;
 }) {
   const { theme, settings } = useSettings();
   const [box, setBox] = useState({ width: 0, height: 0 });
@@ -83,6 +86,7 @@ export function FlowView({
             theme={theme}
             bionicRatio={settings.bionicRatio}
             baseColor={baseColor}
+            marked={markedSentences?.has(chunk.sentenceIndex) ?? false}
           />
         ))}
       </Text>
@@ -103,8 +107,10 @@ const ChunkSpan = React.memo(function ChunkSpan({
   theme,
   bionicRatio,
   baseColor,
+  marked,
 }: {
   chunk: Chunk;
+  marked: boolean;
   current: boolean;
   read: boolean;
   variant: 'bionic' | 'highlight';
@@ -122,7 +128,12 @@ const ChunkSpan = React.memo(function ChunkSpan({
       ? theme.colors.textDim
       : baseColor;
 
-  const background = current && variant === 'highlight' ? theme.colors.highlight : undefined;
+  const background =
+    current && variant === 'highlight'
+      ? theme.colors.highlight
+      : marked
+        ? theme.colors.accentSoft
+        : undefined;
 
   if (variant === 'bionic') {
     return (

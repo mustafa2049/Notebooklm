@@ -220,8 +220,8 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
       )}
       {name === 'quote' && (
         <>
-          <Path d="M5 17c0-4 1-7 4.5-9M5 17h4v-4.5H5z" {...stroke} />
-          <Path d="M14 17c0-4 1-7 4.5-9M14 17h4v-4.5h-4z" {...stroke} />
+          <Path d="M4.5 18h5v-5.5H6.6c0-2.3 1-3.6 3-4.2V5.5C6.2 6.2 4.5 8.8 4.5 12.5z" fill={color} />
+          <Path d="M13.5 18h5v-5.5h-2.9c0-2.3 1-3.6 3-4.2V5.5c-3.4.7-5.1 3.3-5.1 7z" fill={color} />
         </>
       )}
       {name === 'headphones' && (
