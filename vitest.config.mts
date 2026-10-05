@@ -19,6 +19,7 @@ export default defineConfig({
       'src/ai/**/*.test.ts',
       'src/habit/**/*.test.ts',
       'src/content/**/*.test.ts',
+      'src/backup/**/*.test.ts',
     ],
     environment: 'node',
   },

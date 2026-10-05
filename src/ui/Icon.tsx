@@ -33,7 +33,12 @@ export type IconName =
   | 'grid'
   | 'eye'
   | 'search'
-  | 'award';
+  | 'award'
+  | 'download'
+  | 'upload'
+  | 'quote'
+  | 'headphones'
+  | 'share';
 
 interface IconProps {
   name: IconName;
@@ -197,6 +202,42 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
         <>
           <Circle cx={12} cy={9} r={5.5} {...stroke} />
           <Polyline points="8.5,13.5 7,21 12,18.5 17,21 15.5,13.5" {...stroke} />
+        </>
+      )}
+      {name === 'download' && (
+        <>
+          <Line x1={12} y1={4} x2={12} y2={15} {...stroke} />
+          <Polyline points="7,10.5 12,15.5 17,10.5" {...stroke} />
+          <Path d="M4.5 16v2.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V16" {...stroke} />
+        </>
+      )}
+      {name === 'upload' && (
+        <>
+          <Line x1={12} y1={15.5} x2={12} y2={4.5} {...stroke} />
+          <Polyline points="7,9 12,4 17,9" {...stroke} />
+          <Path d="M4.5 16v2.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V16" {...stroke} />
+        </>
+      )}
+      {name === 'quote' && (
+        <>
+          <Path d="M5 17c0-4 1-7 4.5-9M5 17h4v-4.5H5z" {...stroke} />
+          <Path d="M14 17c0-4 1-7 4.5-9M14 17h4v-4.5h-4z" {...stroke} />
+        </>
+      )}
+      {name === 'headphones' && (
+        <>
+          <Path d="M4 15v-3a8 8 0 0 1 16 0v3" {...stroke} />
+          <Rect x={3.5} y={14} width={4} height={6.5} rx={1.5} {...stroke} />
+          <Rect x={16.5} y={14} width={4} height={6.5} rx={1.5} {...stroke} />
+        </>
+      )}
+      {name === 'share' && (
+        <>
+          <Circle cx={6.5} cy={12} r={2.5} {...stroke} />
+          <Circle cx={17.5} cy={6} r={2.5} {...stroke} />
+          <Circle cx={17.5} cy={18} r={2.5} {...stroke} />
+          <Line x1={8.7} y1={10.8} x2={15.3} y2={7.2} {...stroke} />
+          <Line x1={8.7} y1={13.2} x2={15.3} y2={16.8} {...stroke} />
         </>
       )}
     </Svg>

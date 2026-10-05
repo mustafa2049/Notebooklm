@@ -9,6 +9,7 @@ import { useSettings } from '@/store/SettingsContext';
 import { KEYS } from '@/storage/keys';
 import type { ThemePreference } from '@/storage/settings';
 import { AiSettings } from '@/ui/AiSettings';
+import { BackupCard } from '@/ui/BackupCard';
 import { Slider } from '@/ui/Slider';
 import {
   Button,
@@ -345,6 +346,8 @@ export default function SettingsScreen() {
           Tüm metinler, ilerlemeler ve istatistikler yalnızca bu cihazda tutulur; hiçbir
           sunucuya gönderilmez.
         </Txt>
+        <BackupCard />
+        <Divider />
         <Button
           label={cleared ? 'İstatistikler silindi' : 'İstatistikleri sıfırla'}
           variant="danger"
