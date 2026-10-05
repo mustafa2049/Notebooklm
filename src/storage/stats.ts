@@ -5,8 +5,11 @@ import { KEYS } from './keys';
 /** Tamamlanan bir okuma oturumu. */
 export interface ReadingSession {
   docId: string;
-  /** `test`: seviye testinde kendi hızında okuma (uygulama temposu yok) */
-  mode: ReaderMode | 'test';
+  /**
+   * `test`: seviye testinde kendi hızında okuma (uygulama temposu yok);
+   * `listen`: sesli okumayla takip (süre sayılır, tempo istatistiğine girmez)
+   */
+  mode: ReaderMode | 'test' | 'listen';
   /** Oturumun bittiği an */
   at: number;
   /** Yalnızca oynatma sürerken geçen süre (duraklamalar sayılmaz) */

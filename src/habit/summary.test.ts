@@ -72,6 +72,13 @@ describe('summarize', () => {
     expect(summary.todayMs).toBe(120000);
   });
 
+  it('dinleme oturumlarını tempoya katmaz ama günlük süreye katar', () => {
+    const summary = summarize([session(0, 600, 60000, 'rsvp'), session(0, 180, 60000, 'listen')], NOW);
+    expect(summary.averageWpm).toBe(600);
+    expect(summary.bestWpm).toBe(600);
+    expect(summary.todayMs).toBe(120000);
+  });
+
   it('son 14 günü eskiden yeniye verir', () => {
     const summary = summarize([session(0), session(13)], NOW);
     expect(summary.daily).toHaveLength(14);

@@ -23,7 +23,15 @@ interface SessionInput {
  */
 const FLUSH_MS = 60_000;
 
-export function useSessionRecorder(input: SessionInput): void {
+export interface SessionRecorder {
+  /**
+   * Kayıt noktasını verilen kelime sayısına taşır. Okumadan yapılan atlamalar
+   * (ör. sesli okumadan sonra konumu eşitlemek) "okunan kelime" sayılmasın diye.
+   */
+  rebase: (words: number) => void;
+}
+
+export function useSessionRecorder(input: SessionInput): SessionRecorder {
   const latest = useRef(input);
   latest.current = input;
 
@@ -70,4 +78,11 @@ export function useSessionRecorder(input: SessionInput): void {
       document.removeEventListener('visibilitychange', onHide);
     };
   }, [flush]);
+
+  const rebase = useCallback((words: number) => {
+    flush();
+    written.current = { words, ms: latest.current.activeMs() };
+  }, [flush]);
+
+  return { rebase };
 }

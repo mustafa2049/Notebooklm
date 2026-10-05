@@ -4,7 +4,8 @@ import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
-import { indexFromCharOffset } from '@/core/progress';
+import { indexFromCharOffset, progressRatio, wordsUpTo } from '@/core/progress';
+import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
 import type { ReaderMode } from '@/core/types';
 import { ToolSheet, type AiTab } from '@/reader/ToolSheet';
@@ -15,6 +16,7 @@ import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
 import { useFocusSession } from '@/reader/useFocusSession';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
+import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
 import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
 import { useSettings } from '@/store/SettingsContext';
 import {
@@ -28,6 +30,16 @@ import {
 import { highlightsForDoc } from '@/storage/highlights';
 import { haptics } from '@/ui/haptics';
 import { Button, Card, Chip, IconButton, Txt } from '@/ui/primitives';
+
+/**
+ * Web'de tıklanan düğme odakta kalıyor; ardından basılan boşluk tuşu hem
+ * okuyucuyu duraklatıyor hem de o düğmeye yeniden basıyordu.
+ */
+function releaseFocus(): void {
+  if (Platform.OS !== 'web') return;
+  const active = document.activeElement as HTMLElement | null;
+  active?.blur?.();
+}
 
 /** 125000 → "2:05" */
 function formatClockMs(ms: number): string {
@@ -266,7 +278,7 @@ function Reader({
     return marked;
   }, [quoteOffsets, engine.chunks]);
 
-  useSessionRecorder({
+  const recorder = useSessionRecorder({
     docId,
     mode,
     targetWpm: settings.wpm,
@@ -274,22 +286,57 @@ function Reader({
     activeMs: engine.activeMs,
   });
 
+  // ---- Dinleyerek okuma: motor yerinde durur, ses cümle cümle ilerler
+  const [listening, setListening] = useState(false);
+  const spans = React.useMemo(() => sentenceSpans(engine.chunks), [engine.chunks]);
+  const speech = useSpeech({
+    docId,
+    text,
+    spans,
+    wpm: settings.wpm,
+    onSentence: (span) => onProgress(span.charStart, progressRatio(engine.chunks, span.startChunk)),
+  });
+  const listenSpan = spans[Math.min(speech.current, spans.length - 1)];
+
+  const startListening = useCallback(() => {
+    engine.pause();
+    setListening(true);
+    speech.play(spanIndexForChunk(spans, engine.index));
+  }, [engine, speech, spans]);
+
+  const stopListening = useCallback(() => {
+    speech.stop();
+    setListening(false);
+    if (!listenSpan) return;
+    // Okuyucu, dinlemenin kaldığı cümleden devam etsin; atlanan kelimeler
+    // okuma oturumuna "okundu" diye yazılmasın
+    engine.jumpToIndex(listenSpan.startChunk);
+    recorder.rebase(wordsUpTo(engine.chunks, listenSpan.startChunk));
+  }, [speech, listenSpan, engine, recorder]);
+
   // Titreşim yalnızca kullanıcının başlattığı eylemlerde: her kelimede
   // titretmek pili tüketir ve okumayı dağıtır
   const toggle = useCallback(() => {
     haptics.tap(settings.haptics);
+    if (listening) {
+      if (speech.playing) speech.stop();
+      else speech.play(speech.current);
+      return;
+    }
     engine.toggle();
-  }, [engine, settings.haptics]);
+  }, [engine, settings.haptics, listening, speech]);
 
   const previousSentence = useCallback(() => {
     haptics.step(settings.haptics);
-    engine.previousSentence();
-  }, [engine, settings.haptics]);
+    if (listening) speech.play(Math.max(0, speech.current - 1));
+    else engine.previousSentence();
+  }, [engine, settings.haptics, listening, speech]);
 
   const nextSentence = useCallback(() => {
     haptics.step(settings.haptics);
-    engine.nextSentence();
-  }, [engine, settings.haptics]);
+    if (listening) speech.play(speech.current + 1);
+    else engine.nextSentence();
+  }, [engine, settings.haptics, listening, speech]);
 
   // Metin bitince tek bir başarı titreşimi
   useEffect(() => {
@@ -320,13 +367,13 @@ function Reader({
       switch (event.key) {
         case ' ':
           event.preventDefault();
-          engine.toggle();
+          toggle();
           break;
         case 'ArrowLeft':
-          engine.previousSentence();
+          previousSentence();
           break;
         case 'ArrowRight':
-          engine.nextSentence();
+          nextSentence();
           break;
         case 'ArrowUp':
           event.preventDefault();
@@ -351,9 +398,10 @@ function Reader({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [engine, update, settings.wpm, focusMode, setFocusMode, leave, recall]);
+  }, [engine, update, settings.wpm, focusMode, setFocusMode, leave, recall, toggle, previousSentence, nextSentence]);
 
-  const flowMode = mode === 'bionic' || mode === 'highlight';
+  // Dinlerken metin her modda akış görünümünde: göz sesi takip edebilsin
+  const flowMode = listening || mode === 'bionic' || mode === 'highlight';
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.bg, paddingTop: insetTop }}>
@@ -386,8 +434,22 @@ function Reader({
           size={20}
         />
         <IconButton
+          name="headphones"
+          onPress={() => {
+            releaseFocus();
+            if (listening) stopListening();
+            else startListening();
+          }}
+          accessibilityLabel={listening ? 'Dinlemeyi bitir' : 'Dinleyerek oku'}
+          emphasis={listening ? 'strong' : 'faint'}
+          size={20}
+        />
+        <IconButton
           name="focus"
-          onPress={() => setFocusMode(!focusMode)}
+          onPress={() => {
+            releaseFocus();
+            setFocusMode(!focusMode);
+          }}
           accessibilityLabel="Odak modu"
           emphasis={focusMode ? 'strong' : 'faint'}
           size={20}
@@ -428,9 +490,10 @@ function Reader({
           <View style={{ flex: 1, paddingHorizontal: theme.space(5) }}>
             <FlowView
               chunks={engine.chunks}
-              index={engine.index}
-              variant={mode === 'bionic' ? 'bionic' : 'highlight'}
+              index={listening && listenSpan ? listenSpan.startChunk : engine.index}
+              variant={!listening && mode === 'bionic' ? 'bionic' : 'highlight'}
               markedSentences={markedSentences}
+              activeSentence={listening ? listenSpan?.sentenceIndex : undefined}
             />
           </View>
         ) : (
@@ -459,6 +522,8 @@ function Reader({
           accessibilityLabel="Sonraki cümle"
         />
       </View>
+
+      {listening ? <ListenStatus voice={speech.voice} playing={speech.playing} onExit={stopListening} /> : null}
 
       {focus.active && !focus.done ? (
         <View style={{ alignItems: 'center', paddingBottom: theme.space(1) }}>
@@ -504,9 +569,9 @@ function Reader({
         }}
       >
         <ReaderControls
-          playing={engine.playing}
-          ratio={engine.ratio}
-          wordsRead={engine.wordsRead}
+          playing={listening ? speech.playing : engine.playing}
+          ratio={listening && listenSpan ? progressRatio(engine.chunks, listenSpan.startChunk) : engine.ratio}
+          wordsRead={listening && listenSpan ? wordsUpTo(engine.chunks, listenSpan.startChunk) : engine.wordsRead}
           totalWords={totalWords}
           remainingMs={engine.remainingMs}
           onToggle={toggle}
@@ -547,6 +612,50 @@ function Reader({
         onHighlightSaved={loadQuotes}
         onJumpTo={engine.seekCharOffset}
       />
+    </View>
+  );
+}
+
+const VOICE_NOTE: Record<VoiceStatus, string> = {
+  checking: 'Sesler yükleniyor…',
+  turkish: 'Türkçe ses',
+  fallback: 'Bu cihazda Türkçe ses bulunamadı; varsayılan ses kullanılıyor, telaffuz bozuk olabilir.',
+  none: 'Bu cihazda seslendirme sesi bulunamadı. Sistem ayarlarından bir Türkçe ses yükleyebilirsin.',
+};
+
+/** Dinleme modunun durum satırı: hangi sesle okunduğu ve çıkış. */
+function ListenStatus({
+  voice,
+  playing,
+  onExit,
+}: {
+  voice: VoiceStatus;
+  playing: boolean;
+  onExit: () => void;
+}) {
+  const { theme } = useSettings();
+  const warn = voice === 'fallback' || voice === 'none';
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.space(2),
+        paddingHorizontal: theme.space(4),
+        paddingBottom: theme.space(1),
+      }}
+    >
+      <Txt
+        variant="dim"
+        style={{ flex: 1, fontSize: 12, color: warn ? theme.colors.warning : theme.colors.textDim }}
+      >
+        {playing ? 'Dinleniyor' : 'Dinleme duraklatıldı'} · {VOICE_NOTE[voice]} · cümle cümle vurgulanır
+      </Txt>
+      <Pressable onPress={onExit} hitSlop={8}>
+        <Txt variant="dim" style={{ fontSize: 12, color: theme.colors.accent }}>
+          Okumaya dön
+        </Txt>
+      </Pressable>
     </View>
   );
 }

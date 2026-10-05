@@ -18,12 +18,15 @@ export function FlowView({
   index,
   variant,
   markedSentences,
+  activeSentence,
 }: {
   chunks: Chunk[];
   index: number;
   variant: 'bionic' | 'highlight';
   /** Alıntı defterine eklenmiş cümleler (cümle sırası) */
   markedSentences?: Set<number>;
+  /** Sesli okumada seslendirilen cümle: bütün cümle vurgulanır */
+  activeSentence?: number;
 }) {
   const { theme, settings } = useSettings();
   const [box, setBox] = useState({ width: 0, height: 0 });
@@ -80,7 +83,11 @@ export function FlowView({
           <ChunkSpan
             key={chunkIndex}
             chunk={chunk}
-            current={chunkIndex === index}
+            current={
+              activeSentence === undefined
+                ? chunkIndex === index
+                : chunk.sentenceIndex === activeSentence
+            }
             read={chunkIndex < index}
             variant={variant}
             theme={theme}

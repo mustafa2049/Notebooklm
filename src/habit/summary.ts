@@ -10,7 +10,7 @@ export interface SessionLike {
   at: number;
   ms: number;
   words: number;
-  /** `test`: seviye testinde kendi hızında okuma */
+  /** `test`: seviye testinde kendi hızında okuma; `listen`: sesli okuma */
   mode: string;
 }
 
@@ -116,7 +116,8 @@ export function summarize(sessions: SessionLike[], now = Date.now()): StatsSumma
   for (const session of sessions) {
     totalWords += session.words;
     totalMs += session.ms;
-    if (session.mode === 'test') continue;
+    // Testte uygulama temposu yok, dinlemede tempo sesin hızı: ikisi de beceri değil
+    if (session.mode === 'test' || session.mode === 'listen') continue;
 
     tempoWords += session.words;
     tempoMs += session.ms;
