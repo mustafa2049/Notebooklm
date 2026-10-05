@@ -37,6 +37,11 @@ export interface DocumentProgress {
   ratio: number;
   updatedAt: number;
   finished: boolean;
+  /**
+   * İlk kez bittiği an — yıllık kitap hedefi için. Yeniden okumak bu tarihi
+   * değiştirmez; yoksa geçen yıl bitirilen bir kitap bu yıla sayılırdı.
+   */
+  finishedAt?: number;
 }
 
 export async function listDocuments(): Promise<DocumentMeta[]> {
@@ -111,8 +116,16 @@ export async function loadProgress(id: string): Promise<DocumentProgress | null>
   }
 }
 
+/**
+ * İlerlemeyi yazar. `finishedAt` burada korunuyor: ilerleme birden çok
+ * ekrandan (okuyucu, hız egzersizleri) yazılıyor ve biri alanı bilmese bile
+ * ilk bitirme tarihi kaybolmamalı.
+ */
 export async function saveProgress(id: string, progress: DocumentProgress): Promise<void> {
-  await AsyncStorage.setItem(KEYS.progress(id), JSON.stringify(progress));
+  const previous = await loadProgress(id);
+  const finishedAt =
+    progress.finishedAt ?? previous?.finishedAt ?? (progress.finished ? Date.now() : undefined);
+  await AsyncStorage.setItem(KEYS.progress(id), JSON.stringify({ ...progress, finishedAt }));
 }
 
 /** Kütüphane listesini tek geçişte ilerleme bilgisiyle birlikte getirir. */

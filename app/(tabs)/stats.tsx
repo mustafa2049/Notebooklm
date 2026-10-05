@@ -3,7 +3,15 @@ import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/store/SettingsContext';
 import { listAssessments } from '@/storage/assessments';
-import { dayKey, listSessions, summarize, type StatsSummary } from '@/storage/stats';
+import { heatmapDays, weeklyComparison } from '@/habit/summary';
+import {
+  dayKey,
+  listSessions,
+  summarize,
+  type ReadingSession,
+  type StatsSummary,
+} from '@/storage/stats';
+import { Heatmap } from '@/ui/Heatmap';
 import {
   baselineWpm,
   effectiveOf,
@@ -30,11 +38,15 @@ export default function StatsScreen() {
   const { theme, settings } = useSettings();
   const router = useRouter();
   const [summary, setSummary] = useState<StatsSummary | null>(null);
+  const [sessions, setSessions] = useState<ReadingSession[]>([]);
   const [assessments, setAssessments] = useState<AssessmentRecord[]>([]);
 
   useFocusEffect(
     useCallback(() => {
-      listSessions().then((sessions) => setSummary(summarize(sessions)));
+      listSessions().then((loaded) => {
+        setSessions(loaded);
+        setSummary(summarize(loaded));
+      });
       listAssessments().then(setAssessments);
     }, [])
   );
@@ -79,6 +91,13 @@ export default function StatsScreen() {
               unit={summary.bestWpm > 0 ? 'kel/dk' : '100+ kelime gerek'}
             />
           </View>
+
+          <WeekCard sessions={sessions} />
+
+          <SectionHeader title="Okuma takvimi" hint="Son 16 hafta · gün başına okuma dakikası" />
+          <Card>
+            <Heatmap days={heatmapDays(sessions, Date.now(), 16)} />
+          </Card>
 
           <SectionHeader title="Son 14 gün" hint="Günlük okunan kelime sayısı" />
           <Card>
@@ -278,5 +297,32 @@ function Figure({
         </Txt>
       ) : null}
     </View>
+  );
+}
+
+/** Bu hafta / geçen hafta: dakika, okuma günü, kelime. */
+function WeekCard({ sessions }: { sessions: ReadingSession[] }) {
+  const { theme } = useSettings();
+  const { thisWeek, lastWeek } = weeklyComparison(sessions, Date.now());
+  const minutes = (ms: number) => Math.round(ms / 60000);
+  const delta = minutes(thisWeek.ms) - minutes(lastWeek.ms);
+
+  return (
+    <>
+      <SectionHeader title="Bu hafta" hint="Pazartesiden bugüne; geçen haftanın tamamıyla karşılaştırma" />
+      <Card style={{ gap: theme.space(2) }}>
+        <Row label="Okuma süresi" value={`${minutes(thisWeek.ms)} dk`} />
+        <Row label="Okuduğun gün" value={`${thisWeek.days} / 7`} />
+        <Row label="Kelime" value={formatNumber(thisWeek.words)} />
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          Geçen hafta: {minutes(lastWeek.ms)} dk, {lastWeek.days} gün.{' '}
+          {lastWeek.ms === 0
+            ? ''
+            : delta >= 0
+              ? `Şimdiden ${delta} dk önündesin.`
+              : `Geçen haftayı yakalamak için ${-delta} dk kaldı.`}
+        </Txt>
+      </Card>
+    </>
   );
 }

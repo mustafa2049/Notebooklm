@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Platform, View } from 'react-native';
 import type { ReaderMode } from '@/core/types';
+import { CUE_OPTIONS } from '@/habit/cue';
 import { formatClock } from '@/habit/goal';
 import { REMINDER_SUPPORTED } from '@/habit/reminder';
 import { useSettings } from '@/store/SettingsContext';
@@ -179,26 +180,109 @@ export default function SettingsScreen() {
 
       <SectionHeader
         title="Alışkanlık"
-        hint="Günlük hedef, seriyi anlamlı kılan şey: gün kapanabilir olsun. Hedefi sıfıra çekersen kart hiç görünmez."
+        hint="Günlük hedef, seriyi anlamlı kılan şey: gün kapanabilir olsun. Küçük başla; tutturulan küçük hedef büyük ama tutturulamayan hedeften iyidir."
       />
-      <Card style={{ gap: theme.space(1) }}>
-        <Slider
-          value={settings.dailyGoalWords}
-          min={0}
-          max={20000}
-          step={250}
-          onChange={(dailyGoalWords) => update({ dailyGoalWords })}
-          label="Günlük hedef"
-          format={(words) => (words === 0 ? 'hedef yok' : `${words} kelime`)}
-        />
+      <Card style={{ gap: theme.space(2) }}>
+        <Txt variant="body">Günlük hedef</Txt>
+        <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+          <Chip
+            label="Dakika"
+            active={settings.goalUnit === 'minutes'}
+            onPress={() => update({ goalUnit: 'minutes' })}
+          />
+          <Chip
+            label="Kelime"
+            active={settings.goalUnit === 'words'}
+            onPress={() => update({ goalUnit: 'words' })}
+          />
+        </View>
+        {settings.goalUnit === 'minutes' ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+            {[0, 5, 10, 15, 20, 30].map((value) => (
+              <Chip
+                key={value}
+                label={value === 0 ? 'Yok' : `${value} dk`}
+                active={settings.dailyGoalMinutes === value}
+                onPress={() => update({ dailyGoalMinutes: value })}
+              />
+            ))}
+          </View>
+        ) : (
+          <>
+            <Slider
+              value={settings.dailyGoalWords}
+              min={0}
+              max={20000}
+              step={250}
+              onChange={(dailyGoalWords) => update({ dailyGoalWords })}
+              label="Kelime"
+              format={(words) => (words === 0 ? 'hedef yok' : `${words} kelime`)}
+            />
+            <Txt variant="dim" style={{ fontSize: 13 }}>
+              {settings.dailyGoalWords === 0
+                ? 'Hedef kapalı.'
+                : `Hedef hızında (${settings.wpm} kelime/dk) yaklaşık ${Math.max(
+                    1,
+                    Math.round(settings.dailyGoalWords / settings.wpm)
+                  )} dakika.`}
+            </Txt>
+          </>
+        )}
         <Txt variant="dim" style={{ fontSize: 13 }}>
-          {settings.dailyGoalWords === 0
-            ? 'Hedef kapalı: kütüphanede günlük kart görünmüyor.'
-            : `Hedef hızında (${settings.wpm} kelime/dk) yaklaşık ${Math.max(
-                1,
-                Math.round(settings.dailyGoalWords / settings.wpm)
-              )} dakika.`}
+          Dakika hedefinde yalnızca okuma süresi sayılır; duraklatılan zaman sayılmaz.
         </Txt>
+
+        <Divider />
+        <Txt variant="body">Ne zaman okuyorsun?</Txt>
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          Okumayı günün bir anına bağlamak alışkanlığı kolaylaştırır. Hatırlatıcı metni bunu
+          kullanır.
+        </Txt>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+          {CUE_OPTIONS.map((option) => (
+            <Chip
+              key={option.cue}
+              label={option.label}
+              active={settings.readingCue === option.cue}
+              onPress={() =>
+                update({
+                  readingCue: option.cue,
+                  reminderHour: option.hour,
+                  reminderMinute: option.minute,
+                })
+              }
+            />
+          ))}
+        </View>
+
+        <Divider />
+        <Txt variant="body">Odak seansı</Txt>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+          {[5, 10, 15, 20].map((value) => (
+            <Chip
+              key={value}
+              label={`${value} dk`}
+              active={settings.focusMinutes === value}
+              onPress={() => update({ focusMinutes: value })}
+            />
+          ))}
+        </View>
+
+        <Divider />
+        <Txt variant="body">Yıllık kitap hedefi</Txt>
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          En az 5.000 kelimelik ve bu yıl bitirilen metinler sayılır.
+        </Txt>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+          {[0, 6, 12, 24, 52].map((value) => (
+            <Chip
+              key={value}
+              label={value === 0 ? 'Yok' : `${value} kitap`}
+              active={settings.yearlyBookGoal === value}
+              onPress={() => update({ yearlyBookGoal: value })}
+            />
+          ))}
+        </View>
 
         <Divider />
         {REMINDER_SUPPORTED ? (

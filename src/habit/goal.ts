@@ -39,3 +39,48 @@ export function formatClock(hour: number, minute: number): string {
   const pad = (value: number) => String(Math.max(0, Math.floor(value))).padStart(2, '0');
   return `${pad(hour)}:${pad(minute)}`;
 }
+
+export type GoalUnit = 'minutes' | 'words';
+
+export interface DailyGoalStatus extends GoalProgress {
+  unit: GoalUnit;
+  /** Bugün yapılan (dakika ya da kelime) */
+  doneValue: number;
+  goalValue: number;
+  /** Hedefe kalan süre, dakika (kelime hedefinde hedef hızına göre tahmin) */
+  minutesLeft: number;
+}
+
+/**
+ * Günlük hedefin durumu, birimden bağımsız. Dakika hedefinde yalnızca okuma
+ * süresi sayılır (oynatma ya da kendi hızında okuma); duraklamalar sayılmaz.
+ */
+export function dailyGoalStatus(input: {
+  unit: GoalUnit;
+  goalMinutes: number;
+  goalWords: number;
+  todayMs: number;
+  todayWords: number;
+  wpm: number;
+}): DailyGoalStatus {
+  if (input.unit === 'minutes') {
+    const doneMinutes = input.todayMs / 60000;
+    const progress = goalProgress(doneMinutes, input.goalMinutes);
+    return {
+      ...progress,
+      unit: 'minutes',
+      doneValue: Math.floor(doneMinutes),
+      goalValue: input.goalMinutes,
+      remaining: Math.ceil(progress.remaining),
+      minutesLeft: Math.ceil(progress.remaining),
+    };
+  }
+  const progress = goalProgress(input.todayWords, input.goalWords);
+  return {
+    ...progress,
+    unit: 'words',
+    doneValue: input.todayWords,
+    goalValue: input.goalWords,
+    minutesLeft: remainingMinutes(progress.remaining, input.wpm),
+  };
+}

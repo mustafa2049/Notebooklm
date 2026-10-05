@@ -42,6 +42,10 @@ function RootStack() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="reader/[id]" options={{ animation: 'fade' }} />
         <Stack.Screen
+          name="onboarding"
+          options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+        />
+        <Stack.Screen
           name="import"
           options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
         />

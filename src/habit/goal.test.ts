@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatClock, goalProgress, remainingMinutes } from './goal';
+import { dailyGoalStatus, formatClock, goalProgress, remainingMinutes } from './goal';
 
 describe('goalProgress', () => {
   it('hedef yoksa etkin değil', () => {
@@ -43,5 +43,42 @@ describe('formatClock', () => {
   it('iki hane ile yazar', () => {
     expect(formatClock(20, 5)).toBe('20:05');
     expect(formatClock(9, 0)).toBe('09:00');
+  });
+});
+
+describe('dailyGoalStatus', () => {
+  it('dakika hedefinde okuma süresini sayar', () => {
+    const status = dailyGoalStatus({
+      unit: 'minutes',
+      goalMinutes: 10,
+      goalWords: 0,
+      todayMs: 4.5 * 60000,
+      todayWords: 900,
+      wpm: 300,
+    });
+    expect(status.doneValue).toBe(4);
+    expect(status.minutesLeft).toBe(6);
+    expect(status.ratio).toBeCloseTo(0.45, 6);
+    expect(status.done).toBe(false);
+  });
+
+  it('kelime hedefinde kalan süreyi hedef hızından tahmin eder', () => {
+    const status = dailyGoalStatus({
+      unit: 'words',
+      goalMinutes: 0,
+      goalWords: 2000,
+      todayMs: 0,
+      todayWords: 1100,
+      wpm: 300,
+    });
+    expect(status.remaining).toBe(900);
+    expect(status.minutesLeft).toBe(3);
+  });
+
+  it('hedef sıfırsa etkin değil', () => {
+    expect(
+      dailyGoalStatus({ unit: 'minutes', goalMinutes: 0, goalWords: 0, todayMs: 0, todayWords: 0, wpm: 300 })
+        .active
+    ).toBe(false);
   });
 });

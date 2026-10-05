@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
@@ -11,6 +11,7 @@ import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
+import { useFocusSession } from '@/reader/useFocusSession';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useSettings } from '@/store/SettingsContext';
 import {
@@ -22,7 +23,13 @@ import {
   type DocumentMeta,
 } from '@/storage/documents';
 import { haptics } from '@/ui/haptics';
-import { Chip, IconButton, Txt } from '@/ui/primitives';
+import { Button, Card, Chip, IconButton, Txt } from '@/ui/primitives';
+
+/** 125000 → "2:05" */
+function formatClockMs(ms: number): string {
+  const total = Math.ceil(ms / 1000);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+}
 
 const MODE_LABEL: Record<ReaderMode, string> = {
   rsvp: 'Kelime akışı',
@@ -35,7 +42,7 @@ const MODE_LABEL: Record<ReaderMode, string> = {
 const MODE_CHUNK_SIZE: Partial<Record<ReaderMode, number>> = { rsvp: 1, chunk: 3 };
 
 export default function ReaderScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, seans } = useLocalSearchParams<{ id: string; seans?: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { theme, settings, update, setFocusMode } = useSettings();
@@ -44,6 +51,8 @@ export default function ReaderScreen() {
   const [text, setText] = useState<string | null>(null);
   const [startOffset, setStartOffset] = useState(0);
   const [loading, setLoading] = useState(true);
+  /** İlk bitirme anı bir kez yazılır (bkz. DocumentProgress.finishedAt) */
+  const finishedAt = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     if (!id) return;
@@ -54,6 +63,7 @@ export default function ReaderScreen() {
         setMeta(document);
         setText(content ?? '');
         setStartOffset(progress?.finished ? 0 : (progress?.charOffset ?? 0));
+        finishedAt.current = progress?.finishedAt;
         setLoading(false);
       }
     );
@@ -68,11 +78,14 @@ export default function ReaderScreen() {
   const onProgress = useCallback(
     (charOffset: number, ratio: number) => {
       if (!id) return;
+      const finished = ratio >= 0.999;
+      if (finished && finishedAt.current === undefined) finishedAt.current = Date.now();
       void saveProgress(id, {
         charOffset,
         ratio,
         updatedAt: Date.now(),
-        finished: ratio >= 0.999,
+        finished,
+        finishedAt: finishedAt.current,
       });
     },
     [id]
@@ -111,6 +124,7 @@ export default function ReaderScreen() {
       onBack={() => router.back()}
       insetTop={insets.top}
       insetBottom={insets.bottom}
+      focusSeconds={Number(seans) > 0 ? Number(seans) : 0}
       mode={settings.mode}
       onModeChange={(mode) => update({ mode, ...(MODE_CHUNK_SIZE[mode] ? { chunkSize: MODE_CHUNK_SIZE[mode]! } : {}) })}
     />
@@ -130,6 +144,8 @@ interface ReaderProps {
   insetBottom: number;
   mode: ReaderMode;
   onModeChange: (mode: ReaderMode) => void;
+  /** Odak seansı süresi (saniye); 0 = seans yok */
+  focusSeconds: number;
 }
 
 function Reader({
@@ -144,6 +160,7 @@ function Reader({
   insetBottom,
   mode,
   onModeChange,
+  focusSeconds,
 }: ReaderProps) {
   const { theme, settings, update, focusMode, setFocusMode } = useSettings();
   const [showModes, setShowModes] = useState(false);
@@ -156,6 +173,7 @@ function Reader({
   });
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
+  const focus = useFocusSession(engine, focusSeconds);
 
   // AI kapalıyken panel yine açılıyor ama yalnızca kelime defteri sekmesiyle
   const aiReady = isAiConfigured(settings);
@@ -375,6 +393,35 @@ function Reader({
           accessibilityLabel="Sonraki cümle"
         />
       </View>
+
+      {focus.active && !focus.done ? (
+        <View style={{ alignItems: 'center', paddingBottom: theme.space(1) }}>
+          <Txt variant="mono" style={{ fontSize: 13, color: theme.colors.accent }}>
+            Odak seansı · {formatClockMs(focus.remainingMs)} kaldı
+          </Txt>
+        </View>
+      ) : null}
+
+      {focus.active && focus.done ? (
+        <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
+          <Card style={{ gap: theme.space(2), borderColor: theme.colors.success }}>
+            <Txt variant="heading">Seans tamam</Txt>
+            <Txt variant="dim">
+              {Math.round(focusSeconds / 60)} dakika okudun · {focus.words} kelime. Günlük hedefine
+              sayıldı.
+            </Txt>
+            <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+              <Button label="Bitir" style={{ flex: 1 }} onPress={onBack} />
+              <Button
+                label="Okumaya devam"
+                variant="secondary"
+                style={{ flex: 1 }}
+                onPress={focus.dismiss}
+              />
+            </View>
+          </Card>
+        </View>
+      ) : null}
 
       {engine.finished ? (
         <View style={{ alignItems: 'center', paddingBottom: theme.space(2) }}>

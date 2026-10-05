@@ -1,197 +1,281 @@
 import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { Alert, Platform, View } from 'react-native';
-import { goalProgress, remainingMinutes } from '@/habit/goal';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Pressable, View } from 'react-native';
+import { booksFinishedInYear, finishEstimateDays, yearlyGoalStatus } from '@/habit/books';
+import { dailySuggestions, type Suggestion } from '@/habit/today';
 import { useSettings } from '@/store/SettingsContext';
+import { listAssessments } from '@/storage/assessments';
 import {
   listDocumentsWithProgress,
-  removeDocument,
   type DocumentMeta,
   type DocumentProgress,
 } from '@/storage/documents';
-import { listSessions, summarize } from '@/storage/stats';
+import { drillDoneOn, listDrillResults } from '@/storage/drills';
+import { dayKey, listSessions, summarize, type ReadingSession, type StatsSummary } from '@/storage/stats';
+import { listVocab } from '@/storage/vocab';
+import { improvement, testDue, type AssessmentRecord } from '@/train/assessment';
+import { dueCount } from '@/train/review';
+import { DailyGoal } from '@/ui/DailyGoal';
+import { formatPercent } from '@/ui/format';
 import { Icon } from '@/ui/Icon';
-import { formatNumber, formatPercent, formatShortDuration } from '@/ui/format';
-import { Button, Card, IconButton, ProgressBar, Screen, Txt } from '@/ui/primitives';
+import { Button, Card, ProgressBar, Screen, SectionHeader, Txt } from '@/ui/primitives';
 
-const SOURCE_LABEL: Record<DocumentMeta['source'], string> = {
-  paste: 'Yapıştırılan metin',
-  txt: 'TXT dosyası',
-  pdf: 'PDF',
-  epub: 'EPUB',
-  url: 'Bağlantı',
-};
+/**
+ * Bugün — uygulama açılınca ilk görülen ekran.
+ *
+ * Alışkanlık uygulamalarında işe yarayan düzen: açınca ne yapacağın belli.
+ * Sıra: seri → günlük hedef → okumaya devam → bugün için öneriler → gelişim.
+ */
 
-export default function LibraryScreen() {
+interface Snapshot {
+  summary: StatsSummary;
+  sessions: ReadingSession[];
+  assessments: AssessmentRecord[];
+  current: { meta: DocumentMeta; progress: DocumentProgress | null } | null;
+  booksThisYear: number;
+  suggestions: Suggestion[];
+}
+
+function greeting(now: number): string {
+  const hour = new Date(now).getHours();
+  if (hour < 5) return 'İyi geceler';
+  if (hour < 12) return 'Günaydın';
+  if (hour < 18) return 'İyi günler';
+  return 'İyi akşamlar';
+}
+
+export default function TodayScreen() {
   const router = useRouter();
-  const { theme, settings } = useSettings();
-  const [items, setItems] = useState<{ meta: DocumentMeta; progress: DocumentProgress | null }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [todayWords, setTodayWords] = useState(0);
-  const [streak, setStreak] = useState(0);
+  const { theme, settings, ready } = useSettings();
+  const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
 
-  const refresh = useCallback(() => {
-    listDocumentsWithProgress().then((next) => {
-      setItems(next);
-      setLoading(false);
-    });
-    // Günlük hedef kartı için: oturumlar okuyucudan dönünce güncellenmiş olur
-    listSessions().then((sessions) => {
-      const summary = summarize(sessions);
-      setTodayWords(summary.todayWords);
-      setStreak(summary.streak);
-    });
-  }, []);
+  // İlk açılışta bir kez sihirbaz (ayarlar diskten okunduktan sonra)
+  const onboardingShown = useRef(false);
+  useEffect(() => {
+    if (!ready || settings.onboardingDone || onboardingShown.current) return;
+    onboardingShown.current = true;
+    router.push('/onboarding');
+  }, [ready, settings.onboardingDone, router]);
 
-  // Okuyucudan dönüldüğünde ilerleme güncellenmiş olur
-  useFocusEffect(refresh);
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+      const now = Date.now();
+      Promise.all([
+        listSessions(),
+        listAssessments(),
+        listDocumentsWithProgress(),
+        listDrillResults(),
+        listVocab(),
+      ]).then(([sessions, assessments, documents, drills, vocab]) => {
+        if (cancelled) return;
+        // Okumaya devam: en son dokunulan, bitmemiş doküman
+        const unfinished = documents
+          .filter((item) => !item.progress?.finished)
+          .sort((a, b) => (b.progress?.updatedAt ?? 0) - (a.progress?.updatedAt ?? 0));
+        const tests = assessments.filter((record) => record.kind === 'test');
 
-  const confirmRemove = (meta: DocumentMeta) => {
-    const remove = () => removeDocument(meta.id).then(refresh);
-    if (Platform.OS === 'web') {
-      // Alert.alert web'de düğme göstermiyor; tarayıcının kendi onayını kullan
-      if (window.confirm(`"${meta.title}" silinsin mi?`)) remove();
-      return;
-    }
-    Alert.alert('Silinsin mi?', meta.title, [
-      { text: 'Vazgeç', style: 'cancel' },
-      { text: 'Sil', style: 'destructive', onPress: remove },
-    ]);
-  };
+        setSnapshot({
+          summary: summarize(sessions, now),
+          sessions,
+          assessments,
+          current: unfinished[0] ?? null,
+          booksThisYear: booksFinishedInYear(
+            documents.map((item) => ({
+              wordCount: item.meta.wordCount,
+              finished: Boolean(item.progress?.finished),
+              finishedAt: item.progress?.finishedAt,
+            })),
+            now
+          ),
+          suggestions: dailySuggestions(
+            {
+              noTestYet: tests.length === 0,
+              testDue: testDue(assessments, now),
+              dueWords: dueCount(vocab, now),
+              warmupDoneToday: drillDoneOn(drills, dayKey(now)),
+            },
+            now
+          ),
+        });
+      });
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
+  if (!snapshot) return <Screen />;
+
+  const { summary, current } = snapshot;
+  const progressChange = improvement(snapshot.assessments);
 
   return (
     <Screen>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: theme.space(5),
-        }}
-      >
-        <View>
-          <Txt variant="title">Kütüphane</Txt>
-          <Txt variant="dim">{settings.wpm} kelime/dakika hedefi</Txt>
-        </View>
-        <IconButton
-          name="plus"
-          size={28}
-          emphasis="strong"
-          onPress={() => router.push('/import')}
-          accessibilityLabel="Metin ekle"
-        />
+      <Txt variant="dim">{greeting(Date.now())}</Txt>
+      <Txt variant="title">Bugün</Txt>
+
+      <StreakCard summary={summary} />
+
+      <View style={{ marginTop: theme.space(3) }}>
+        <DailyGoal todayMs={summary.todayMs} todayWords={summary.todayWords} streak={summary.streak} />
       </View>
 
-      <DailyGoal
-        todayWords={todayWords}
-        goalWords={settings.dailyGoalWords}
-        wpm={settings.wpm}
-        streak={streak}
-      />
-
-      {loading ? null : items.length === 0 ? (
-        <EmptyState onAdd={() => router.push('/import')} />
+      <SectionHeader title="Okumaya devam" />
+      {current ? (
+        <Card style={{ gap: theme.space(3) }}>
+          <Txt variant="heading" numberOfLines={2}>
+            {current.meta.title}
+          </Txt>
+          {current.progress && current.progress.ratio > 0.001 ? (
+            <View style={{ gap: theme.space(1.5) }}>
+              <ProgressBar ratio={current.progress.ratio} />
+              <Txt variant="dim" style={{ fontSize: 12 }}>
+                {formatPercent(current.progress.ratio)} okundu
+                {finishLabel(
+                  finishEstimateDays(
+                    Math.round(current.meta.wordCount * (1 - current.progress.ratio)),
+                    snapshot.sessions,
+                    Date.now()
+                  )
+                )}
+              </Txt>
+            </View>
+          ) : null}
+          <View style={{ gap: theme.space(2) }}>
+            <Button
+              label="Devam et"
+              icon="play"
+              onPress={() => router.push(`/reader/${current.meta.id}`)}
+            />
+            <Button
+              label={`${settings.focusMinutes} dakikalık odak seansı`}
+              icon="focus"
+              variant="secondary"
+              onPress={() =>
+                router.push(`/reader/${current.meta.id}?seans=${settings.focusMinutes * 60}`)
+              }
+            />
+          </View>
+        </Card>
       ) : (
-        <View style={{ gap: theme.space(3) }}>
-          {items.map(({ meta, progress }) => (
-            <Card key={meta.id} onPress={() => router.push(`/reader/${meta.id}`)}>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: theme.space(3) }}>
-                <View style={{ flex: 1 }}>
-                  <Txt variant="heading" numberOfLines={2}>
-                    {meta.title}
-                  </Txt>
-                  <Txt variant="dim" style={{ marginTop: theme.space(1), fontSize: 13 }}>
-                    {SOURCE_LABEL[meta.source]} · {formatNumber(meta.wordCount)} kelime · ~
-                    {formatShortDuration((meta.wordCount / settings.wpm) * 60000)}
-                  </Txt>
-                </View>
-                <IconButton
-                  name="trash"
-                  size={18}
-                  emphasis="faint"
-                  onPress={() => confirmRemove(meta)}
-                  accessibilityLabel={`${meta.title} sil`}
-                />
-              </View>
+        <Card style={{ gap: theme.space(3) }}>
+          <Txt variant="dim">
+            Kütüphanende yarım kalmış bir metin yok. Bir kitap, makale ya da bağlantı ekle.
+          </Txt>
+          <Button label="Metin ekle" icon="plus" onPress={() => router.push('/import')} />
+        </Card>
+      )}
 
-              {progress && progress.ratio > 0.001 ? (
-                <View style={{ marginTop: theme.space(3), gap: theme.space(1.5) }}>
-                  <ProgressBar ratio={progress.ratio} />
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Txt variant="dim" style={{ fontSize: 12 }}>
-                      {progress.finished ? 'Tamamlandı' : `${formatPercent(progress.ratio)} okundu`}
-                    </Txt>
-                    <Txt
-                      variant="dim"
-                      style={{ fontSize: 12, color: theme.colors.accent }}
-                    >
-                      Devam et →
+      {snapshot.suggestions.length > 0 ? (
+        <>
+          <SectionHeader title="Bugün için" />
+          <View style={{ gap: theme.space(2) }}>
+            {snapshot.suggestions.map((item) => (
+              <Card key={item.id} onPress={() => router.push(item.href as never)}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Txt variant="body">{item.title}</Txt>
+                    <Txt variant="dim" style={{ fontSize: 13 }}>
+                      {item.detail}
                     </Txt>
                   </View>
+                  <Icon name="chevronRight" size={20} color={theme.colors.textFaint} />
                 </View>
-              ) : null}
-            </Card>
-          ))}
-        </View>
-      )}
+              </Card>
+            ))}
+          </View>
+        </>
+      ) : null}
+
+      {progressChange || settings.yearlyBookGoal > 0 ? (
+        <SectionHeader title="Gelişim" />
+      ) : null}
+      {progressChange ? (
+        <Pressable onPress={() => router.push('/stats')}>
+          <Txt variant="body">
+            Efektif okuma hızın ilk ölçüme göre{' '}
+            <Txt
+              variant="body"
+              style={{ color: progressChange.change >= 0 ? theme.colors.success : theme.colors.warning }}
+            >
+              {progressChange.change >= 0 ? '%' : '-%'}
+              {Math.round(Math.abs(progressChange.change) * 100)}
+            </Txt>{' '}
+            değişti ({progressChange.tests} ölçüm).
+          </Txt>
+        </Pressable>
+      ) : null}
+      {settings.yearlyBookGoal > 0 ? (
+        <YearlyBooks finished={snapshot.booksThisYear} goal={settings.yearlyBookGoal} />
+      ) : null}
     </Screen>
   );
 }
 
-function EmptyState({ onAdd }: { onAdd: () => void }) {
+function finishLabel(days: number | null): string {
+  if (days === null || days <= 0) return '';
+  return days === 1 ? ' · bu tempoyla bir okuma gününde biter' : ` · bu tempoyla ~${days} okuma gününde biter`;
+}
+
+/**
+ * Seri kartı. Esnek kural burada da açıkça yazıyor: bir gün kaçırmak seriyi
+ * bozmaz, iki gün üst üste bozar. Tehlikedeyse tek cümleyle söylüyor.
+ */
+function StreakCard({ summary }: { summary: StatsSummary }) {
   const { theme } = useSettings();
+  const message = summary.streakAtRisk
+    ? 'Dün okumadın — bugün okursan serin sürer.'
+    : summary.readToday
+      ? 'Bugün okudun. Seri devam ediyor.'
+      : summary.streak > 0
+        ? 'Bugün biraz okuyarak seriyi büyüt.'
+        : 'Bugün okuyarak yeni bir seri başlat.';
+
   return (
-    <Card style={{ alignItems: 'center', paddingVertical: theme.space(10), gap: theme.space(3) }}>
-      <Icon name="library" size={40} color={theme.colors.textFaint} />
-      <Txt variant="heading">Kütüphane boş</Txt>
-      <Txt variant="dim" style={{ textAlign: 'center', maxWidth: 280 }}>
-        Bir metin yapıştır, dosya yükle ya da bağlantı ver — hemen hızlı okumaya başla.
-      </Txt>
-      <Button label="Metin ekle" icon="plus" onPress={onAdd} style={{ marginTop: theme.space(2) }} />
+    <Card
+      style={{
+        marginTop: theme.space(4),
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.space(4),
+        borderColor: summary.streakAtRisk ? theme.colors.warning : theme.colors.border,
+      }}
+    >
+      <View style={{ alignItems: 'center', minWidth: 56 }}>
+        <Txt variant="title" style={{ fontSize: 34, color: theme.colors.accent }}>
+          {summary.streak}
+        </Txt>
+        <Txt variant="dim" style={{ fontSize: 11 }}>
+          gün seri
+        </Txt>
+      </View>
+      <View style={{ flex: 1, gap: 2 }}>
+        <Txt variant="body">{message}</Txt>
+        <Txt variant="dim" style={{ fontSize: 12 }}>
+          Bir gün kaçırmak seriyi bozmaz; iki gün üst üste kaçırmak bozar.
+        </Txt>
+      </View>
     </Card>
   );
 }
 
-/**
- * Günlük hedef kartı.
- *
- * Hedef tanımlı değilse hiç çizilmiyor — kullanılmayan bir özellik için ekranda
- * yer tutmuyoruz. Hedef bittiğinde "devam etme" baskısı kurmuyor, günü kapatıyor.
- */
-function DailyGoal({
-  todayWords,
-  goalWords,
-  wpm,
-  streak,
-}: {
-  todayWords: number;
-  goalWords: number;
-  wpm: number;
-  streak: number;
-}) {
+function YearlyBooks({ finished, goal }: { finished: number; goal: number }) {
   const { theme } = useSettings();
-  const progress = goalProgress(todayWords, goalWords);
-  if (!progress.active) return null;
-
-  const minutes = remainingMinutes(progress.remaining, wpm);
-
+  const status = yearlyGoalStatus(finished, goal, Date.now());
   return (
-    <Card style={{ marginBottom: theme.space(4), gap: theme.space(2) }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Txt variant="body" style={{ flex: 1 }}>
-          {progress.done ? 'Bugünün hedefi tamam' : 'Bugün'}
-        </Txt>
+    <Card style={{ gap: theme.space(2), marginTop: theme.space(3) }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Txt variant="body">Bu yılın kitapları</Txt>
         <Txt variant="dim" style={{ fontSize: 13 }}>
-          {formatNumber(todayWords)} / {formatNumber(goalWords)} kelime
+          {finished} / {goal}
         </Txt>
       </View>
-      <ProgressBar ratio={progress.ratio} />
+      <ProgressBar ratio={Math.min(1, finished / goal)} />
       <Txt variant="dim" style={{ fontSize: 12 }}>
-        {progress.done
-          ? streak > 1
-            ? `${streak} gün üst üste. Bugünlük bu kadar yeter.`
-            : 'Bugünlük bu kadar yeter.'
-          : `${formatNumber(progress.remaining)} kelime kaldı · hedef hızında yaklaşık ${minutes} dk`}
+        {status.remaining === 0
+          ? 'Yıllık hedefe ulaştın.'
+          : `${status.remaining} kitap kaldı · yılın bitmesine ${status.weeksLeft} hafta var`}
       </Txt>
     </Card>
   );

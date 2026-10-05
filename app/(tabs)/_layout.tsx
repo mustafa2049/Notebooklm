@@ -20,7 +20,8 @@ export default function TabsLayout() {
   const tabItem = (name: IconName, label: string) =>
     function TabItem({ color }: { color: ColorValue }) {
       return (
-        <View style={{ alignItems: 'center', justifyContent: 'center', gap: 4, width: 84 }}>
+        // Sabit genişlik yok: 5 sekme 360 px telefona sığmalı (72 px/sekme)
+        <View style={{ alignItems: 'center', justifyContent: 'center', gap: 4, minWidth: 64 }}>
           <Icon name={name} size={22} color={String(color)} />
           <Text
             numberOfLines={1}
@@ -56,6 +57,10 @@ export default function TabsLayout() {
     >
       <Tabs.Screen
         name="index"
+        options={{ title: 'Bugün', tabBarIcon: tabItem('sun', 'Bugün') }}
+      />
+      <Tabs.Screen
+        name="library"
         options={{ title: 'Kütüphane', tabBarIcon: tabItem('library', 'Kütüphane') }}
       />
       <Tabs.Screen

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSettings } from '@/store/SettingsContext';
 import { cancelReminder, REMINDER_SUPPORTED, scheduleReminder } from './reminder';
+import { reminderBody } from './cue';
 import { formatClock } from './goal';
 
 /**
@@ -12,7 +13,15 @@ import { formatClock } from './goal';
  */
 export function useReminder(): void {
   const { settings, ready } = useSettings();
-  const { reminderEnabled, reminderHour, reminderMinute, dailyGoalWords } = settings;
+  const {
+    reminderEnabled,
+    reminderHour,
+    reminderMinute,
+    dailyGoalWords,
+    dailyGoalMinutes,
+    goalUnit,
+    readingCue,
+  } = settings;
 
   useEffect(() => {
     if (!ready || !REMINDER_SUPPORTED) return;
@@ -22,11 +31,23 @@ export function useReminder(): void {
       return;
     }
 
-    const body = dailyGoalWords
-      ? `Bugünkü hedefin ${dailyGoalWords} kelime. Kısa bir tur yeter.`
-      : 'Bugün biraz okumaya ne dersin?';
+    const body = reminderBody({
+      cue: readingCue,
+      goalUnit,
+      goalMinutes: dailyGoalMinutes,
+      goalWords: dailyGoalWords,
+    });
     void scheduleReminder({ hour: reminderHour, minute: reminderMinute }, body);
-  }, [ready, reminderEnabled, reminderHour, reminderMinute, dailyGoalWords]);
+  }, [
+    ready,
+    reminderEnabled,
+    reminderHour,
+    reminderMinute,
+    dailyGoalWords,
+    dailyGoalMinutes,
+    goalUnit,
+    readingCue,
+  ]);
 }
 
 /** Ayarlar ekranında "her gün 20:00" yazmak için. */

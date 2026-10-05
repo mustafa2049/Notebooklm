@@ -38,8 +38,25 @@ export interface Settings {
   urlProxy: string;
 
   // ---- Alışkanlık ---------------------------------------------------------
+  /** Günlük hedef dakika mı kelime mi? Alışkanlık için dakika daha sezgisel. */
+  goalUnit: 'minutes' | 'words';
+  /** Günlük dakika hedefi (0 = hedef yok) */
+  dailyGoalMinutes: number;
   /** Günlük kelime hedefi (0 = hedef yok) */
   dailyGoalWords: number;
+  /**
+   * Okuma ipucu: "sabah kahvesinden sonra" gibi. Uygulama niyeti
+   * (implementation intention) — ne zaman ve nerede yapılacağı önceden
+   * belirlenen davranış daha kolay alışkanlığa dönüşüyor. Hatırlatıcı metni
+   * bunu kullanıyor.
+   */
+  readingCue: string;
+  /** İlk açılış sihirbazı tamamlandı mı */
+  onboardingDone: boolean;
+  /** Odak seansı süresi (dakika) */
+  focusMinutes: number;
+  /** Yıllık kitap hedefi (0 = hedef yok) */
+  yearlyBookGoal: number;
   /** Günlük hatırlatıcı (yalnızca telefonda) */
   reminderEnabled: boolean;
   /** Hatırlatıcı saati (cihazın yerel saati) */
@@ -84,7 +101,13 @@ export const DEFAULT_SETTINGS: Settings = {
   hyperlegible: false,
   haptics: true,
   urlProxy: 'https://r.jina.ai/',
+  goalUnit: 'minutes',
+  dailyGoalMinutes: 10,
   dailyGoalWords: 2000,
+  readingCue: '',
+  onboardingDone: false,
+  focusMinutes: 10,
+  yearlyBookGoal: 0,
   reminderEnabled: false,
   reminderHour: 20,
   reminderMinute: 0,

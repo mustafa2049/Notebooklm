@@ -28,7 +28,12 @@ export type IconName =
   | 'focus'
   | 'sparkle'
   | 'chat'
-  | 'book';
+  | 'book'
+  | 'sun'
+  | 'grid'
+  | 'eye'
+  | 'search'
+  | 'award';
 
 interface IconProps {
   name: IconName;
@@ -160,6 +165,38 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
           <Path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 1 5 19.5z" {...stroke} />
           <Line x1={9} y1={7} x2={15} y2={7} {...stroke} />
           <Line x1={9} y1={11} x2={15} y2={11} {...stroke} />
+        </>
+      )}
+      {name === 'sun' && (
+        <>
+          <Circle cx={12} cy={12} r={4} {...stroke} />
+          <Path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" {...stroke} />
+        </>
+      )}
+      {name === 'grid' && (
+        <>
+          <Rect x={4} y={4} width={7} height={7} rx={1.5} {...stroke} />
+          <Rect x={13} y={4} width={7} height={7} rx={1.5} {...stroke} />
+          <Rect x={4} y={13} width={7} height={7} rx={1.5} {...stroke} />
+          <Rect x={13} y={13} width={7} height={7} rx={1.5} {...stroke} />
+        </>
+      )}
+      {name === 'eye' && (
+        <>
+          <Path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" {...stroke} />
+          <Circle cx={12} cy={12} r={3} {...stroke} />
+        </>
+      )}
+      {name === 'search' && (
+        <>
+          <Circle cx={11} cy={11} r={6.5} {...stroke} />
+          <Line x1={16} y1={16} x2={20.5} y2={20.5} {...stroke} />
+        </>
+      )}
+      {name === 'award' && (
+        <>
+          <Circle cx={12} cy={9} r={5.5} {...stroke} />
+          <Polyline points="8.5,13.5 7,21 12,18.5 17,21 15.5,13.5" {...stroke} />
         </>
       )}
     </Svg>
