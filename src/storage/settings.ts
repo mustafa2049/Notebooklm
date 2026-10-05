@@ -59,6 +59,8 @@ export interface Settings {
   yearlyBookGoal: number;
   /** Anlamlı bir okumadan sonra "kendi cümlenle anlat" kartı */
   recallPrompt: boolean;
+  /** Göz molası: bu kadar dakika okuyunca 20 saniye uzağa bak (0 = kapalı) */
+  eyeBreakMinutes: number;
   /** Günlük hatırlatıcı (yalnızca telefonda) */
   reminderEnabled: boolean;
   /** Hatırlatıcı saati (cihazın yerel saati) */
@@ -111,6 +113,7 @@ export const DEFAULT_SETTINGS: Settings = {
   focusMinutes: 10,
   yearlyBookGoal: 0,
   recallPrompt: true,
+  eyeBreakMinutes: 0,
   reminderEnabled: false,
   reminderHour: 20,
   reminderMinute: 0,

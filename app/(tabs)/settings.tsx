@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Platform, View } from 'react-native';
 import type { ReaderMode } from '@/core/types';
 import { CUE_OPTIONS } from '@/habit/cue';
+import { EYE_BREAK_OPTIONS } from '@/habit/eyeBreak';
 import { formatClock } from '@/habit/goal';
 import { REMINDER_SUPPORTED } from '@/habit/reminder';
 import { useSettings } from '@/store/SettingsContext';
@@ -265,6 +266,23 @@ export default function SettingsScreen() {
               label={`${value} dk`}
               active={settings.focusMinutes === value}
               onPress={() => update({ focusMinutes: value })}
+            />
+          ))}
+        </View>
+
+        <Divider />
+        <Txt variant="body">Göz molası</Txt>
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          Belirlenen süre kadar okuyunca okuma durur ve 20 saniye uzağa bakman için sayaç açılır
+          (20-20-20 kuralı). Yalnızca okuma süresi sayılır.
+        </Txt>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+          {EYE_BREAK_OPTIONS.map((value) => (
+            <Chip
+              key={value}
+              label={value === 0 ? 'Kapalı' : `${value} dk`}
+              active={settings.eyeBreakMinutes === value}
+              onPress={() => update({ eyeBreakMinutes: value })}
             />
           ))}
         </View>

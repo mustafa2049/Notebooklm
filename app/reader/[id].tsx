@@ -14,6 +14,7 @@ import { ReaderControls } from '@/reader/ReaderControls';
 import { RecallCard } from '@/reader/RecallCard';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
+import { useEyeBreak } from '@/reader/useEyeBreak';
 import { useFocusSession } from '@/reader/useFocusSession';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
@@ -200,6 +201,7 @@ function Reader({
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
   const focus = useFocusSession(engine, focusSeconds);
+  const eyeBreak = useEyeBreak(engine, settings.eyeBreakMinutes);
 
   // "Kendi cümlenle anlat": bu açılışta okunan aralık için, en fazla bir kez
   const [recall, setRecall] = useState<RecallTrigger | null>(null);
@@ -524,6 +526,30 @@ function Reader({
       </View>
 
       {listening ? <ListenStatus voice={speech.voice} playing={speech.playing} onExit={stopListening} /> : null}
+
+      {eyeBreak.active ? (
+        <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
+          <Card style={{ gap: theme.space(2), borderColor: theme.colors.accent }}>
+            <Txt variant="heading">Göz molası</Txt>
+            <Txt variant="dim">
+              {settings.eyeBreakMinutes} dakikadır okuyorsun. Ekrandan başını kaldır ve 20 saniye
+              boyunca uzaktaki bir şeye (yaklaşık 6 metre) bak.
+            </Txt>
+            <Txt variant="title" style={{ fontSize: 34, color: theme.colors.accent, textAlign: 'center' }}>
+              {eyeBreak.remaining > 0 ? eyeBreak.remaining : 'Tamam'}
+            </Txt>
+            <Button
+              label={eyeBreak.remaining > 0 ? 'Atla' : 'Okumaya devam'}
+              variant={eyeBreak.remaining > 0 ? 'ghost' : 'primary'}
+              onPress={() => {
+                const resume = eyeBreak.remaining === 0;
+                eyeBreak.finish();
+                if (resume) engine.toggle();
+              }}
+            />
+          </Card>
+        </View>
+      ) : null}
 
       {focus.active && !focus.done ? (
         <View style={{ alignItems: 'center', paddingBottom: theme.space(1) }}>
