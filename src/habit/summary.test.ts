@@ -3,6 +3,7 @@ import {
   dayKeyBefore,
   flexibleStreak,
   heatmapDays,
+  longestFlexibleStreak,
   summarize,
   weeklyComparison,
   type SessionLike,
@@ -109,5 +110,16 @@ describe('weeklyComparison', () => {
     expect(result.thisWeek.days).toBe(2);
     expect(result.lastWeek.days).toBe(2);
     expect(result.thisWeek.words).toBe(600);
+  });
+});
+
+describe('longestFlexibleStreak', () => {
+  it('tek günlük boşlukları tolere ederek en uzun zinciri bulur', () => {
+    const days = new Set(['2025-01-01', '2025-01-02', '2025-01-04', '2025-01-08', '2025-01-09']);
+    expect(longestFlexibleStreak(days)).toBe(3);
+  });
+
+  it('boş kümede sıfır', () => {
+    expect(longestFlexibleStreak(new Set())).toBe(0);
   });
 });

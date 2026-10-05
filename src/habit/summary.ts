@@ -207,3 +207,25 @@ export function weeklyComparison(
   });
   return { thisWeek: finish(thisWeek), lastWeek: finish(lastWeek) };
 }
+
+/**
+ * Bugüne kadarki en uzun esnek seri (aynı kural: tek gün boşluk tolere edilir).
+ * Rozetler bununla verilir ki bir seri bitince kazanılan rozet geri alınmasın.
+ */
+export function longestFlexibleStreak(readDays: Set<string>): number {
+  const days = [...readDays].sort();
+  let best = 0;
+  let current = 0;
+  let previous: number | null = null;
+
+  for (const key of days) {
+    const [year, month, day] = key.split('-').map(Number);
+    const time = new Date(year, month - 1, day).getTime();
+    // Takvim günü farkı (yaz saati geçişine dayanıklı yuvarlama)
+    const gap = previous === null ? 1 : Math.round((time - previous) / 86400000);
+    current = gap <= 2 ? current + 1 : 1;
+    best = Math.max(best, current);
+    previous = time;
+  }
+  return best;
+}

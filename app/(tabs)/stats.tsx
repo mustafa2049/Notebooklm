@@ -20,6 +20,9 @@ import {
   testDue,
   type AssessmentRecord,
 } from '@/train/assessment';
+import type { Badge } from '@/habit/badges';
+import { loadBadges } from '@/storage/badges';
+import { BadgeList } from '@/ui/BadgeList';
 import { BarChart } from '@/ui/BarChart';
 import { formatDuration, formatNumber } from '@/ui/format';
 import { LineChart } from '@/ui/LineChart';
@@ -40,6 +43,7 @@ export default function StatsScreen() {
   const [summary, setSummary] = useState<StatsSummary | null>(null);
   const [sessions, setSessions] = useState<ReadingSession[]>([]);
   const [assessments, setAssessments] = useState<AssessmentRecord[]>([]);
+  const [badges, setBadges] = useState<Badge[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,6 +52,7 @@ export default function StatsScreen() {
         setSummary(summarize(loaded));
       });
       listAssessments().then(setAssessments);
+      loadBadges().then(setBadges);
     }, [])
   );
 
@@ -109,6 +114,12 @@ export default function StatsScreen() {
               }))}
             />
           </Card>
+
+          <SectionHeader
+            title={`Rozetler · ${badges.filter((badge) => badge.earned).length} / ${badges.length}`}
+            hint="Puan yok; yalnızca anlamlı kilometre taşları. Hız rozeti bilerek yok — efektif hız var."
+          />
+          <BadgeList badges={badges} />
 
           <SectionHeader title="Toplam" />
           <Card style={{ gap: theme.space(2) }}>

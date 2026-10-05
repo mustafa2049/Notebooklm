@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
 import { countWordsInText, joinChapters, normalizeText } from '@/ingest/normalize';
+import { CLASSICS } from '@/content/classics';
 import { extractUrl } from '@/ingest/fromUrl';
 import { PdfBridge } from '@/ingest/PdfBridge';
 import { PDF_VIA_WEBVIEW, pickAndExtract } from '@/ingest/pickFile';
@@ -14,7 +15,7 @@ import { Button, Card, Chip, IconButton, Screen, Txt } from '@/ui/primitives';
 import { fontStyle } from '@/ui/theme';
 import { SAMPLE_TEXT } from '@/data/sampleText';
 
-type Tab = 'paste' | 'file' | 'url';
+type Tab = 'paste' | 'file' | 'url' | 'classics';
 
 /**
  * Paylaşımdan gelen parametreler.
@@ -145,10 +146,11 @@ export default function ImportScreen() {
         </Card>
       ) : null}
 
-      <View style={{ flexDirection: 'row', gap: theme.space(2), marginBottom: theme.space(4) }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2), marginBottom: theme.space(4) }}>
         <Chip label="Yapıştır" active={tab === 'paste'} onPress={() => setTab('paste')} />
         <Chip label="Dosya" active={tab === 'file'} onPress={() => setTab('file')} />
         <Chip label="Bağlantı" active={tab === 'url'} onPress={() => setTab('url')} />
+        <Chip label="Klasikler" active={tab === 'classics'} onPress={() => setTab('classics')} />
       </View>
 
       {tab === 'paste' ? (
@@ -237,6 +239,39 @@ export default function ImportScreen() {
               })
             }
           />
+        </View>
+      ) : null}
+
+      {tab === 'classics' ? (
+        <View style={{ gap: theme.space(3) }}>
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            Telif süresi dolmuş öyküler, Vikikaynak’tan. Dokununca kütüphaneye eklenir; internet
+            bağlantısı gerekir.
+          </Txt>
+          {CLASSICS.map((classic) => (
+            <Card
+              key={classic.url}
+              onPress={
+                busy
+                  ? undefined
+                  : () =>
+                      run(async () => {
+                        const article = await extractUrl(classic.url, settings.urlProxy);
+                        await save(
+                          `${classic.title} — ${classic.author}`,
+                          article.text,
+                          'url',
+                          classic.url
+                        );
+                      })
+              }
+            >
+              <Txt variant="body">{classic.title}</Txt>
+              <Txt variant="dim" style={{ fontSize: 13, marginTop: 2 }}>
+                {classic.author} · {classic.blurb}
+              </Txt>
+            </Card>
+          ))}
         </View>
       ) : null}
 

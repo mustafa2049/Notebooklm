@@ -91,7 +91,7 @@ function tagsToText(html: string): string {
 /**
  * Sayfadaki gerçek makale metnini seçer.
  *
- * Sezgi: bir haber/blog sayfasında `<p>` etiketlerinin toplamı asıl içeriktir;
+ * Sezgi: bir haber/blog sayfasında `<p>` (ve diyalog için `<dd>`) etiketlerinin toplamı asıl içeriktir;
  * menü ve kenar çubukları `<p>` kullanmaz. Yeterli `<p>` metni yoksa gövdenin
  * tamamına düşüyoruz.
  */
@@ -103,8 +103,10 @@ export function htmlToText(html: string): string {
     cleaned.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
   const scope = scopeMatch ? scopeMatch[1] : cleaned;
 
-  const paragraphs = [...scope.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
-    .map((match) => tagsToText(match[1]))
+  // `<dd>`: Vikikaynak gibi kaynaklar diyalog ve girintili satırları tanım
+  // listesiyle yazıyor; yalnızca `<p>` alınca konuşmalar metinden düşüyordu.
+  const paragraphs = [...scope.matchAll(/<(p|dd)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)]
+    .map((match) => tagsToText(match[2]))
     .filter((text) => text.length > 0);
 
   const joined = paragraphs.join('\n\n');

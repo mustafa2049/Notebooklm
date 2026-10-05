@@ -15,6 +15,8 @@ import { dayKey, listSessions, summarize, type ReadingSession, type StatsSummary
 import { listVocab } from '@/storage/vocab';
 import { improvement, testDue, type AssessmentRecord } from '@/train/assessment';
 import { dueCount } from '@/train/review';
+import { newBadges, type Badge } from '@/habit/badges';
+import { loadBadges, loadSeenBadges, markBadgesSeen } from '@/storage/badges';
 import { DailyGoal } from '@/ui/DailyGoal';
 import { formatPercent } from '@/ui/format';
 import { Icon } from '@/ui/Icon';
@@ -28,6 +30,7 @@ import { Button, Card, ProgressBar, Screen, SectionHeader, Txt } from '@/ui/prim
  */
 
 interface Snapshot {
+  freshBadges: Badge[];
   summary: StatsSummary;
   sessions: ReadingSession[];
   assessments: AssessmentRecord[];
@@ -67,7 +70,9 @@ export default function TodayScreen() {
         listDocumentsWithProgress(),
         listDrillResults(),
         listVocab(),
-      ]).then(([sessions, assessments, documents, drills, vocab]) => {
+        loadBadges(),
+        loadSeenBadges(),
+      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen]) => {
         if (cancelled) return;
         // Okumaya devam: en son dokunulan, bitmemiş doküman
         const unfinished = documents
@@ -76,6 +81,7 @@ export default function TodayScreen() {
         const tests = assessments.filter((record) => record.kind === 'test');
 
         setSnapshot({
+          freshBadges: newBadges(badges, seen),
           summary: summarize(sessions, now),
           sessions,
           assessments,
@@ -116,6 +122,32 @@ export default function TodayScreen() {
       <Txt variant="title">Bugün</Txt>
 
       <StreakCard summary={summary} />
+
+      {snapshot.freshBadges.length > 0 ? (
+        <Card
+          style={{ marginTop: theme.space(3), gap: theme.space(2), borderColor: theme.colors.accent }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
+            <Icon name="award" size={22} color={theme.colors.accent} />
+            <Txt variant="heading" style={{ flex: 1 }}>
+              {snapshot.freshBadges.length === 1
+                ? `Yeni rozet: ${snapshot.freshBadges[0].title}`
+                : `${snapshot.freshBadges.length} yeni rozet`}
+            </Txt>
+          </View>
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            {snapshot.freshBadges.map((badge) => badge.detail).join(' · ')}
+          </Txt>
+          <Button
+            label="Tamam"
+            variant="secondary"
+            onPress={() => {
+              void markBadgesSeen(snapshot.freshBadges.map((badge) => badge.id));
+              setSnapshot({ ...snapshot, freshBadges: [] });
+            }}
+          />
+        </Card>
+      ) : null}
 
       <View style={{ marginTop: theme.space(3) }}>
         <DailyGoal todayMs={summary.todayMs} todayWords={summary.todayWords} streak={summary.streak} />

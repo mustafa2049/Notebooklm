@@ -56,7 +56,12 @@ function parsePlainReaderOutput(body: string, url: string): ExtractedDocument {
   const contentStart = body.search(/^Markdown Content:\s*$/m);
   const raw = contentStart >= 0 ? body.slice(body.indexOf('\n', contentStart) + 1) : body;
 
-  const text = stripMarkdown(raw);
+  // Wikimedia sayfalarının slogan satırı ("Vikikaynak, özgür kütüphane")
+  // metnin ilk kelimeleri olarak okunmasın
+  const text = stripMarkdown(raw).replace(
+    /^\s*Viki(kaynak|pedi|kitap)[,.]? özgür (kütüphane|ansiklopedi)\s*$/gim,
+    ''
+  );
   if (text.trim().length < 200) {
     throw new Error('Sayfada okunabilir metin bulunamadı.');
   }

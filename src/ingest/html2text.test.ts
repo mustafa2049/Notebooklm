@@ -2,6 +2,19 @@ import { describe, expect, it } from 'vitest';
 import { decodeEntities, htmlTitle, htmlToText } from './html2text';
 
 describe('htmlToText', () => {
+  it('diyalog satırlarını (<dd>) paragraflarla aynı sırada alır', () => {
+    const filler = 'Uzun bir anlatı cümlesi burada yer alıyor ve metni yeterince uzatıyor. '.repeat(4);
+    const html = `<html><body>
+      <p>${filler}Birinci paragraf.</p>
+      <dl><dd>— Nereye gidiyorsun? dedi.</dd></dl>
+      <p>${filler}İkinci paragraf.</p>
+    </body></html>`;
+    const text = htmlToText(html);
+    expect(text).toContain('Nereye gidiyorsun?');
+    expect(text.indexOf('Birinci paragraf')).toBeLessThan(text.indexOf('Nereye gidiyorsun'));
+    expect(text.indexOf('Nereye gidiyorsun')).toBeLessThan(text.indexOf('İkinci paragraf'));
+  });
+
   it('paragrafları alır, menü ve betikleri atar', () => {
     const html = `
       <html><head><style>p{color:red}</style><script>var x=1</script></head>
