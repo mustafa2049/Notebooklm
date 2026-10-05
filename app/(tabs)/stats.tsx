@@ -1,10 +1,12 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { LEVEL_LABEL } from '@/content/passages';
 import { useSettings } from '@/store/SettingsContext';
 import { listAssessments } from '@/storage/assessments';
-import { heatmapDays, weeklyComparison } from '@/habit/summary';
+import { buildWeeklyReport } from '@/habit/report';
+import { heatmapDays } from '@/habit/summary';
+import { shareWeeklyReport } from '@/ui/shareReport';
 import {
   dayKey,
   listSessions,
@@ -99,7 +101,12 @@ export default function StatsScreen() {
             />
           </View>
 
-          <WeekCard sessions={sessions} />
+          <WeekCard
+            sessions={sessions}
+            streak={summary.streak}
+            assessments={assessments}
+            badges={badges.filter((badge) => badge.earned).length}
+          />
 
           <SectionHeader title="Okuma takvimi" hint="Son 16 hafta · gün başına okuma dakikası" />
           <Card>
@@ -322,27 +329,84 @@ function Figure({
 }
 
 /** Bu hafta / geçen hafta: dakika, okuma günü, kelime. */
-function WeekCard({ sessions }: { sessions: ReadingSession[] }) {
+function WeekCard({
+  sessions,
+  streak,
+  assessments,
+  badges,
+}: {
+  sessions: ReadingSession[];
+  streak: number;
+  assessments: AssessmentRecord[];
+  badges: number;
+}) {
   const { theme } = useSettings();
-  const { thisWeek, lastWeek } = weeklyComparison(sessions, Date.now());
-  const minutes = (ms: number) => Math.round(ms / 60000);
-  const delta = minutes(thisWeek.ms) - minutes(lastWeek.ms);
+  const [shareState, setShareState] = useState<string | null>(null);
+  const tests = reliableTests(assessments);
+  const latest = tests[tests.length - 1];
+  const change = improvement(assessments);
+  const report = buildWeeklyReport({
+    sessions,
+    now: Date.now(),
+    streak,
+    effectiveWpm: latest ? effectiveOf(latest) : null,
+    change: change?.change ?? null,
+    level: latest ? `${LEVEL_LABEL[levelOf(latest)]} seviye` : null,
+    badges,
+  });
+  const delta = report.minutes - report.lastWeekMinutes;
+
+  const share = async () => {
+    try {
+      const result = await shareWeeklyReport(report, {
+        bg: theme.colors.bg,
+        surface: theme.colors.surface,
+        text: theme.colors.text,
+        dim: theme.colors.textDim,
+        accent: theme.colors.accent,
+      });
+      setShareState(result === 'downloaded' ? 'Kart görsel olarak indirildi.' : null);
+    } catch (error) {
+      setShareState(error instanceof Error ? error.message : 'Paylaşılamadı.');
+    }
+  };
 
   return (
     <>
-      <SectionHeader title="Bu hafta" hint="Pazartesiden bugüne; geçen haftanın tamamıyla karşılaştırma" />
+      <SectionHeader
+        title="Haftanın kartı"
+        hint="Pazartesiden bugüne; geçen haftanın tamamıyla karşılaştırma"
+      />
       <Card style={{ gap: theme.space(2) }}>
-        <Row label="Okuma süresi" value={`${minutes(thisWeek.ms)} dk`} />
-        <Row label="Okuduğun gün" value={`${thisWeek.days} / 7`} />
-        <Row label="Kelime" value={formatNumber(thisWeek.words)} />
         <Txt variant="dim" style={{ fontSize: 13 }}>
-          Geçen hafta: {minutes(lastWeek.ms)} dk, {lastWeek.days} gün.{' '}
-          {lastWeek.ms === 0
+          {report.rangeLabel}
+        </Txt>
+        <Row label="Okuma süresi" value={`${report.minutes} dk`} />
+        <Row label="Okuduğun gün" value={`${report.days} / 7`} />
+        <Row label="Kelime" value={formatNumber(report.words)} />
+        <Row label="Seri" value={`${report.streak} gün`} />
+        {report.effectiveWpm !== null ? (
+          <Row label="Efektif hız" value={`${report.effectiveWpm} kel/dk`} hint={report.level ?? undefined} />
+        ) : null}
+        <Txt variant="dim" style={{ fontSize: 13 }}>
+          Geçen hafta: {report.lastWeekMinutes} dk.{' '}
+          {report.lastWeekMinutes === 0
             ? ''
             : delta >= 0
               ? `Şimdiden ${delta} dk önündesin.`
               : `Geçen haftayı yakalamak için ${-delta} dk kaldı.`}
         </Txt>
+        <Button
+          label={Platform.OS === 'web' ? 'Kartı görsel olarak indir' : 'Kartı paylaş'}
+          icon="share"
+          variant="secondary"
+          onPress={() => void share()}
+        />
+        {shareState ? (
+          <Txt variant="dim" style={{ fontSize: 12 }}>
+            {shareState}
+          </Txt>
+        ) : null}
       </Card>
     </>
   );
