@@ -152,6 +152,62 @@ sunucu tarafı gerektirdiği için web sürümünde bu ayar yerine bunu açıkla
 not duruyor. Bildirim metni günlük hedefi içerdiği için uygulama her açılışta
 hatırlatıcıyı yeniden planlıyor.
 
+## Gerçek gelişimi ölçmek
+
+Uygulamanın tempo ayarı bir beceri ölçüsü değil: 600 kelime/dakikaya ayarlayıp
+ekrana bakan herkes "600 okumuş" görünür. Bu yüzden gelişim ayrıca ölçülüyor.
+
+- **Seviye testi / haftalık ölçüm** (Antrenman → Ölçüm): gömülü bir metin
+  normal sayfa düzeninde, **kendi hızında** okunur; "Bitirdim"den sonra metin
+  gizlenir ve beş soru gelir. Sonuç: doğal hız, anlama ve **efektif hız = doğal
+  hız × anlama**. Araştırmalar hız ile anlama arasında takas olduğunu
+  gösteriyor (Rayner ve ark., 2016); yalnızca hızı izlemek anlamadan
+  "hızlandığını" sanmaya götürür.
+- Gerçekçi olmayan ölçümler (çok hızlı/yavaş, çok düşük anlama) saklanır ama
+  trende girmez; nedeni ekranda yazar.
+- **Gömülü metinler**: bu uygulama için yazılmış 12 özgün Türkçe metin (10
+  test, 2 egzersiz), her birinde 5 soru ve tarama görevleri. Test metinlerinin
+  zorluğu Ateşman (1997) okunabilirlik formülüyle denk tutuluyor (hepsi "orta
+  güçlükte", aralarındaki fark 15 puandan az) — haftalık ölçümler
+  karşılaştırılabilir. Egzersizler henüz test edilmemiş metinleri kullanmaz;
+  tanıdık metin ölçümü şişirirdi.
+- Anlama testi sonuçları da kaydediliyor; **Gelişim** sekmesi efektif hızın
+  ölçümler boyunca seyrini çiziyor. "Kazanılan süre" kullanıcının kendi
+  başlangıç hızına göre hesaplanıyor.
+
+## Bugün, alışkanlık ve rozetler
+
+- **Bugün** sekmesi: seri, günlük hedef, okumaya devam (bitiş tahminiyle),
+  bugün için en fazla üç öneri (ölçüm zamanı, günün ısınması, kelime tekrarı).
+- **Başlangıç sihirbazı**: önce *ne zaman* okuyacağını sorar (uygulama niyeti:
+  davranışı bir duruma bağlamak alışkanlığı kolaylaştırır), sonra günde kaç
+  dakika (küçük başla), sonra seviye testi. Hatırlatıcı metni bu ipucuyla
+  konuşur: "Akşam yemeğinden sonra: 15 dakika okuma zamanı."
+- **Esnek seri**: bir gün kaçırmak seriyi bozmaz, iki gün üst üste kaçırmak
+  bozar. Dün kaçırıldıysa Bugün ekranı uyarır.
+- **Odak seansı**: 5–20 dakika; yalnızca okuma süresi sayılır, süre dolunca
+  okuma durur.
+- **Okuma takvimi** (16 hafta), haftalık karşılaştırma, kitap bitiş tahmini ve
+  yıllık kitap hedefi (≥5.000 kelimelik, bu yıl bitirilen metinler).
+- **Rozetler**: 14 kilometre taşı, puan/seviye yok. Hız rozeti bilerek yok;
+  efektif hız gelişimi ödüllendiriliyor.
+
+## Egzersizler
+
+| Egzersiz | Ne çalıştırır | Not |
+|---|---|---|
+| Schulte tablosu | Dikkat, çevresel görüş | Okuma hızına doğrudan etkisinin kanıtı sınırlı; ısınma olarak |
+| Flaş kelime | Bir bakışta tanınan kelime grubu | Merdiven yöntemiyle uyarlanır (2 doğru zorlaştırır, 1 yanlış kolaylaştırır) |
+| Tarama | Aranan bilgiyi okumadan bulma | Araştırmalara göre gerçekten işe yarayan "hızlı okuma" becerilerinden |
+| Göz gezdirme | Paragraf başlarından ana fikri yakalama | Okuyucudaki "Önizle" sekmesiyle aynı mantık |
+| Hız egzersizleri | Isınma, hız rampası, göz genişletme, regresyon kırma | Kütüphane boşken gömülü pratik metinleriyle de çalışır |
+
+## Klasikler
+
+İçe aktarma → Klasikler: Vikikaynak'tan telif süresi dolmuş Ömer Seyfettin
+öyküleri. Her bağlantı listeye girmeden önce açılıp doğrulandı. İnternet
+gerektirir; web'de vekil sunucu üzerinden çekilir.
+
 ## Kelime defteri
 
 Okurken kelimeye uzun basılınca açılan panelden kelime, **geçtiği cümleyle
