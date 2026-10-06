@@ -47,12 +47,19 @@ await page.getByRole('heading', { name: 'Egzersizler' }).waitFor();
 await shot('05-play-hub');
 
 // Tek göz oyunları
-for (const kind of ['odd-one-out', 'catch', 'dots', 'tumbling-e']) {
+for (const kind of ['odd-one-out', 'balloons', 'catch', 'maze', 'dots', 'tumbling-e']) {
   await page.goto(`${BASE}#/play/exercise/${kind}`);
   await click('Başla');
   await wait(800);
   for (let i = 0; i < 6; i++) await page.mouse.click(120 + i * 30, 300 + i * 40);
   if (kind === 'tumbling-e') for (const k of ['ArrowLeft', 'ArrowUp', 'ArrowRight']) await page.keyboard.press(k);
+  if (kind === 'maze') for (const k of ['ArrowRight', 'ArrowDown', 'ArrowRight', 'ArrowDown']) await page.keyboard.press(k);
+  if (kind === 'balloons') await wait(2500);
+  if (kind === 'odd-one-out') {
+    // Ses düğmesi açılıp kapanabilmeli
+    await click('Sesi kapat');
+    await click('Sesi aç');
+  }
   await wait(500);
   await shot(`06-exercise-${kind}`);
   await click('Duraklat ya da çık');
@@ -72,11 +79,12 @@ await shot('10-calibrate-4');
 await click('Kaydet');
 
 // Dikoptik oyunlar
-for (const kind of ['blocks', 'breakout', 'stars']) {
+for (const kind of ['blocks', 'breakout', 'stars', 'snake']) {
   await page.goto(`${BASE}#/play/dichoptic/${kind}`);
   await click('Başla');
   await wait(1500);
   if (kind === 'blocks') for (const k of ['ArrowLeft', 'ArrowUp', ' ']) await page.keyboard.press(k);
+  if (kind === 'snake') for (const k of ['ArrowDown', 'ArrowLeft']) await page.keyboard.press(k);
   await page.mouse.move(200, 600);
   await wait(800);
   await shot(`11-dichoptic-${kind}`);
@@ -84,6 +92,57 @@ for (const kind of ['blocks', 'breakout', 'stars']) {
   await click('Bitir ve kaydet');
   await page.getByText('Bitti!').waitFor();
 }
+
+// Dikoptik film: sayfa içinde kısa bir WebM üret ve yükle
+await page.goto(`${BASE}#/play/video`);
+await page.getByRole('heading', { name: /Dikoptik Film/ }).waitFor();
+await shot('19-video-setup');
+const webm = await page.evaluate(async () => {
+  const c = document.createElement('canvas');
+  c.width = 320;
+  c.height = 240;
+  const g = c.getContext('2d');
+  const rec = new MediaRecorder(c.captureStream(30), { mimeType: 'video/webm' });
+  const chunks = [];
+  rec.ondataavailable = (e) => chunks.push(e.data);
+  rec.start(100);
+  const t0 = performance.now();
+  await new Promise((resolve) => {
+    const draw = () => {
+      const t = performance.now() - t0;
+      g.fillStyle = '#fff';
+      g.fillRect(0, 0, 320, 240);
+      g.fillStyle = '#000';
+      g.fillRect(100 + (t / 20) % 100, 100, 40, 40);
+      if (t < 2500) requestAnimationFrame(draw);
+      else resolve();
+    };
+    draw();
+  });
+  rec.stop();
+  await new Promise((r) => (rec.onstop = r));
+  const buf = new Uint8Array(await new Blob(chunks, { type: 'video/webm' }).arrayBuffer());
+  let bin = '';
+  buf.forEach((b) => (bin += String.fromCharCode(b)));
+  return btoa(bin);
+});
+await page.locator('[data-testid=video-file]').setInputFiles({ name: 'test.webm', mimeType: 'video/webm', buffer: Buffer.from(webm, 'base64') });
+await wait(600);
+if (await page.getByRole('button', { name: 'Oynat' }).isVisible()) await click('Oynat');
+await wait(700);
+const px = await page.evaluate(() => {
+  const gl = document.querySelector('.game-screen canvas');
+  const c = document.createElement('canvas');
+  c.width = gl.width;
+  c.height = gl.height;
+  const g = c.getContext('2d');
+  g.drawImage(gl, 0, 0);
+  return Array.from(g.getImageData(10, 10, 1, 1).data);
+});
+await shot('20-video-playing');
+// Beyaz bölge: tembel göz (sol, kırmızı) tam, sağlam göz (camgöbeği) ~%20
+if (!(px[0] > 180 && px[1] > 20 && px[1] < 90 && Math.abs(px[1] - px[2]) < 12)) errors.push(`Dikoptik video pikseli beklenmedik: ${px}`);
+await page.getByText('İzleme bitti').waitFor({ timeout: 15000 });
 
 // Gabor: rastgele cevaplarla seans bitene kadar
 await page.goto(`${BASE}#/play/gabor`);
@@ -117,7 +176,7 @@ await page.reload();
 await page.goto(`${BASE}#/stats`);
 await page.getByText('Oyunlar', { exact: true }).waitFor();
 const rows = await page.locator('tbody tr').count();
-if (rows < 7) errors.push(`Beklenen 7 oyun satırı, bulunan ${rows}`);
+if (rows < 10) errors.push(`Beklenen 10 oyun satırı, bulunan ${rows}`);
 
 // Service worker kaydı
 const sw = await page.evaluate(async () => !!(await navigator.serviceWorker.getRegistration()));
