@@ -19,6 +19,7 @@ const sample = (): AppData => ({
       binocularMin: 30,
       visionTestEveryDays: 7,
       doctorNote: 'Günde 2 saat',
+      proximityWarn: false,
       createdAt: 1,
     },
   ],
@@ -60,6 +61,8 @@ describe('export/import', () => {
     expect(data.profiles[0].visionTestEveryDays).toBe(7);
     expect(data.visionTests).toEqual([]);
     expect(data.diary).toEqual([]);
+    expect(data.stereoTests).toEqual([]);
+    expect(data.profiles[0].proximityWarn).toBe(false);
     expect(data.sessions).toHaveLength(1);
     expect(data.activeProfileId).toBe('x');
   });

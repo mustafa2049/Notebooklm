@@ -43,6 +43,8 @@ export default function Home() {
   const challenge = dailyChallenge(todayKey, profile.id, profile.anaglyph.calibrated);
   const challengeOk = challengeDone(challenge, results, todayKey);
   const earned = badges.filter((b) => b.earned).length;
+  const WEEK = 7 * 24 * 3600_000;
+  const backupDue = profile.lastBackupAt ? now - profile.lastBackupAt > 2 * WEEK : now - profile.createdAt > WEEK;
 
   const planItems = [
     { label: 'Kapama', value: today, target: goal, to: '/timer' },
@@ -139,6 +141,12 @@ export default function Home() {
           </div>
         </Link>
       )}
+      {backupDue && (
+        <Link to="/settings#veri" className="banner warn" style={{ display: 'block', color: 'inherit', textDecoration: 'none', marginTop: 12 }}>
+          💾 {profile.lastBackupAt ? 'Son yedeğin üzerinden 2 haftadan fazla geçti.' : 'Henüz yedek almadın.'} Telefon değişirse
+          verilerin kaybolmasın diye yedek al →
+        </Link>
+      )}
       {symptomWarn && (
         <div className="banner warn">Son 3 gündür belirti kaydettin. Sürerse egzersizlere ara ver ve göz doktoruna danış.</div>
       )}
@@ -158,6 +166,11 @@ export default function Home() {
           <span className="icon">👁️</span>
           <strong>Görme testi</strong>
           <span className="muted small">Her göz için evde ölçüm</span>
+        </Link>
+        <Link className="tile" to="/stereo">
+          <span className="icon">🧊</span>
+          <strong>3D görme testi</strong>
+          <span className="muted small">Derinlik algısını ölç</span>
         </Link>
         <Link className="tile" to="/play/gabor">
           <span className="icon">🌀</span>

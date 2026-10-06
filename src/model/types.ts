@@ -43,6 +43,12 @@ export interface Profile {
   nextVisit?: string;
   /** Ekran ölçeği: 1 mm kaç CSS pikseli (kredi kartıyla ölçülür). */
   screenPxPerMm?: number;
+  /** Ön kameranın odak uzaklığı (piksel, 640 px genişlik için); kalibrasyonla ölçülür. */
+  cameraFocalPx?: number;
+  /** Oyunlarda ekrana çok yaklaşınca kamera ile uyar. */
+  proximityWarn: boolean;
+  /** Son yedek alma zamanı. */
+  lastBackupAt?: number;
   createdAt: number;
 }
 
@@ -58,6 +64,7 @@ export const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => 
   binocularMin: 0,
   visionTestEveryDays: 7,
   doctorNote: '',
+  proximityWarn: false,
   createdAt: Date.now(),
 });
 
@@ -70,7 +77,7 @@ export interface PatchSession {
 }
 
 export type ExerciseKind = 'odd-one-out' | 'catch' | 'dots' | 'tumbling-e' | 'maze' | 'balloons';
-export type DichopticKind = 'blocks' | 'breakout' | 'stars' | 'snake' | 'puzzle';
+export type DichopticKind = 'blocks' | 'breakout' | 'stars' | 'snake' | 'puzzle' | 'depth';
 export type ActivityKind = ExerciseKind | DichopticKind | 'video' | 'reading';
 
 /** İki gözü birlikte çalıştıran (gözlükle yapılan) etkinlikler. */
@@ -80,6 +87,7 @@ export const BINOCULAR_KINDS: ReadonlySet<ActivityKind> = new Set<ActivityKind>(
   'stars',
   'snake',
   'puzzle',
+  'depth',
   'video',
   'reading',
 ]);
@@ -123,6 +131,16 @@ export interface VisionTest {
   distanceCm: number;
 }
 
+/** Rastgele nokta stereogramıyla ölçülen stereo (derinlik) görme eşiği. */
+export interface StereoTest {
+  id: string;
+  profileId: string;
+  at: number;
+  /** Arcsaniye; null = en büyük disparitede de derinlik algılanamadı. */
+  arcsec: number | null;
+  distanceCm: number;
+}
+
 export type Symptom = 'headache' | 'double' | 'strain' | 'squint' | 'none';
 export type Compliance = 'full' | 'partial' | 'none';
 
@@ -144,6 +162,7 @@ export interface AppData {
   results: ActivityResult[];
   gabor: GaborResult[];
   visionTests: VisionTest[];
+  stereoTests: StereoTest[];
   diary: DiaryEntry[];
   /** Profil başına çalışan zamanlayıcının başlangıç zamanı (yoksa null). */
   timers: Record<string, number | null>;
@@ -157,6 +176,7 @@ export const emptyData = (): AppData => ({
   results: [],
   gabor: [],
   visionTests: [],
+  stereoTests: [],
   diary: [],
   timers: {},
 });

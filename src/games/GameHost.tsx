@@ -4,9 +4,12 @@ import { formatDuration } from '../model/time';
 import { sfx, unlockAudio } from '../platform/sound';
 import { useWakeLock } from '../platform/wakeLock';
 import { useStore } from '../storage/store';
+import { useFaceDistance } from '../platform/useFaceDistance';
 import { runGame, type Game, type GameStats } from './engine';
 
 type Phase = 'intro' | 'playing' | 'paused' | 'done';
+
+const TOO_CLOSE_CM = 25;
 
 export interface GameHostProps {
   title: string;
@@ -34,6 +37,11 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
   useWakeLock(phase === 'playing');
   const { profile, updateProfile } = useStore();
   const soundOn = profile?.soundOn ?? true;
+  // İsteğe bağlı: kamera ile yüz ekrana 25 cm'den yaklaşınca oyunu beklet.
+  const face = useFaceDistance(!!profile?.proximityWarn && phase === 'playing', profile?.cameraFocalPx);
+  const tooClose = face.status === 'ok' && face.distanceCm != null && face.distanceCm < TOO_CLOSE_CM;
+  const tooCloseRef = useRef(false);
+  tooCloseRef.current = tooClose;
   const play = () => {
     unlockAudio();
     setPhase('playing');
@@ -41,7 +49,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    return runGame(canvasRef.current, game, () => phaseRef.current === 'playing');
+    return runGame(canvasRef.current, game, () => phaseRef.current === 'playing' && !tooCloseRef.current);
   }, [game]);
 
   // Süre sayacı ve HUD güncellemesi
@@ -50,7 +58,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
     let last = performance.now();
     const id = window.setInterval(() => {
       const t = performance.now();
-      setElapsed((e) => e + (t - last) / 1000);
+      if (!tooCloseRef.current) setElapsed((e) => e + (t - last) / 1000);
       last = t;
       setHud(game.stats());
     }, 250);
@@ -104,6 +112,17 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
       </div>
       <div className="game-canvas-wrap">
         <canvas ref={canvasRef} />
+        {phase === 'playing' && tooClose && (
+          <div className="game-overlay" role="alert">
+            <div className="panel">
+              <div style={{ fontSize: 48 }}>📏</div>
+              <h2 style={{ margin: 0 }}>Ekrana çok yakınsın</h2>
+              <p style={{ margin: 0 }}>
+                Şu an yaklaşık {face.distanceCm} cm. Biraz uzaklaş (en az {TOO_CLOSE_CM} cm); oyun kendiliğinden devam eder.
+              </p>
+            </div>
+          </div>
+        )}
         {phase === 'intro' && (
           <div className="game-overlay">
             <div className="panel">

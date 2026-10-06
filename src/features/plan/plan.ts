@@ -39,7 +39,7 @@ export function daysUntil(date: string | undefined, now: number): number | null 
 }
 
 const MONOCULAR: ExerciseKind[] = ['odd-one-out', 'balloons', 'catch', 'maze', 'dots', 'tumbling-e'];
-const DICHOPTIC: DichopticKind[] = ['blocks', 'breakout', 'stars', 'snake', 'puzzle'];
+const DICHOPTIC: DichopticKind[] = ['blocks', 'breakout', 'stars', 'snake', 'puzzle', 'depth'];
 
 /** FNV-1a karma — aynı gün ve profil için hep aynı görevi seçer. */
 function hash(s: string): number {

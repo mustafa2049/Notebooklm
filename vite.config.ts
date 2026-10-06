@@ -14,7 +14,16 @@ export default defineConfig({
       includeAssets: ['icons/icon.svg', 'icons/apple-touch-icon.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+        // Kamera modeli büyük: ilk açılışta değil, özellik kullanılınca indirilip saklanır.
+        globIgnores: ['mediapipe/**'],
         importScripts: ['sw-extra.js'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/mediapipe/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'mediapipe', expiration: { maxEntries: 10 } },
+          },
+        ],
       },
       manifest: {
         name: 'Göz Egzersiz – Göz Tembelliği Destek',

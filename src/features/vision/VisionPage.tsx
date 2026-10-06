@@ -8,6 +8,8 @@ import { useWakeLock } from '../../platform/wakeLock';
 import { useProfileResults } from '../../storage/selectors';
 import { useProfile, useStore } from '../../storage/store';
 import { Segmented } from '../../ui/components';
+import { DistanceMeter } from '../../ui/DistanceMeter';
+import { useFaceDistance } from '../../platform/useFaceDistance';
 import {
   AcuityTest,
   CARD_WIDTH_MM,
@@ -49,6 +51,14 @@ export default function VisionPage() {
   const screenMin = typeof window !== 'undefined' ? Math.min(window.innerWidth, window.innerHeight - 200) : 400;
   const range = measurableRange(distance * 10, pxPerMm, dpr, screenMin);
   const fellow: Eye = profile.amblyopicEye === 'left' ? 'right' : 'left';
+  // Kamera ölçümü yalnızca 1 m'ye kadar güvenilir (uzakta iris çok küçük görünür).
+  const [useCamera, setUseCamera] = useState(false);
+  const cameraOn = useCamera && distance <= 100 && (phase === 'setup' || phase === 'cover' || phase === 'test');
+  const dist = useFaceDistance(cameraOn, profile.cameraFocalPx);
+  const samples = useRef<number[]>([]);
+  useEffect(() => {
+    if (phase === 'test' && dist.status === 'ok' && dist.distanceCm) samples.current.push(dist.distanceCm);
+  }, [phase, dist.distanceCm, dist.status]);
 
   const start = () => {
     unlockAudio();
@@ -57,9 +67,15 @@ export default function VisionPage() {
     setPhase('cover');
   };
 
-  const onEyeDone = (logMAR: number, reachedBest: boolean) => {
+  const onEyeDone = (rawLogMAR: number, reachedBest: boolean) => {
     const eye = queue[0];
-    addVisionTest({ eye, logMAR, distanceCm: distance });
+    // Kamerayla ölçülen gerçek mesafe hedeften farklıysa harflerin açısal boyutu da farklıdır:
+    // logMAR, hedef/gerçek mesafe oranının logaritması kadar düzeltilir.
+    const s = samples.current;
+    const measured = s.length >= 3 ? [...s].sort((a, b) => a - b)[Math.floor(s.length / 2)] : null;
+    samples.current = [];
+    const logMAR = measured ? Math.round((rawLogMAR + Math.log10(distance / measured)) * 100) / 100 : rawLogMAR;
+    addVisionTest({ eye, logMAR, distanceCm: measured ?? distance });
     const next = [...results, { eye, logMAR, reachedBest }];
     setResults(next);
     const rest = queue.slice(1);
@@ -97,6 +113,7 @@ export default function VisionPage() {
           harfinin bacaklarının hangi yöne baktığını seç. Emin değilsen tahmin et; hiç göremiyorsan “Göremiyorum”a bas.
           {distance >= 100 && ' Uzaktan klavyenin ok tuşlarını kullanabilir ya da yanındaki birine söyleyip dokunmasını isteyebilirsin.'}
         </p>
+        <DistanceMeter d={dist} targetCm={distance} />
         <button className="btn primary big" onClick={() => setPhase('test')}>
           Hazırım
         </button>
@@ -114,6 +131,7 @@ export default function VisionPage() {
         pxPerMm={pxPerMm}
         onDone={onEyeDone}
         onExit={() => setPhase('setup')}
+        meter={<DistanceMeter d={dist} targetCm={distance} compact />}
       />
     );
   }
@@ -182,6 +200,26 @@ export default function VisionPage() {
           {toTenths(range.worst)} – {toTenths(range.best)}.
         </span>
       </div>
+      {distance <= 100 && (
+        <div className="field">
+          <strong>Mesafe ölçümü</strong>
+          <Segmented
+            label="Kamera"
+            value={useCamera ? 'cam' : 'manual'}
+            onChange={(v) => setUseCamera(v === 'cam')}
+            options={[
+              { value: 'manual', label: 'Elle ölçtüm' },
+              { value: 'cam', label: '📷 Kamerayla ölç' },
+            ]}
+          />
+          <DistanceMeter d={dist} targetCm={distance} />
+          {useCamera && (
+            <span className="muted small">
+              Görüntü yalnızca bu cihazda işlenir. Sonuç, testteki gerçek mesafeye göre otomatik düzeltilir.
+            </span>
+          )}
+        </div>
+      )}
       <div className="field">
         <strong>Hangi gözler?</strong>
         <Segmented
@@ -285,7 +323,9 @@ function AcuityRunner({
   pxPerMm,
   onDone,
   onExit,
+  meter,
 }: {
+  meter?: React.ReactNode;
   startLine: number;
   bestLine: number;
   distanceMm: number;
@@ -370,6 +410,7 @@ function AcuityRunner({
         </span>
         <span style={{ minWidth: 44, textAlign: 'right' }}>{flash === null ? '' : flash ? '✓' : '·'}</span>
       </div>
+      {meter && <div style={{ textAlign: 'center', padding: '0 8px' }}>{meter}</div>}
       <div
         className="game-canvas-wrap"
         onPointerDown={(e) => (swipe.current = [e.clientX, e.clientY])}

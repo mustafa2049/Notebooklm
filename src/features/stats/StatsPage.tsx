@@ -14,7 +14,7 @@ const fmtDay = (ts: number) => new Date(ts).toLocaleDateString('tr-TR', { day: '
 export default function StatsPage() {
   const profile = useProfile();
   const { byDay, goal, today, streak, now } = usePatchStats();
-  const { results, gabor, visionTests } = useProfileResults();
+  const { results, gabor, visionTests, stereoTests } = useProfileResults();
   const [range, setRange] = useState(14);
   const [cycles, setCycles] = useState(6);
 
@@ -125,6 +125,41 @@ export default function StatsPage() {
           <p className="muted small" style={{ margin: 0 }}>
             Yukarı çıkan çizgi = daha iyi görme. Ev testleri yaklaşıktır; aynı mesafe ve cihazla karşılaştırın.
           </p>
+        )}
+      </div>
+
+      <div className="card">
+        <div className="row spread">
+          <strong>3D (stereo) görme</strong>
+          <Link className="small" to="/stereo">
+            Test yap →
+          </Link>
+        </div>
+        {stereoTests.length === 0 ? (
+          <p className="muted">
+            Henüz 3D görme testi yok. <Link to="/stereo">İlk testi yap →</Link>
+          </p>
+        ) : (
+          <>
+            <LineChart
+              points={[...stereoTests]
+                .sort((a, b) => a.at - b.at)
+                .map((t) => ({
+                  label: fmtDay(t.at),
+                  // Algılanamadı → grafikte en kötü değer (1000″) olarak gösterilir
+                  value: t.arcsec ?? 1000,
+                  tip: `${fmtDay(t.at)} · ${t.arcsec === null ? 'algılanamadı' : `${t.arcsec}″`}`,
+                }))}
+              log
+              min={15}
+              max={1000}
+              format={(v) => `${Math.round(v)}″`}
+              ariaLabel="Stereo görme eşiği zaman içinde"
+            />
+            <p className="muted small" style={{ margin: 0 }}>
+              Aşağı inen çizgi = daha ince derinlik farkları görülüyor (daha iyi). Normal ≈ 60″ ve altı.
+            </p>
+          </>
         )}
       </div>
 

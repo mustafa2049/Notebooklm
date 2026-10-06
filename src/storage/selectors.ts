@@ -32,8 +32,9 @@ export function useProfileResults() {
       results: data.results.filter((r) => r.profileId === profile?.id),
       gabor: data.gabor.filter((g) => g.profileId === profile?.id),
       visionTests: data.visionTests.filter((v) => v.profileId === profile?.id),
+      stereoTests: data.stereoTests.filter((v) => v.profileId === profile?.id),
       diary: data.diary.filter((e) => e.profileId === profile?.id),
     }),
-    [data.results, data.gabor, data.visionTests, data.diary, profile?.id],
+    [data.results, data.gabor, data.visionTests, data.stereoTests, data.diary, profile?.id],
   );
 }

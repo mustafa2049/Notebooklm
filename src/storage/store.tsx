@@ -5,6 +5,7 @@ import {
   type ActivityResult,
   type AppData,
   type DiaryEntry,
+  type StereoTest,
   type VisionTest,
   type GaborResult,
   type Profile,
@@ -30,6 +31,7 @@ interface Store {
   addResult(r: Omit<ActivityResult, 'id' | 'profileId' | 'at'>): ActivityResult | null;
   addGabor(r: Omit<GaborResult, 'id' | 'profileId' | 'at'>): void;
   addVisionTest(r: Omit<VisionTest, 'id' | 'profileId' | 'at'>): void;
+  addStereoTest(r: Omit<StereoTest, 'id' | 'profileId' | 'at'>): void;
   /** Günün kaydını ekler ya da günceller (gün başına tek kayıt). */
   saveDiary(e: Omit<DiaryEntry, 'id' | 'profileId'>): void;
   replaceAll(d: AppData): void;
@@ -92,6 +94,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         results: d.results.filter((r) => r.profileId !== id),
         gabor: d.gabor.filter((g) => g.profileId !== id),
         visionTests: d.visionTests.filter((v) => v.profileId !== id),
+        stereoTests: d.stereoTests.filter((v) => v.profileId !== id),
         diary: d.diary.filter((e) => e.profileId !== id),
         timers,
       };
@@ -161,6 +164,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [pid],
   );
 
+  const addStereoTest = useCallback(
+    (r: Omit<StereoTest, 'id' | 'profileId' | 'at'>) => {
+      if (!pid) return;
+      setData((d) => ({ ...d, stereoTests: [...d.stereoTests, { ...r, id: uid(), profileId: pid, at: Date.now() }] }));
+    },
+    [pid],
+  );
+
   const saveDiary = useCallback(
     (e: Omit<DiaryEntry, 'id' | 'profileId'>) => {
       if (!pid) return;
@@ -193,10 +204,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       addResult,
       addGabor,
       addVisionTest,
+      addStereoTest,
       saveDiary,
       replaceAll,
     }),
-    [data, loaded, profile, runningSince, addProfile, updateProfile, deleteProfile, setActiveProfile, startTimer, stopTimer, cancelTimer, addManualSession, deleteSession, addResult, addGabor, addVisionTest, saveDiary, replaceAll],
+    [data, loaded, profile, runningSince, addProfile, updateProfile, deleteProfile, setActiveProfile, startTimer, stopTimer, cancelTimer, addManualSession, deleteSession, addResult, addGabor, addVisionTest, addStereoTest, saveDiary, replaceAll],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

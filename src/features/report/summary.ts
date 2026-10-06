@@ -9,6 +9,7 @@ import {
   type GaborResult,
   type PatchSession,
   type Profile,
+  type StereoTest,
   type Symptom,
   type VisionTest,
 } from '../../model/types';
@@ -19,6 +20,7 @@ export interface ReportInput {
   results: ActivityResult[];
   gabor: GaborResult[];
   visionTests: VisionTest[];
+  stereoTests?: StereoTest[];
   diary: DiaryEntry[];
   /** Dönemin ilk günü (dahil). */
   from: number;
@@ -53,6 +55,8 @@ export interface ReportSummary {
   contrast: FirstLast | null;
   gabor: (FirstLast & { cycles: number })[];
   vision: (FirstLast & { eye: Eye })[];
+  /** Stereo eşiği (arcsaniye; null = algılanamadı). */
+  stereo: { first: number | null; last: number | null; n: number } | null;
   symptoms: Record<Symptom, number>;
   compliance: Record<Compliance, number>;
   notes: { day: string; note: string }[];
@@ -125,6 +129,10 @@ export function buildSummary(i: ReportInput): ReportSummary {
       .map((eye) => ({ eye, fl: firstLast(vis.filter((v) => v.eye === eye).map((v) => v.logMAR)) }))
       .filter((v) => v.fl)
       .map((v) => ({ eye: v.eye, ...v.fl! })),
+    stereo: (() => {
+      const st = (i.stereoTests ?? []).filter((v) => v.profileId === pid && inRange(v.at)).sort((a, b) => a.at - b.at);
+      return st.length ? { first: st[0].arcsec, last: st[st.length - 1].arcsec, n: st.length } : null;
+    })(),
     symptoms,
     compliance,
     notes: diary.filter((d) => d.note.trim()).sort((a, b) => a.day.localeCompare(b.day)).map((d) => ({ day: d.day, note: d.note.trim() })),

@@ -4,9 +4,11 @@ import { tr } from '../../i18n/tr';
 import { dayKey } from '../../model/time';
 import { isIos, isStandalone, notificationsSupported, notify, requestNotificationPermission } from '../../platform/notifications';
 import { buildIcs } from '../../platform/reminders';
-import { downloadText, exportCsv, exportJson, importJson } from '../../storage/export';
+import { exportCsv, exportJson, importJson } from '../../storage/export';
 import { useProfile, useStore } from '../../storage/store';
 import { DisclaimerText, Segmented } from '../../ui/components';
+import { CameraCalibration } from '../../ui/DistanceMeter';
+import { shareOrDownloadFile } from '../../platform/share';
 
 export default function SettingsPage() {
   const profile = useProfile();
@@ -168,6 +170,28 @@ function Settings() {
         </div>
       </div>
 
+      <h2 id="kamera">Kamera ile mesafe</h2>
+      <div className="card stack">
+        <p className="muted small" style={{ margin: 0 }}>
+          Ön kamera yüzünü ve gözlerinin irisini algılayarak ekrana uzaklığını tahmin eder. Görüntü yalnızca bu cihazda işlenir;
+          kaydedilmez ve hiçbir yere gönderilmez. Görme ve 3D testlerinde mesafeyi kontrol etmek için de kullanılır.
+        </p>
+        <Segmented
+          label="Yakınlık uyarısı"
+          value={profile.proximityWarn ? 'on' : 'off'}
+          onChange={(v) => up({ proximityWarn: v === 'on' })}
+          options={[
+            { value: 'off', label: 'Uyarı kapalı' },
+            { value: 'on', label: '📏 Oyunlarda yakınlık uyarısı' },
+          ]}
+        />
+        <span className="muted small">
+          Açıkken oyun sırasında yüzün ekrana 25 cm'den fazla yaklaşırsa oyun bekler ve “biraz uzaklaş” uyarısı çıkar.
+        </span>
+        <CameraCalibration />
+        {profile.cameraFocalPx && <span className="muted small">Kamera kalibre edildi ✓</span>}
+      </div>
+
       <h2>Ses</h2>
       <div className="card stack">
         <Segmented
@@ -223,7 +247,7 @@ function Settings() {
           <button
             className="btn primary"
             disabled={profile.reminderTimes.length === 0}
-            onClick={() => downloadText(`goz-kapama-hatirlatici.ics`, buildIcs(profile), 'text/calendar')}
+            onClick={() => shareOrDownloadFile('goz-kapama-hatirlatici.ics', buildIcs(profile), 'text/calendar', 'Göz kapama hatırlatıcısı')}
           >
             📅 Telefon takvimine ekle
           </button>
@@ -334,14 +358,28 @@ function Settings() {
       <div className="card stack">
         <p className="muted small" style={{ margin: 0 }}>
           Tüm veriler yalnızca bu cihazda saklanır; hiçbir sunucuya gönderilmez. Telefon değiştirirken ya da tarayıcı
-          verilerini silmeden önce yedek alın.
+          verilerini silmeden önce yedek alın. Telefonda “Yedek al / paylaş” paylaşma menüsünü açar: Google Drive, WhatsApp ya
+          da e-postaya kaydedebilirsiniz. Yeni cihazda ilk açılışta “Yedekten geri yükle” ile verilerinizi taşıyabilirsiniz.
         </p>
+        <div className="muted small">
+          Son yedek:{' '}
+          {profile.lastBackupAt ? new Date(profile.lastBackupAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'hiç alınmadı'}
+        </div>
         <div className="row">
-          <button className="btn" onClick={() => downloadText(`goz-egzersiz-${profile.name}-${stamp}.csv`, exportCsv(data, profile.id), 'text/csv')}>
+          <button className="btn" onClick={() => shareOrDownloadFile(`goz-egzersiz-${profile.name}-${stamp}.csv`, exportCsv(data, profile.id), 'text/csv', 'Göz Egzersiz verileri')}>
             📄 Doktor için CSV
           </button>
-          <button className="btn" onClick={() => downloadText(`goz-egzersiz-yedek-${stamp}.json`, exportJson(data), 'application/json')}>
-            💾 Yedek al (JSON)
+          <button
+            className="btn primary"
+            onClick={async () => {
+              const r = await shareOrDownloadFile(`goz-egzersiz-yedek-${stamp}.json`, exportJson(data), 'application/json', 'Göz Egzersiz yedeği');
+              if (r !== 'cancelled') {
+                up({ lastBackupAt: Date.now() });
+                setMsg(r === 'shared' ? 'Yedek paylaşıldı ✓' : 'Yedek dosyası indirildi ✓');
+              }
+            }}
+          >
+            💾 Yedek al / paylaş
           </button>
           <button className="btn" onClick={() => fileRef.current?.click()}>
             📂 Yedekten geri yükle

@@ -10,6 +10,7 @@ import { createBreakout } from '../../games/dichoptic/breakout';
 import { createStars } from '../../games/dichoptic/stars';
 import { createSnake } from '../../games/dichoptic/snake';
 import { createMemory } from '../../games/dichoptic/memory';
+import { createDepth } from '../../games/dichoptic/depth';
 import { Stars } from '../../ui/components';
 import { starsFor } from '../kids/rewards';
 
@@ -19,6 +20,7 @@ const FACTORIES: Record<DichopticKind, (p: DichopticPalette) => Game> = {
   stars: createStars,
   snake: createSnake,
   puzzle: createMemory,
+  depth: createDepth,
 };
 
 const CONTROLS: Partial<Record<DichopticKind, readonly (readonly [string, string])[]>> = {
@@ -47,6 +49,7 @@ export default function DichopticPlay() {
 
   if (!kind || !(kind in FACTORIES)) return <Navigate to="/play" replace />;
   const k = kind as DichopticKind;
+  const stereo = k === 'depth';
   const info = tr.activity[k];
   const kid = profile.mode === 'child';
 
@@ -76,8 +79,14 @@ export default function DichopticPlay() {
         <>
           <p style={{ margin: 0 }}>{info.desc}</p>
           <div className="banner" style={{ textAlign: 'left', color: '#eee', background: '#222' }}>
-            🥽 Kırmızı-mavi gözlüğünü tak, <b>bandı çıkar</b>; iki gözün de açık olmalı. Sağlam göz kontrastı:{' '}
-            <b>%{Math.round(contrast * 100)}</b>
+            🥽 Kırmızı-mavi gözlüğünü tak, <b>bandı çıkar</b>; iki gözün de açık olmalı.{' '}
+            {stereo ? (
+              <>3D görme için iki göz de noktaları <b>eşit parlaklıkta</b> görür. Kareyi bulamazsan ekrana biraz uzaktan, rahat bak.</>
+            ) : (
+              <>
+                Sağlam göz kontrastı: <b>%{Math.round(contrast * 100)}</b>
+              </>
+            )}
           </div>
           <div className="row" style={{ justifyContent: 'center', gap: 20 }}>
             <span>
@@ -111,8 +120,16 @@ export default function DichopticPlay() {
           : undefined
       }
       onFinish={(stats, sec) => {
-        const next = adaptContrast(contrast, stats.performance, sec);
-        addResult({ kind: k, durationSec: sec, score: stats.score, level: stats.level, performance: stats.performance, contrast });
+        // Derinlik Avı iki göze eşit parlaklık verir; sağlam göz kontrastını değiştirmez.
+        const next = stereo ? contrast : adaptContrast(contrast, stats.performance, sec);
+        addResult({
+          kind: k,
+          durationSec: sec,
+          score: stats.score,
+          level: stats.level,
+          performance: stats.performance,
+          ...(stereo ? {} : { contrast }),
+        });
         if (next !== contrast) updateProfile(profile.id, { dichopticContrast: next });
         return (
           <>
@@ -121,7 +138,9 @@ export default function DichopticPlay() {
               Skor <b>{stats.score}</b> · Seviye <b>{stats.level}</b> · Başarı <b>%{Math.round(stats.performance * 100)}</b>
             </p>
             <p className="small" style={{ margin: 0 }}>
-              {next > contrast
+              {stereo
+                ? `Ulaştığın seviye ${stats.level}. Seviye arttıkça kare daha az "öne çıkar"; ince derinlik farklarını görebilmek stereo görmenin geliştiğini gösterir.`
+                : next > contrast
                 ? `Harika! Sağlam göz kontrastı %${Math.round(contrast * 100)} → %${Math.round(next * 100)} yükseltildi.`
                 : next < contrast
                   ? `Sağlam göz kontrastı %${Math.round(contrast * 100)} → %${Math.round(next * 100)} düşürüldü; bir sonraki oyun biraz daha kolay olacak.`

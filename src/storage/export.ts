@@ -31,6 +31,9 @@ export function normalizeData(raw: unknown): AppData {
     results: arr<AppData['results'][number]>(raw.results).filter((r) => isObj(r) && typeof r.kind === 'string'),
     gabor: arr<AppData['gabor'][number]>(raw.gabor).filter((g) => isObj(g) && num(g.threshold)),
     visionTests: arr<AppData['visionTests'][number]>(raw.visionTests).filter((v) => isObj(v) && num(v.logMAR)),
+    stereoTests: arr<AppData['stereoTests'][number]>(raw.stereoTests).filter(
+      (v) => isObj(v) && (v.arcsec === null || num(v.arcsec)),
+    ),
     diary: arr<AppData['diary'][number]>(raw.diary).filter((d) => isObj(d) && typeof d.day === 'string'),
     timers: isObj(raw.timers) ? (raw.timers as AppData['timers']) : {},
   };
@@ -98,6 +101,12 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
     .forEach((v) =>
       row(dayKey(v.at), v.eye === 'left' ? 'Sol' : 'Sağ', v.logMAR.toFixed(2), (Math.pow(10, -v.logMAR) * 10).toFixed(1), v.distanceCm),
     );
+  row('');
+  row('Tarih', 'Stereo eşiği (arcsaniye)', 'Mesafe (cm)');
+  data.stereoTests
+    .filter((v) => v.profileId === profileId)
+    .sort((a, b) => a.at - b.at)
+    .forEach((v) => row(dayKey(v.at), v.arcsec ?? 'algılanamadı', v.distanceCm));
   row('');
   row('Tarih', 'Belirtiler', 'Bant uyumu', 'Not');
   data.diary

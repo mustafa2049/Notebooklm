@@ -8,12 +8,20 @@ const OUT = process.env.SHOTS || 'screenshots';
 const executablePath = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 fs.mkdirSync(OUT, { recursive: true });
 
-const browser = await chromium.launch({ executablePath });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, locale: 'tr-TR' });
+const browser = await chromium.launch({
+  executablePath,
+  // Sahte kamera: yüz içermeyen test görüntüsü verir (kamera akışının hatasız çalıştığını doğrular)
+  args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'],
+});
+const ctxOpts = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, locale: 'tr-TR', acceptDownloads: true };
+const ctx = await browser.newContext(ctxOpts);
+await ctx.grantPermissions(['camera', 'clipboard-read', 'clipboard-write'], { origin: new URL(BASE).origin });
 const page = await ctx.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
-page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+// MediaPipe bilgi satırlarını (ör. "INFO: Created TensorFlow Lite XNNPACK delegate") console.error ile yazar; bunlar hata değil.
+const benign = (t) => /^(INFO|I\d{4}|W\d{4})[: ]|TensorFlow Lite|XNNPACK/.test(t);
+page.on('console', (m) => m.type() === 'error' && !benign(m.text()) && errors.push(m.text()));
 
 const shot = (name) => page.screenshot({ path: `${OUT}/${name}.png` });
 const click = (text) => page.getByRole('button', { name: text }).first().click();
@@ -81,7 +89,7 @@ await shot('10-calibrate-4');
 await click('Kaydet');
 
 // Dikoptik oyunlar
-for (const kind of ['blocks', 'breakout', 'stars', 'snake', 'puzzle']) {
+for (const kind of ['blocks', 'breakout', 'stars', 'snake', 'puzzle', 'depth']) {
   await page.goto(`${BASE}#/play/dichoptic/${kind}`);
   await click('Başla');
   await wait(1500);
@@ -199,6 +207,41 @@ await wait(15500);
 await click('Bitirdim');
 await page.getByText('Okuma bitti').waitFor();
 
+// 3D (stereo) görme testi: rastgele cevaplarla sonuca kadar; çizimde iki göz rengi de olmalı
+await page.goto(`${BASE}#/stereo`);
+await click('Teste başla');
+await wait(400);
+const colours = await page.evaluate(() => {
+  const c = document.querySelector('.game-screen canvas');
+  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  let red = 0, cyan = 0, white = 0;
+  for (let i = 0; i < d.length; i += 4 * 7) {
+    if (d[i] > 200 && d[i + 1] < 50) red++;
+    else if (d[i] < 50 && d[i + 1] > 200) cyan++;
+    else if (d[i] > 200 && d[i + 1] > 200) white++;
+  }
+  return { red, cyan, white };
+});
+if (!(colours.red > 100 && colours.cyan > 100 && colours.white > 100)) errors.push(`Stereogram renkleri beklenmedik: ${JSON.stringify(colours)}`);
+await shot('28-stereo-test');
+for (let i = 0; i < 60; i++) {
+  if (await page.getByRole('heading', { name: /Sonuç/ }).isVisible()) break;
+  await page.keyboard.press(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'][i % 4]);
+  await wait(120);
+}
+await page.getByRole('heading', { name: /Sonuç/ }).waitFor();
+await shot('29-stereo-result');
+
+// Kamera ile mesafe: sahte kamerada yüz yok → "Yüz aranıyor" durumu hatasız gösterilmeli
+await page.goto(`${BASE}#/settings`);
+await click('Kamerayı aç ve mesafeyi gör');
+await page.getByText(/Yüz aranıyor|Kamera kullanılamıyor|başlatılamadı/).first().waitFor({ timeout: 60000 });
+const camText = await page.getByRole('status').first().innerText();
+if (!/Yüz aranıyor/.test(camText)) errors.push(`Kamera durumu beklenmedik: ${camText}`);
+await page.getByText('Kamera ile mesafe').first().scrollIntoViewIfNeeded();
+await shot('30-camera');
+await click('Kamerayı kapat');
+
 // Doktor raporu
 await page.goto(`${BASE}#/report`);
 await page.getByTestId('report').waitFor();
@@ -206,6 +249,22 @@ for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test n
   if (!(await page.getByTestId('report').getByText(t).first().isVisible())) errors.push(`Raporda "${t}" yok`);
 }
 await shot('27-report');
+
+// Rapor bağlantısı: panoya kopyalanır, yeni sekmede profil olmadan açılır
+await click('Bağlantı ile paylaş');
+await page.getByTestId('link-msg').waitFor();
+const link = await page.evaluate(() => navigator.clipboard.readText());
+if (!link.includes('#/shared/')) errors.push(`Paylaşım bağlantısı beklenmedik: ${link.slice(0, 80)}`);
+const doctorCtx = await browser.newContext(ctxOpts);
+const doctor = await doctorCtx.newPage();
+doctor.on('pageerror', (e) => errors.push('doktor: ' + e.message));
+await doctor.goto(link);
+await doctor.getByRole('heading', { name: /Paylaşılan rapor/ }).waitFor();
+for (const t of ['Mustafa', 'Görme keskinliği', '3D (stereo)', 'Test notu']) {
+  if (!(await doctor.getByTestId('report').getByText(t).first().isVisible())) errors.push(`Paylaşılan raporda "${t}" yok`);
+}
+await doctor.screenshot({ path: `${OUT}/31-shared-report.png` });
+await doctorCtx.close();
 
 // İstatistik, rozetler, ayarlar
 await page.goto(`${BASE}#/stats`);
@@ -230,6 +289,21 @@ if (rows < 12) errors.push(`Beklenen 12 oyun satırı, bulunan ${rows}`);
 // Service worker kaydı
 const sw = await page.evaluate(async () => !!(await navigator.serviceWorker.getRegistration()));
 if (!sw) errors.push('Service worker kayıtlı değil');
+
+// Yedek al → yeni cihazda (temiz tarayıcı) ilk açılışta geri yükle
+await page.goto(`${BASE}#/settings`);
+const [download] = await Promise.all([page.waitForEvent('download'), click('Yedek al / paylaş')]);
+const backupPath = `${OUT}/yedek.json`;
+await download.saveAs(backupPath);
+const newCtx = await browser.newContext(ctxOpts);
+const fresh = await newCtx.newPage();
+fresh.on('pageerror', (e) => errors.push('yeni cihaz: ' + e.message));
+await fresh.goto(BASE);
+await fresh.getByText('Önemli bilgilendirme').waitFor();
+await fresh.getByTestId('restore-file').setInputFiles(backupPath);
+await fresh.getByText(/Mustafa/).first().waitFor();
+await fresh.screenshot({ path: `${OUT}/32-restored.png` });
+await newCtx.close();
 
 await browser.close();
 if (errors.length) {

@@ -9,6 +9,9 @@ export interface DichopticPalette {
   /** İki gözün de gördüğü (füzyon çerçevesi) renk. */
   both: string;
   bg: string;
+  /** Sol ve sağ gözün filtre renkleri (tam parlaklık), stereo çizimi için. */
+  left: readonly [number, number, number];
+  right: readonly [number, number, number];
 }
 
 type RGB = [number, number, number];
@@ -34,7 +37,14 @@ export function makePalette(a: AnaglyphSettings, amblyopicEye: Eye, fellowContra
   const amb = colorForEye(a, amblyopicEye);
   const fel = colorForEye(a, fellowEye);
   const both: RGB = [Math.max(amb[0], fel[0]) * 0.45, Math.max(amb[1], fel[1]) * 0.45, Math.max(amb[2], fel[2]) * 0.45];
-  return { amb: rgb(amb), fel: rgb(fel, fellowContrast), both: rgb(both), bg: '#000' };
+  return {
+    amb: rgb(amb),
+    fel: rgb(fel, fellowContrast),
+    both: rgb(both),
+    bg: '#000',
+    left: colorForEye(a, 'left'),
+    right: colorForEye(a, 'right'),
+  };
 }
 
 export const fellowEyeOf = (e: Eye): Eye => (e === 'left' ? 'right' : 'left');

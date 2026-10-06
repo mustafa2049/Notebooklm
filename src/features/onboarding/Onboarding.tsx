@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import { defaultAnaglyph, profileDefaults, type Eye, type Mode } from '../../model/types';
 import { useStore } from '../../storage/store';
+import { importJson } from '../../storage/export';
 import { DisclaimerText, Segmented } from '../../ui/components';
 
 const GOALS = [
@@ -13,7 +14,9 @@ const GOALS = [
 ];
 
 export default function Onboarding() {
-  const { addProfile, data } = useStore();
+  const { addProfile, data, replaceAll } = useStore();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [restoreErr, setRestoreErr] = useState<string | null>(null);
   const nav = useNavigate();
   const first = data.profiles.length === 0;
   const [step, setStep] = useState(first ? 0 : 1);
@@ -56,6 +59,30 @@ export default function Onboarding() {
           <button className="btn primary big" onClick={() => setStep(1)}>
             {tr.disclaimer.accept}
           </button>
+          <button className="btn" onClick={() => fileRef.current?.click()}>
+            📂 Yedekten geri yükle (başka cihazdan taşı)
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            hidden
+            data-testid="restore-file"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = '';
+              if (!f) return;
+              try {
+                const d = importJson(await f.text());
+                if (!d.profiles.length) throw new Error('empty');
+                replaceAll(d);
+                nav('/', { replace: true });
+              } catch {
+                setRestoreErr('Dosya okunamadı. Uygulamadan alınmış bir yedek dosyası (.json) seçin.');
+              }
+            }}
+          />
+          {restoreErr && <div className="banner warn">{restoreErr}</div>}
         </div>
       )}
 

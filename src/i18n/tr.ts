@@ -88,6 +88,11 @@ export const tr = {
       desc: 'Kartları çevirip eşlerini bul. Semboller tembel göze, kart çerçeveleri sağlam göze gösterilir.',
       icon: '🃏',
     },
+    depth: {
+      name: 'Derinlik Avı',
+      desc: 'Noktalar arasında havada yüzen şekli bul. Yalnızca iki göz birlikte çalışınca görünür (3D görme).',
+      icon: '🧊',
+    },
     reading: {
       name: 'Dikoptik Okuma',
       desc: 'Kelimelerin bir kısmı yalnızca tembel göze, bir kısmı yalnızca sağlam göze gösterilir. Okumak için iki göz birlikte çalışır.',

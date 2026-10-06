@@ -14,8 +14,9 @@ import GaborPage from './features/gabor/GaborPage';
 import VideoPlay from './features/dichoptic/VideoPlay';
 import ReadingPage from './features/reading/ReadingPage';
 import VisionPage from './features/vision/VisionPage';
+import StereoPage from './features/stereo/StereoPage';
 import DiaryPage from './features/diary/DiaryPage';
-import ReportPage from './features/report/ReportPage';
+import ReportPage, { SharedReportPage } from './features/report/ReportPage';
 import StatsPage from './features/stats/StatsPage';
 import SettingsPage from './features/settings/SettingsPage';
 import BadgesPage from './features/kids/BadgesPage';
@@ -40,17 +41,20 @@ export default function App() {
     <HashRouter>
       {!profile ? (
         <Routes>
+          <Route path="/shared/:data" element={<SharedReportPage />} />
           <Route path="*" element={<Onboarding />} />
         </Routes>
       ) : (
         <Routes>
           <Route path="/new-profile" element={<Onboarding />} />
+          <Route path="/shared/:data" element={<SharedReportPage />} />
           <Route path="/play/exercise/:kind" element={<ExercisePlay />} />
           <Route path="/play/dichoptic/:kind" element={<DichopticPlay />} />
           <Route path="/play/gabor" element={<GaborPage />} />
           <Route path="/play/video" element={<VideoPlay />} />
           <Route path="/play/reading" element={<ReadingPage />} />
           <Route path="/vision" element={<VisionPage />} />
+          <Route path="/stereo" element={<StereoPage />} />
           <Route path="/calibrate" element={<Calibration />} />
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />

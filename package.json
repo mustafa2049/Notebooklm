@@ -4,21 +4,31 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/fetch-mediapipe.mjs && vite",
+    "build": "node scripts/fetch-mediapipe.mjs && tsc -b && vite build",
     "preview": "vite preview",
     "lint": "tsc -b --noEmit",
     "test": "vitest run",
     "smoke": "node e2e/smoke.mjs",
-    "zip": "npm run build && node scripts/zip-dist.mjs"
+    "zip": "npm run build && node scripts/zip-dist.mjs",
+    "prepare-assets": "node scripts/fetch-mediapipe.mjs",
+    "android": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "desktop": "tauri build"
   },
   "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/filesystem": "^7.1.9",
+    "@capacitor/share": "^7.0.4",
+    "@mediapipe/tasks-vision": "^1.1.0",
     "idb-keyval": "^6.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.6"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.6.9",
+    "@tauri-apps/cli": "^2.12.1",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.7.0",
