@@ -1,0 +1,62 @@
+import type { ActivityKind } from '../model/types';
+
+export const tr = {
+  appName: 'Göz Egzersiz',
+  nav: {
+    home: 'Ana sayfa',
+    timer: 'Kapama',
+    play: 'Egzersiz',
+    stats: 'İlerleme',
+    settings: 'Ayarlar',
+  },
+  disclaimer: {
+    title: 'Önemli bilgilendirme',
+    body: [
+      'Bu uygulama tıbbi bir cihaz değildir ve göz doktorunun muayenesinin, teşhisinin ya da tedavisinin yerine geçmez.',
+      'Kapama süresini, hangi gözün kapatılacağını ve gözlük kullanımını mutlaka göz doktorunuzun önerisine göre ayarlayın.',
+      'Egzersiz sırasında baş ağrısı, çift görme, göz yorgunluğu ya da bulantı olursa ara verin ve doktorunuza danışın. Işığa duyarlı epilepsi öyküsü varsa oyunları kullanmadan önce doktorunuza danışın.',
+      'Uygulamadaki ölçümler (Gabor eşiği, harf boyutu) yalnızca kendi ilerlemenizi izlemeniz içindir; klinik görme ölçümü değildir.',
+    ],
+    accept: 'Okudum, anladım',
+  },
+  eye: { left: 'Sol göz', right: 'Sağ göz' },
+  activity: {
+    'odd-one-out': {
+      name: 'Farklı Olanı Bul',
+      desc: 'Kalabalık harfler arasında farklı olana dokun. Doğru bildikçe harfler küçülür ve sıklaşır.',
+      icon: '🔍',
+    },
+    catch: {
+      name: 'Hedef Yakala',
+      desc: 'Hareket eden hedeflere kaybolmadan önce dokun. Hedefler küçülür ve hızlanır.',
+      icon: '🎯',
+    },
+    dots: {
+      name: 'Noktaları Birleştir',
+      desc: 'Küçük numaralı noktalara sırayla dokun. İnce ayrıntıyı görmeyi çalıştırır.',
+      icon: '✏️',
+    },
+    'tumbling-e': {
+      name: 'Dönen E',
+      desc: 'E harfinin bacaklarının hangi yöne baktığını seç. Harf giderek küçülür.',
+      icon: '🔠',
+    },
+    blocks: {
+      name: 'Dikoptik Bloklar',
+      desc: 'Düşen parça tembel göze, yerdeki bloklar sağlam göze gösterilir. Satırları tamamla.',
+      icon: '🧱',
+    },
+    breakout: {
+      name: 'Dikoptik Top',
+      desc: 'Top ve tuğlaları tembel göz, raketi sağlam göz görür. Tuğlaları kır.',
+      icon: '🏓',
+    },
+    stars: {
+      name: 'Yıldız Toplama',
+      desc: 'Yıldızlar tembel göze, göktaşları sağlam göze gösterilir. Yıldızları topla, göktaşlarından kaç.',
+      icon: '⭐',
+    },
+  } satisfies Record<ActivityKind, { name: string; desc: string; icon: string }>,
+};
+
+export type ActivityInfo = (typeof tr.activity)[ActivityKind];
