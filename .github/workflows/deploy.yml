@@ -29,6 +29,12 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
+      # Netlify Drop ya da başka bir sunucu için hazır paket (base "/")
+      - run: npx vite build --outDir dist-zip && node scripts/zip-dist.mjs dist-zip goz-egzersiz-web.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: goz-egzersiz-web
+          path: goz-egzersiz-web.zip
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:

@@ -5,3 +5,5 @@ dev-dist
 test-results
 screenshots
 *.tsbuildinfo
+*.zip
+dist-zip

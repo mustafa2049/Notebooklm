@@ -67,6 +67,16 @@ npm run smoke      # uçtan uca duman testi + ekran görüntüleri (screenshots/
 2. `main` dalına her gönderimde `.github/workflows/deploy.yml` testleri çalıştırır, `VITE_BASE=/<depo-adı>/` ile
    derler ve yayınlar. Elle çalıştırmak için *Actions → Run workflow* kullanılabilir.
 
+### Hazır ZIP paketi
+
+`npm run zip` derleyip `goz-egzersiz-web.zip` üretir (içinde `index.html` kökte). Her GitHub gönderiminde aynı
+paket **Actions → ilgili çalıştırma → Artifacts → goz-egzersiz-web** altından da indirilebilir.
+
+- En kolay yayın: ZIP'i [app.netlify.com/drop](https://app.netlify.com/drop) sayfasına sürükleyip bırakın.
+- ZIP'i açıp `index.html`'e çift tıklamak **çalışmaz**: tarayıcılar `file://` üzerinden uygulama betiklerini ve
+  çevrimdışı önbelleği çalıştırmaz. Dosyaların bir web sunucusundan (Netlify, GitHub Pages ya da yerelde
+  `python3 -m http.server`) sunulması gerekir.
+
 ### Netlify'da yayınlama
 
 Depodaki `netlify.toml` derleme ayarlarını içerir.
