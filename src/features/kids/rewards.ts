@@ -1,5 +1,5 @@
 import { dayKey, minutesByDay, streak } from '../../model/time';
-import type { ActivityResult, GaborResult, PatchSession } from '../../model/types';
+import { BINOCULAR_KINDS, type ActivityResult, type GaborResult, type PatchSession } from '../../model/types';
 
 export function starsFor(performance: number, durationSec: number): number {
   if (durationSec < 30) return 0;
@@ -15,8 +15,6 @@ export interface Badge {
   desc: string;
   earned: boolean;
 }
-
-const DICHOPTIC = new Set(['blocks', 'breakout', 'stars']);
 
 export function computeBadges(
   sessions: PatchSession[],
@@ -35,7 +33,7 @@ export function computeBadges(
     bestStreak = Math.max(bestStreak, s);
   }
   const stars = results.reduce((a, r) => a + starsFor(r.performance, r.durationSec), 0);
-  const dich = results.filter((r) => DICHOPTIC.has(r.kind));
+  const dich = results.filter((r) => BINOCULAR_KINDS.has(r.kind));
   const days = new Set(results.map((r) => dayKey(r.at)));
 
   const b = (id: string, icon: string, name: string, desc: string, earned: boolean): Badge => ({ id, icon, name, desc, earned });
@@ -50,6 +48,8 @@ export function computeBadges(
     b('stars-50', '⭐', 'Yıldız Avcısı', '50 yıldız topla', stars >= 50),
     b('dichoptic-1', '🥽', 'Gözlüklü Kaşif', 'İlk dikoptik oyununu oyna', dich.length >= 1),
     b('dichoptic-full', '🌈', 'Tam Denge', 'Dikoptik oyunlarda sağlam göz kontrastını %100’e çıkar', dich.some((r) => (r.contrast ?? 0) >= 1)),
+    b('maze-5', '🧭', 'Labirent Ustası', 'Labirent oyununda 5. seviyeye ulaş', results.some((r) => r.kind === 'maze' && r.level >= 5)),
+    b('video-1', '🎬', 'Sinema Keyfi', 'İlk dikoptik filmini izle (en az 10 dakika)', results.some((r) => r.kind === 'video' && r.durationSec >= 600)),
     b('gabor-1', '🌀', 'Desen Dedektifi', 'İlk Gabor seansını tamamla', gabor.length >= 1),
     b('days-14', '📅', 'Düzenli', '14 farklı günde egzersiz yap', days.size >= 14),
   ];

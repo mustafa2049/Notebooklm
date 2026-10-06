@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDuration } from '../model/time';
+import { sfx, unlockAudio } from '../platform/sound';
 import { useWakeLock } from '../platform/wakeLock';
+import { useStore } from '../storage/store';
 import { runGame, type Game, type GameStats } from './engine';
 
 type Phase = 'intro' | 'playing' | 'paused' | 'done';
@@ -30,6 +32,12 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
   const [hud, setHud] = useState<GameStats>({ score: 0, level: 1, performance: 0 });
   const [result, setResult] = useState<ReactNode>(null);
   useWakeLock(phase === 'playing');
+  const { profile, updateProfile } = useStore();
+  const soundOn = profile?.soundOn ?? true;
+  const play = () => {
+    unlockAudio();
+    setPhase('playing');
+  };
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -64,6 +72,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
   }, []);
 
   const finish = () => {
+    sfx('finish');
     setPhase('done');
     setResult(onFinish(game.stats(), Math.round(elapsed)));
   };
@@ -85,6 +94,12 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
         </button>
         <span>Skor {hud.score}</span>
         <span>Sv {hud.level}</span>
+        <button
+          onClick={() => profile && updateProfile(profile.id, { soundOn: !soundOn })}
+          aria-label={soundOn ? 'Sesi kapat' : 'Sesi aç'}
+        >
+          {soundOn ? '🔊' : '🔇'}
+        </button>
         <span>{formatDuration(remaining * 1000)}</span>
       </div>
       <div className="game-canvas-wrap">
@@ -94,7 +109,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
             <div className="panel">
               <h2 style={{ margin: 0 }}>{title}</h2>
               {intro}
-              <button className="btn primary big" onClick={() => setPhase('playing')}>
+              <button className="btn primary big" onClick={play}>
                 Başla
               </button>
               <button className="btn" onClick={() => nav(-1)}>
@@ -108,7 +123,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
             <div className="panel">
               <h2 style={{ margin: 0 }}>Duraklatıldı</h2>
               <p style={{ margin: 0 }}>Gözlerini dinlendirmek için uzağa bakabilirsin.</p>
-              <button className="btn primary big" onClick={() => setPhase('playing')}>
+              <button className="btn primary big" onClick={play}>
                 Devam et
               </button>
               <button className="btn" onClick={finish}>

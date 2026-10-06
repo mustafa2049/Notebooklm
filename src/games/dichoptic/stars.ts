@@ -1,3 +1,4 @@
+import { sfx } from '../../platform/sound';
 import { clamp, rand, type Game } from '../engine';
 import { drawFusionFrame, type DichopticPalette } from './anaglyph';
 
@@ -68,10 +69,13 @@ export function createStars(p: DichopticPalette): Game {
         o.spin += dt;
         if (Math.abs(o.x - shipX) < o.r + 22 && Math.abs(o.y - sy) < o.r + 14) {
           if (o.kind === 'star') {
+            const lv = level();
             collected++;
+            sfx(level() > lv ? 'level' : 'hit');
             score += 10 * level();
           } else {
             crashes++;
+            sfx('miss');
             score = Math.max(0, score - 20);
             shake = 0.3;
           }

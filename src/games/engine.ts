@@ -1,3 +1,5 @@
+import { sfx } from '../platform/sound';
+
 /** Tüm canvas oyunlarının uyguladığı arayüz. Koordinatlar CSS pikselidir. */
 export interface Game {
   resize(w: number, h: number): void;
@@ -122,13 +124,16 @@ export class LevelStaircase {
     this.total++;
     if (++this.streak >= this.up) {
       this.streak = 0;
+      const before = this.level;
       this.level = Math.min(this.max, this.level + 1);
-    }
+      sfx(this.level > before ? 'level' : 'hit');
+    } else sfx('hit');
   }
   miss() {
     this.total++;
     this.streak = 0;
     this.level = Math.max(this.min, this.level - 1);
+    sfx('miss');
   }
   get accuracy() {
     return this.total ? this.correct / this.total : 0;

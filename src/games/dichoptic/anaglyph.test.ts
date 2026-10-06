@@ -36,3 +36,14 @@ describe('makePalette', () => {
     expect(makePalette(a, 'right', 1).amb).toBe('rgb(0,0,200)');
   });
 });
+
+describe('paletteToVec3', () => {
+  it('maps the amblyopic eye to full intensity and scales the fellow eye', async () => {
+    const { paletteToVec3 } = await import('./videoRenderer');
+    const a = { ...defaultAnaglyph(), redEye: 'left' as const, cyanLevel: 204 };
+    const v = paletteToVec3(a, 'right', 0.5);
+    // Tembel göz sağ → camgöbeği tam (204/255 = 0.8), sağlam göz kırmızı ×0.5
+    expect(v.amb).toEqual([0, 0.8, 0.8]);
+    expect(v.fel).toEqual([0.5, 0, 0]);
+  });
+});

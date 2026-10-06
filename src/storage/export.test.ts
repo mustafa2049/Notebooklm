@@ -14,6 +14,7 @@ const sample = (): AppData => ({
       reminderTimes: ['09:00'],
       anaglyph: defaultAnaglyph(),
       dichopticContrast: 0.3,
+      soundOn: false,
       createdAt: 1,
     },
   ],
@@ -50,6 +51,7 @@ describe('export/import', () => {
     expect(data.profiles).toHaveLength(1);
     expect(data.profiles[0].anaglyph.glasses).toBe('red-cyan');
     expect(data.profiles[0].dailyGoalMin).toBe(120);
+    expect(data.profiles[0].soundOn).toBe(true);
     expect(data.sessions).toHaveLength(1);
     expect(data.activeProfileId).toBe('x');
   });

@@ -1,3 +1,4 @@
+import { sfx } from '../../platform/sound';
 import { clamp, type Game } from '../engine';
 import { drawFusionFrame, type DichopticPalette } from './anaglyph';
 
@@ -100,12 +101,14 @@ export function createBreakout(p: DichopticPalette): Game {
         ball.vx = Math.cos(a) * speed();
         ball.vy = Math.sin(a) * speed();
         hits++;
+        sfx('tick');
       }
       // Tuğlalar
       for (const b of bricks) {
         if (!b.alive) continue;
         if (ball.x + ball.r > b.x && ball.x - ball.r < b.x + b.w && ball.y + ball.r > b.y && ball.y - ball.r < b.y + b.h) {
           b.alive = false;
+          sfx('hit');
           score += 10 * level;
           const overlapX = Math.min(ball.x + ball.r - b.x, b.x + b.w - (ball.x - ball.r));
           const overlapY = Math.min(ball.y + ball.r - b.y, b.y + b.h - (ball.y - ball.r));
@@ -116,12 +119,14 @@ export function createBreakout(p: DichopticPalette): Game {
       }
       if (bricks.every((b) => !b.alive)) {
         level++;
+        sfx('level');
         score += 100;
         buildBricks();
         resetBall();
       }
       if (ball.y > h + ball.r) {
         misses++;
+        sfx('miss');
         resetBall();
       }
     },

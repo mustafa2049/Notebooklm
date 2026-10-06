@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
 import { dayKey, formatDuration, formatMinutes } from '../../model/time';
+import { BINOCULAR_KINDS } from '../../model/types';
 import { usePatchStats, useProfileResults } from '../../storage/selectors';
 import { useProfile, useStore } from '../../storage/store';
 import { ProgressRing } from '../../ui/components';
 import { computeBadges, starsFor } from '../kids/rewards';
-
-const DICHOPTIC = new Set(['blocks', 'breakout', 'stars']);
 
 export default function Home() {
   const profile = useProfile();
@@ -21,8 +20,8 @@ export default function Home() {
 
   const tasks = [
     { done: progress >= 1, text: `Bant: ${formatMinutes(today)} / ${formatMinutes(goal)}`, to: '/timer' },
-    { done: todays.some((r) => !DICHOPTIC.has(r.kind)), text: 'Bantla 1 egzersiz oyna', to: '/play#bant' },
-    { done: todays.some((r) => DICHOPTIC.has(r.kind)), text: 'Gözlükle 1 oyun oyna', to: '/play#gozluk' },
+    { done: todays.some((r) => !BINOCULAR_KINDS.has(r.kind)), text: 'Bantla 1 egzersiz oyna', to: '/play#bant' },
+    { done: todays.some((r) => BINOCULAR_KINDS.has(r.kind)), text: 'Gözlükle 1 oyun oyna', to: '/play#gozluk' },
   ];
 
   const hour = new Date(now).getHours();

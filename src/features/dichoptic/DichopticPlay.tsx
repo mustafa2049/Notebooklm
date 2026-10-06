@@ -8,6 +8,7 @@ import { adaptContrast, makePalette, type DichopticPalette } from '../../games/d
 import { createBlocks } from '../../games/dichoptic/blocks';
 import { createBreakout } from '../../games/dichoptic/breakout';
 import { createStars } from '../../games/dichoptic/stars';
+import { createSnake } from '../../games/dichoptic/snake';
 import { Stars } from '../../ui/components';
 import { starsFor } from '../kids/rewards';
 
@@ -15,6 +16,23 @@ const FACTORIES: Record<DichopticKind, (p: DichopticPalette) => Game> = {
   blocks: createBlocks,
   breakout: createBreakout,
   stars: createStars,
+  snake: createSnake,
+};
+
+const CONTROLS: Partial<Record<DichopticKind, readonly (readonly [string, string])[]>> = {
+  blocks: [
+    ['ArrowLeft', '◀'],
+    ['ArrowUp', '⟳'],
+    ['ArrowDown', '▼'],
+    [' ', '⤓'],
+    ['ArrowRight', '▶'],
+  ],
+  snake: [
+    ['ArrowLeft', '◀'],
+    ['ArrowUp', '▲'],
+    ['ArrowDown', '▼'],
+    ['ArrowRight', '▶'],
+  ],
 };
 
 export default function DichopticPlay() {
@@ -73,18 +91,10 @@ export default function DichopticPlay() {
         </>
       }
       controls={
-        k === 'blocks'
+        CONTROLS[k]
           ? (game) => (
               <div className="row" style={{ justifyContent: 'center', padding: '6px 8px calc(10px + env(safe-area-inset-bottom))', gap: 8 }}>
-                {(
-                  [
-                    ['ArrowLeft', '◀'],
-                    ['ArrowUp', '⟳'],
-                    ['ArrowDown', '▼'],
-                    [' ', '⤓'],
-                    ['ArrowRight', '▶'],
-                  ] as const
-                ).map(([key, label]) => (
+                {CONTROLS[k]!.map(([key, label]) => (
                   <button
                     key={key}
                     className="btn"

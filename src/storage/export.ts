@@ -10,6 +10,7 @@ const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => ({
   dailyGoalMin: 120,
   reminderTimes: [],
   dichopticContrast: 0.2,
+  soundOn: true,
   createdAt: Date.now(),
 });
 

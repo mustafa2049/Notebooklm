@@ -41,6 +41,16 @@ export const tr = {
       desc: 'E harfinin bacaklarının hangi yöne baktığını seç. Harf giderek küçülür.',
       icon: '🔠',
     },
+    maze: {
+      name: 'Labirent',
+      desc: 'Noktayı parmağınla sürükleyerek çıkışa götür, duvarlara değme. Yollar giderek incelir.',
+      icon: '🧭',
+    },
+    balloons: {
+      name: 'Balon Patlat',
+      desc: 'Üstte gösterilen harfi taşıyan balonlara dokun. Harfler küçülür ve birbirine benzer.',
+      icon: '🎈',
+    },
     blocks: {
       name: 'Dikoptik Bloklar',
       desc: 'Düşen parça tembel göze, yerdeki bloklar sağlam göze gösterilir. Satırları tamamla.',
@@ -55,6 +65,16 @@ export const tr = {
       name: 'Yıldız Toplama',
       desc: 'Yıldızlar tembel göze, göktaşları sağlam göze gösterilir. Yıldızları topla, göktaşlarından kaç.',
       icon: '⭐',
+    },
+    snake: {
+      name: 'Dikoptik Yılan',
+      desc: 'Yılanın başı ve yem tembel göze, gövdesi sağlam göze gösterilir. Yemleri ye, kendine çarpma.',
+      icon: '🐍',
+    },
+    video: {
+      name: 'Dikoptik Film',
+      desc: 'Kendi videonu kırmızı-mavi gözlükle izle: tembel göz net, sağlam göz soluk görür.',
+      icon: '🎬',
     },
   } satisfies Record<ActivityKind, { name: string; desc: string; icon: string }>,
 };

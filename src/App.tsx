@@ -11,10 +11,12 @@ import ExercisePlay from './features/exercises/ExercisePlay';
 import Calibration from './features/dichoptic/Calibration';
 import DichopticPlay from './features/dichoptic/DichopticPlay';
 import GaborPage from './features/gabor/GaborPage';
+import VideoPlay from './features/dichoptic/VideoPlay';
 import StatsPage from './features/stats/StatsPage';
 import SettingsPage from './features/settings/SettingsPage';
 import BadgesPage from './features/kids/BadgesPage';
 import { useReminders } from './platform/reminders';
+import { setSoundEnabled } from './platform/sound';
 
 export default function App() {
   const { loaded, profile } = useStore();
@@ -23,6 +25,10 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.mode = profile?.mode ?? 'adult';
   }, [profile?.mode]);
+
+  useEffect(() => {
+    setSoundEnabled(profile?.soundOn ?? true);
+  }, [profile?.soundOn]);
 
   if (!loaded) return null;
 
@@ -38,6 +44,7 @@ export default function App() {
           <Route path="/play/exercise/:kind" element={<ExercisePlay />} />
           <Route path="/play/dichoptic/:kind" element={<DichopticPlay />} />
           <Route path="/play/gabor" element={<GaborPage />} />
+          <Route path="/play/video" element={<VideoPlay />} />
           <Route path="/calibrate" element={<Calibration />} />
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />

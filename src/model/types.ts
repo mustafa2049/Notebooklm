@@ -29,6 +29,8 @@ export interface Profile {
   anaglyph: AnaglyphSettings;
   /** Dikoptik oyunlarda sağlam göze giden öğelerin kontrastı (0.1–1). */
   dichopticContrast: number;
+  /** Oyun ses efektleri açık mı. */
+  soundOn: boolean;
   createdAt: number;
 }
 
@@ -40,9 +42,12 @@ export interface PatchSession {
   end: number;
 }
 
-export type ExerciseKind = 'odd-one-out' | 'catch' | 'dots' | 'tumbling-e';
-export type DichopticKind = 'blocks' | 'breakout' | 'stars';
-export type ActivityKind = ExerciseKind | DichopticKind;
+export type ExerciseKind = 'odd-one-out' | 'catch' | 'dots' | 'tumbling-e' | 'maze' | 'balloons';
+export type DichopticKind = 'blocks' | 'breakout' | 'stars' | 'snake';
+export type ActivityKind = ExerciseKind | DichopticKind | 'video';
+
+/** İki gözü birlikte çalıştıran (gözlükle yapılan) etkinlikler. */
+export const BINOCULAR_KINDS: ReadonlySet<ActivityKind> = new Set<ActivityKind>(['blocks', 'breakout', 'stars', 'snake', 'video']);
 
 export interface ActivityResult {
   id: string;

@@ -1,3 +1,4 @@
+import { sfx } from '../../platform/sound';
 import { clamp, pick, type Game } from '../engine';
 import { drawFusionFrame, type DichopticPalette } from './anaglyph';
 
@@ -97,6 +98,7 @@ export function createBlocks(p: DichopticPalette): Game {
     if (collides(board, shape, x, y)) {
       // Tahta doldu: temizle ve devam et (skor korunur).
       topOuts++;
+      sfx('miss');
       board = emptyBoard();
     }
   };
@@ -109,7 +111,10 @@ export function createBlocks(p: DichopticPalette): Game {
     );
     pieces++;
     const n = clearLines(board);
+    const lvBefore = level();
     lines += n;
+    if (n) sfx(level() > lvBefore ? 'level' : 'hit');
+    else sfx('tick');
     score += [0, 40, 100, 300, 1200][n] * level();
     spawn();
   };

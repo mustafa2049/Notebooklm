@@ -1,3 +1,4 @@
+import { sfx } from '../../platform/sound';
 import { clamp, drawFlashes, rand, type Flash, type Game } from '../engine';
 
 interface Dot {
@@ -87,12 +88,15 @@ export function createConnectDots(): Game {
         good++;
         next++;
         score += level;
+        if (next < dots.length) sfx('hit');
         if (next === dots.length) {
+          sfx('level');
           score += 10 * level;
           level = clamp(errors <= 1 ? level + 1 : errors >= 3 ? level - 1 : level, 1, 20);
           setTimeout(newPuzzle, 400);
         }
       } else {
+        sfx('miss');
         errors++;
       }
     },

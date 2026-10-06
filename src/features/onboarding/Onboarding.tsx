@@ -31,6 +31,7 @@ export default function Onboarding() {
       reminderTimes: ['10:00'],
       anaglyph: defaultAnaglyph(),
       dichopticContrast: 0.2,
+      soundOn: true,
     });
     nav('/', { replace: true });
   };

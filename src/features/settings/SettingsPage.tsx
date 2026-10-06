@@ -108,6 +108,20 @@ function Settings() {
         </label>
       </div>
 
+      <h2>Ses</h2>
+      <div className="card stack">
+        <Segmented
+          label="Oyun sesleri"
+          value={profile.soundOn ? 'on' : 'off'}
+          onChange={(v) => up({ soundOn: v === 'on' })}
+          options={[
+            { value: 'on', label: '🔊 Sesler açık' },
+            { value: 'off', label: '🔇 Sesler kapalı' },
+          ]}
+        />
+        <span className="muted small">Doğru, yanlış ve seviye atlama anlarında kısa sesler çalar.</span>
+      </div>
+
       <h2>Hatırlatıcılar</h2>
       <div className="card stack">
         <div className="row">

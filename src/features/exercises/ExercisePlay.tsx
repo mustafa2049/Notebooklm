@@ -8,6 +8,8 @@ import { createOddOneOut } from '../../games/monocular/oddOneOut';
 import { createCatch } from '../../games/monocular/catchTargets';
 import { createConnectDots } from '../../games/monocular/connectDots';
 import { createTumblingE, eSizeForLevel } from '../../games/monocular/tumblingE';
+import { createMaze } from '../../games/monocular/maze';
+import { createBalloons } from '../../games/monocular/balloons';
 import { Stars } from '../../ui/components';
 import { starsFor } from '../kids/rewards';
 
@@ -16,6 +18,8 @@ const FACTORIES: Record<ExerciseKind, () => Game> = {
   catch: createCatch,
   dots: createConnectDots,
   'tumbling-e': createTumblingE,
+  maze: createMaze,
+  balloons: createBalloons,
 };
 
 export default function ExercisePlay() {
