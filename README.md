@@ -8,6 +8,7 @@ tedavisinde şunlara yardım eder:
 | 🏴‍☠️ **Kapama zamanlayıcısı** | Bandı taktığınızda başlatın, çıkardığınızda durdurun. Günlük hedef halkası, takvim, seri sayacı, hatırlatıcılar ve elle kayıt ekleme. Telefon kilitlense de süre doğru hesaplanır. |
 | 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Balon Patlat*, *Hedef Yakala*, *Labirent*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |
 | 🥽 **Kırmızı-mavi gözlükle dikoptik oyunlar** | Bant gerekmez. Oyunun bir kısmı yalnızca tembel göze (tam parlak), bir kısmı yalnızca sağlam göze (soluk) gösterilir: *Dikoptik Bloklar* (Tetris benzeri), *Dikoptik Top*, *Yıldız Toplama*, *Dikoptik Yılan*. Sağlam göz kontrastı başarıya göre otomatik artar. |
+| 🧊 **3D (stereo) görme** | Kırmızı-mavi gözlükle rastgele nokta stereogramı: derinlik görme eşiği testi (arcsaniye) ve *Derinlik Avı* oyunu. Gözlüksüz ya da tek gözle şekil görünmez. |
 | 🎬 **Dikoptik film** | Kendi videonuzu (ya da bilgisayarda paylaşılan bir sekmeyi) kırmızı-mavi gözlükle izleyin: tembel göz tam, sağlam göz azaltılmış parlaklıkta görür. İsteğe bağlı tamamlayıcı maske, 20 dakikada bir mola hatırlatması. |
 | 📖 **Dikoptik okuma ve hafıza** | Kelimelerin yarısı yalnızca tembel göze, yarısı yalnızca sağlam göze gösterilen okuma modu (hazır Türkçe metinler ya da kendi metniniz, dakikada kelime ölçümü) ve *Dikoptik Hafıza* kart eşleştirme oyunu. |
 | 👁️ **Evde görme testi** | Kredi kartıyla ekran ölçeği ayarı, 40 cm–3 m mesafe, kalabalıklaştırılmış E harfiyle her göz için logMAR / x/10 / Snellen sonucu ve zaman içindeki grafik. |
@@ -15,6 +16,8 @@ tedavisinde şunlara yardım eder:
 | 🎁 **Günün sürprizi** | Her gün değişen bir oyun görevi; tamamlayınca bonus yıldız. |
 | 🌀 **Gabor algısal öğrenme** | Soluk çizgili desenlerin yönünü bulma. 3-aşağı 1-yukarı merdiven yöntemiyle kontrast eşiği ölçülür ve zaman içindeki değişimi grafikte izlenir. |
 | 📈 **İlerleme** | Günlük kapama grafiği, Gabor eşiği, dikoptik kontrast eğrisi, oyun tablosu. Doktor için CSV ve yedek için JSON dışa aktarma. |
+| 📷 **Kamera ile mesafe** | İsteğe bağlı: ön kamera iris boyutundan ekrana uzaklığı ölçer (MediaPipe, cihazda). Görme ve 3D testlerinde sonucu gerçek mesafeye göre düzeltir, oyunlarda ekrana çok yaklaşınca uyarır. |
+| 🔗 **Yedekleme ve paylaşım** | Yedeği Drive/WhatsApp/e-postaya paylaşma, yeni cihazda ilk açılışta geri yükleme, doktora sunucusuz rapor bağlantısı (veri bağlantının içinde taşınır). |
 | 🔊 **Sesler** | Doğru/yanlış/seviye sesleri (dosyasız, WebAudio). Oyun ekranından ya da Ayarlar'dan kapatılabilir. |
 | 🧒 **Çocuk modu** | Büyük düğmeler, günlük görev listesi, yıldızlar, 16 rozet ve ebeveyn şifresiyle kilitli ayarlar. Birden fazla profil desteklenir. |
 
@@ -37,7 +40,31 @@ tedavisinde şunlara yardım eder:
 
 ## Kurulum (kullanıcı)
 
-Uygulama GitHub Pages'te yayınlandıktan sonra adresi açın:
+### Android uygulaması (APK)
+
+1. GitHub'da **Actions → "Uygulama paketleri" → son başarılı çalıştırma → Artifacts → goz-egzersiz-android**
+   dosyasını indirip açın (`goz-egzersiz.apk`).
+2. Telefonda APK'ya dokunun. Android "bilinmeyen kaynaklardan yükleme" izni isterse, dosyayı açtığınız uygulama
+   (ör. Dosyalar, Chrome) için izin verin.
+3. Uygulama internet olmadan çalışır. Yeni sürümler aynı anahtarla imzalandığı için eskisinin üzerine kurulur,
+   verileriniz korunur.
+
+> Not: Bu APK kişisel kullanım içindir; Play Store'a yüklemek için ayrı, gizli bir imza anahtarı gerekir.
+
+### Bilgisayar uygulaması
+
+**Actions → "Uygulama paketleri" → Artifacts** altından:
+
+- **Windows:** `goz-egzersiz-windows` → `.exe` (kurulum sihirbazı) ya da `.msi`. İmzasız olduğu için SmartScreen
+  "Windows bilgisayarınızı korudu" diyebilir: *Ek bilgi → Yine de çalıştır*.
+- **macOS:** `goz-egzersiz-macos` → `.dmg` (Apple Silicon). İlk açılışta *sağ tık → Aç* gerekir (imzasız uygulama).
+- **Linux:** `goz-egzersiz-linux` → `.deb` ya da `.AppImage`. (Linux'ta kamera ile mesafe özelliği çalışmayabilir.)
+
+Masaüstünde Chrome/Edge ile web sürümünü "Uygulamayı yükle" diyerek kurmak da aynı işi görür.
+
+### Web uygulaması (PWA)
+
+Uygulama GitHub Pages ya da Netlify'da yayınlandıktan sonra adresi açın:
 
 - **Android (Chrome):** menü ⋮ → *Ana ekrana ekle* / *Uygulamayı yükle*
 - **iPhone (Safari):** Paylaş ⬆️ → *Ana Ekrana Ekle* (bildirimler için gereklidir, iOS 16.4+)
@@ -92,20 +119,28 @@ Depodaki `netlify.toml` derleme ayarlarını içerir.
 Hesap bağlamadan denemek için: `npm run build` sonrası oluşan `dist` klasörünü
 [app.netlify.com/drop](https://app.netlify.com/drop) sayfasına sürükleyip bırakın.
 
+### Android ve masaüstü paketleri
+
+- `npm run android` → `android/app/build/outputs/apk/debug/app-debug.apk` (Android SDK ve Java 21 gerekir).
+- `npm run desktop` → `src-tauri/target/release/bundle/` (Rust ve platform bağımlılıkları gerekir).
+- `.github/workflows/apps.yml` her gönderimde APK'yı ve Windows/macOS/Linux kurulum dosyalarını üretir.
+- Paylaşılan rapor bağlantıları uygulama içinden açıldığında herkesin erişebileceği web adresini kullanır:
+  varsayılan GitHub Pages adresidir; Netlify kullanıyorsanız depoda `PUBLIC_URL` değişkeni tanımlayın
+  (yerelde `VITE_PUBLIC_URL`).
+- Kamera özelliği için MediaPipe yüz modeli derleme sırasında `scripts/fetch-mediapipe.mjs` ile indirilir
+  (`public/mediapipe/`, depoya eklenmez).
+
 ### Proje yapısı
 
 ```
 src/
   model/            veri tipleri, zaman/seri hesapları
   storage/          IndexedDB, React store, dışa/içe aktarma
-  platform/         bildirim, hatırlatıcı (.ics), ekran uyanık tutma
+  platform/         bildirim, hatırlatıcı (.ics), ekran uyanık tutma, ses, kamera mesafesi, paylaşım, Android/Tauri
   games/            canvas motoru, tek göz oyunları, dikoptik oyunlar ve anaglif renkleri
   features/         ekranlar (onboarding, kapama, egzersiz, dikoptik, gabor, istatistik, ayarlar, çocuk modu)
   ui/               ortak bileşenler, grafikler, stiller
+android/            Capacitor Android projesi
+src-tauri/          Tauri masaüstü projesi
 e2e/smoke.mjs       Playwright duman testi
 ```
-
-### Bilgisayar sürümü
-
-Aynı PWA masaüstünde Chrome/Edge ile kurulabilir. İleride mağaza ya da kurulum dosyası gerekirse kod
-[Tauri](https://tauri.app/) ile paketlenebilir. Platforma özgü kod `src/platform/` altında toplanmıştır.
