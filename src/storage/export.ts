@@ -1,18 +1,8 @@
-import { defaultAnaglyph, emptyData, type AppData, type Profile } from '../model/types';
+import { defaultAnaglyph, emptyData, profileDefaults, type AppData, type Profile } from '../model/types';
 import { dayKey, minutesByDay } from '../model/time';
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 const arr = <T>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
-
-const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => ({
-  mode: 'adult',
-  amblyopicEye: 'left',
-  dailyGoalMin: 120,
-  reminderTimes: [],
-  dichopticContrast: 0.2,
-  soundOn: true,
-  createdAt: Date.now(),
-});
 
 /** Kayıtlı ya da içe aktarılan veriyi doğrular ve eksik alanları varsayılanlarla doldurur. */
 export function normalizeData(raw: unknown): AppData {
@@ -40,6 +30,8 @@ export function normalizeData(raw: unknown): AppData {
     ),
     results: arr<AppData['results'][number]>(raw.results).filter((r) => isObj(r) && typeof r.kind === 'string'),
     gabor: arr<AppData['gabor'][number]>(raw.gabor).filter((g) => isObj(g) && num(g.threshold)),
+    visionTests: arr<AppData['visionTests'][number]>(raw.visionTests).filter((v) => isObj(v) && num(v.logMAR)),
+    diary: arr<AppData['diary'][number]>(raw.diary).filter((d) => isObj(d) && typeof d.day === 'string'),
     timers: isObj(raw.timers) ? (raw.timers as AppData['timers']) : {},
   };
 }
@@ -98,6 +90,20 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
     .filter((g) => g.profileId === profileId)
     .sort((a, b) => a.at - b.at)
     .forEach((g) => row(dayKey(g.at), (g.threshold * 100).toFixed(2), g.cycles, g.trials, g.viewing));
+  row('');
+  row('Tarih', 'Göz', 'logMAR', 'Görme (x/10)', 'Mesafe (cm)');
+  data.visionTests
+    .filter((v) => v.profileId === profileId)
+    .sort((a, b) => a.at - b.at)
+    .forEach((v) =>
+      row(dayKey(v.at), v.eye === 'left' ? 'Sol' : 'Sağ', v.logMAR.toFixed(2), (Math.pow(10, -v.logMAR) * 10).toFixed(1), v.distanceCm),
+    );
+  row('');
+  row('Tarih', 'Belirtiler', 'Bant uyumu', 'Not');
+  data.diary
+    .filter((d) => d.profileId === profileId)
+    .sort((a, b) => a.day.localeCompare(b.day))
+    .forEach((d) => row(d.day, d.symptoms.join(','), d.compliance, d.note));
   return '﻿' + lines.join('\n');
 }
 

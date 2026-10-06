@@ -1,17 +1,15 @@
-import { usePatchStats, useProfileResults } from '../../storage/selectors';
-import { computeBadges, starsFor } from './rewards';
+import { CHALLENGE_BONUS } from '../plan/plan';
+import { useRewards } from './useRewards';
 
 export default function BadgesPage() {
-  const { sessions, goal, now } = usePatchStats();
-  const { results, gabor } = useProfileResults();
-  const badges = computeBadges(sessions, results, gabor, goal, now);
-  const stars = results.reduce((a, r) => a + starsFor(r.performance, r.durationSec), 0);
+  const { stars, badges, challenges } = useRewards();
 
   return (
     <div className="page">
       <h1>Rozetler 🏅</h1>
       <p className="muted">
         Toplam yıldız: <b>⭐ {stars}</b> · Kazanılan rozet: <b>{badges.filter((b) => b.earned).length}</b> / {badges.length}
+        {challenges > 0 && ` · ${challenges} sürpriz görev (+${challenges * CHALLENGE_BONUS} ⭐)`}
       </p>
       <div className="grid">
         {badges.map((b) => (

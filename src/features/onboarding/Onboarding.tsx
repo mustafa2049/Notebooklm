@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
-import { defaultAnaglyph, type Eye, type Mode } from '../../model/types';
+import { defaultAnaglyph, profileDefaults, type Eye, type Mode } from '../../model/types';
 import { useStore } from '../../storage/store';
 import { DisclaimerText, Segmented } from '../../ui/components';
 
@@ -23,15 +23,15 @@ export default function Onboarding() {
   const [goal, setGoal] = useState(120);
 
   const finish = () => {
+    const { createdAt: _c, ...defaults } = profileDefaults();
     addProfile({
+      ...defaults,
       name: name.trim() || 'Ben',
       mode,
       amblyopicEye: eye,
       dailyGoalMin: goal,
       reminderTimes: ['10:00'],
       anaglyph: defaultAnaglyph(),
-      dichopticContrast: 0.2,
-      soundOn: true,
     });
     nav('/', { replace: true });
   };

@@ -9,6 +9,7 @@ import { createBlocks } from '../../games/dichoptic/blocks';
 import { createBreakout } from '../../games/dichoptic/breakout';
 import { createStars } from '../../games/dichoptic/stars';
 import { createSnake } from '../../games/dichoptic/snake';
+import { createMemory } from '../../games/dichoptic/memory';
 import { Stars } from '../../ui/components';
 import { starsFor } from '../kids/rewards';
 
@@ -17,6 +18,7 @@ const FACTORIES: Record<DichopticKind, (p: DichopticPalette) => Game> = {
   breakout: createBreakout,
   stars: createStars,
   snake: createSnake,
+  puzzle: createMemory,
 };
 
 const CONTROLS: Partial<Record<DichopticKind, readonly (readonly [string, string])[]>> = {

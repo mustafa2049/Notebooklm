@@ -22,6 +22,7 @@ export function computeBadges(
   gabor: GaborResult[],
   goalMin: number,
   now = Date.now(),
+  challenges = 0,
 ): Badge[] {
   const byDay = minutesByDay(sessions, now);
   const goalDays = [...byDay.values()].filter((m) => m >= goalMin).length;
@@ -50,6 +51,7 @@ export function computeBadges(
     b('dichoptic-full', '🌈', 'Tam Denge', 'Dikoptik oyunlarda sağlam göz kontrastını %100’e çıkar', dich.some((r) => (r.contrast ?? 0) >= 1)),
     b('maze-5', '🧭', 'Labirent Ustası', 'Labirent oyununda 5. seviyeye ulaş', results.some((r) => r.kind === 'maze' && r.level >= 5)),
     b('video-1', '🎬', 'Sinema Keyfi', 'İlk dikoptik filmini izle (en az 10 dakika)', results.some((r) => r.kind === 'video' && r.durationSec >= 600)),
+    b('challenge-7', '🎁', 'Görev Avcısı', '7 sürpriz görevi tamamla', challenges >= 7),
     b('gabor-1', '🌀', 'Desen Dedektifi', 'İlk Gabor seansını tamamla', gabor.length >= 1),
     b('days-14', '📅', 'Düzenli', '14 farklı günde egzersiz yap', days.size >= 14),
   ];

@@ -210,6 +210,8 @@ input[type='text'],
 input[type='number'],
 input[type='time'],
 input[type='password'],
+input[type='date'],
+textarea,
 select {
   min-height: 44px;
   padding: 8px 12px;
@@ -471,4 +473,65 @@ input[type='range'] {
   background: #222;
   color: #ddd;
   border-color: #444;
+}
+
+textarea {
+  resize: vertical;
+  font: inherit;
+}
+
+/* Yazdırma: yalnızca rapor içeriği, beyaz zemin */
+@media print {
+  :root {
+    --bg: #fff;
+    --surface: #fff;
+    --surface-2: #f3f3f3;
+    --text: #000;
+    --muted: #444;
+    --border: #bbb;
+  }
+  body {
+    background: #fff;
+    font-size: 11pt;
+  }
+  .bottom-nav,
+  .no-print {
+    display: none !important;
+  }
+  .app {
+    padding-bottom: 0;
+  }
+  .card {
+    break-inside: avoid;
+  }
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.report-table th,
+.report-table td {
+  text-align: left;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.progress {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress > div {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+}
+
+.progress.done > div {
+  background: var(--success);
 }

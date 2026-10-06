@@ -15,6 +15,10 @@ const sample = (): AppData => ({
       anaglyph: defaultAnaglyph(),
       dichopticContrast: 0.3,
       soundOn: false,
+      nearExerciseMin: 20,
+      binocularMin: 30,
+      visionTestEveryDays: 7,
+      doctorNote: 'Günde 2 saat',
       createdAt: 1,
     },
   ],
@@ -52,6 +56,10 @@ describe('export/import', () => {
     expect(data.profiles[0].anaglyph.glasses).toBe('red-cyan');
     expect(data.profiles[0].dailyGoalMin).toBe(120);
     expect(data.profiles[0].soundOn).toBe(true);
+    expect(data.profiles[0].nearExerciseMin).toBe(20);
+    expect(data.profiles[0].visionTestEveryDays).toBe(7);
+    expect(data.visionTests).toEqual([]);
+    expect(data.diary).toEqual([]);
     expect(data.sessions).toHaveLength(1);
     expect(data.activeProfileId).toBe('x');
   });

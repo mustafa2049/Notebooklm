@@ -9,10 +9,14 @@ tedavisinde şunlara yardım eder:
 | 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Balon Patlat*, *Hedef Yakala*, *Labirent*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |
 | 🥽 **Kırmızı-mavi gözlükle dikoptik oyunlar** | Bant gerekmez. Oyunun bir kısmı yalnızca tembel göze (tam parlak), bir kısmı yalnızca sağlam göze (soluk) gösterilir: *Dikoptik Bloklar* (Tetris benzeri), *Dikoptik Top*, *Yıldız Toplama*, *Dikoptik Yılan*. Sağlam göz kontrastı başarıya göre otomatik artar. |
 | 🎬 **Dikoptik film** | Kendi videonuzu (ya da bilgisayarda paylaşılan bir sekmeyi) kırmızı-mavi gözlükle izleyin: tembel göz tam, sağlam göz azaltılmış parlaklıkta görür. İsteğe bağlı tamamlayıcı maske, 20 dakikada bir mola hatırlatması. |
+| 📖 **Dikoptik okuma ve hafıza** | Kelimelerin yarısı yalnızca tembel göze, yarısı yalnızca sağlam göze gösterilen okuma modu (hazır Türkçe metinler ya da kendi metniniz, dakikada kelime ölçümü) ve *Dikoptik Hafıza* kart eşleştirme oyunu. |
+| 👁️ **Evde görme testi** | Kredi kartıyla ekran ölçeği ayarı, 40 cm–3 m mesafe, kalabalıklaştırılmış E harfiyle her göz için logMAR / x/10 / Snellen sonucu ve zaman içindeki grafik. |
+| 🗓️ **Günlük plan, günlük ve doktor raporu** | Doktor önerisine göre günlük plan (kapama, bantla egzersiz, gözlüklü süre, test sıklığı, kontrol tarihi), semptom ve uyum günlüğü, yazdırılabilir / PDF doktor raporu. |
+| 🎁 **Günün sürprizi** | Her gün değişen bir oyun görevi; tamamlayınca bonus yıldız. |
 | 🌀 **Gabor algısal öğrenme** | Soluk çizgili desenlerin yönünü bulma. 3-aşağı 1-yukarı merdiven yöntemiyle kontrast eşiği ölçülür ve zaman içindeki değişimi grafikte izlenir. |
 | 📈 **İlerleme** | Günlük kapama grafiği, Gabor eşiği, dikoptik kontrast eğrisi, oyun tablosu. Doktor için CSV ve yedek için JSON dışa aktarma. |
 | 🔊 **Sesler** | Doğru/yanlış/seviye sesleri (dosyasız, WebAudio). Oyun ekranından ya da Ayarlar'dan kapatılabilir. |
-| 🧒 **Çocuk modu** | Büyük düğmeler, günlük görev listesi, yıldızlar, 14 rozet ve ebeveyn şifresiyle kilitli ayarlar. Birden fazla profil desteklenir. |
+| 🧒 **Çocuk modu** | Büyük düğmeler, günlük görev listesi, yıldızlar, 16 rozet ve ebeveyn şifresiyle kilitli ayarlar. Birden fazla profil desteklenir. |
 
 > ⚠️ **Tıbbi uyarı:** Bu uygulama tıbbi bir cihaz değildir ve göz doktorunun yerine geçmez. Kapama süresini, hangi
 > gözün kapatılacağını ve dikoptik tedavi kullanımını mutlaka göz doktorunuzla belirleyin.

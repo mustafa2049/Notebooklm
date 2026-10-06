@@ -4,6 +4,8 @@ import {
   uid,
   type ActivityResult,
   type AppData,
+  type DiaryEntry,
+  type VisionTest,
   type GaborResult,
   type Profile,
 } from '../model/types';
@@ -27,6 +29,9 @@ interface Store {
   deleteSession(id: string): void;
   addResult(r: Omit<ActivityResult, 'id' | 'profileId' | 'at'>): ActivityResult | null;
   addGabor(r: Omit<GaborResult, 'id' | 'profileId' | 'at'>): void;
+  addVisionTest(r: Omit<VisionTest, 'id' | 'profileId' | 'at'>): void;
+  /** Günün kaydını ekler ya da günceller (gün başına tek kayıt). */
+  saveDiary(e: Omit<DiaryEntry, 'id' | 'profileId'>): void;
   replaceAll(d: AppData): void;
 }
 
@@ -86,6 +91,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         sessions: d.sessions.filter((s) => s.profileId !== id),
         results: d.results.filter((r) => r.profileId !== id),
         gabor: d.gabor.filter((g) => g.profileId !== id),
+        visionTests: d.visionTests.filter((v) => v.profileId !== id),
+        diary: d.diary.filter((e) => e.profileId !== id),
         timers,
       };
     });
@@ -146,6 +153,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [pid],
   );
 
+  const addVisionTest = useCallback(
+    (r: Omit<VisionTest, 'id' | 'profileId' | 'at'>) => {
+      if (!pid) return;
+      setData((d) => ({ ...d, visionTests: [...d.visionTests, { ...r, id: uid(), profileId: pid, at: Date.now() }] }));
+    },
+    [pid],
+  );
+
+  const saveDiary = useCallback(
+    (e: Omit<DiaryEntry, 'id' | 'profileId'>) => {
+      if (!pid) return;
+      setData((d) => {
+        const existing = d.diary.find((x) => x.profileId === pid && x.day === e.day);
+        const entry: DiaryEntry = { ...e, id: existing?.id ?? uid(), profileId: pid };
+        return { ...d, diary: [...d.diary.filter((x) => x !== existing), entry] };
+      });
+    },
+    [pid],
+  );
+
   const replaceAll = useCallback((d: AppData) => setData(d), []);
 
   const value = useMemo<Store>(
@@ -165,9 +192,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       deleteSession,
       addResult,
       addGabor,
+      addVisionTest,
+      saveDiary,
       replaceAll,
     }),
-    [data, loaded, profile, runningSince, addProfile, updateProfile, deleteProfile, setActiveProfile, startTimer, stopTimer, cancelTimer, addManualSession, deleteSession, addResult, addGabor, replaceAll],
+    [data, loaded, profile, runningSince, addProfile, updateProfile, deleteProfile, setActiveProfile, startTimer, stopTimer, cancelTimer, addManualSession, deleteSession, addResult, addGabor, addVisionTest, saveDiary, replaceAll],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

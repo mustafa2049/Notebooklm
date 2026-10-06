@@ -108,6 +108,66 @@ function Settings() {
         </label>
       </div>
 
+      <h2 id="plan">Tedavi planı</h2>
+      <div className="card stack">
+        <p className="muted small" style={{ margin: 0 }}>
+          Doktorunuzun önerisine göre doldurun. Ana sayfadaki “Bugünkü plan” ve doktor raporu bu bilgileri kullanır.
+        </p>
+        <label className="field">
+          Bantla yakın egzersiz (dakika/gün, 0 = gösterme)
+          <input
+            type="number"
+            min={0}
+            max={240}
+            step={5}
+            value={profile.nearExerciseMin}
+            onChange={(e) => up({ nearExerciseMin: Math.max(0, Math.min(240, Number(e.target.value) || 0)) })}
+          />
+        </label>
+        <label className="field">
+          Gözlükle (dikoptik) oyun / okuma / film (dakika/gün, 0 = gösterme)
+          <input
+            type="number"
+            min={0}
+            max={240}
+            step={5}
+            value={profile.binocularMin}
+            onChange={(e) => up({ binocularMin: Math.max(0, Math.min(240, Number(e.target.value) || 0)) })}
+          />
+        </label>
+        <label className="field">
+          Evde görme testi sıklığı (gün, 0 = hatırlatma)
+          <input
+            type="number"
+            min={0}
+            max={90}
+            value={profile.visionTestEveryDays}
+            onChange={(e) => up({ visionTestEveryDays: Math.max(0, Math.min(90, Number(e.target.value) || 0)) })}
+          />
+        </label>
+        <label className="field">
+          Sonraki kontrol tarihi
+          <input type="date" value={profile.nextVisit ?? ''} onChange={(e) => up({ nextVisit: e.target.value || undefined })} />
+        </label>
+        <label className="field">
+          Doktorun önerisi / notlar
+          <textarea
+            rows={3}
+            value={profile.doctorNote}
+            onChange={(e) => up({ doctorNote: e.target.value })}
+            placeholder="Örn. Sağ göz günde 2 saat kapatılacak, 3 ay sonra kontrol."
+          />
+        </label>
+        <div className="row">
+          <Link className="btn" to="/report">
+            🩺 Doktor raporu
+          </Link>
+          <Link className="btn" to="/vision">
+            💳 Ekran ölçeği / görme testi
+          </Link>
+        </div>
+      </div>
+
       <h2>Ses</h2>
       <div className="card stack">
         <Segmented

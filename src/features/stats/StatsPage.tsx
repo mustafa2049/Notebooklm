@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import { addDays, dayKey, formatMinutes, startOfDay } from '../../model/time';
-import type { ActivityKind } from '../../model/types';
+import type { ActivityKind, Eye } from '../../model/types';
+import { toTenths } from '../vision/acuity';
 import { usePatchStats, useProfileResults } from '../../storage/selectors';
 import { useProfile } from '../../storage/store';
 import { Segmented } from '../../ui/components';
@@ -13,7 +14,7 @@ const fmtDay = (ts: number) => new Date(ts).toLocaleDateString('tr-TR', { day: '
 export default function StatsPage() {
   const profile = useProfile();
   const { byDay, goal, today, streak, now } = usePatchStats();
-  const { results, gabor } = useProfileResults();
+  const { results, gabor, visionTests } = useProfileResults();
   const [range, setRange] = useState(14);
   const [cycles, setCycles] = useState(6);
 
@@ -78,6 +79,53 @@ export default function StatsPage() {
         <Link className="small" to="/history">
           Takvim ve oturum listesi →
         </Link>
+      </div>
+
+      <div className="card">
+        <div className="row spread">
+          <strong>Görme keskinliği (ev testi)</strong>
+          <Link className="small" to="/vision">
+            Test yap →
+          </Link>
+        </div>
+        {visionTests.length === 0 ? (
+          <p className="muted">
+            Henüz görme testi yok. <Link to="/vision">İlk testi yap →</Link>
+          </p>
+        ) : (
+          (['left', 'right'] as Eye[]).map((eye) => {
+            const pts = visionTests
+              .filter((v) => v.eye === eye)
+              .sort((a, b) => a.at - b.at)
+              .map((v) => ({
+                label: fmtDay(v.at),
+                value: Math.pow(10, -v.logMAR),
+                tip: `${fmtDay(v.at)} · ${toTenths(v.logMAR)} (logMAR ${v.logMAR.toFixed(2)}, ${v.distanceCm} cm)`,
+              }));
+            if (!pts.length) return null;
+            return (
+              <div key={eye} style={{ marginTop: 8 }}>
+                <div className="small">
+                  {tr.eye[eye]} {eye === profile.amblyopicEye ? '(tembel göz)' : '(sağlam göz)'} · son:{' '}
+                  <b>{toTenths(-Math.log10(pts[pts.length - 1].value))}</b>
+                </div>
+                <LineChart
+                  points={pts}
+                  log
+                  min={0.08}
+                  max={1.6}
+                  format={(v) => `${(v * 10).toFixed(v < 0.1 ? 2 : 1)}/10`}
+                  ariaLabel={`${tr.eye[eye]} görme keskinliği zaman içinde`}
+                />
+              </div>
+            );
+          })
+        )}
+        {visionTests.length > 0 && (
+          <p className="muted small" style={{ margin: 0 }}>
+            Yukarı çıkan çizgi = daha iyi görme. Ev testleri yaklaşıktır; aynı mesafe ve cihazla karşılaştırın.
+          </p>
+        )}
       </div>
 
       <div className="card">
@@ -153,9 +201,16 @@ export default function StatsPage() {
         )}
       </div>
 
+      <div className="row">
+        <Link className="btn primary" to="/report">
+          🩺 Doktor raporu
+        </Link>
+        <Link className="btn" to="/diary">
+          📝 Günlük
+        </Link>
+      </div>
       <p className="muted small">
-        Doktor kontrolüne giderken verileri <Link to="/settings#veri">Ayarlar → Veriler</Link> bölümünden CSV olarak
-        indirebilirsiniz.
+        Ham verileri <Link to="/settings#veri">Ayarlar → Veriler</Link> bölümünden CSV olarak da indirebilirsiniz.
       </p>
     </div>
   );

@@ -12,6 +12,10 @@ import Calibration from './features/dichoptic/Calibration';
 import DichopticPlay from './features/dichoptic/DichopticPlay';
 import GaborPage from './features/gabor/GaborPage';
 import VideoPlay from './features/dichoptic/VideoPlay';
+import ReadingPage from './features/reading/ReadingPage';
+import VisionPage from './features/vision/VisionPage';
+import DiaryPage from './features/diary/DiaryPage';
+import ReportPage from './features/report/ReportPage';
 import StatsPage from './features/stats/StatsPage';
 import SettingsPage from './features/settings/SettingsPage';
 import BadgesPage from './features/kids/BadgesPage';
@@ -45,6 +49,8 @@ export default function App() {
           <Route path="/play/dichoptic/:kind" element={<DichopticPlay />} />
           <Route path="/play/gabor" element={<GaborPage />} />
           <Route path="/play/video" element={<VideoPlay />} />
+          <Route path="/play/reading" element={<ReadingPage />} />
+          <Route path="/vision" element={<VisionPage />} />
           <Route path="/calibrate" element={<Calibration />} />
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
@@ -53,6 +59,8 @@ export default function App() {
             <Route path="/play" element={<PlayHub />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/badges" element={<BadgesPage />} />
+            <Route path="/diary" element={<DiaryPage />} />
+            <Route path="/report" element={<ReportPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

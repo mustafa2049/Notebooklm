@@ -1,28 +1,55 @@
 import { Link } from 'react-router-dom';
+import { tr } from '../../i18n/tr';
 import { dayKey, formatDuration, formatMinutes } from '../../model/time';
-import { BINOCULAR_KINDS } from '../../model/types';
 import { usePatchStats, useProfileResults } from '../../storage/selectors';
 import { useProfile, useStore } from '../../storage/store';
 import { ProgressRing } from '../../ui/components';
-import { computeBadges, starsFor } from '../kids/rewards';
+import { useRewards } from '../kids/useRewards';
+import { activityMinutes, activityPath, CHALLENGE_BONUS, challengeDone, dailyChallenge, daysUntil, visionTestDue } from '../plan/plan';
+import { persistentSymptoms } from '../report/summary';
+
+function PlanRow({ label, value, target, to }: { label: string; value: number; target: number; to: string }) {
+  const done = value >= target;
+  return (
+    <Link to={to} style={{ color: 'inherit', textDecoration: 'none' }} className="stack" aria-label={label}>
+      <div className="row spread small" style={{ gap: 4 }}>
+        <span>
+          {done ? '✅' : '⬜'} {label}
+        </span>
+        <span className="muted">
+          {formatMinutes(value)} / {formatMinutes(target)}
+        </span>
+      </div>
+      <div className={`progress ${done ? 'done' : ''}`} style={{ marginTop: -6 }}>
+        <div style={{ width: `${Math.min(100, (value / target) * 100)}%` }} />
+      </div>
+    </Link>
+  );
+}
 
 export default function Home() {
   const profile = useProfile();
   const { data, startTimer, stopTimer } = useStore();
-  const { today, goal, progress, streak, runningSince, now, sessions } = usePatchStats();
-  const { results, gabor } = useProfileResults();
+  const { today, goal, progress, streak, runningSince, now } = usePatchStats();
+  const { results, visionTests, diary } = useProfileResults();
+  const { stars, badges } = useRewards();
   const kid = profile.mode === 'child';
   const todayKey = dayKey(now);
-  const todays = results.filter((r) => dayKey(r.at) === todayKey);
-  const totalStars = results.reduce((a, r) => a + starsFor(r.performance, r.durationSec), 0);
-  const badges = computeBadges(sessions, results, gabor, goal, now);
-  const earned = badges.filter((b) => b.earned);
+  const mins = activityMinutes(results, todayKey);
+  const visionDue = visionTestDue(profile, visionTests, now);
+  const visit = daysUntil(profile.nextVisit, now);
+  const loggedToday = diary.some((d) => d.day === todayKey);
+  const symptomWarn = persistentSymptoms(diary, profile.id, now);
+  const challenge = dailyChallenge(todayKey, profile.id, profile.anaglyph.calibrated);
+  const challengeOk = challengeDone(challenge, results, todayKey);
+  const earned = badges.filter((b) => b.earned).length;
 
-  const tasks = [
-    { done: progress >= 1, text: `Bant: ${formatMinutes(today)} / ${formatMinutes(goal)}`, to: '/timer' },
-    { done: todays.some((r) => !BINOCULAR_KINDS.has(r.kind)), text: 'Bantla 1 egzersiz oyna', to: '/play#bant' },
-    { done: todays.some((r) => BINOCULAR_KINDS.has(r.kind)), text: 'Gözlükle 1 oyun oyna', to: '/play#gozluk' },
+  const planItems = [
+    { label: 'Kapama', value: today, target: goal, to: '/timer' },
+    ...(profile.nearExerciseMin > 0 ? [{ label: 'Bantla yakın egzersiz', value: mins.near, target: profile.nearExerciseMin, to: '/play#bant' }] : []),
+    ...(profile.binocularMin > 0 ? [{ label: 'Gözlükle iki göz', value: mins.binocular, target: profile.binocularMin, to: '/play#gozluk' }] : []),
   ];
+  const allDone = planItems.every((p) => p.value >= p.target) && !visionDue;
 
   const hour = new Date(now).getHours();
   const greet = hour < 12 ? 'Günaydın' : hour < 18 ? 'İyi günler' : 'İyi akşamlar';
@@ -41,11 +68,9 @@ export default function Home() {
             </Link>
           )}
         </div>
-        {kid && (
-          <Link to="/badges" className="badge-pill" style={{ fontSize: '1em', textDecoration: 'none' }}>
-            ⭐ {totalStars} · 🏅 {earned.length}
-          </Link>
-        )}
+        <Link to="/badges" className="badge-pill" style={{ fontSize: '1em', textDecoration: 'none' }}>
+          ⭐ {stars} · 🏅 {earned}
+        </Link>
       </div>
 
       <div className="card row" style={{ gap: 20, flexWrap: 'nowrap' }}>
@@ -72,20 +97,53 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="card">
-        <strong>{kid ? 'Bugünkü görevler 🗺️' : 'Bugün'}</strong>
-        <div className="stack" style={{ gap: 6, marginTop: 8 }}>
-          {tasks.map((t) => (
-            <Link key={t.text} to={t.to} className="row" style={{ color: 'inherit', textDecoration: 'none', gap: 10 }}>
-              <span style={{ fontSize: '1.3em' }}>{t.done ? '✅' : '⬜'}</span>
-              <span style={{ textDecoration: t.done ? 'line-through' : undefined }}>{t.text}</span>
-            </Link>
-          ))}
+      <div className="card stack" style={{ gap: 12 }}>
+        <div className="row spread">
+          <strong>{kid ? 'Bugünkü görevler 🗺️' : 'Bugünkü plan'}</strong>
+          {visit !== null && visit >= 0 && (
+            <span className="badge-pill">🩺 {visit === 0 ? 'Kontrol bugün' : `Kontrole ${visit} gün`}</span>
+          )}
         </div>
-        {kid && tasks.every((t) => t.done) && <div className="banner" style={{ marginTop: 10 }}>🎉 Bugünün tüm görevleri tamam, kaptan!</div>}
+        {planItems.map((p) => (
+          <PlanRow key={p.label} {...p} />
+        ))}
+        {visionDue && (
+          <Link to="/vision" className="row small" style={{ color: 'inherit', textDecoration: 'none', gap: 8 }}>
+            <span>⬜</span>
+            <span>
+              Görme testi zamanı <span className="muted">(her {profile.visionTestEveryDays} günde bir)</span>
+            </span>
+          </Link>
+        )}
+        {allDone && <div className="banner">🎉 {kid ? 'Bugünün tüm görevleri tamam, kaptan!' : 'Bugünkü plan tamamlandı.'}</div>}
       </div>
 
-      <div className="grid">
+      <Link to={activityPath(challenge.kind)} className="card row" style={{ color: 'inherit', textDecoration: 'none', gap: 14, flexWrap: 'nowrap' }}>
+        <span style={{ fontSize: '2.2em' }}>{challengeOk ? '🎁' : tr.activity[challenge.kind].icon}</span>
+        <div>
+          <strong>Günün sürprizi</strong>
+          <div className="small">
+            {challengeOk
+              ? `Tamamlandı! +${CHALLENGE_BONUS} ⭐ kazandın.`
+              : `${tr.activity[challenge.kind].name} oyununda en az ${challenge.stars} yıldız al, +${CHALLENGE_BONUS} ⭐ kazan.`}
+          </div>
+        </div>
+      </Link>
+
+      {!loggedToday && (
+        <Link to="/diary" className="card row" style={{ color: 'inherit', textDecoration: 'none', gap: 14, flexWrap: 'nowrap' }}>
+          <span style={{ fontSize: '2em' }}>📝</span>
+          <div>
+            <strong>{kid ? 'Bugün gözlerin nasıl?' : 'Bugün nasılsın?'}</strong>
+            <div className="muted small">Belirtileri ve bant uyumunu 10 saniyede kaydet.</div>
+          </div>
+        </Link>
+      )}
+      {symptomWarn && (
+        <div className="banner warn">Son 3 gündür belirti kaydettin. Sürerse egzersizlere ara ver ve göz doktoruna danış.</div>
+      )}
+
+      <div className="grid" style={{ marginTop: 12 }}>
         <Link className="tile" to="/play#bant">
           <span className="icon">🔍</span>
           <strong>Bantla egzersiz</strong>
@@ -94,17 +152,27 @@ export default function Home() {
         <Link className="tile" to="/play#gozluk">
           <span className="icon">🥽</span>
           <strong>Gözlükle oyunlar</strong>
-          <span className="muted small">İki gözü birlikte çalıştır</span>
+          <span className="muted small">Oyun, okuma ve film</span>
+        </Link>
+        <Link className="tile" to="/vision">
+          <span className="icon">👁️</span>
+          <strong>Görme testi</strong>
+          <span className="muted small">Her göz için evde ölçüm</span>
         </Link>
         <Link className="tile" to="/play/gabor">
           <span className="icon">🌀</span>
           <strong>Gabor eğitimi</strong>
-          <span className="muted small">Kontrast duyarlılığını izle</span>
+          <span className="muted small">Kontrast duyarlılığı</span>
         </Link>
-        <Link className="tile" to="/stats">
-          <span className="icon">📈</span>
-          <strong>İlerleme</strong>
-          <span className="muted small">Grafikler ve geçmiş</span>
+        <Link className="tile" to="/diary">
+          <span className="icon">📝</span>
+          <strong>Günlük</strong>
+          <span className="muted small">Belirti ve uyum kaydı</span>
+        </Link>
+        <Link className="tile" to="/report">
+          <span className="icon">🩺</span>
+          <strong>Doktor raporu</strong>
+          <span className="muted small">Yazdır ya da PDF al</span>
         </Link>
       </div>
     </div>

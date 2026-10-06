@@ -31,8 +31,35 @@ export interface Profile {
   dichopticContrast: number;
   /** Oyun ses efektleri açık mı. */
   soundOn: boolean;
+  /** Tedavi planı: günlük bantla yakın egzersiz hedefi (dakika). */
+  nearExerciseMin: number;
+  /** Tedavi planı: günlük gözlüklü (dikoptik) etkinlik hedefi (dakika, 0 = kapalı). */
+  binocularMin: number;
+  /** Kaç günde bir evde görme testi yapılacağı (0 = kapalı). */
+  visionTestEveryDays: number;
+  /** Doktorun önerisi (serbest metin). */
+  doctorNote: string;
+  /** Sonraki kontrol tarihi "YYYY-AA-GG". */
+  nextVisit?: string;
+  /** Ekran ölçeği: 1 mm kaç CSS pikseli (kredi kartıyla ölçülür). */
+  screenPxPerMm?: number;
   createdAt: number;
 }
+
+/** Yeni ve eski profiller için varsayılan alanlar. */
+export const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => ({
+  mode: 'adult',
+  amblyopicEye: 'left',
+  dailyGoalMin: 120,
+  reminderTimes: [],
+  dichopticContrast: 0.2,
+  soundOn: true,
+  nearExerciseMin: 20,
+  binocularMin: 0,
+  visionTestEveryDays: 7,
+  doctorNote: '',
+  createdAt: Date.now(),
+});
 
 /** Bir kapama dönemi (bant takılı geçen süre). */
 export interface PatchSession {
@@ -43,11 +70,19 @@ export interface PatchSession {
 }
 
 export type ExerciseKind = 'odd-one-out' | 'catch' | 'dots' | 'tumbling-e' | 'maze' | 'balloons';
-export type DichopticKind = 'blocks' | 'breakout' | 'stars' | 'snake';
-export type ActivityKind = ExerciseKind | DichopticKind | 'video';
+export type DichopticKind = 'blocks' | 'breakout' | 'stars' | 'snake' | 'puzzle';
+export type ActivityKind = ExerciseKind | DichopticKind | 'video' | 'reading';
 
 /** İki gözü birlikte çalıştıran (gözlükle yapılan) etkinlikler. */
-export const BINOCULAR_KINDS: ReadonlySet<ActivityKind> = new Set<ActivityKind>(['blocks', 'breakout', 'stars', 'snake', 'video']);
+export const BINOCULAR_KINDS: ReadonlySet<ActivityKind> = new Set<ActivityKind>([
+  'blocks',
+  'breakout',
+  'stars',
+  'snake',
+  'puzzle',
+  'video',
+  'reading',
+]);
 
 export interface ActivityResult {
   id: string;
@@ -78,6 +113,29 @@ export interface GaborResult {
   viewing: GaborViewing;
 }
 
+/** Evde yapılan görme keskinliği testi. */
+export interface VisionTest {
+  id: string;
+  profileId: string;
+  at: number;
+  eye: Eye;
+  logMAR: number;
+  distanceCm: number;
+}
+
+export type Symptom = 'headache' | 'double' | 'strain' | 'squint' | 'none';
+export type Compliance = 'full' | 'partial' | 'none';
+
+/** Günlük semptom ve uyum kaydı (gün başına bir tane). */
+export interface DiaryEntry {
+  id: string;
+  profileId: string;
+  day: string;
+  symptoms: Symptom[];
+  compliance: Compliance;
+  note: string;
+}
+
 export interface AppData {
   version: 1;
   profiles: Profile[];
@@ -85,6 +143,8 @@ export interface AppData {
   sessions: PatchSession[];
   results: ActivityResult[];
   gabor: GaborResult[];
+  visionTests: VisionTest[];
+  diary: DiaryEntry[];
   /** Profil başına çalışan zamanlayıcının başlangıç zamanı (yoksa null). */
   timers: Record<string, number | null>;
 }
@@ -96,6 +156,8 @@ export const emptyData = (): AppData => ({
   sessions: [],
   results: [],
   gabor: [],
+  visionTests: [],
+  diary: [],
   timers: {},
 });
 

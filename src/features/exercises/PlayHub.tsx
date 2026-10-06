@@ -5,7 +5,7 @@ import type { DichopticKind, ExerciseKind } from '../../model/types';
 import { useProfile, useStore } from '../../storage/store';
 
 const EXERCISES: ExerciseKind[] = ['odd-one-out', 'balloons', 'catch', 'maze', 'dots', 'tumbling-e'];
-const DICHOPTIC: DichopticKind[] = ['blocks', 'breakout', 'stars', 'snake'];
+const DICHOPTIC: DichopticKind[] = ['blocks', 'breakout', 'stars', 'snake', 'puzzle'];
 
 export default function PlayHub() {
   const profile = useProfile();
@@ -53,6 +53,11 @@ export default function PlayHub() {
             <span className="muted small">{tr.activity[k].desc}</span>
           </Link>
         ))}
+        <Link className="tile" to="/play/reading">
+          <span className="icon">{tr.activity.reading.icon}</span>
+          <strong>{tr.activity.reading.name}</strong>
+          <span className="muted small">{tr.activity.reading.desc}</span>
+        </Link>
         <Link className="tile" to="/play/video">
           <span className="icon">{tr.activity.video.icon}</span>
           <strong>{tr.activity.video.name}</strong>
