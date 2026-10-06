@@ -6,11 +6,13 @@ tedavisinde şunlara yardım eder:
 | Özellik | Ne yapar? |
 |---|---|
 | 🏴‍☠️ **Kapama zamanlayıcısı** | Bandı taktığınızda başlatın, çıkardığınızda durdurun. Günlük hedef halkası, takvim, seri sayacı, hatırlatıcılar ve elle kayıt ekleme. Telefon kilitlense de süre doğru hesaplanır. |
-| 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Hedef Yakala*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |
-| 🥽 **Kırmızı-mavi gözlükle dikoptik oyunlar** | Bant gerekmez. Oyunun bir kısmı yalnızca tembel göze (tam parlak), bir kısmı yalnızca sağlam göze (soluk) gösterilir: *Dikoptik Bloklar* (Tetris benzeri), *Dikoptik Top*, *Yıldız Toplama*. Sağlam göz kontrastı başarıya göre otomatik artar. |
+| 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Balon Patlat*, *Hedef Yakala*, *Labirent*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |
+| 🥽 **Kırmızı-mavi gözlükle dikoptik oyunlar** | Bant gerekmez. Oyunun bir kısmı yalnızca tembel göze (tam parlak), bir kısmı yalnızca sağlam göze (soluk) gösterilir: *Dikoptik Bloklar* (Tetris benzeri), *Dikoptik Top*, *Yıldız Toplama*, *Dikoptik Yılan*. Sağlam göz kontrastı başarıya göre otomatik artar. |
+| 🎬 **Dikoptik film** | Kendi videonuzu (ya da bilgisayarda paylaşılan bir sekmeyi) kırmızı-mavi gözlükle izleyin: tembel göz tam, sağlam göz azaltılmış parlaklıkta görür. İsteğe bağlı tamamlayıcı maske, 20 dakikada bir mola hatırlatması. |
 | 🌀 **Gabor algısal öğrenme** | Soluk çizgili desenlerin yönünü bulma. 3-aşağı 1-yukarı merdiven yöntemiyle kontrast eşiği ölçülür ve zaman içindeki değişimi grafikte izlenir. |
 | 📈 **İlerleme** | Günlük kapama grafiği, Gabor eşiği, dikoptik kontrast eğrisi, oyun tablosu. Doktor için CSV ve yedek için JSON dışa aktarma. |
-| 🧒 **Çocuk modu** | Büyük düğmeler, günlük görev listesi, yıldızlar, 12 rozet ve ebeveyn şifresiyle kilitli ayarlar. Birden fazla profil desteklenir. |
+| 🔊 **Sesler** | Doğru/yanlış/seviye sesleri (dosyasız, WebAudio). Oyun ekranından ya da Ayarlar'dan kapatılabilir. |
+| 🧒 **Çocuk modu** | Büyük düğmeler, günlük görev listesi, yıldızlar, 14 rozet ve ebeveyn şifresiyle kilitli ayarlar. Birden fazla profil desteklenir. |
 
 > ⚠️ **Tıbbi uyarı:** Bu uygulama tıbbi bir cihaz değildir ve göz doktorunun yerine geçmez. Kapama süresini, hangi
 > gözün kapatılacağını ve dikoptik tedavi kullanımını mutlaka göz doktorunuzla belirleyin.
@@ -64,6 +66,17 @@ npm run smoke      # uçtan uca duman testi + ekran görüntüleri (screenshots/
 1. Depoda **Settings → Pages → Source: GitHub Actions** seçin.
 2. `main` dalına her gönderimde `.github/workflows/deploy.yml` testleri çalıştırır, `VITE_BASE=/<depo-adı>/` ile
    derler ve yayınlar. Elle çalıştırmak için *Actions → Run workflow* kullanılabilir.
+
+### Netlify'da yayınlama
+
+Depodaki `netlify.toml` derleme ayarlarını içerir.
+
+1. [app.netlify.com](https://app.netlify.com) → **Add new site → Import an existing project → GitHub** → bu depoyu seçin.
+2. Ayarlar dosyadan otomatik gelir (`npm run build`, yayın klasörü `dist`). **Deploy** deyin.
+3. Verilen `https://<ad>.netlify.app` adresini telefonda açıp ana ekrana ekleyin.
+
+Hesap bağlamadan denemek için: `npm run build` sonrası oluşan `dist` klasörünü
+[app.netlify.com/drop](https://app.netlify.com/drop) sayfasına sürükleyip bırakın.
 
 ### Proje yapısı
 

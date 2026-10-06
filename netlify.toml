@@ -1,0 +1,29 @@
+# Netlify yayını: depoyu Netlify'a bağlayın, ayarlar buradan okunur.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Service worker ve giriş sayfası her zaman tazelensin ki güncellemeler hemen gelsin.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+
+# Parmak izli dosyalar (assets/*) kalıcı önbelleklenebilir.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
