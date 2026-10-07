@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import type { Eye } from '../../model/types';
 import { drawE, type Dir } from '../../games/monocular/tumblingE';
@@ -44,6 +44,8 @@ export default function VisionPage() {
   const [phase, setPhase] = useState<Phase>(profile.screenPxPerMm ? 'setup' : 'scale');
   const [distance, setDistance] = useState(40);
   const [bothEyes, setBothEyes] = useState(true);
+  const [withGlasses, setWithGlasses] = useState(profile.wearsGlasses);
+  const fromSetup = useSearchParams()[0].get('from') === 'setup';
   const [queue, setQueue] = useState<Eye[]>([]);
   const [results, setResults] = useState<{ eye: Eye; logMAR: number; reachedBest: boolean }[]>([]);
   const pxPerMm = profile.screenPxPerMm ?? 3.78;
@@ -75,7 +77,7 @@ export default function VisionPage() {
     const measured = s.length >= 3 ? [...s].sort((a, b) => a - b)[Math.floor(s.length / 2)] : null;
     samples.current = [];
     const logMAR = measured ? Math.round((rawLogMAR + Math.log10(distance / measured)) * 100) / 100 : rawLogMAR;
-    addVisionTest({ eye, logMAR, distanceCm: measured ?? distance });
+    addVisionTest({ eye, logMAR, distanceCm: measured ?? distance, withGlasses });
     const next = [...results, { eye, logMAR, reachedBest }];
     setResults(next);
     const rest = queue.slice(1);
@@ -106,7 +108,8 @@ export default function VisionPage() {
           {tr.eye[eye]} testi {eye === profile.amblyopicEye ? '(tembel göz)' : '(sağlam göz)'}
         </h1>
         <div className="banner warn">
-          <b>{other}</b> bantla ya da avucunla kapat (bastırmadan). Gözlüğün varsa tak.
+          <b>{other}</b> bantla ya da avucunla kapat (bastırmadan).{' '}
+          {withGlasses ? 'Numaralı gözlüğün takılı olsun 👓.' : 'Gözlüğünü çıkar.'}
         </div>
         <p className="muted" style={{ margin: 0 }}>
           Ekranla gözün arasında <b>{distance >= 100 ? `${distance / 100} metre` : `${distance} cm`}</b> olsun. Ortadaki E
@@ -168,9 +171,15 @@ export default function VisionPage() {
           raporuna eklendi. En doğru karşılaştırma için her seferinde aynı mesafe, aynı cihaz ve aynı ışıkta test et.
         </p>
         <div className="row">
-          <Link className="btn primary" to="/stats">
-            📈 İlerlemeyi gör
-          </Link>
+          {fromSetup ? (
+            <Link className="btn primary" to="/setup">
+              🧭 Kuruluma dön
+            </Link>
+          ) : (
+            <Link className="btn primary" to="/stats">
+              📈 İlerlemeyi gör
+            </Link>
+          )}
           <button className="btn" onClick={() => setPhase('setup')}>
             Yeni test
           </button>
@@ -232,6 +241,23 @@ export default function VisionPage() {
           ]}
         />
       </div>
+      <div className="field">
+        <strong>👓 Numaralı gözlükle mi?</strong>
+        <Segmented
+          label="Gözlükle"
+          value={withGlasses ? 'yes' : 'no'}
+          onChange={(v) => setWithGlasses(v === 'yes')}
+          options={[
+            { value: 'yes', label: '👓 Gözlükle' },
+            { value: 'no', label: 'Gözlüksüz' },
+          ]}
+        />
+        <span className="muted small">
+          {profile.wearsGlasses
+            ? 'Doktorlar görmeyi genellikle gözlükle (düzeltilmiş) ölçer. İlerlemeyi izlemek için her seferinde aynı seçimi yap.'
+            : 'Gözlük kullanmıyorsan “Gözlüksüz” seçili kalsın.'}
+        </span>
+      </div>
       {(last('left') || last('right')) && (
         <div className="card small" style={{ margin: 0 }}>
           <strong>Son ölçümler</strong>
@@ -239,7 +265,8 @@ export default function VisionPage() {
             const v = last(e);
             return v ? (
               <div key={e}>
-                {tr.eye[e]}: <b>{toTenths(v.logMAR)}</b> ({new Date(v.at).toLocaleDateString('tr-TR')}, {v.distanceCm} cm)
+                {tr.eye[e]}: <b>{toTenths(v.logMAR)}</b> ({new Date(v.at).toLocaleDateString('tr-TR')}, {v.distanceCm} cm
+                {v.withGlasses ? ', 👓 gözlükle' : v.withGlasses === false ? ', gözlüksüz' : ''})
               </div>
             ) : null;
           })}
@@ -264,12 +291,25 @@ export default function VisionPage() {
 }
 
 /** Kredi kartıyla ekran ölçeği ayarı. */
-function ScreenScale({ initial, onSave, onCancel }: { initial: number; onSave(v: number): void; onCancel(): void }) {
+export function ScreenScale({
+  initial,
+  onSave,
+  onCancel,
+  embedded = false,
+  cancelLabel = 'Vazgeç',
+}: {
+  initial: number;
+  onSave(v: number): void;
+  onCancel(): void;
+  /** Kurulum sihirbazının içinde başlıksız gösterilir. */
+  embedded?: boolean;
+  cancelLabel?: string;
+}) {
   const [v, setV] = useState(initial);
   const w = CARD_WIDTH_MM * v;
   return (
-    <div className="page stack">
-      <h1>💳 Ekran ölçeği</h1>
+    <div className={embedded ? 'stack' : 'page stack'}>
+      {!embedded && <h1>💳 Ekran ölçeği</h1>}
       <p className="muted" style={{ margin: 0 }}>
         Harflerin gerçek boyutta çizilmesi için ekranını bir kez ölçmemiz gerekiyor. Bir banka kartını (ya da aynı boyuttaki
         herhangi bir kartı) aşağıdaki kutunun üzerine koy ve kutunun genişliği kartla tam aynı olana kadar kaydırıcıyı ayarla.
@@ -305,7 +345,7 @@ function ScreenScale({ initial, onSave, onCancel }: { initial: number; onSave(v:
       </div>
       <div className="row spread">
         <button className="btn" onClick={onCancel}>
-          Vazgeç
+          {cancelLabel}
         </button>
         <button className="btn primary" onClick={() => onSave(Math.round(v * 100) / 100)}>
           Kaydet

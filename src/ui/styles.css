@@ -535,3 +535,100 @@ textarea {
 .progress.done > div {
   background: var(--success);
 }
+
+.rx-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rx-table th {
+  text-align: center;
+  font-size: 0.85em;
+  padding: 2px;
+}
+
+.rx-table th[scope='row'] {
+  text-align: left;
+  width: 22%;
+}
+
+.rx-table td {
+  padding: 3px;
+  width: 26%;
+}
+
+.rx-table input {
+  width: 100%;
+  min-width: 0;
+  padding-left: 2px;
+  padding-right: 2px;
+  text-align: center;
+}
+
+.rx-table .tag {
+  display: table;
+  margin: 2px 0 0;
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--warning) 25%, transparent);
+  color: inherit;
+}
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.trend-grid > div {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.trend-grid .val {
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.trend.up {
+  color: var(--success);
+}
+
+.trend.down {
+  color: var(--danger);
+}
+
+.steps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.steps button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.steps button.done {
+  border-color: var(--success);
+}
+
+.steps button[aria-current='step'] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}

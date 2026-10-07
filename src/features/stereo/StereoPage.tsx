@@ -10,6 +10,7 @@ import { DistanceMeter } from '../../ui/DistanceMeter';
 import { Segmented } from '../../ui/components';
 import { renderRds, squareMask } from './render';
 import { arcsecForPx, availableLevels, StereoTestRun, stereoCategory } from './stereo';
+import { GlassesHint } from '../../ui/GlassesHint';
 
 type Dir = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 const DIRS: Dir[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -147,6 +148,7 @@ export default function StereoPage() {
           </>
         )}
       </div>
+      <GlassesHint show={profile.wearsGlasses} anaglyph />
       <button
         className="btn primary big"
         disabled={!levels.length}

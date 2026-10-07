@@ -7,6 +7,7 @@ import {
   type DiaryEntry,
   type Eye,
   type GaborResult,
+  type GlassesWear,
   type PatchSession,
   type Profile,
   type StereoTest,
@@ -59,6 +60,8 @@ export interface ReportSummary {
   stereo: { first: number | null; last: number | null; n: number } | null;
   symptoms: Record<Symptom, number>;
   compliance: Record<Compliance, number>;
+  /** Gözlük takma günlüğü; `rate` = "bütün gün" ya da "çoğunlukla" günlerin oranı (cevap yoksa null). */
+  glasses: Record<GlassesWear, number> & { rate: number | null };
   notes: { day: string; note: string }[];
 }
 
@@ -107,10 +110,13 @@ export function buildSummary(i: ReportInput): ReportSummary {
   const diary = i.diary.filter((d) => d.profileId === pid && d.day >= dayList[0] && d.day <= dayList[dayList.length - 1]);
   const symptoms: Record<Symptom, number> = { headache: 0, double: 0, strain: 0, squint: 0, none: 0 };
   const compliance: Record<Compliance, number> = { full: 0, partial: 0, none: 0 };
+  const glassesCount: Record<GlassesWear, number> = { all: 0, most: 0, little: 0, none: 0 };
   for (const d of diary) {
     d.symptoms.forEach((s) => symptoms[s]++);
     compliance[d.compliance]++;
+    if (d.glasses) glassesCount[d.glasses]++;
   }
+  const glassesAnswered = glassesCount.all + glassesCount.most + glassesCount.little + glassesCount.none;
 
   return {
     from: dayList[0],
@@ -135,6 +141,7 @@ export function buildSummary(i: ReportInput): ReportSummary {
     })(),
     symptoms,
     compliance,
+    glasses: { ...glassesCount, rate: glassesAnswered ? (glassesCount.all + glassesCount.most) / glassesAnswered : null },
     notes: diary.filter((d) => d.note.trim()).sort((a, b) => a.day.localeCompare(b.day)).map((d) => ({ day: d.day, note: d.note.trim() })),
   };
 }

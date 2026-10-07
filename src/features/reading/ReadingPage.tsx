@@ -7,6 +7,7 @@ import { sfx } from '../../platform/sound';
 import { useWakeLock } from '../../platform/wakeLock';
 import { useProfile, useStore } from '../../storage/store';
 import { READING_TEXTS, splitDichoptic } from './texts';
+import { GlassesHint } from '../../ui/GlassesHint';
 
 export default function ReadingPage() {
   const profile = useProfile();
@@ -98,6 +99,7 @@ export default function ReadingPage() {
           Yazı boyutu: {fontSize} px
           <input type="range" min={16} max={44} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} />
         </label>
+        <GlassesHint show={profile.wearsGlasses} anaglyph />
         <button
           className="btn primary big"
           disabled={words.length < 5}

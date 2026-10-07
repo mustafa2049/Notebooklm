@@ -1,5 +1,6 @@
 import { defaultAnaglyph, emptyData, profileDefaults, type AppData, type Profile } from '../model/types';
 import { dayKey, minutesByDay } from '../model/time';
+import { formatRx } from '../features/rx/rx';
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 const arr = <T>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
@@ -64,6 +65,12 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
   row('Profil', profile?.name ?? '');
   row('Tembel göz', profile?.amblyopicEye === 'right' ? 'Sağ' : 'Sol');
   row('Günlük hedef (dk)', profile?.dailyGoalMin ?? '');
+  if (profile?.prescription) {
+    const rx = profile.prescription;
+    row('Reçete sağ (OD)', formatRx(rx.right));
+    row('Reçete sol (OS)', formatRx(rx.left));
+    if (rx.date) row('Reçete tarihi', rx.date);
+  }
   row('');
   row('Tarih', 'Kapama (dk)');
   const byDay = minutesByDay(
@@ -94,12 +101,19 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
     .sort((a, b) => a.at - b.at)
     .forEach((g) => row(dayKey(g.at), (g.threshold * 100).toFixed(2), g.cycles, g.trials, g.viewing));
   row('');
-  row('Tarih', 'Göz', 'logMAR', 'Görme (x/10)', 'Mesafe (cm)');
+  row('Tarih', 'Göz', 'logMAR', 'Görme (x/10)', 'Mesafe (cm)', 'Gözlükle');
   data.visionTests
     .filter((v) => v.profileId === profileId)
     .sort((a, b) => a.at - b.at)
     .forEach((v) =>
-      row(dayKey(v.at), v.eye === 'left' ? 'Sol' : 'Sağ', v.logMAR.toFixed(2), (Math.pow(10, -v.logMAR) * 10).toFixed(1), v.distanceCm),
+      row(
+        dayKey(v.at),
+        v.eye === 'left' ? 'Sol' : 'Sağ',
+        v.logMAR.toFixed(2),
+        (Math.pow(10, -v.logMAR) * 10).toFixed(1),
+        v.distanceCm,
+        v.withGlasses == null ? '' : v.withGlasses ? 'evet' : 'hayır',
+      ),
     );
   row('');
   row('Tarih', 'Stereo eşiği (arcsaniye)', 'Mesafe (cm)');
@@ -108,11 +122,11 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
     .sort((a, b) => a.at - b.at)
     .forEach((v) => row(dayKey(v.at), v.arcsec ?? 'algılanamadı', v.distanceCm));
   row('');
-  row('Tarih', 'Belirtiler', 'Bant uyumu', 'Not');
+  row('Tarih', 'Belirtiler', 'Bant uyumu', 'Gözlük', 'Not');
   data.diary
     .filter((d) => d.profileId === profileId)
     .sort((a, b) => a.day.localeCompare(b.day))
-    .forEach((d) => row(d.day, d.symptoms.join(','), d.compliance, d.note));
+    .forEach((d) => row(d.day, d.symptoms.join(','), d.compliance, d.glasses ?? '', d.note));
   return '﻿' + lines.join('\n');
 }
 

@@ -1,4 +1,4 @@
-import type { Eye } from '../../model/types';
+import type { Eye, Prescription } from '../../model/types';
 import type { ReportSummary } from './summary';
 import { publicBaseUrl } from '../../platform/native';
 
@@ -11,6 +11,9 @@ export interface SharedReport {
   nearExerciseMin: number;
   binocularMin: number;
   doctorNote: string;
+  /** Gözlük reçetesi (eski bağlantılarda yok). */
+  prescription?: Prescription;
+  wearsGlasses?: boolean;
   generatedAt: number;
   summary: ReportSummary;
 }

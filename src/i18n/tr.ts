@@ -27,6 +27,12 @@ export const tr = {
     squint: 'Kaymada artış',
     none: 'Sorun yok',
   },
+  glassesWear: {
+    all: 'Bütün gün',
+    most: 'Çoğunlukla',
+    little: 'Az',
+    none: 'Hiç',
+  },
   compliance: {
     full: 'Tam taktım',
     partial: 'Kısmen',

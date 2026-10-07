@@ -8,6 +8,7 @@ import { sfx } from '../../platform/sound';
 import { useWakeLock } from '../../platform/wakeLock';
 import { useProfile, useStore } from '../../storage/store';
 import { Segmented } from '../../ui/components';
+import { GlassesHint } from '../../ui/GlassesHint';
 
 /** Bu kadar saniyede bir mola önerilir (20 dakika). */
 const BREAK_EVERY = 20 * 60;
@@ -228,6 +229,7 @@ export default function VideoPlay() {
             Açıkken görüntüde yavaşça gezinen lekeleri yalnızca tembel göz görür; sağlam göz o bölgelerde boşluk görür.
           </span>
         </div>
+        <GlassesHint show={profile.wearsGlasses} anaglyph />
         <label className="btn primary big" style={{ cursor: 'pointer' }}>
           📁 Video dosyası seç
           <input type="file" accept="video/*" hidden onChange={(e) => openFile(e.target.files?.[0])} data-testid="video-file" />

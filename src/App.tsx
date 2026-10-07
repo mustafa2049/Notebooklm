@@ -20,6 +20,7 @@ import ReportPage, { SharedReportPage } from './features/report/ReportPage';
 import StatsPage from './features/stats/StatsPage';
 import SettingsPage from './features/settings/SettingsPage';
 import BadgesPage from './features/kids/BadgesPage';
+import SetupPage from './features/setup/SetupPage';
 import { useReminders } from './platform/reminders';
 import { setSoundEnabled } from './platform/sound';
 
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="/vision" element={<VisionPage />} />
           <Route path="/stereo" element={<StereoPage />} />
           <Route path="/calibrate" element={<Calibration />} />
+          <Route path="/setup" element={<SetupPage />} />
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/timer" element={<TimerPage />} />

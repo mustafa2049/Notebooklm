@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import { dayKey, formatDuration, formatMinutes } from '../../model/time';
@@ -7,6 +8,20 @@ import { ProgressRing } from '../../ui/components';
 import { useRewards } from '../kids/useRewards';
 import { activityMinutes, activityPath, CHALLENGE_BONUS, challengeDone, dailyChallenge, daysUntil, visionTestDue } from '../plan/plan';
 import { persistentSymptoms } from '../report/summary';
+import { weeklyComparison, weeklyMessage, type Metric } from '../report/weekly';
+import { setupProgress, setupSteps, showSetupCard } from '../setup/setup';
+
+function Trend({ m, fmt, testid }: { m: Metric; fmt(v: number): string; testid?: string }) {
+  if (m.trend == null || m.delta == null) return null;
+  const arrow = m.trend === 'up' ? '▲' : m.trend === 'down' ? '▼' : '＝';
+  return (
+    <span className={`small trend ${m.trend}`} data-testid={testid}>
+      {arrow} {m.trend === 'same' ? 'aynı' : fmt(Math.abs(m.delta))}
+    </span>
+  );
+}
+
+const pct = (v: number) => `%${Math.round(v * 100)}`;
 
 function PlanRow({ label, value, target, to }: { label: string; value: number; target: number; to: string }) {
   const done = value >= target;
@@ -29,9 +44,9 @@ function PlanRow({ label, value, target, to }: { label: string; value: number; t
 
 export default function Home() {
   const profile = useProfile();
-  const { data, startTimer, stopTimer } = useStore();
-  const { today, goal, progress, streak, runningSince, now } = usePatchStats();
-  const { results, visionTests, diary } = useProfileResults();
+  const { data, startTimer, stopTimer, updateProfile } = useStore();
+  const { sessions, today, goal, progress, streak, runningSince, now } = usePatchStats();
+  const { results, gabor, visionTests, stereoTests, diary } = useProfileResults();
   const { stars, badges } = useRewards();
   const kid = profile.mode === 'child';
   const todayKey = dayKey(now);
@@ -52,6 +67,28 @@ export default function Home() {
     ...(profile.binocularMin > 0 ? [{ label: 'Gözlükle iki göz', value: mins.binocular, target: profile.binocularMin, to: '/play#gozluk' }] : []),
   ];
   const allDone = planItems.every((p) => p.value >= p.target) && !visionDue;
+
+  const steps = setupSteps(profile, visionTests);
+  const setup = setupProgress(steps);
+  const nextStep = steps.find((x) => !x.done);
+  // Haftalık özet dakikada bir yeniden hesaplanır.
+  const minute = Math.floor(now / 60_000);
+  const week = useMemo(
+    () =>
+      weeklyComparison({
+        profile,
+        // Çalışan zamanlayıcı da bu haftaya sayılır.
+        sessions: runningSince ? [...sessions, { id: 'run', profileId: profile.id, start: runningSince, end: now }] : sessions,
+        results,
+        gabor,
+        visionTests,
+        stereoTests,
+        diary,
+        now,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [profile, sessions, runningSince, results, gabor, visionTests, stereoTests, diary, minute],
+  );
 
   const hour = new Date(now).getHours();
   const greet = hour < 12 ? 'Günaydın' : hour < 18 ? 'İyi günler' : 'İyi akşamlar';
@@ -74,6 +111,30 @@ export default function Home() {
           ⭐ {stars} · 🏅 {earned}
         </Link>
       </div>
+
+      {showSetupCard(profile, steps) && (
+        <div className="card stack" data-testid="setup-card" style={{ gap: 8 }}>
+          <div className="row spread">
+            <strong>
+              🧭 Kurulum {setup.done}/{setup.total}
+            </strong>
+            <button className="btn ghost small" style={{ minHeight: 0, padding: '2px 6px' }} onClick={() => updateProfile(profile.id, { setupDismissed: true })}>
+              Gizle
+            </button>
+          </div>
+          <div className="progress">
+            <div style={{ width: `${(setup.done / setup.total) * 100}%` }} />
+          </div>
+          {nextStep && (
+            <div className="small">
+              Sıradaki: {nextStep.icon} {nextStep.title}
+            </div>
+          )}
+          <Link className="btn primary" to="/setup">
+            Kuruluma devam et
+          </Link>
+        </div>
+      )}
 
       <div className="card row" style={{ gap: 20, flexWrap: 'nowrap' }}>
         <ProgressRing value={progress} size={120} stroke={12}>
@@ -120,6 +181,42 @@ export default function Home() {
         {allDone && <div className="banner">🎉 {kid ? 'Bugünün tüm görevleri tamam, kaptan!' : 'Bugünkü plan tamamlandı.'}</div>}
       </div>
 
+      <Link to="/stats" className="card stack" data-testid="weekly-card" style={{ color: 'inherit', textDecoration: 'none', gap: 10 }}>
+        <div className="row spread">
+          <strong>📅 {kid ? 'Bu haftam' : 'Bu hafta'}</strong>
+          <span className="muted small">{week.hasPrev ? 'geçen haftaya göre' : `${week.days} gün`}</span>
+        </div>
+        <div className="trend-grid">
+          <div>
+            <div className="muted small">Kapama / gün</div>
+            <div className="val">{formatMinutes(week.patchAvg.value)}</div>
+            <Trend m={week.patchAvg} fmt={(v) => formatMinutes(v)} testid="trend-patch" />
+          </div>
+          <div>
+            <div className="muted small">Hedef tutan gün</div>
+            <div className="val">
+              {week.metDays}/{week.days}
+            </div>
+            <Trend m={week.adherence} fmt={pct} />
+          </div>
+          <div>
+            <div className="muted small">Oyun / gün</div>
+            <div className="val">{formatMinutes(week.activityAvg.value)}</div>
+            <Trend m={week.activityAvg} fmt={(v) => formatMinutes(v)} />
+          </div>
+          {week.glassesRate && (
+            <div>
+              <div className="muted small">👓 Gözlük</div>
+              <div className="val">{pct(week.glassesRate.value)}</div>
+              <Trend m={week.glassesRate} fmt={pct} />
+            </div>
+          )}
+        </div>
+        <div className="small" data-testid="weekly-msg">
+          {weeklyMessage(week, profile.mode)}
+        </div>
+      </Link>
+
       <Link to={activityPath(challenge.kind)} className="card row" style={{ color: 'inherit', textDecoration: 'none', gap: 14, flexWrap: 'nowrap' }}>
         <span style={{ fontSize: '2.2em' }}>{challengeOk ? '🎁' : tr.activity[challenge.kind].icon}</span>
         <div>
@@ -137,7 +234,9 @@ export default function Home() {
           <span style={{ fontSize: '2em' }}>📝</span>
           <div>
             <strong>{kid ? 'Bugün gözlerin nasıl?' : 'Bugün nasılsın?'}</strong>
-            <div className="muted small">Belirtileri ve bant uyumunu 10 saniyede kaydet.</div>
+            <div className="muted small">
+              Belirtileri, bant uyumunu{profile.wearsGlasses ? ' ve gözlük takma süresini' : ''} 10 saniyede kaydet.
+            </div>
           </div>
         </Link>
       )}

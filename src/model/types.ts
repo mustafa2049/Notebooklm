@@ -15,6 +15,23 @@ export interface AnaglyphSettings {
   calibrated: boolean;
 }
 
+/** Bir gözün gözlük değerleri (eksi silindir yazımı). */
+export interface EyeRx {
+  /** Küre (diyoptri): + hipermetropi, − miyopi. */
+  sph: number;
+  /** Silindir (diyoptri): astigmat. */
+  cyl: number;
+  /** Eksen (0–180°). */
+  axis: number;
+}
+
+export interface Prescription {
+  right: EyeRx;
+  left: EyeRx;
+  /** Reçete tarihi "YYYY-AA-GG". */
+  date?: string;
+}
+
 export interface Profile {
   id: string;
   name: string;
@@ -49,6 +66,16 @@ export interface Profile {
   proximityWarn: boolean;
   /** Son yedek alma zamanı. */
   lastBackupAt?: number;
+  /** Gözlük reçetesi. */
+  prescription?: Prescription;
+  /** Kişi numaralı gözlük kullanıyor mu (egzersiz öncesi hatırlatma için). */
+  wearsGlasses: boolean;
+  /** Kurulum sihirbazı ana sayfadan gizlendi mi. */
+  setupDismissed?: boolean;
+  /** Kurulumda "gözlük kullanmıyorum" seçildi. */
+  rxSkipped?: boolean;
+  /** Kurulumda doktorun planı onaylandı. */
+  planConfirmed?: boolean;
   createdAt: number;
 }
 
@@ -65,6 +92,7 @@ export const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => 
   visionTestEveryDays: 7,
   doctorNote: '',
   proximityWarn: false,
+  wearsGlasses: false,
   createdAt: Date.now(),
 });
 
@@ -129,6 +157,8 @@ export interface VisionTest {
   eye: Eye;
   logMAR: number;
   distanceCm: number;
+  /** Test gözlükle mi yapıldı. */
+  withGlasses?: boolean;
 }
 
 /** Rastgele nokta stereogramıyla ölçülen stereo (derinlik) görme eşiği. */
@@ -143,6 +173,8 @@ export interface StereoTest {
 
 export type Symptom = 'headache' | 'double' | 'strain' | 'squint' | 'none';
 export type Compliance = 'full' | 'partial' | 'none';
+/** Numaralı gözlüğün gün içinde ne kadar takıldığı. */
+export type GlassesWear = 'all' | 'most' | 'little' | 'none';
 
 /** Günlük semptom ve uyum kaydı (gün başına bir tane). */
 export interface DiaryEntry {
@@ -151,6 +183,8 @@ export interface DiaryEntry {
   day: string;
   symptoms: Symptom[];
   compliance: Compliance;
+  /** Gözlük takma (gözlük kullanmayanlarda yok). */
+  glasses?: GlassesWear;
   note: string;
 }
 

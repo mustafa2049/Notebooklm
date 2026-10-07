@@ -6,6 +6,7 @@ import { useWakeLock } from '../platform/wakeLock';
 import { useStore } from '../storage/store';
 import { useFaceDistance } from '../platform/useFaceDistance';
 import { runGame, type Game, type GameStats } from './engine';
+import { GlassesHint } from '../ui/GlassesHint';
 
 type Phase = 'intro' | 'playing' | 'paused' | 'done';
 
@@ -128,6 +129,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
             <div className="panel">
               <h2 style={{ margin: 0 }}>{title}</h2>
               {intro}
+              <GlassesHint show={profile?.wearsGlasses} anaglyph={theme === 'dark'} />
               <button className="btn primary big" onClick={play}>
                 Başla
               </button>

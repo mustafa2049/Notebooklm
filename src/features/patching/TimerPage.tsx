@@ -6,6 +6,7 @@ import { requestNotificationPermission } from '../../platform/notifications';
 import { usePatchStats } from '../../storage/selectors';
 import { useProfile, useStore } from '../../storage/store';
 import { Modal, ProgressRing } from '../../ui/components';
+import { GlassesHint } from '../../ui/GlassesHint';
 
 /** Bu süreden uzun kesintisiz oturumlar için onay iste (bant unutulmuş olabilir). */
 const LONG_SESSION_MS = 8 * 3600_000;
@@ -43,6 +44,7 @@ export default function TimerPage() {
         </ProgressRing>
 
         <div className="stack" style={{ marginTop: 16 }}>
+          {!runningSince && <GlassesHint show={profile.wearsGlasses} anaglyph={false} />}
           {runningSince ? (
             <button className="btn big" onClick={stop}>
               ⏸ Bandı çıkardım

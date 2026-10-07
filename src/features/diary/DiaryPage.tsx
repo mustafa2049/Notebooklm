@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import { dayKey } from '../../model/time';
-import type { Compliance, Symptom } from '../../model/types';
+import type { Compliance, GlassesWear, Symptom } from '../../model/types';
 import { useProfileResults } from '../../storage/selectors';
 import { useProfile, useStore } from '../../storage/store';
 import { Segmented } from '../../ui/components';
@@ -18,6 +18,7 @@ export default function DiaryPage() {
   const existing = diary.find((d) => d.day === today);
   const [symptoms, setSymptoms] = useState<Symptom[]>(existing?.symptoms ?? []);
   const [compliance, setCompliance] = useState<Compliance>(existing?.compliance ?? 'full');
+  const [glasses, setGlasses] = useState<GlassesWear>(existing?.glasses ?? 'all');
   const [note, setNote] = useState(existing?.note ?? '');
   const [saved, setSaved] = useState(false);
   const kid = profile.mode === 'child';
@@ -30,7 +31,13 @@ export default function DiaryPage() {
   };
 
   const save = () => {
-    saveDiary({ day: today, symptoms: symptoms.length ? symptoms : ['none'], compliance, note: note.trim() });
+    saveDiary({
+      day: today,
+      symptoms: symptoms.length ? symptoms : ['none'],
+      compliance,
+      ...(profile.wearsGlasses ? { glasses } : {}),
+      note: note.trim(),
+    });
     setSaved(true);
   };
 
@@ -74,6 +81,20 @@ export default function DiaryPage() {
           }}
           options={(['full', 'partial', 'none'] as Compliance[]).map((c) => ({ value: c, label: tr.compliance[c] }))}
         />
+        {profile.wearsGlasses && (
+          <>
+            <strong>👓 {kid ? 'Bugün gözlüğünü ne kadar taktın?' : 'Gözlüğü bugün ne kadar taktın?'}</strong>
+            <Segmented
+              label="Gözlük"
+              value={glasses}
+              onChange={(g) => {
+                setGlasses(g);
+                setSaved(false);
+              }}
+              options={(['all', 'most', 'little', 'none'] as GlassesWear[]).map((g) => ({ value: g, label: tr.glassesWear[g] }))}
+            />
+          </>
+        )}
         <label className="field">
           Not (isteğe bağlı)
           <textarea
@@ -105,7 +126,10 @@ export default function DiaryPage() {
           <div key={d.id} className="card" style={{ margin: 0, padding: '10px 14px' }}>
             <div className="row spread">
               <b>{new Date(`${d.day}T12:00:00`).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'short' })}</b>
-              <span className="badge-pill">{tr.compliance[d.compliance]}</span>
+              <span className="row" style={{ gap: 6 }}>
+                {d.glasses && <span className="badge-pill">👓 {tr.glassesWear[d.glasses]}</span>}
+                <span className="badge-pill">{tr.compliance[d.compliance]}</span>
+              </span>
             </div>
             <div className="small">{d.symptoms.map((s) => tr.symptom[s]).join(', ')}</div>
             {d.note && <div className="muted small">{d.note}</div>}

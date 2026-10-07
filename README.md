@@ -5,6 +5,9 @@ tedavisinde şunlara yardım eder:
 
 | Özellik | Ne yapar? |
 |---|---|
+| 🧭 **Kolay kurulum sihirbazı** | İlk açılıştan sonra 6 adım: tembel göz, gözlük reçetesi, doktorun planı, ekran ölçüsü, kırmızı-mavi gözlük ayarı ve ilk görme testi. Ana sayfada “Kurulum x/6” kartı. |
+| 👓 **Gözlük reçetesi ve takma takibi** | Reçete (SPH/CYL/AKS) kaydı, sferik eşdeğer ve iki göz farkı (anizometropi); egzersiz öncesi gözlük hatırlatması, günlükte “gözlüğü ne kadar taktın?” sorusu, görme testinin gözlükle/gözlüksüz kaydı. Rapor ve CSV'de görünür. |
+| 📅 **Haftalık özet** | Bu haftanın günlük kapama, hedef tutan gün, oyun süresi ve gözlük oranı; geçen haftayla ▲▼ karşılaştırma ve kısa yorum. |
 | 🏴‍☠️ **Kapama zamanlayıcısı** | Bandı taktığınızda başlatın, çıkardığınızda durdurun. Günlük hedef halkası, takvim, seri sayacı, hatırlatıcılar ve elle kayıt ekleme. Telefon kilitlense de süre doğru hesaplanır. |
 | 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Balon Patlat*, *Hedef Yakala*, *Labirent*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |
 | 🥽 **Kırmızı-mavi gözlükle dikoptik oyunlar** | Bant gerekmez. Oyunun bir kısmı yalnızca tembel göze (tam parlak), bir kısmı yalnızca sağlam göze (soluk) gösterilir: *Dikoptik Bloklar* (Tetris benzeri), *Dikoptik Top*, *Yıldız Toplama*, *Dikoptik Yılan*. Sağlam göz kontrastı başarıya göre otomatik artar. |

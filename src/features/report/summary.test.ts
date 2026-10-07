@@ -30,7 +30,8 @@ describe('buildSummary', () => {
     ],
     diary: [
       { id: 'x', profileId: 'p', day: '2026-03-02', symptoms: ['headache'], compliance: 'partial', note: 'Bant kaşındırdı' },
-      { id: 'y', profileId: 'p', day: '2026-03-03', symptoms: ['none'], compliance: 'full', note: '' },
+      { id: 'y', profileId: 'p', day: '2026-03-03', symptoms: ['none'], compliance: 'full', glasses: 'most', note: '' },
+      { id: 'z', profileId: 'p', day: '2026-03-04', symptoms: [], compliance: 'full', glasses: 'little', note: '' },
     ],
     from: at('2026-03-01'),
     now: at('2026-03-07', 20),
@@ -59,7 +60,8 @@ describe('buildSummary', () => {
       { eye: 'right', first: 0, last: 0, n: 1 },
     ]);
     expect(s.symptoms.headache).toBe(1);
-    expect(s.compliance).toEqual({ full: 1, partial: 1, none: 0 });
+    expect(s.compliance).toEqual({ full: 2, partial: 1, none: 0 });
+    expect(s.glasses).toEqual({ all: 0, most: 1, little: 1, none: 0, rate: 0.5 });
     expect(s.notes).toEqual([{ day: '2026-03-02', note: 'Bant kaşındırdı' }]);
   });
 });

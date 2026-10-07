@@ -20,6 +20,8 @@ const sample = (): AppData => ({
       visionTestEveryDays: 7,
       doctorNote: 'Günde 2 saat',
       proximityWarn: false,
+      wearsGlasses: true,
+      prescription: { right: { sph: 2.5, cyl: -1.75, axis: 5 }, left: { sph: 2, cyl: -1, axis: 39 } },
       createdAt: 1,
     },
   ],
@@ -63,6 +65,7 @@ describe('export/import', () => {
     expect(data.diary).toEqual([]);
     expect(data.stereoTests).toEqual([]);
     expect(data.profiles[0].proximityWarn).toBe(false);
+    expect(data.profiles[0].wearsGlasses).toBe(false);
     expect(data.sessions).toHaveLength(1);
     expect(data.activeProfileId).toBe('x');
   });
@@ -72,5 +75,6 @@ describe('export/import', () => {
     expect(csv).toContain('2026-03-01;120');
     expect(csv).toContain('blocks');
     expect(csv).toContain('3.10');
+    expect(csv).toContain('Reçete sağ (OD);+2,50 / −1,75 × 5°');
   });
 });

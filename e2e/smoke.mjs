@@ -37,7 +37,30 @@ await click('Devam');
 await click('Sol göz');
 await click('Devam');
 await click('2 sa');
-await click('Başla');
+await page.getByRole('button', { name: 'Başla', exact: true }).click();
+
+// Kurulum sihirbazı: reçete, doktor planı, ekran ölçeği; gözlük ayarı ve görme testi sonraya kalır
+await page.getByRole('heading', { name: /Kurulum/ }).waitFor();
+await click('👓 Gözlük kullanıyorum');
+for (const [label, v] of [['Sağ SPH', '+2,50'], ['Sağ CYL', '-1,75'], ['Sağ AKS', '5'], ['Sol SPH', '+2,00'], ['Sol CYL', '-1'], ['Sol AKS', '39']]) {
+  await page.getByLabel(label, { exact: true }).fill(v);
+}
+await shot('03a-setup-rx');
+await click('Kaydet ve devam et');
+await page.getByLabel('Günlük kapama süresi (dakika)').fill('120');
+await page.getByPlaceholder(/gün boyu takılacak/).fill('Sol göz günde 2 saat kapatılacak');
+await shot('03b-setup-plan');
+await click('Planı kaydet');
+await page.getByTestId('card-box').waitFor();
+await click('Kaydet');
+await page.getByRole('link', { name: /Gözlük ayarını yap/ }).waitFor();
+await shot('03c-setup-glasses');
+await click(/Sonra yaparım/);
+await click('Bitir');
+await page.getByText('Bugünkü kapama').waitFor();
+const setupText = await page.getByTestId('setup-card').innerText();
+if (!setupText.includes('4/6')) errors.push(`Kurulum kartı beklenmedik: ${setupText}`);
+await page.getByTestId('weekly-card').waitFor();
 await page.getByText('Bugünkü kapama').waitFor();
 await page.getByText('Bugünkü plan').waitFor();
 await page.getByText('Günün sürprizi').waitFor();
@@ -59,7 +82,8 @@ await shot('05-play-hub');
 // Tek göz oyunları
 for (const kind of ['odd-one-out', 'balloons', 'catch', 'maze', 'dots', 'tumbling-e']) {
   await page.goto(`${BASE}#/play/exercise/${kind}`);
-  await click('Başla');
+  if (kind === 'odd-one-out' && !(await page.getByTestId('glasses-hint').isVisible())) errors.push('Oyun girişinde gözlük hatırlatması yok');
+  await page.getByRole('button', { name: 'Başla', exact: true }).click();
   await wait(800);
   for (let i = 0; i < 6; i++) await page.mouse.click(120 + i * 30, 300 + i * 40);
   if (kind === 'tumbling-e') for (const k of ['ArrowLeft', 'ArrowUp', 'ArrowRight']) await page.keyboard.press(k);
@@ -91,7 +115,7 @@ await click('Kaydet');
 // Dikoptik oyunlar
 for (const kind of ['blocks', 'breakout', 'stars', 'snake', 'puzzle', 'depth']) {
   await page.goto(`${BASE}#/play/dichoptic/${kind}`);
-  await click('Başla');
+  await page.getByRole('button', { name: 'Başla', exact: true }).click();
   await wait(1500);
   if (kind === 'blocks') for (const k of ['ArrowLeft', 'ArrowUp', ' ']) await page.keyboard.press(k);
   if (kind === 'snake') for (const k of ['ArrowDown', 'ArrowLeft']) await page.keyboard.press(k);
@@ -158,7 +182,7 @@ await page.getByText('İzleme bitti').waitFor({ timeout: 15000 });
 // Gabor: rastgele cevaplarla seans bitene kadar
 await page.goto(`${BASE}#/play/gabor`);
 await shot('12-gabor-setup');
-await click('Başla');
+await page.getByRole('button', { name: 'Başla', exact: true }).click();
 await wait(900);
 await shot('13-gabor-trial');
 for (let i = 0; i < 90; i++) {
@@ -170,7 +194,8 @@ await page.getByText('Seans tamam').waitFor({ timeout: 15000 });
 await shot('14-gabor-result');
 
 // Evde görme testi: ekran ölçeği, sonra tek göz için rastgele cevaplarla sonuca kadar
-await page.goto(`${BASE}#/vision`);
+await page.goto(`${BASE}#/vision?from=setup`);
+await click('Yeniden ayarla');
 await page.getByRole('heading', { name: /Ekran ölçeği/ }).waitFor();
 for (let i = 0; i < 5; i++) await click('Büyüt');
 await shot('21-vision-scale');
@@ -188,10 +213,16 @@ for (let i = 0; i < 80; i++) {
 }
 await page.getByRole('heading', { name: /Sonuç/ }).waitFor();
 await shot('24-vision-result');
+await page.getByRole('link', { name: /Kuruluma dön/ }).click();
+// Gözlük ayarı yukarıda yapıldı; görme testiyle kurulum tamamlanır
+await page.getByTestId('setup-progress').getByText('6/6').waitFor();
+await page.getByText('Kurulum tamamlandı').waitFor();
+await shot('24b-setup-done');
 
 // Günlük
 await page.goto(`${BASE}#/diary`);
 await click('Baş ağrısı');
+await click('Çoğunlukla');
 await page.getByPlaceholder(/bant cildimi/).fill('Test notu');
 await click('Kaydet');
 await page.getByText('Kaydedildi').waitFor();
@@ -245,7 +276,7 @@ await click('Kamerayı kapat');
 // Doktor raporu
 await page.goto(`${BASE}#/report`);
 await page.getByTestId('report').waitFor();
-for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test notu', 'Dikoptik Okuma']) {
+for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test notu', 'Dikoptik Okuma', 'Gözlük reçetesi', '+2,50 / −1,75 × 5°', 'Gözlük takma']) {
   if (!(await page.getByTestId('report').getByText(t).first().isVisible())) errors.push(`Raporda "${t}" yok`);
 }
 await shot('27-report');
@@ -260,7 +291,7 @@ const doctor = await doctorCtx.newPage();
 doctor.on('pageerror', (e) => errors.push('doktor: ' + e.message));
 await doctor.goto(link);
 await doctor.getByRole('heading', { name: /Paylaşılan rapor/ }).waitFor();
-for (const t of ['Mustafa', 'Görme keskinliği', '3D (stereo)', 'Test notu']) {
+for (const t of ['Mustafa', 'Görme keskinliği', '3D (stereo)', 'Test notu', '+2,00 / −1,00 × 39°']) {
   if (!(await doctor.getByTestId('report').getByText(t).first().isVisible())) errors.push(`Paylaşılan raporda "${t}" yok`);
 }
 await doctor.screenshot({ path: `${OUT}/31-shared-report.png` });

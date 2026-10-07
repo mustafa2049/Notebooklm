@@ -9,6 +9,7 @@ import { useProfile, useStore } from '../../storage/store';
 import { DisclaimerText, Segmented } from '../../ui/components';
 import { CameraCalibration } from '../../ui/DistanceMeter';
 import { shareOrDownloadFile } from '../../platform/share';
+import { RxForm } from '../rx/RxForm';
 
 export default function SettingsPage() {
   const profile = useProfile();
@@ -19,7 +20,7 @@ export default function SettingsPage() {
   return <Settings />;
 }
 
-function PinGate({ pin, onUnlock }: { pin: string; onUnlock(): void }) {
+export function PinGate({ pin, onUnlock }: { pin: string; onUnlock(): void }) {
   const [v, setV] = useState('');
   const [err, setErr] = useState(false);
   return (
@@ -108,6 +109,27 @@ function Settings() {
             onChange={(e) => up({ dailyGoalMin: Math.max(10, Math.min(720, Number(e.target.value) || 10)) })}
           />
         </label>
+      </div>
+
+      <h2 id="recete">Gözlük reçetesi</h2>
+      <div className="card stack">
+        <Segmented
+          label="Gözlük kullanımı"
+          value={profile.wearsGlasses ? 'on' : 'off'}
+          onChange={(v) => up({ wearsGlasses: v === 'on', ...(v === 'off' ? { rxSkipped: true } : {}) })}
+          options={[
+            { value: 'on', label: '👓 Gözlük kullanıyorum' },
+            { value: 'off', label: 'Gözlük yok' },
+          ]}
+        />
+        <p className="muted small" style={{ margin: 0 }}>
+          Açıksa egzersizlerden önce gözlüğü takmanız hatırlatılır ve günlükte gözlük takma süresi sorulur.
+        </p>
+        <RxForm
+          initial={profile.prescription}
+          amblyopicEye={profile.amblyopicEye}
+          onSave={(prescription) => up({ prescription, wearsGlasses: true })}
+        />
       </div>
 
       <h2 id="plan">Tedavi planı</h2>
@@ -410,6 +432,9 @@ function Settings() {
 
       <h2>Kurulum</h2>
       <div className="card small stack">
+        <Link className="btn" to="/setup">
+          🧭 Kurulum sihirbazını aç
+        </Link>
         <div>
           <b>Android (Chrome):</b> menü ⋮ → “Ana ekrana ekle” / “Uygulamayı yükle”.
         </div>

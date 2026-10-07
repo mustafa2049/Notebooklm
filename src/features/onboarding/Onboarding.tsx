@@ -36,7 +36,7 @@ export default function Onboarding() {
       reminderTimes: ['10:00'],
       anaglyph: defaultAnaglyph(),
     });
-    nav('/', { replace: true });
+    nav('/setup', { replace: true });
   };
 
   return (

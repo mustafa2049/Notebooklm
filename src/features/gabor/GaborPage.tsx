@@ -9,6 +9,7 @@ import { useProfile, useStore } from '../../storage/store';
 import { Segmented } from '../../ui/components';
 import { renderGabor } from './gabor';
 import { Staircase } from './staircase';
+import { GlassesHint } from '../../ui/GlassesHint';
 
 type Phase = 'setup' | 'fixation' | 'stimulus' | 'response' | 'feedback' | 'done';
 type Tilt = 'left' | 'right';
@@ -214,6 +215,7 @@ export default function GaborPage() {
           Yaklaşık 3–5 dakika sürer. Her seferinde aynı mesafeden (yaklaşık 40 cm), aynı ekran parlaklığıyla yap. Sonuç
           klinik bir ölçüm değildir; kendi ilerlemeni izlemen içindir.
         </p>
+        <GlassesHint show={profile.wearsGlasses} anaglyph={anaglyph} />
         <button className="btn primary big" disabled={anaglyph && !profile.anaglyph.calibrated} onClick={start}>
           Başla
         </button>

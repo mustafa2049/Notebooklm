@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import { addDays, formatMinutes, startOfDay } from '../../model/time';
-import type { Compliance, Symptom } from '../../model/types';
+import type { Compliance, GlassesWear, Symptom } from '../../model/types';
 import { shareOrCopyLink } from '../../platform/share';
 import { isCapacitor } from '../../platform/native';
 import { usePatchStats, useProfileResults } from '../../storage/selectors';
 import { useProfile } from '../../storage/store';
 import { Segmented } from '../../ui/components';
+import { RxSummary } from '../rx/RxForm';
 import { formatArcsec } from '../stereo/StereoPage';
 import { toTenths } from '../vision/acuity';
 import { decodeReport, encodeReport, reportUrl, type SharedReport } from './share';
@@ -41,6 +42,8 @@ export default function ReportPage() {
       nearExerciseMin: profile.nearExerciseMin,
       binocularMin: profile.binocularMin,
       doctorNote: profile.doctorNote,
+      ...(profile.prescription ? { prescription: profile.prescription } : {}),
+      wearsGlasses: profile.wearsGlasses,
       generatedAt: now,
       summary: buildSummary({ profile, sessions, results, gabor, visionTests, stereoTests, diary, from, now }),
     };
@@ -137,6 +140,15 @@ export function ReportView({ r }: { r: SharedReport }) {
               {r.binocularMin > 0 && ` · dikoptik ${r.binocularMin} dk/gün`}
             </td>
           </tr>
+          {r.prescription && (
+            <tr>
+              <th>Gözlük reçetesi</th>
+              <td>
+                <RxSummary rx={r.prescription} amblyopicEye={r.amblyopicEye} />
+                {r.prescription.date && <span className="muted small">Reçete tarihi: {fmtDate(r.prescription.date)}</span>}
+              </td>
+            </tr>
+          )}
           {r.doctorNote && (
             <tr>
               <th>Doktor notu</th>
@@ -284,6 +296,17 @@ export function ReportView({ r }: { r: SharedReport }) {
           </span>
         ))}
       </p>
+      {s.glasses && s.glasses.rate != null && (
+        <p style={{ margin: '4px 0' }}>
+          👓 Gözlük takma: {(['all', 'most', 'little', 'none'] as GlassesWear[]).map((k, i) => (
+            <span key={k}>
+              {i > 0 && ' · '}
+              {tr.glassesWear[k]} <b>{s.glasses[k]}</b>
+            </span>
+          ))}{' '}
+          — günün çoğunda takılan gün oranı <b>{pct(s.glasses.rate)}</b>
+        </p>
+      )}
       {s.notes.length > 0 && (
         <ul className="small" style={{ margin: '4px 0', paddingLeft: 18 }}>
           {s.notes.map((n) => (
