@@ -310,10 +310,53 @@ await shot('37-meridional-result');
 await page.goto(`${BASE}#/stats`);
 await page.getByTestId('orientation-stats').getByText(/eğik/).first().waitFor();
 
+// Kontrast duyarlılığı testi: yalnızca tembel göz, rastgele harflerle sonuca kadar
+await page.goto(`${BASE}#/contrast`);
+await page.getByRole('heading', { name: /Kontrast duyarlılığı/ }).waitFor();
+await click('Sadece tembel göz');
+await click('Teste başla');
+await click('Hazırım');
+await page.getByTestId('contrast-canvas').waitFor();
+await wait(300);
+const csPixels = await page.evaluate(() => {
+  const c = document.querySelector('[data-testid="contrast-canvas"]');
+  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  let dark = 0;
+  for (let i = 0; i < d.length; i += 4 * 5) if (d[i] < 100) dark++;
+  return dark;
+});
+if (csPixels < 50) errors.push(`Kontrast testinde harf çizilmedi (${csPixels})`);
+await shot('38-contrast-test');
+for (let i = 0; i < 80; i++) {
+  if (await page.getByRole('heading', { name: /Sonuç 🌗/ }).isVisible()) break;
+  await page.keyboard.press(['C', 'D', 'H', 'K', 'N', 'O', 'R', 'S', 'V', 'Z'][i % 10]);
+  await wait(120);
+}
+await page.getByRole('heading', { name: /Sonuç 🌗/ }).waitFor();
+await shot('39-contrast-result');
+
+// Göz kayması fotoğraf günlüğü: kamera ekranı açılır (sahte kamerada yüz yok)
+await page.goto(`${BASE}#/photos`);
+await page.getByRole('heading', { name: /Göz kayması günlüğü/ }).waitFor();
+await click('Yeni fotoğraf çek');
+await page.getByTestId('photo-status').getByText(/Yüz aranıyor|Kamera kullanılamıyor/).waitFor({ timeout: 60000 });
+await shot('40-photo-capture');
+await click('Kapat');
+await page.getByRole('heading', { name: /Göz kayması günlüğü/ }).waitFor();
+
+// Rehber: arama, kişisel reçete kartı ve doktor soruları
+await page.goto(`${BASE}#/guide`);
+await page.getByTestId('guide-rx').waitFor();
+await page.getByTestId('doctor-questions').waitFor();
+await shot('41-guide');
+await page.getByLabel('Rehberde ara').fill('çift görme');
+await page.getByText('Ne zaman hemen doktora gitmeli?').waitFor();
+await shot('42-guide-search');
+
 // Doktor raporu
 await page.goto(`${BASE}#/report`);
 await page.getByTestId('report').waitFor();
-for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test notu', 'Dikoptik Okuma', 'Gözlük reçetesi', '+2,50 / −1,75 × 5°', 'Gözlük takma', 'Yöne göre kontrast']) {
+for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test notu', 'Dikoptik Okuma', 'Gözlük reçetesi', '+2,50 / −1,75 × 5°', 'Gözlük takma', 'Yöne göre kontrast', 'Kontrast duyarlılığı (log CS)']) {
   if (!(await page.getByTestId('report').getByText(t).first().isVisible())) errors.push(`Raporda "${t}" yok`);
 }
 await shot('27-report');
@@ -338,6 +381,7 @@ await doctorCtx.close();
 await page.goto(`${BASE}#/stats`);
 await page.getByRole('heading', { name: 'İlerleme' }).waitFor();
 await shot('15-stats');
+if (!(await page.getByTestId('contrast-stats').getByText(/son:/).first().isVisible())) errors.push('İlerleme sayfasında kontrast grafiği yok');
 await page.goto(`${BASE}#/settings`);
 await shot('16-settings');
 await click('🧒 Çocuk');

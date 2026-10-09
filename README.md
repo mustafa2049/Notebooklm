@@ -11,6 +11,10 @@ tedavisinde şunlara yardım eder:
 | 📐 **Astigmat yönü (meridyonal)** | Reçetedeki astigmat eksenine göre iki ana yönde (ya da 4 yönde) soluk desenlerle yöne göre kontrast eşiği ölçümü; en zayıf yönü çalıştırma modu. İlerleme sayfasında, raporda ve CSV'de. |
 | 🎤 **Sesle cevap** | Görme ve 3D testlerinde “sağ, sol, yukarı, aşağı, göremiyorum” diyerek cevap verme (uzaktan testte kolaylık). Android uygulamasında ve Chrome/Edge'de çalışır; ses kaydedilmez. |
 | 🏴‍☠️ **Kamera ile bant kontrolü** | İsteğe bağlı: bantlı oyunlarda ön kamera iki göz bölgesini karşılaştırır, sağlam göz açık görünürse oyunu durdurup uyarır. Görme testinde kapatılan gözü de kontrol eder. Ayarlar'da canlı deneme ve hassasiyet ayarı. |
+| 🌗 **Kontrast duyarlılığı testi** | Pelli-Robson benzeri harf testi: harfler üçerli gruplar hâlinde soluklaşır, her göz için log CS ölçülür. İlerleme grafiği, rapor ve CSV. |
+| 📸 **Göz kayması fotoğraf günlüğü** | Rehberli yüz fotoğrafı (hizalama ve mesafe uyarıları, ekran flaşı), kornea ışık yansımasının iki gözdeki konumu, ilk/son karşılaştırma; yerel doktor raporunda fotoğraflar. Fotoğraflar cihazda kalır. |
+| 🏠 **Android ana ekran aracı** | Bugünkü kapama süresi, ilerleme çubuğu ve tek dokunuşla “Bandı taktım / çıkardım”; uygulama kapalıyken yapılan işlemler açılışta aktarılır. |
+| 📚 **Rehber ve SSS** | Göz tembelliği, kapama, gözlük, astigmat, şaşılık, yetişkin tedavisi, ölçümlerin anlamı, acil belirtiler; kişisel reçete açıklaması ve doktora sorulacak sorular listesi. |
 | 📅 **Haftalık özet** | Bu haftanın günlük kapama, hedef tutan gün, oyun süresi ve gözlük oranı; geçen haftayla ▲▼ karşılaştırma ve kısa yorum. |
 | 🏴‍☠️ **Kapama zamanlayıcısı** | Bandı taktığınızda başlatın, çıkardığınızda durdurun. Günlük hedef halkası, takvim, seri sayacı, hatırlatıcılar ve elle kayıt ekleme. Telefon kilitlense de süre doğru hesaplanır. |
 | 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Balon Patlat*, *Hedef Yakala*, *Labirent*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |
@@ -123,8 +127,9 @@ Depodaki `netlify.toml` derleme ayarlarını içerir.
 2. Ayarlar dosyadan otomatik gelir (`npm run build`, yayın klasörü `dist`). **Deploy** deyin.
 3. Verilen `https://<ad>.netlify.app` adresini telefonda açıp ana ekrana ekleyin.
 
-Hesap bağlamadan denemek için: `npm run build` sonrası oluşan `dist` klasörünü
-[app.netlify.com/drop](https://app.netlify.com/drop) sayfasına sürükleyip bırakın.
+Hesap bağlamadan yayınlamak için: hazır `goz-egzersiz-netlify.zip` dosyasını (ya da `npm run build` sonrası oluşan
+`dist` klasörünü) [app.netlify.com/drop](https://app.netlify.com/drop) sayfasına sürükleyip bırakın. Paketteki
+`_headers` dosyası önbellek kurallarını sürükle-bırak yayında da uygular.
 
 ### Android ve masaüstü paketleri
 

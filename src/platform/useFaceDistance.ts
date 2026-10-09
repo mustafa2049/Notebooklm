@@ -20,7 +20,7 @@ export interface FaceDistance {
 let landmarkerPromise: Promise<FaceLandmarker> | null = null;
 
 /** Modeli bir kez yükler (uygulamanın kendi sunucusundan; internet gerekmez). */
-function loadLandmarker(): Promise<FaceLandmarker> {
+export function loadLandmarker(): Promise<FaceLandmarker> {
   if (!landmarkerPromise) {
     landmarkerPromise = (async () => {
       const { FaceLandmarker, FilesetResolver } = await import('@mediapipe/tasks-vision');

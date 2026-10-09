@@ -38,6 +38,10 @@ export function normalizeData(raw: unknown): AppData {
     orientationTests: arr<AppData['orientationTests'][number]>(raw.orientationTests).filter(
       (o) => isObj(o) && Array.isArray(o.thresholds),
     ),
+    contrastTests: arr<AppData['contrastTests'][number]>(raw.contrastTests).filter((c) => isObj(c) && num(c.logCS)),
+    photos: arr<AppData['photos'][number]>(raw.photos).filter(
+      (p) => isObj(p) && typeof p.image === 'string' && p.image.startsWith('data:image/'),
+    ),
     diary: arr<AppData['diary'][number]>(raw.diary).filter((d) => isObj(d) && typeof d.day === 'string'),
     timers: isObj(raw.timers) ? (raw.timers as AppData['timers']) : {},
   };
@@ -131,6 +135,14 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
     .sort((a, b) => a.at - b.at)
     .forEach((o) =>
       o.thresholds.forEach((t) => row(dayKey(o.at), t.deg, (t.threshold * 100).toFixed(2), o.mode === 'test' ? 'ölçüm' : 'çalışma', o.viewing)),
+    );
+  row('');
+  row('Tarih', 'Göz', 'Kontrast duyarlılığı (log CS)', 'Mesafe (cm)', 'Gözlükle');
+  data.contrastTests
+    .filter((c) => c.profileId === profileId)
+    .sort((a, b) => a.at - b.at)
+    .forEach((c) =>
+      row(dayKey(c.at), c.eye === 'left' ? 'Sol' : 'Sağ', c.logCS.toFixed(2), c.distanceCm, c.withGlasses == null ? '' : c.withGlasses ? 'evet' : 'hayır'),
     );
   row('');
   row('Tarih', 'Belirtiler', 'Bant uyumu', 'Gözlük', 'Not');

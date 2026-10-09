@@ -4,4 +4,6 @@
     <string name="title_activity_main">Göz Egzersiz</string>
     <string name="package_name">com.gozegzersiz.app</string>
     <string name="custom_url_scheme">com.gozegzersiz.app</string>
+    <string name="widget_label">Kapama sayacı</string>
+    <string name="widget_description">Bugünkü kapama süresi ve tek dokunuşla bandı taktım / çıkardım</string>
 </resources>

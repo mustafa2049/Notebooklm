@@ -148,11 +148,11 @@ export default function Home() {
             </div>
           </div>
           {runningSince ? (
-            <button className="btn" onClick={stopTimer}>
+            <button className="btn" onClick={() => stopTimer()}>
               ⏸ Bandı çıkardım
             </button>
           ) : (
-            <button className="btn primary" onClick={startTimer}>
+            <button className="btn primary" onClick={() => startTimer()}>
               ▶ Bandı taktım
             </button>
           )}
@@ -280,6 +280,21 @@ export default function Home() {
           <span className="icon">📝</span>
           <strong>Günlük</strong>
           <span className="muted small">Belirti ve uyum kaydı</span>
+        </Link>
+        <Link className="tile" to="/contrast">
+          <span className="icon">🌗</span>
+          <strong>Kontrast testi</strong>
+          <span className="muted small">Soluk harfleri görebilme</span>
+        </Link>
+        <Link className="tile" to="/photos">
+          <span className="icon">📸</span>
+          <strong>Kayma günlüğü</strong>
+          <span className="muted small">Haftalık göz fotoğrafı</span>
+        </Link>
+        <Link className="tile" to="/guide">
+          <span className="icon">📚</span>
+          <strong>Rehber ve SSS</strong>
+          <span className="muted small">Tedavi hakkında bilgiler</span>
         </Link>
         <Link className="tile" to="/report">
           <span className="icon">🩺</span>

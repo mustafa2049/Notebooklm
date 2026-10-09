@@ -9,6 +9,8 @@ import {
   type GaborResult,
   type GlassesWear,
   type OrientationTest,
+  type ContrastTest,
+  type AlignmentPhoto,
   type PatchSession,
   type Profile,
   type StereoTest,
@@ -24,6 +26,8 @@ export interface ReportInput {
   visionTests: VisionTest[];
   stereoTests?: StereoTest[];
   orientationTests?: OrientationTest[];
+  contrastTests?: ContrastTest[];
+  photos?: AlignmentPhoto[];
   diary: DiaryEntry[];
   /** Dönemin ilk günü (dahil). */
   from: number;
@@ -62,6 +66,10 @@ export interface ReportSummary {
   stereo: { first: number | null; last: number | null; n: number } | null;
   /** Yöne göre kontrast eşiği (yalnızca ölçüm modundaki testler): yön başına ilk ve son. */
   orientation: (FirstLast & { deg: number })[];
+  /** Kontrast duyarlılığı (log CS) göz başına ilk ve son. */
+  contrastCS: (FirstLast & { eye: Eye })[];
+  /** Göz kayması fotoğrafları: sayı ve tarihler. */
+  photos: { n: number; first: string | null; last: string | null };
   symptoms: Record<Symptom, number>;
   compliance: Record<Compliance, number>;
   /** Gözlük takma günlüğü; `rate` = "bütün gün" ya da "çoğunlukla" günlerin oranı (cevap yoksa null). */
@@ -152,6 +160,17 @@ export function buildSummary(i: ReportInput): ReportSummary {
         deg,
         ...firstLast(ot.flatMap((o) => o.thresholds.filter((t) => t.deg === deg).map((t) => t.threshold)))!,
       }));
+    })(),
+    contrastCS: (() => {
+      const ct = (i.contrastTests ?? []).filter((c) => c.profileId === pid && inRange(c.at)).sort((a, b) => a.at - b.at);
+      return (['left', 'right'] as Eye[])
+        .map((eye) => ({ eye, fl: firstLast(ct.filter((c) => c.eye === eye).map((c) => c.logCS)) }))
+        .filter((v) => v.fl)
+        .map((v) => ({ eye: v.eye, ...v.fl! }));
+    })(),
+    photos: (() => {
+      const ph = (i.photos ?? []).filter((p) => p.profileId === pid && inRange(p.at)).sort((a, b) => a.at - b.at);
+      return { n: ph.length, first: ph.length ? dayKey(ph[0].at) : null, last: ph.length ? dayKey(ph[ph.length - 1].at) : null };
     })(),
     symptoms,
     compliance,

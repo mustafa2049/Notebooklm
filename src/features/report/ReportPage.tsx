@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
-import { addDays, formatMinutes, startOfDay } from '../../model/time';
-import type { Compliance, GlassesWear, Symptom } from '../../model/types';
+import { addDays, dayKey as dayKeyOf, formatMinutes, startOfDay } from '../../model/time';
+import type { AlignmentPhoto, Compliance, GlassesWear, Symptom } from '../../model/types';
 import { shareOrCopyLink } from '../../platform/share';
 import { isCapacitor } from '../../platform/native';
 import { usePatchStats, useProfileResults } from '../../storage/selectors';
 import { useProfile } from '../../storage/store';
 import { Segmented } from '../../ui/components';
 import { RxSummary } from '../rx/RxForm';
+import { PhotoView, ReflexSummary } from '../photos/PhotosPage';
 import { formatArcsec } from '../stereo/StereoPage';
 import { directionName } from '../meridional/meridional';
 import { toTenths } from '../vision/acuity';
@@ -21,7 +22,7 @@ const pct = (v: number) => `%${Math.round(v * 100)}`;
 export default function ReportPage() {
   const profile = useProfile();
   const { sessions, now } = usePatchStats();
-  const { results, gabor, visionTests, stereoTests, orientationTests, diary } = useProfileResults();
+  const { results, gabor, visionTests, stereoTests, orientationTests, contrastTests, photos, diary } = useProfileResults();
   const [weeks, setWeeks] = useState<number>(4);
   const [linkMsg, setLinkMsg] = useState<string | null>(null);
 
@@ -34,6 +35,7 @@ export default function ReportPage() {
       ...visionTests.map((x) => x.at),
       ...stereoTests.map((x) => x.at),
       ...orientationTests.map((x) => x.at),
+      ...contrastTests.map((x) => x.at),
     );
     const from = weeks === 0 ? earliest : addDays(startOfDay(now), -(weeks * 7 - 1));
     return {
@@ -47,11 +49,11 @@ export default function ReportPage() {
       ...(profile.prescription ? { prescription: profile.prescription } : {}),
       wearsGlasses: profile.wearsGlasses,
       generatedAt: now,
-      summary: buildSummary({ profile, sessions, results, gabor, visionTests, stereoTests, orientationTests, diary, from, now }),
+      summary: buildSummary({ profile, sessions, results, gabor, visionTests, stereoTests, orientationTests, contrastTests, photos, diary, from, now }),
     };
     // Rapor dakikada bir yenilenir (zamanlayıcı çalışırken her saniye değil)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, sessions, results, gabor, visionTests, stereoTests, orientationTests, diary, Math.floor(now / 60_000), weeks]);
+  }, [profile, sessions, results, gabor, visionTests, stereoTests, orientationTests, contrastTests, photos, diary, Math.floor(now / 60_000), weeks]);
 
   const shareLink = async () => {
     const url = reportUrl(await encodeReport(report));
@@ -108,13 +110,15 @@ export default function ReportPage() {
           hiçbir sunucuya yüklenmez, bağlantıyı açan kişi yalnızca bu özeti görür.
         </p>
       </div>
-      <ReportView r={report} />
+      <ReportView r={report} photos={photos.filter((p) => dayKeyOf(p.at) >= report.summary.from)} />
     </div>
   );
 }
 
 /** Salt okunur rapor görünümü (yerel rapor ve paylaşılan bağlantı için ortak). */
-export function ReportView({ r }: { r: SharedReport }) {
+export function ReportView({ r, photos = [] }: { r: SharedReport; photos?: AlignmentPhoto[] }) {
+  const ph = [...photos].sort((a, b) => a.at - b.at);
+  const shownPhotos = ph.length > 1 ? [ph[0], ph[ph.length - 1]] : ph;
   const s = r.summary;
   return (
     <div className="card" data-testid="report">
@@ -218,7 +222,7 @@ export function ReportView({ r }: { r: SharedReport }) {
       )}
 
       <h3>Ölçümler (ev testleri, yaklaşık)</h3>
-      {s.vision.length === 0 && s.gabor.length === 0 && !s.stereo && !s.orientation?.length && <p className="muted">Bu dönemde ölçüm yok.</p>}
+      {s.vision.length === 0 && s.gabor.length === 0 && !s.stereo && !s.orientation?.length && !s.contrastCS?.length && <p className="muted">Bu dönemde ölçüm yok.</p>}
       {s.stereo && (
         <p style={{ margin: '6px 0' }}>
           3D (stereo) görme eşiği: {formatArcsec(s.stereo.first)} → <b>{formatArcsec(s.stereo.last)}</b> ({s.stereo.n} test; küçük
@@ -279,6 +283,33 @@ export function ReportView({ r }: { r: SharedReport }) {
         </table>
       )}
 
+      {s.contrastCS?.length > 0 && (
+        <table className="report-table" style={{ marginTop: 8 }}>
+          <thead>
+            <tr>
+              <th>Kontrast duyarlılığı (log CS)</th>
+              <th>İlk</th>
+              <th>Son</th>
+              <th>Test</th>
+            </tr>
+          </thead>
+          <tbody>
+            {s.contrastCS.map((c) => (
+              <tr key={c.eye}>
+                <td>
+                  {tr.eye[c.eye]}
+                  {c.eye === r.amblyopicEye ? ' (tembel)' : ''}
+                </td>
+                <td>{c.first.toFixed(2)}</td>
+                <td>
+                  <b>{c.last.toFixed(2)}</b>
+                </td>
+                <td>{c.n}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {s.orientation?.length > 0 && (
         <table className="report-table" style={{ marginTop: 8 }}>
           <thead>
@@ -304,6 +335,22 @@ export function ReportView({ r }: { r: SharedReport }) {
             ))}
           </tbody>
         </table>
+      )}
+
+      {(s.photos?.n ?? 0) > 0 && (
+        <>
+          <h3>Göz kayması fotoğrafları</h3>
+          <p style={{ margin: '4px 0' }}>
+            {s.photos.n} fotoğraf ({fmtDate(s.photos.first!)} – {fmtDate(s.photos.last!)}).
+            {shownPhotos.length === 0 && ' Fotoğraflar hastanın cihazında; bağlantıya eklenmez.'}
+          </p>
+          {shownPhotos.map((p) => (
+            <div key={p.id} style={{ marginBottom: 8 }}>
+              <PhotoView p={p} />
+              <ReflexSummary p={p} />
+            </div>
+          ))}
+        </>
       )}
 
       <h3>Günlük</h3>

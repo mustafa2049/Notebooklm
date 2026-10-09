@@ -184,6 +184,36 @@ export interface OrientationTest {
   thresholds: { deg: number; threshold: number }[];
 }
 
+/** Pelli-Robson benzeri harf testiyle kontrast duyarlılığı (log CS; büyük değer daha iyi). */
+export interface ContrastTest {
+  id: string;
+  profileId: string;
+  at: number;
+  eye: Eye;
+  logCS: number;
+  distanceCm: number;
+  withGlasses?: boolean;
+}
+
+/** Işık yansımasının iris merkezine göre kayması (mm; + kişinin burnuna doğru / aşağı). */
+export interface ReflexOffset {
+  dx: number;
+  dy: number;
+}
+
+/** Göz kayması takibi için yüz fotoğrafı (yalnızca göz bandı, JPEG). */
+export interface AlignmentPhoto {
+  id: string;
+  profileId: string;
+  at: number;
+  /** data:image/jpeg;base64,… */
+  image: string;
+  withGlasses: boolean;
+  note: string;
+  /** Otomatik bulunan ışık yansımaları (bulunamadıysa null). */
+  reflex?: { right: ReflexOffset | null; left: ReflexOffset | null };
+}
+
 /** Evde yapılan görme keskinliği testi. */
 export interface VisionTest {
   id: string;
@@ -233,6 +263,8 @@ export interface AppData {
   visionTests: VisionTest[];
   stereoTests: StereoTest[];
   orientationTests: OrientationTest[];
+  contrastTests: ContrastTest[];
+  photos: AlignmentPhoto[];
   diary: DiaryEntry[];
   /** Profil başına çalışan zamanlayıcının başlangıç zamanı (yoksa null). */
   timers: Record<string, number | null>;
@@ -248,6 +280,8 @@ export const emptyData = (): AppData => ({
   visionTests: [],
   stereoTests: [],
   orientationTests: [],
+  contrastTests: [],
+  photos: [],
   diary: [],
   timers: {},
 });

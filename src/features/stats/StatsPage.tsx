@@ -15,7 +15,7 @@ const fmtDay = (ts: number) => new Date(ts).toLocaleDateString('tr-TR', { day: '
 export default function StatsPage() {
   const profile = useProfile();
   const { byDay, goal, today, streak, now } = usePatchStats();
-  const { results, gabor, visionTests, stereoTests, orientationTests } = useProfileResults();
+  const { results, gabor, visionTests, stereoTests, orientationTests, contrastTests } = useProfileResults();
   const lastOrientation = [...orientationTests].filter((o) => o.mode === 'test').sort((a, b) => b.at - a.at)[0];
   const [range, setRange] = useState(14);
   const [cycles, setCycles] = useState(6);
@@ -189,6 +189,37 @@ export default function StatsPage() {
         ) : (
           <p className="muted">
             Bu incelikte henüz seans yok. <Link to="/play/gabor">Gabor eğitimini dene →</Link>
+          </p>
+        )}
+      </div>
+
+      <div className="card stack" data-testid="contrast-stats">
+        <strong>🌗 Kontrast duyarlılığı</strong>
+        {contrastTests.length === 0 ? (
+          <p className="muted" style={{ margin: 0 }}>
+            Henüz test yok. <Link to="/contrast">Kontrast testini yap →</Link>
+          </p>
+        ) : (
+          (['left', 'right'] as Eye[]).map((eye) => {
+            const pts = contrastTests
+              .filter((c) => c.eye === eye)
+              .sort((a, b) => a.at - b.at)
+              .map((c) => ({ label: fmtDay(c.at), value: c.logCS, tip: `${fmtDay(c.at)} · log CS ${c.logCS.toFixed(2)}` }));
+            if (!pts.length) return null;
+            return (
+              <div key={eye}>
+                <div className="small">
+                  {tr.eye[eye]} {eye === profile.amblyopicEye ? '(tembel göz)' : '(sağlam göz)'} · son:{' '}
+                  <b>{pts[pts.length - 1].value.toFixed(2)}</b>
+                </div>
+                <LineChart points={pts} min={0} max={2.25} format={(v) => v.toFixed(2)} ariaLabel={`${tr.eye[eye]} kontrast duyarlılığı zaman içinde`} />
+              </div>
+            );
+          })
+        )}
+        {contrastTests.length > 0 && (
+          <p className="muted small" style={{ margin: 0 }}>
+            Yukarı çıkan çizgi = daha soluk ayrıntıları görebiliyorsun. Yetişkinlerde ≈1,65 ve üstü normal kabul edilir.
           </p>
         )}
       </div>

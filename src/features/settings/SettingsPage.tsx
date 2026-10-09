@@ -412,6 +412,13 @@ function Settings() {
         <Link className="btn" to="/setup">
           🧭 Kurulum sihirbazını aç
         </Link>
+        <Link className="btn" to="/guide">
+          📚 Rehber ve sık sorulan sorular
+        </Link>
+        <div>
+          <b>Ana ekran aracı (Android uygulaması):</b> ana ekranda boş bir yere uzun bas → Araçlar (Widget'lar) → Göz Egzersiz →
+          “Kapama sayacı”. Bugünkü süreyi gösterir; uygulamayı açmadan “Bandı taktım / çıkardım” diyebilirsin.
+        </div>
         <div>
           <b>Android (Chrome):</b> menü ⋮ → “Ana ekrana ekle” / “Uygulamayı yükle”.
         </div>

@@ -639,3 +639,32 @@ textarea {
   align-items: center;
   gap: 8px;
 }
+
+.letter-pad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.letter-pad .btn {
+  font-size: 1.4em;
+  font-weight: 700;
+  min-height: 52px;
+  padding: 0;
+}
+
+details.guide summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style-position: outside;
+}
+
+details.guide[open] summary {
+  margin-bottom: 8px;
+}
+
+details.guide p,
+details.guide ul {
+  margin: 6px 0;
+  line-height: 1.5;
+}

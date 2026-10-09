@@ -6,6 +6,8 @@ import {
   type AppData,
   type DiaryEntry,
   type OrientationTest,
+  type ContrastTest,
+  type AlignmentPhoto,
   type StereoTest,
   type VisionTest,
   type GaborResult,
@@ -23,8 +25,9 @@ interface Store {
   setActiveProfile(id: string): void;
   /** Aktif profilin zamanlayıcısının başlangıç zamanı. */
   runningSince: number | null;
-  startTimer(): void;
-  stopTimer(): void;
+  /** `at` verilirse o zamandan başlatır (ör. ana ekran aracından gelen işlem). */
+  startTimer(at?: number, profileId?: string): void;
+  stopTimer(at?: number, profileId?: string): void;
   /** Zamanlayıcıyı oturum kaydetmeden durdurur. */
   cancelTimer(): void;
   addManualSession(start: number, end: number): void;
@@ -34,6 +37,10 @@ interface Store {
   addVisionTest(r: Omit<VisionTest, 'id' | 'profileId' | 'at'>): void;
   addStereoTest(r: Omit<StereoTest, 'id' | 'profileId' | 'at'>): void;
   addOrientationTest(r: Omit<OrientationTest, 'id' | 'profileId' | 'at'>): void;
+  addContrastTest(r: Omit<ContrastTest, 'id' | 'profileId' | 'at'>): void;
+  addPhoto(p: Omit<AlignmentPhoto, 'id' | 'profileId' | 'at'>): void;
+  updatePhoto(id: string, patch: Partial<Pick<AlignmentPhoto, 'note' | 'withGlasses'>>): void;
+  deletePhoto(id: string): void;
   /** Günün kaydını ekler ya da günceller (gün başına tek kayıt). */
   saveDiary(e: Omit<DiaryEntry, 'id' | 'profileId'>): void;
   replaceAll(d: AppData): void;
@@ -98,6 +105,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         visionTests: d.visionTests.filter((v) => v.profileId !== id),
         stereoTests: d.stereoTests.filter((v) => v.profileId !== id),
         orientationTests: d.orientationTests.filter((v) => v.profileId !== id),
+        contrastTests: d.contrastTests.filter((v) => v.profileId !== id),
+        photos: d.photos.filter((v) => v.profileId !== id),
         diary: d.diary.filter((e) => e.profileId !== id),
         timers,
       };
@@ -108,21 +117,29 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setData((d) => ({ ...d, activeProfileId: id }));
   }, []);
 
-  const startTimer = useCallback(() => {
-    if (!pid) return;
-    setData((d) => (d.timers[pid] ? d : { ...d, timers: { ...d.timers, [pid]: Date.now() } }));
-  }, [pid]);
+  const startTimer = useCallback(
+    (at?: number, profileId?: string) => {
+      const id = profileId ?? pid;
+      if (!id) return;
+      setData((d) => (d.timers[id] ? d : { ...d, timers: { ...d.timers, [id]: Math.min(at ?? Date.now(), Date.now()) } }));
+    },
+    [pid],
+  );
 
-  const stopTimer = useCallback(() => {
-    if (!pid) return;
-    setData((d) => {
-      const start = d.timers[pid];
-      if (!start) return d;
-      const end = Date.now();
-      const sessions = end - start >= 1000 ? [...d.sessions, { id: uid(), profileId: pid, start, end }] : d.sessions;
-      return { ...d, sessions, timers: { ...d.timers, [pid]: null } };
-    });
-  }, [pid]);
+  const stopTimer = useCallback(
+    (at?: number, profileId?: string) => {
+      const id = profileId ?? pid;
+      if (!id) return;
+      setData((d) => {
+        const start = d.timers[id];
+        if (!start) return d;
+        const end = Math.max(start, Math.min(at ?? Date.now(), Date.now()));
+        const sessions = end - start >= 1000 ? [...d.sessions, { id: uid(), profileId: id, start, end }] : d.sessions;
+        return { ...d, sessions, timers: { ...d.timers, [id]: null } };
+      });
+    },
+    [pid],
+  );
 
   const cancelTimer = useCallback(() => {
     if (!pid) return;
@@ -183,6 +200,30 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [pid],
   );
 
+  const addContrastTest = useCallback(
+    (r: Omit<ContrastTest, 'id' | 'profileId' | 'at'>) => {
+      if (!pid) return;
+      setData((d) => ({ ...d, contrastTests: [...d.contrastTests, { ...r, id: uid(), profileId: pid, at: Date.now() }] }));
+    },
+    [pid],
+  );
+
+  const addPhoto = useCallback(
+    (p: Omit<AlignmentPhoto, 'id' | 'profileId' | 'at'>) => {
+      if (!pid) return;
+      setData((d) => ({ ...d, photos: [...d.photos, { ...p, id: uid(), profileId: pid, at: Date.now() }] }));
+    },
+    [pid],
+  );
+
+  const updatePhoto = useCallback((id: string, patch: Partial<Pick<AlignmentPhoto, 'note' | 'withGlasses'>>) => {
+    setData((d) => ({ ...d, photos: d.photos.map((p) => (p.id === id ? { ...p, ...patch } : p)) }));
+  }, []);
+
+  const deletePhoto = useCallback((id: string) => {
+    setData((d) => ({ ...d, photos: d.photos.filter((p) => p.id !== id) }));
+  }, []);
+
   const saveDiary = useCallback(
     (e: Omit<DiaryEntry, 'id' | 'profileId'>) => {
       if (!pid) return;
@@ -217,10 +258,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       addVisionTest,
       addStereoTest,
       addOrientationTest,
+      addContrastTest,
+      addPhoto,
+      updatePhoto,
+      deletePhoto,
       saveDiary,
       replaceAll,
     }),
-    [data, loaded, profile, runningSince, addProfile, updateProfile, deleteProfile, setActiveProfile, startTimer, stopTimer, cancelTimer, addManualSession, deleteSession, addResult, addGabor, addVisionTest, addStereoTest, addOrientationTest, saveDiary, replaceAll],
+    [data, loaded, profile, runningSince, addProfile, updateProfile, deleteProfile, setActiveProfile, startTimer, stopTimer, cancelTimer, addManualSession, deleteSession, addResult, addGabor, addVisionTest, addStereoTest, addOrientationTest, addContrastTest, addPhoto, updatePhoto, deletePhoto, saveDiary, replaceAll],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -12,6 +12,9 @@ import Calibration from './features/dichoptic/Calibration';
 import DichopticPlay from './features/dichoptic/DichopticPlay';
 import GaborPage from './features/gabor/GaborPage';
 import MeridionalPage from './features/meridional/MeridionalPage';
+import ContrastPage from './features/contrast/ContrastPage';
+import PhotosPage from './features/photos/PhotosPage';
+import GuidePage from './features/guide/GuidePage';
 import VideoPlay from './features/dichoptic/VideoPlay';
 import ReadingPage from './features/reading/ReadingPage';
 import VisionPage from './features/vision/VisionPage';
@@ -25,11 +28,13 @@ import SetupPage from './features/setup/SetupPage';
 import { useReminders } from './platform/reminders';
 import { setSoundEnabled } from './platform/sound';
 import { useNotificationSync } from './platform/nativeNotifications';
+import { useWidgetSync } from './platform/widget';
 
 export default function App() {
   const { loaded, profile } = useStore();
   useReminders();
   useNotificationSync();
+  useWidgetSync();
 
   useEffect(() => {
     document.documentElement.dataset.mode = profile?.mode ?? 'adult';
@@ -60,6 +65,8 @@ export default function App() {
           <Route path="/play/reading" element={<ReadingPage />} />
           <Route path="/vision" element={<VisionPage />} />
           <Route path="/stereo" element={<StereoPage />} />
+          <Route path="/contrast" element={<ContrastPage />} />
+          <Route path="/photos" element={<PhotosPage />} />
           <Route path="/calibrate" element={<Calibration />} />
           <Route path="/setup" element={<SetupPage />} />
           <Route element={<Layout />}>
@@ -72,6 +79,7 @@ export default function App() {
             <Route path="/diary" element={<DiaryPage />} />
             <Route path="/report" element={<ReportPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/guide" element={<GuidePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

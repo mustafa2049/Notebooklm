@@ -34,8 +34,10 @@ export function useProfileResults() {
       visionTests: data.visionTests.filter((v) => v.profileId === profile?.id),
       stereoTests: data.stereoTests.filter((v) => v.profileId === profile?.id),
       orientationTests: data.orientationTests.filter((v) => v.profileId === profile?.id),
+      contrastTests: data.contrastTests.filter((v) => v.profileId === profile?.id),
+      photos: data.photos.filter((v) => v.profileId === profile?.id),
       diary: data.diary.filter((e) => e.profileId === profile?.id),
     }),
-    [data.results, data.gabor, data.visionTests, data.stereoTests, data.orientationTests, data.diary, profile?.id],
+    [data.results, data.gabor, data.visionTests, data.stereoTests, data.orientationTests, data.contrastTests, data.photos, data.diary, profile?.id],
   );
 }

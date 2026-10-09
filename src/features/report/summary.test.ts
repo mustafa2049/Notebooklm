@@ -28,6 +28,11 @@ describe('buildSummary', () => {
       { id: 'v2', profileId: 'p', at: at('2026-03-07'), eye: 'left', logMAR: 0.4, distanceCm: 40 },
       { id: 'v3', profileId: 'p', at: at('2026-03-07'), eye: 'right', logMAR: 0.0, distanceCm: 40 },
     ],
+    contrastTests: [
+      { id: 'c1', profileId: 'p', at: at('2026-03-02'), eye: 'left', logCS: 1.2, distanceCm: 40 },
+      { id: 'c2', profileId: 'p', at: at('2026-03-06'), eye: 'left', logCS: 1.35, distanceCm: 40 },
+    ],
+    photos: [{ id: 'f', profileId: 'p', at: at('2026-03-03'), image: 'data:image/jpeg;base64,', withGlasses: true, note: '' }],
     orientationTests: [
       { id: 'o1', profileId: 'p', at: at('2026-03-02'), eye: 'right', cycles: 6, viewing: 'patch', mode: 'test', thresholds: [{ deg: 175, threshold: 0.08 }, { deg: 85, threshold: 0.03 }] },
       { id: 'o2', profileId: 'p', at: at('2026-03-04'), eye: 'right', cycles: 6, viewing: 'patch', mode: 'train', thresholds: [{ deg: 175, threshold: 0.07 }] },
@@ -70,6 +75,8 @@ describe('buildSummary', () => {
       { deg: 85, first: 0.03, last: 0.03, n: 2 },
       { deg: 175, first: 0.08, last: 0.05, n: 2 },
     ]);
+    expect(s.contrastCS).toEqual([{ eye: 'left', first: 1.2, last: 1.35, n: 2 }]);
+    expect(s.photos).toEqual({ n: 1, first: '2026-03-03', last: '2026-03-03' });
     expect(s.glasses).toEqual({ all: 0, most: 1, little: 1, none: 0, rate: 0.5 });
     expect(s.notes).toEqual([{ day: '2026-03-02', note: 'Bant kaşındırdı' }]);
   });

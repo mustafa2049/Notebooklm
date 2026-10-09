@@ -46,7 +46,7 @@ export default function ExercisePlay() {
             🏴‍☠️ <b>{covered}</b> bantla kapalı olmalı. Ekranı yaklaşık 30–40 cm uzakta tut.
           </div>
           {!runningSince && (
-            <button className="btn" onClick={startTimer}>
+            <button className="btn" onClick={() => startTimer()}>
               ⏱ Kapama zamanlayıcısını da başlat
             </button>
           )}
