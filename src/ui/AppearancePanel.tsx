@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import {
+  EVENING_ENDS,
+  EVENING_STARTS,
+  EVENING_THEMES,
+  eveningRangeLabel,
+} from '@/appearance/evening';
+import {
   readingColors,
   READING_THEMES,
   textColorChoices,
@@ -41,7 +47,7 @@ const FONT_OPTIONS: { id: Exclude<ReadingFontId, 'auto'>; label: string }[] = [
 type PickerState = null | 'theme' | 'text';
 
 export function AppearancePanel({ showModes = false }: { showModes?: boolean }) {
-  const { theme, appTheme, readingTheme, settings, update, focusMode, setFocusMode } = useSettings();
+  const { theme, appTheme, readingTheme, settings, update, focusMode, setFocusMode, evening } = useSettings();
   const [picker, setPicker] = useState<PickerState>(null);
 
   const reading = readingTheme.colors;
@@ -339,6 +345,53 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
             }}
           />
         </View>
+      ) : null}
+
+      {section('Akşam sıcak tonu')}
+      <Toggle
+        label="Akşamları sıcak renklere geç"
+        hint={`${eveningRangeLabel(settings.eveningStart, settings.eveningEnd)} arası okuma teması kendiliğinden değişir, sabah seçtiğin temaya döner.${
+          evening ? ' Şu an devrede.' : ''
+        }`}
+        value={settings.eveningEnabled}
+        onChange={(eveningEnabled) => update({ eveningEnabled })}
+      />
+      {settings.eveningEnabled ? (
+        <>
+          {sub('Başlangıç')}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+            {EVENING_STARTS.map((hour) => (
+              <Chip
+                key={hour}
+                label={`${hour}:00`}
+                active={settings.eveningStart === hour}
+                onPress={() => update({ eveningStart: hour })}
+              />
+            ))}
+          </View>
+          {sub('Bitiş')}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+            {EVENING_ENDS.map((hour) => (
+              <Chip
+                key={hour}
+                label={`0${hour}:00`}
+                active={settings.eveningEnd === hour}
+                onPress={() => update({ eveningEnd: hour })}
+              />
+            ))}
+          </View>
+          {sub('Akşam teması')}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+            {EVENING_THEMES.map((option) => (
+              <Chip
+                key={option.id}
+                label={option.label}
+                active={settings.eveningTheme === option.id}
+                onPress={() => update({ eveningTheme: option.id })}
+              />
+            ))}
+          </View>
+        </>
       ) : null}
     </View>
   );

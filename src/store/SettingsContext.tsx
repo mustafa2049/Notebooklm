@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { isEvening } from '@/appearance/evening';
 import { createReadingTheme, createTheme, type ReadingTheme, type Theme } from '@/ui/theme';
 import { DEFAULT_SETTINGS, loadSettings, saveSettings, type Settings } from '@/storage/settings';
 
@@ -19,6 +20,8 @@ interface SettingsContextValue {
   /** Okuyucu tam ekran/odak modunda mı (kalıcı değil, oturumla sınırlı) */
   focusMode: boolean;
   setFocusMode: (value: boolean) => void;
+  /** Akşam sıcak tonu şu an devrede mi */
+  evening: boolean;
   /** Ayarlar diskten okunana kadar false */
   ready: boolean;
 }
@@ -54,6 +57,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const dark = settings.theme === 'system' ? systemScheme !== 'light' : settings.theme === 'dark';
 
+  // Akşam tonu: saat sınırı geçilince tema kendiliğinden değişsin (dakikada bir bakılır)
+  const [clock, setClock] = useState(() => Date.now());
+  useEffect(() => {
+    if (!settings.eveningEnabled) return;
+    setClock(Date.now());
+    const timer = setInterval(() => setClock(Date.now()), 60_000);
+    return () => clearInterval(timer);
+  }, [settings.eveningEnabled]);
+  const evening = isEvening(settings, new Date(clock));
+
   const theme = useMemo(
     () => createTheme({ dark, focusMode, hyperlegible: settings.hyperlegible }),
     [dark, focusMode, settings.hyperlegible]
@@ -62,8 +75,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const readingTheme = useMemo(
     () =>
       createReadingTheme(theme, {
-        readingTheme: settings.readingTheme,
-        textColor: settings.textColor,
+        // Akşam tonunda yazı da temanın kendi rengi: seçili özel renk o zeminde okunmayabilir
+        readingTheme: evening ? settings.eveningTheme : settings.readingTheme,
+        textColor: evening ? 'auto' : settings.textColor,
         customBg: settings.customBg,
         customText: settings.customText,
         focusMode,
@@ -73,6 +87,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     [
       theme,
       focusMode,
+      evening,
+      settings.eveningTheme,
       settings.readingTheme,
       settings.textColor,
       settings.customBg,
@@ -83,8 +99,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ settings, update, theme, appTheme: theme, readingTheme, focusMode, setFocusMode, ready }),
-    [settings, update, theme, readingTheme, focusMode, ready]
+    () => ({ settings, update, theme, appTheme: theme, readingTheme, focusMode, setFocusMode, evening, ready }),
+    [settings, update, theme, readingTheme, focusMode, evening, ready]
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

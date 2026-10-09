@@ -55,6 +55,11 @@ export interface Settings {
   hyphenate: boolean;
   /** Okurken ekran kararmasın (uzun süre dokunulmazsa bırakılır) */
   keepAwake: boolean;
+  /** Akşam sıcak tonu: bu saatler arasında okuma teması `eveningTheme` olur */
+  eveningEnabled: boolean;
+  eveningStart: number;
+  eveningEnd: number;
+  eveningTheme: ReadingThemeId;
   /** Disleksi dostu font (Atkinson Hyperlegible) */
   hyperlegible: boolean;
   /** Titreşimli geri bildirim (yalnızca telefonda) */
@@ -143,6 +148,10 @@ export const DEFAULT_SETTINGS: Settings = {
   wordSpacing: 0,
   hyphenate: false,
   keepAwake: true,
+  eveningEnabled: false,
+  eveningStart: 21,
+  eveningEnd: 7,
+  eveningTheme: 'night',
   hyperlegible: false,
   haptics: true,
   urlProxy: 'https://r.jina.ai/',

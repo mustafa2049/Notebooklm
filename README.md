@@ -78,6 +78,11 @@ antrenman ve ölçüm ekranları bununla çiziliyor.
   yumuşak tire yalnızca heceleme açıkken dikkate alındığı için o anda
   `android_hyphenationFrequency` da açılıyor; Bionic modda heceleme yok (kelime
   iki parçaya bölünüyor).
+- **Akşam sıcak tonu** (Aa → en alt, varsayılan kapalı): seçilen saatler
+  arasında (ör. 21:00–07:00, gece yarısını aşabilir) okuma teması kendiliğinden
+  Gece, Sepya ya da Siyah olur; sabah seçtiğin temaya döner. Saat dakikada bir
+  kontrol ediliyor; akşam tonunda yazı rengi temanın kendi rengi
+  (`src/appearance/evening.ts`, testli).
 - **Ekranı açık tut** (varsayılan açık): okurken ekran kararmıyor
   (`expo-keep-awake`; web'de tarayıcının Wake Lock API'si, her tarayıcıda yok).
   10 dakika hiçbir şey olmazsa (sayfa çevrilmez, RSVP ilerlemezse) kilit
