@@ -95,6 +95,8 @@ export interface Settings {
   recallPrompt: boolean;
   /** Bölümlü kitapta bölüm bitince (AI tanımlıysa) 3 anlama sorusu önerilir */
   chapterQuestions: boolean;
+  /** Kütüphane görünümü: liste ya da kapaklı raf */
+  libraryView: 'list' | 'shelf';
   /** Göz molası: bu kadar dakika okuyunca 20 saniye uzağa bak (0 = kapalı) */
   eyeBreakMinutes: number;
   /** Günlük hatırlatıcı (yalnızca telefonda) */
@@ -166,6 +168,7 @@ export const DEFAULT_SETTINGS: Settings = {
   yearlyBookGoal: 0,
   recallPrompt: true,
   chapterQuestions: true,
+  libraryView: 'list',
   eyeBreakMinutes: 0,
   reminderEnabled: false,
   reminderHour: 20,

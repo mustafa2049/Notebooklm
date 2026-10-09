@@ -1,6 +1,6 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { finishEstimateDays } from '@/habit/books';
 import { bookStats } from '@/habit/bookStats';
 import { useSettings } from '@/store/SettingsContext';
@@ -21,7 +21,9 @@ import { listSessions, type ReadingSession } from '@/storage/stats';
 import { listVocab, type VocabEntry } from '@/storage/vocab';
 import { naturalWpm } from '@/train/assessment';
 import { formatDuration, formatNumber, formatPercent, formatShortDuration } from '@/ui/format';
+import { BookCover } from '@/ui/BookCover';
 import { PlanSection } from '@/ui/PlanSection';
+import { CoverSearchError, readCover, removeCover, searchCovers, setCover } from '@/storage/covers';
 import { Button, Card, Chip, Field, IconButton, ProgressBar, Screen, SectionHeader, Txt } from '@/ui/primitives';
 import { fontStyle } from '@/ui/theme';
 
@@ -126,12 +128,18 @@ export default function BookScreen() {
   return (
     <Screen>
       <Header onBack={back} />
-      <Txt variant="title" style={{ fontSize: 26 }}>
-        {meta.title}
-      </Txt>
-      <Txt variant="dim" style={{ marginTop: theme.space(1), fontSize: 13 }}>
-        {SOURCE_LABEL[meta.source]} · {formatNumber(meta.wordCount)} kelime · {formatDate(meta.createdAt)} eklendi
-      </Txt>
+      <View style={{ flexDirection: 'row', gap: theme.space(4), alignItems: 'flex-start' }}>
+        <BookCover docId={meta.id} title={meta.title} width={96} />
+        <View style={{ flex: 1 }}>
+          <Txt variant="title" style={{ fontSize: 24 }}>
+            {meta.title}
+          </Txt>
+          <Txt variant="dim" style={{ marginTop: theme.space(1), fontSize: 13 }}>
+            {SOURCE_LABEL[meta.source]} · {formatNumber(meta.wordCount)} kelime · {formatDate(meta.createdAt)} eklendi
+          </Txt>
+        </View>
+      </View>
+      <CoverPicker docId={meta.id} title={meta.title} />
 
       <Card style={{ gap: theme.space(3), marginTop: theme.space(4) }}>
         <ProgressBar ratio={ratio} />
@@ -403,6 +411,109 @@ function JournalSection({ meta, finishedAt }: { meta: DocumentMeta; finishedAt: 
         onPress={() => void save()}
       />
     </View>
+  );
+}
+
+/**
+ * Kapak bul: Open Library'de başlıkla arar, adaylardan biri seçilir.
+ * Seçilen adres saklanır; görsel çevrimdışıyken yüklenemezse başlıktan
+ * üretilen kapak görünür.
+ */
+function CoverPicker({ docId, title }: { docId: string; title: string }) {
+  const { theme } = useSettings();
+  const [hasCover, setHasCover] = useState(false);
+  const [state, setState] = useState<
+    { status: 'idle' } | { status: 'loading' } | { status: 'done'; covers: string[] } | { status: 'error'; message: string }
+  >({ status: 'idle' });
+
+  useEffect(() => {
+    void readCover(docId).then((value) => setHasCover(Boolean(value)));
+  }, [docId]);
+
+  const search = async () => {
+    setState({ status: 'loading' });
+    try {
+      setState({ status: 'done', covers: await searchCovers(title) });
+    } catch (error) {
+      setState({
+        status: 'error',
+        message: error instanceof CoverSearchError ? error.message : 'Kapak aranamadı.',
+      });
+    }
+  };
+
+  return (
+    <View style={{ marginTop: theme.space(3), gap: theme.space(2) }}>
+      <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+        <Button
+          label="Kapak bul"
+          icon="image"
+          variant="secondary"
+          style={{ flex: 1 }}
+          disabled={state.status === 'loading'}
+          onPress={search}
+        />
+        {hasCover ? (
+          <Button
+            label="Kapağı kaldır"
+            variant="ghost"
+            style={{ flex: 1 }}
+            onPress={() => {
+              setHasCover(false);
+              void removeCover(docId);
+            }}
+          />
+        ) : null}
+      </View>
+      {state.status === 'loading' ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
+          <ActivityIndicator color={theme.colors.accent} />
+          <Txt variant="dim">Open Library’de aranıyor…</Txt>
+        </View>
+      ) : null}
+      {state.status === 'error' ? <Txt variant="dim">{state.message}</Txt> : null}
+      {state.status === 'done' && state.covers.length === 0 ? (
+        <Txt variant="dim">
+          Open Library’de bu başlıkla kapak bulunamadı; başlıktan üretilen kapak kullanılmaya
+          devam eder.
+        </Txt>
+      ) : null}
+      {state.status === 'done' && state.covers.length > 0 ? (
+        <>
+          <Txt variant="dim" style={{ fontSize: 13 }}>
+            Doğru kapağa dokun (kaynak: Open Library).
+          </Txt>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+            {state.covers.map((uri) => (
+              <Pressable
+                key={uri}
+                accessibilityRole="button"
+                accessibilityLabel="Bu kapağı seç"
+                onPress={() => {
+                  void setCover(docId, uri).then(() => {
+                    setHasCover(true);
+                    setState({ status: 'idle' });
+                  });
+                }}
+              >
+                <CoverThumb uri={uri} />
+              </Pressable>
+            ))}
+          </View>
+        </>
+      ) : null}
+    </View>
+  );
+}
+
+function CoverThumb({ uri }: { uri: string }) {
+  const { theme } = useSettings();
+  return (
+    <Image
+      source={{ uri }}
+      resizeMode="cover"
+      style={{ width: 64, height: 96, borderRadius: 4, backgroundColor: theme.colors.surfaceAlt }}
+    />
   );
 }
 

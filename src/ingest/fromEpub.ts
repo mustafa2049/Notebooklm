@@ -1,7 +1,8 @@
 import type JSZipType from 'jszip';
+import { epubCoverHref, imageMediaType } from '@/habit/cover';
 import { decodeEntities, htmlTitle, htmlToText } from './html2text';
 import { normalizeText } from './normalize';
-import type { ExtractedChapter, ExtractedDocument } from './types';
+import type { ExtractedChapter, ExtractedCover, ExtractedDocument } from './types';
 
 /**
  * EPUB'dan metin çıkarır.
@@ -54,7 +55,22 @@ export async function extractEpub(data: Uint8Array): Promise<ExtractedDocument> 
     title: parseTitle(opf),
     text: normalizeText(chapters.map((chapter) => chapter.text).join('\n\n')),
     chapters,
+    cover: (await readCover(zip, basePath, opf)) ?? undefined,
   };
+}
+
+/** Kapak görseli (varsa); okunamazsa kitap yine açılır */
+async function readCover(zip: JSZipType, basePath: string, opf: string): Promise<ExtractedCover | null> {
+  try {
+    const href = epubCoverHref(opf);
+    if (!href) return null;
+    const path = resolvePath(basePath, href);
+    const entry = zip.file(path) ?? zip.file(decodeURIComponent(path));
+    if (!entry) return null;
+    return { base64: await entry.async('base64'), mediaType: imageMediaType(href) };
+  } catch {
+    return null;
+  }
 }
 
 /**

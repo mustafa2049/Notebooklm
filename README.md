@@ -148,6 +148,23 @@ doldu / Bitti (yarım günlük pay kadar fark gerekiyor). Dakika karşılığı 
 ölçümdeki doğal hızla. Bugün ekranında "Kitap planın" kartı, kütüphanede plan
 satırı. Planlar yedeğe dahil; kitap silinince planı da silinir.
 
+## Kitap kapakları
+
+- EPUB içe aktarılırken dosyanın kendi kapağı (`properties="cover-image"`,
+  EPUB 2'de `<meta name="cover">`) alınır; web'de 300 px genişliğe küçültülüp
+  JPEG olarak saklanır (telefonda küçültme yok, 400 KB'tan büyük kapak atlanır).
+- Kitap kartında "Kapak bul": Open Library'de başlıkla arar, en çok 6 aday
+  gösterir, dokunulan seçilir (adres saklanır). "Kapağı kaldır" geri alır.
+- Kapak yoksa ya da görsel yüklenemiyorsa (çevrimdışı) başlıktan renkli bir
+  kapak üretilir: renk başlıktan türetildiği için aynı kitap her yerde aynı
+  renkte (`src/habit/cover.ts`, testli).
+- Kütüphanede "Liste / Raf" seçimi: raf görünümü kapakları ızgarada gösterir
+  (dokun → oku, uzun bas ya da kitap simgesi → kitap kartı).
+- Kapaklar metinlerin yanında saklanır, yedeğe girmez (yeniden bulunabilir).
+- Doğrulama: EPUB kapağı gerçek bir dosyayla denendi. `openlibrary.org` bu
+  geliştirme ortamından erişilemediği için Open Library araması tarayıcı
+  testinde taklit yanıtla denendi; gerçek servisle denenmedi.
+
 ## Okuma günlüğü ve "Okuma yılım" kartı
 
 - Kitap kartında **Bitirdim** (kâğıttan ya da başka yerde bitirilen kitap

@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Alert, Platform, View } from 'react-native';
+import { Alert, Platform, Pressable, useWindowDimensions, View } from 'react-native';
 import { PLAN_STATE_LABEL, planStatus, wordsReadToday, type BookPlan } from '@/habit/bookPlan';
 import { finishEstimateDays } from '@/habit/books';
 import { useSettings } from '@/store/SettingsContext';
@@ -15,14 +15,16 @@ import { listAssessments } from '@/storage/assessments';
 import { listPlans } from '@/storage/plans';
 import { listSessions, type ReadingSession } from '@/storage/stats';
 import { naturalWpm } from '@/train/assessment';
+import { BookCover } from '@/ui/BookCover';
 import { planStateColor } from '@/ui/PlanSection';
 import { Icon } from '@/ui/Icon';
 import { formatNumber, formatPercent, formatShortDuration } from '@/ui/format';
-import { Button, Card, IconButton, ProgressBar, Screen, Txt } from '@/ui/primitives';
+import { Button, Card, Chip, IconButton, ProgressBar, Screen, Txt } from '@/ui/primitives';
 
 export default function LibraryScreen() {
   const router = useRouter();
-  const { theme, settings } = useSettings();
+  const { theme, settings, update } = useSettings();
+  const { width: windowWidth } = useWindowDimensions();
   const [items, setItems] = useState<{ meta: DocumentMeta; progress: DocumentProgress | null }[]>([]);
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<ReadingSession[]>([]);
@@ -85,13 +87,28 @@ export default function LibraryScreen() {
       </View>
 
 
+      {items.length > 0 ? (
+        <View style={{ flexDirection: 'row', gap: theme.space(2), marginTop: -theme.space(2), marginBottom: theme.space(3) }}>
+          <Chip label="Liste" active={settings.libraryView !== 'shelf'} onPress={() => update({ libraryView: 'list' })} />
+          <Chip label="Raf" active={settings.libraryView === 'shelf'} onPress={() => update({ libraryView: 'shelf' })} />
+        </View>
+      ) : null}
+
       {loading ? null : items.length === 0 ? (
         <EmptyState onAdd={() => router.push('/import')} />
+      ) : settings.libraryView === 'shelf' ? (
+        <Shelf
+          items={items}
+          width={windowWidth - theme.space(4) * 2}
+          onOpen={(id) => router.push(`/reader/${id}`)}
+          onCard={(id) => router.push(`/book/${id}`)}
+        />
       ) : (
         <View style={{ gap: theme.space(3) }}>
           {items.map(({ meta, progress }) => (
             <Card key={meta.id} onPress={() => router.push(`/reader/${meta.id}`)}>
               <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: theme.space(3) }}>
+                <BookCover docId={meta.id} title={meta.title} width={40} />
                 <View style={{ flex: 1 }}>
                   <Txt variant="heading" numberOfLines={2}>
                     {meta.title}
@@ -153,6 +170,60 @@ export default function LibraryScreen() {
         </View>
       )}
     </Screen>
+  );
+}
+
+/** Raf görünümü: kapaklar üç sütunda; dokun → oku, uzun bas → kitap kartı */
+function Shelf({
+  items,
+  width,
+  onOpen,
+  onCard,
+}: {
+  items: { meta: DocumentMeta; progress: DocumentProgress | null }[];
+  width: number;
+  onOpen: (id: string) => void;
+  onCard: (id: string) => void;
+}) {
+  const { theme } = useSettings();
+  const gap = theme.space(3);
+  // Telefonda üç sütun; geniş ekranda kapaklar ~140 px'i geçmesin
+  const columns = Math.max(3, Math.floor((width + gap) / (140 + gap)));
+  const coverWidth = Math.floor((width - gap * (columns - 1)) / columns);
+  return (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap }}>
+      {items.map(({ meta, progress }) => (
+        <View key={meta.id} style={{ width: coverWidth, gap: theme.space(1.5) }}>
+          <Pressable
+            onPress={() => onOpen(meta.id)}
+            onLongPress={() => onCard(meta.id)}
+            accessibilityRole="button"
+            accessibilityLabel={`${meta.title} oku`}
+            style={({ pressed }) => ({ gap: theme.space(1.5), opacity: pressed ? 0.8 : 1 })}
+          >
+            <BookCover docId={meta.id} title={meta.title} width={coverWidth} />
+            <ProgressBar ratio={progress?.ratio ?? 0} />
+          </Pressable>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 2 }}>
+            <View style={{ flex: 1, gap: 2 }}>
+              <Txt variant="body" numberOfLines={2} style={{ fontSize: 12, lineHeight: 16 }} onPress={() => onOpen(meta.id)}>
+                {meta.title}
+              </Txt>
+              <Txt variant="dim" style={{ fontSize: 11 }}>
+                {progress?.finished ? 'Tamamlandı' : progress && progress.ratio > 0.001 ? formatPercent(progress.ratio) : 'Yeni'}
+              </Txt>
+            </View>
+            <IconButton
+              name="book"
+              size={14}
+              emphasis="faint"
+              onPress={() => onCard(meta.id)}
+              accessibilityLabel={`${meta.title}: kitap kartı`}
+            />
+          </View>
+        </View>
+      ))}
+    </View>
   );
 }
 

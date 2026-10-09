@@ -16,6 +16,13 @@ export interface ExtractedDocument {
    * (bkz. `joinChapters`).
    */
   chapters?: ExtractedChapter[];
+  /** Dosyanın kendi kapak görseli (EPUB) */
+  cover?: ExtractedCover;
+}
+
+export interface ExtractedCover {
+  base64: string;
+  mediaType: string;
 }
 
 export class NoTextLayerError extends Error {

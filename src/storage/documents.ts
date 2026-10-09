@@ -3,6 +3,7 @@ import { KEYS } from './keys';
 import { deleteText, readText, writeText } from './blobStore';
 import { removeBookmarksForDoc } from './bookmarks';
 import { removePlan } from './plans';
+import { removeCover } from './covers';
 
 export type DocumentSource = 'paste' | 'txt' | 'pdf' | 'epub' | 'docx' | 'url' | 'photo';
 
@@ -121,6 +122,7 @@ export async function removeDocument(id: string): Promise<void> {
   await removeBookmarksForDoc(id);
   await removePlan(id);
   await deleteText(id);
+  await removeCover(id).catch(() => undefined);
 }
 
 export async function loadProgress(id: string): Promise<DocumentProgress | null> {

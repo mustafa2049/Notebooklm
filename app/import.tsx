@@ -8,6 +8,8 @@ import { PdfBridge } from '@/ingest/PdfBridge';
 import { PDF_VIA_WEBVIEW, pickAndExtract } from '@/ingest/pickFile';
 import type { ExtractedDocument } from '@/ingest/types';
 import { useSettings } from '@/store/SettingsContext';
+import type { ExtractedCover } from '@/ingest/types';
+import { saveImportedCover } from '@/storage/covers';
 import { addDocument, type DocumentChapter, type DocumentSource } from '@/storage/documents';
 import { Icon } from '@/ui/Icon';
 import { deriveTitle, formatNumber } from '@/ui/format';
@@ -88,7 +90,8 @@ export default function ImportScreen() {
     text: string,
     source: DocumentSource,
     sourceRef?: string,
-    chapters?: DocumentChapter[]
+    chapters?: DocumentChapter[],
+    cover?: ExtractedCover
   ) => {
     const normalized = normalizeText(text);
     const words = countWordsInText(normalized);
@@ -104,6 +107,8 @@ export default function ImportScreen() {
       wordCount: words,
       chapters,
     });
+    // Kapak okunamazsa kitap yine eklenir; başlıktan kapak üretilir
+    if (cover) await saveImportedCover(meta.id, cover).catch(() => undefined);
     router.dismissTo('/');
     router.push(`/reader/${meta.id}`);
   };
@@ -237,7 +242,8 @@ export default function ImportScreen() {
                   joined ? joined.text : picked.text,
                   picked.kind,
                   picked.fileName,
-                  joined?.chapters
+                  joined?.chapters,
+                  picked.cover
                 );
               })
             }

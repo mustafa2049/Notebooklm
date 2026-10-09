@@ -71,6 +71,7 @@ export async function pickAndExtract(): Promise<PickedDocument | null> {
     title: extracted.title ?? stripExtension(fileName),
     // EPUB'un ve Word başlıklarının bölümleri; konumları çağıran hesaplıyor (bkz. joinChapters)
     chapters: extracted.chapters,
+    cover: extracted.cover,
   };
 }
 
