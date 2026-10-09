@@ -1,11 +1,12 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { Platform } from 'react-native';
+import { extractDocx } from './fromDocx';
 import { extractEpub } from './fromEpub';
 import { extractPdf } from './fromPdf';
 import { normalizeText } from './normalize';
 import type { ExtractedDocument } from './types';
 
-export type PickedKind = 'txt' | 'pdf' | 'epub';
+export type PickedKind = 'txt' | 'pdf' | 'epub' | 'docx';
 
 export interface PickedDocument extends ExtractedDocument {
   kind: PickedKind;
@@ -21,7 +22,9 @@ export interface PickedDocument extends ExtractedDocument {
 /** Telefonda PDF gizli bir WebView'de çözülüyor (bkz. `PdfBridge`). */
 export const PDF_VIA_WEBVIEW = Platform.OS !== 'web';
 
-const MIME_TYPES = ['text/plain', 'text/markdown', 'application/epub+zip', 'application/pdf'];
+const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+const MIME_TYPES = ['text/plain', 'text/markdown', 'application/epub+zip', 'application/pdf', DOCX_MIME];
 
 /**
  * Dosya seçtirip metnini çıkarır. Kullanıcı vazgeçerse `null` döner.
@@ -59,13 +62,14 @@ export async function pickAndExtract(): Promise<PickedDocument | null> {
   }
 
   const bytes = await readAssetBytes(asset);
-  const extracted = kind === 'pdf' ? await extractPdf(bytes) : await extractEpub(bytes);
+  const extracted =
+    kind === 'pdf' ? await extractPdf(bytes) : kind === 'docx' ? await extractDocx(bytes) : await extractEpub(bytes);
   return {
     kind,
     fileName,
     text: extracted.text,
     title: extracted.title ?? stripExtension(fileName),
-    // EPUB'un kendi bölümleri; konumları çağıran hesaplıyor (bkz. joinChapters)
+    // EPUB'un ve Word başlıklarının bölümleri; konumları çağıran hesaplıyor (bkz. joinChapters)
     chapters: extracted.chapters,
   };
 }
@@ -74,6 +78,7 @@ function detectKind(fileName: string, mimeType?: string | null): PickedKind {
   const lower = fileName.toLowerCase();
   if (lower.endsWith('.pdf') || mimeType === 'application/pdf') return 'pdf';
   if (lower.endsWith('.epub') || mimeType === 'application/epub+zip') return 'epub';
+  if (lower.endsWith('.docx') || mimeType === DOCX_MIME) return 'docx';
   return 'txt';
 }
 

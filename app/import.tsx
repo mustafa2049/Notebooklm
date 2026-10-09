@@ -201,10 +201,11 @@ export default function ImportScreen() {
         <View style={{ gap: theme.space(3) }}>
           <Card style={{ gap: theme.space(2) }}>
             <Icon name="file" size={28} color={theme.colors.textDim} />
-            <Txt variant="heading">TXT, PDF veya EPUB</Txt>
+            <Txt variant="heading">TXT, PDF, EPUB veya Word</Txt>
             <Txt variant="dim">
-              PDF’lerde yalnızca metin katmanı okunur; taranmış (fotoğraf) belgeler
-              desteklenmiyor. EPUB’larda bölümler ve içindekiler tablosu korunur.
+              PDF’lerde yalnızca metin katmanı okunur; taranmış sayfalar için “Fotoğraf”
+              sekmesini kullan. EPUB’larda içindekiler, Word (.docx) dosyalarında başlıklar
+              bölüm olarak korunur.
               {PDF_VIA_WEBVIEW
                 ? ' Telefonda PDF, gizli bir tarayıcı görünümünde çözülüyor; ilk açılışta birkaç saniye sürebilir.'
                 : ''}
@@ -226,7 +227,7 @@ export default function ImportScreen() {
                   return;
                 }
 
-                // EPUB bölümleri ayrı ayrı normalleştirilip birleştiriliyor:
+                // EPUB/Word bölümleri ayrı ayrı normalleştirilip birleştiriliyor:
                 // konumlar kaydedilen metne göre doğru olsun
                 const joined = picked.chapters?.length ? joinChapters(picked.chapters) : null;
                 await save(
