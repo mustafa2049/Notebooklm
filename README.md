@@ -396,9 +396,14 @@ kapanır (`src/habit/sleepTimer.ts`, testli).
 
 ## Klasikler
 
-İçe aktarma → Klasikler: Vikikaynak'tan telif süresi dolmuş Ömer Seyfettin
-öyküleri. Her bağlantı listeye girmeden önce açılıp doğrulandı. İnternet
-gerektirir; web'de vekil sunucu üzerinden çekilir.
+İçe aktarma → Klasikler: Vikikaynak'tan telif süresi dolmuş eserler, yazara
+göre gruplu — Ömer Seyfettin'den 24 öykü, Mehmet Âkif Ersoy'dan 4 şiir
+(İstiklâl Marşı, Çanakkale Şehitlerine, Küfe, Seyfi Baba). Her bağlantı listeye
+girmeden önce tek tek açılıp tam metnin ve yazar adının sayfada olduğu
+doğrulandı (Vikikaynak'ın hız sınırı yüzünden istekler arası 20 sn). Sabahattin
+Ali, Halit Ziya, Hüseyin Rahmi, Recaizade, Namık Kemal, Mehmet Rauf, Nabizade
+Nazım ve Ahmet Mithat'tan denenen eserler Vikikaynak'ta bu adlarla bulunamadı;
+listede yok. İnternet gerektirir; web'de vekil sunucu üzerinden çekilir.
 
 ## Kelime defteri
 
