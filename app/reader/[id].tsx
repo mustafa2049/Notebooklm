@@ -29,6 +29,16 @@ import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useScreenAwake } from '@/reader/useScreenAwake';
 import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
 import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
+import {
+  choiceOf,
+  nextChoice,
+  onResume,
+  shouldStopBefore,
+  sleepLabel,
+  SLEEP_OFF,
+  startTimer,
+  type SleepTimer,
+} from '@/habit/sleepTimer';
 import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
 import { listAssessments } from '@/storage/assessments';
 import { addBookmark, bookmarksForDoc, removeBookmarks, type Bookmark } from '@/storage/bookmarks';
@@ -457,14 +467,46 @@ function Reader({
 
   // ---- Dinleyerek okuma: motor yerinde durur, ses cümle cümle ilerler
   const spans = React.useMemo(() => sentenceSpans(engine.chunks), [engine.chunks]);
+  // Uyku zamanlayıcısı: süre dolunca ya da bölüm bitince cümle sonunda durur
+  const [sleep, setSleep] = useState<SleepTimer>(SLEEP_OFF);
+  const sleepRef = useRef(sleep);
+  sleepRef.current = sleep;
+  const [slept, setSlept] = useState(false);
   const speech = useSpeech({
     docId,
     text,
     spans,
     wpm: settings.wpm,
     onSentence: (span) => onProgress(span.charStart, progressRatio(engine.chunks, span.startChunk)),
+    shouldContinue: (next) =>
+      !shouldStopBefore(sleepRef.current, { now: Date.now(), charStart: next.charStart }),
+    onAutoStop: () => {
+      setSleep(SLEEP_OFF);
+      setSlept(true);
+    },
   });
   const listenSpan = spans[Math.min(speech.current, spans.length - 1)];
+  /** Ses kelime sınırı bildiriyorsa okunan kelimenin konumu (akış görünümü için) */
+  const spokenOffset =
+    listening && speech.playing && speech.wordOffset !== null ? speech.wordOffset : undefined;
+
+  /** Oynatmadan önce: süresi dolmuş zamanlayıcı kapanır, "durdu" yazısı kalkar */
+  const beforePlay = useCallback((offset: number) => {
+    setSleep((timer) => onResume(timer, { now: Date.now(), offset }));
+    setSlept(false);
+  }, []);
+
+  const cycleSleep = useCallback(() => {
+    const choice = nextChoice(choiceOf(sleepRef.current), Boolean(chapters?.length));
+    setSleep(
+      startTimer(choice, {
+        now: Date.now(),
+        offset: listenSpan?.charStart ?? 0,
+        chapters: chapters ?? [],
+        textLength: text.length,
+      })
+    );
+  }, [chapters, listenSpan, text.length]);
 
   /**
    * Yer iminin "bulunulan yer"i: Sayfa modunda görünen sayfa, diğer modlarda
@@ -519,12 +561,16 @@ function Reader({
   const startListening = useCallback(() => {
     engine.pause();
     setListening(true);
-    speech.play(spanIndexForChunk(spans, engine.index));
-  }, [engine, speech, spans]);
+    const index = spanIndexForChunk(spans, engine.index);
+    beforePlay(spans[index]?.charStart ?? 0);
+    speech.play(index);
+  }, [engine, speech, spans, beforePlay]);
 
   const stopListening = useCallback(() => {
     speech.stop();
     setListening(false);
+    setSleep(SLEEP_OFF);
+    setSlept(false);
     if (!listenSpan) return;
     // Okuyucu, dinlemenin kaldığı cümleden devam etsin; atlanan kelimeler
     // okuma oturumuna "okundu" diye yazılmasın
@@ -537,11 +583,14 @@ function Reader({
     haptics.tap(settings.haptics);
     if (listening) {
       if (speech.playing) speech.stop();
-      else speech.play(speech.current);
+      else {
+        beforePlay(listenSpan?.charStart ?? 0);
+        speech.play(speech.current);
+      }
       return;
     }
     engine.toggle();
-  }, [engine, settings.haptics, listening, speech]);
+  }, [engine, settings.haptics, listening, speech, beforePlay, listenSpan]);
 
   const previousSentence = useCallback(() => {
     haptics.step(settings.haptics);
@@ -785,7 +834,14 @@ function Reader({
           <View style={{ flex: 1, paddingHorizontal: layout.marginPx }}>
             <FlowView
               chunks={engine.chunks}
-              index={listening && listenSpan ? listenSpan.startChunk : engine.index}
+              index={
+                listening && listenSpan
+                  ? spokenOffset !== undefined
+                    ? indexFromCharOffset(engine.chunks, spokenOffset)
+                    : listenSpan.startChunk
+                  : engine.index
+              }
+              spokenOffset={spokenOffset}
               variant={!listening && mode === 'bionic' ? 'bionic' : 'highlight'}
               layout={layout}
               markedSentences={markedSentences}
@@ -820,7 +876,17 @@ function Reader({
       </View>
       )}
 
-      {listening ? <ListenStatus voice={speech.voice} playing={speech.playing} onExit={stopListening} /> : null}
+      {listening ? (
+        <ListenStatus
+          voice={speech.voice}
+          playing={speech.playing}
+          wordTracking={speech.wordTracking}
+          sleep={sleep}
+          slept={slept}
+          onCycleSleep={cycleSleep}
+          onExit={stopListening}
+        />
+      ) : null}
 
       {eyeBreak.active ? (
         <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
@@ -1003,39 +1069,77 @@ const VOICE_NOTE: Record<VoiceStatus, string> = {
   none: 'Bu cihazda seslendirme sesi bulunamadı. Sistem ayarlarından bir Türkçe ses yükleyebilirsin.',
 };
 
-/** Dinleme modunun durum satırı: hangi sesle okunduğu ve çıkış. */
+/** Dinleme modunun durum satırı: hangi sesle okunduğu, uyku zamanlayıcısı ve çıkış. */
 function ListenStatus({
   voice,
   playing,
+  wordTracking,
+  sleep,
+  slept,
+  onCycleSleep,
   onExit,
 }: {
   voice: VoiceStatus;
   playing: boolean;
+  wordTracking: boolean;
+  sleep: SleepTimer;
+  /** Zamanlayıcı dinlemeyi durdurdu (yeniden oynatılana kadar yazar) */
+  slept: boolean;
+  onCycleSleep: () => void;
   onExit: () => void;
 }) {
   const { theme } = useSettings();
   const warn = voice === 'fallback' || voice === 'none';
+  // Geri sayım her saniye yenilensin
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (sleep.kind !== 'time') return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [sleep]);
+
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: theme.space(2),
-        paddingHorizontal: theme.space(4),
-        paddingBottom: theme.space(1),
-      }}
-    >
-      <Txt
-        variant="dim"
-        style={{ flex: 1, fontSize: 12, color: warn ? theme.colors.warning : theme.colors.textDim }}
-      >
-        {playing ? 'Dinleniyor' : 'Dinleme duraklatıldı'} · {VOICE_NOTE[voice]} · cümle cümle vurgulanır
+    <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(1), gap: theme.space(1) }}>
+      <Txt variant="dim" style={{ fontSize: 12, color: warn ? theme.colors.warning : theme.colors.textDim }}>
+        {slept
+          ? 'Uyku zamanlayıcısı dinlemeyi durdurdu; kaldığın yer kaydedildi.'
+          : `${playing ? 'Dinleniyor' : 'Dinleme duraklatıldı'} · ${VOICE_NOTE[voice]} · ${
+              wordTracking ? 'kelime kelime' : 'cümle cümle'
+            } vurgulanır`}
       </Txt>
-      <Pressable onPress={onExit} hitSlop={8}>
-        <Txt variant="dim" style={{ fontSize: 12, color: theme.colors.accent }}>
-          Okumaya dön
-        </Txt>
-      </Pressable>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
+        <Pressable
+          onPress={() => {
+            // Odak düğmede kalırsa boşluk tuşu dinlemeyi değil zamanlayıcıyı değiştirir
+            releaseFocus();
+            onCycleSleep();
+          }}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={`Uyku zamanlayıcısı: ${sleepLabel(sleep, now)}. Değiştirmek için dokun.`}
+          style={{
+            paddingVertical: theme.space(1),
+            paddingHorizontal: theme.space(2.5),
+            borderRadius: theme.radius.pill,
+            borderWidth: 1,
+            borderColor: sleep.kind === 'off' ? theme.colors.border : theme.colors.accent,
+          }}
+        >
+          <Txt
+            variant="dim"
+            style={{ fontSize: 12, color: sleep.kind === 'off' ? theme.colors.textDim : theme.colors.accent }}
+          >
+            Uyku: {sleepLabel(sleep, now)}
+          </Txt>
+        </Pressable>
+        <View style={{ flex: 1 }} />
+        <Pressable onPress={onExit} hitSlop={8}>
+          <Txt variant="dim" style={{ fontSize: 12, color: theme.colors.accent }}>
+            Okumaya dön
+          </Txt>
+        </Pressable>
+      </View>
     </View>
   );
 }

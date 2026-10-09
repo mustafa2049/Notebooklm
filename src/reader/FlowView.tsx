@@ -22,6 +22,7 @@ export function FlowView({
   layout,
   markedSentences,
   activeSentence,
+  spokenOffset,
 }: {
   chunks: Chunk[];
   index: number;
@@ -32,6 +33,8 @@ export function FlowView({
   markedSentences?: Set<number>;
   /** Sesli okumada seslendirilen cümle: bütün cümle vurgulanır */
   activeSentence?: number;
+  /** Ses kelime sınırı bildiriyorsa okunan kelimenin konumu: o kelime ayrıca belirgin */
+  spokenOffset?: number;
 }) {
   const { theme, settings } = useSettings();
   const [box, setBox] = useState({ width: 0, height: 0 });
@@ -113,6 +116,11 @@ export function FlowView({
             baseColor={baseColor}
             hyphenate={layout.hyphenate}
             extraWordSpace={layout.extraWordSpace}
+            spoken={
+              spokenOffset !== undefined && spokenOffset >= chunk.charStart && spokenOffset < chunk.charEnd
+                ? spokenOffset
+                : undefined
+            }
             marked={markedSentences?.has(chunk.sentenceIndex) ?? false}
           />
         ))}
@@ -137,10 +145,13 @@ const ChunkSpan = React.memo(function ChunkSpan({
   marked,
   hyphenate,
   extraWordSpace,
+  spoken,
 }: {
   chunk: Chunk;
   hyphenate: boolean;
   extraWordSpace: number;
+  /** Bu parçada okunan kelimenin konumu (yalnızca o parçaya verilir) */
+  spoken?: number;
   marked: boolean;
   current: boolean;
   read: boolean;
@@ -188,6 +199,29 @@ const ChunkSpan = React.memo(function ChunkSpan({
   }
 
   const options: TypesetOptions = { hyphenate, extraWordSpace };
+  if (spoken !== undefined) {
+    // Okunan kelime: renk ve alt çizgi (kalınlık genişliği değiştirip satırı oynatırdı)
+    const spokenStyle = { color: theme.colors.accent, textDecorationLine: 'underline' as const };
+    // Bölünmüş uzun kelimenin parçası ya da tek kelime: parçanın tamamı
+    if (chunk.partOf || chunk.tokens.length === 1) {
+      return (
+        <Text style={{ color, backgroundColor: background }}>
+          <Text style={spokenStyle}>{typeset(chunk.text, options)}</Text>
+          {typeset(' ', options)}
+        </Text>
+      );
+    }
+    return (
+      <Text style={{ color, backgroundColor: background }}>
+        {chunk.tokens.map((token, i) => (
+          <Text key={i} style={spoken >= token.start && spoken < token.end ? spokenStyle : undefined}>
+            {typeset(i < chunk.tokens.length - 1 ? `${token.text} ` : token.text, options)}
+          </Text>
+        ))}
+        {typeset(' ', options)}
+      </Text>
+    );
+  }
   return (
     <Text style={{ color, backgroundColor: background }}>{typeset(`${chunk.text} `, options)}</Text>
   );

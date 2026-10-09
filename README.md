@@ -310,11 +310,20 @@ grupları, tempo ve tarama, pekiştirme ve aktarım.
 
 Okuyucu başlığındaki kulaklık düğmesi metni cümle cümle seslendirir ve okunan
 cümleyi akış görünümünde vurgular; hız ayarı konuşma hızına eşlenir. Birim
-**cümle**: kelime sınırı olayı her platformda ve her seste gelmiyor. Türkçe ses
-yoksa ekranda yazar. Dinleme ayrı oturum olarak kaydedilir: günlük süreye
-sayılır, okuma temposu istatistiğine girmez. Bitince okuyucu dinlemenin kaldığı
-cümleden devam eder. Ses çıkışı cihazın konuşma motoruna bağlı; telefonda
-denenmesi gerekiyor.
+**cümle**; ses kelime sınırlarını bildiriyorsa (`onBoundary`) okunan **kelime**
+de altı çizili ve renkli gösterilir, bildirmiyorsa vurgu cümle düzeyinde kalır
+— durum satırı hangisinin olduğunu yazar ("kelime kelime / cümle cümle
+vurgulanır"). Kelime olayı her platformda ve her seste gelmiyor (ör. Chrome'un
+ağ sesleri göndermiyor). Türkçe ses yoksa ekranda yazar. Dinleme ayrı oturum
+olarak kaydedilir: günlük süreye sayılır, okuma temposu istatistiğine girmez.
+Bitince okuyucu dinlemenin kaldığı cümleden devam eder. Ses çıkışı cihazın
+konuşma motoruna bağlı; telefonda denenmesi gerekiyor.
+
+**Uyku zamanlayıcısı**: dinleme satırındaki "Uyku" düğmesine dokundukça
+kapalı → 10 → 20 → 30 dk → bölüm sonu (kitabın bölümleri varsa). Süre dolunca
+ya da bölüm bitince ses **cümlenin sonunda** durur, kaldığın yer (sıradaki
+cümle) kaydedilir; yeniden oynatınca süresi dolmuş zamanlayıcı kendiliğinden
+kapanır (`src/habit/sleepTimer.ts`, testli).
 
 ## Göz molası ve haftanın kartı
 

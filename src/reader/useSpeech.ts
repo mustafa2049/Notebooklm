@@ -6,8 +6,9 @@ import { recordSession } from '@/storage/stats';
 /**
  * Dinleyerek okuma: metni cümle cümle seslendirir, okunan cümleyi bildirir.
  *
- * Kelime düzeyinde takip (`onBoundary`) her platformda ve her seste gelmiyor;
- * bu yüzden birim **cümle**. Bir cümle bitince sıradaki seslendirilir.
+ * Birim **cümle**: bir cümle bitince sıradaki seslendirilir. Ses kelime
+ * sınırlarını bildiriyorsa (`onBoundary`; her platformda ve her seste gelmiyor,
+ * ör. Chrome'un ağ sesleri göndermiyor) okunan kelime de bildirilir.
  * Dinleme süresi ayrı bir oturum olarak (`mode: 'listen'`) kaydedilir: günlük
  * dakikaya sayılır ama okuma temposu istatistiğine girmez.
  */
@@ -19,6 +20,10 @@ export interface SpeechControls {
   playing: boolean;
   /** Seslendirilen (ya da duraklatılan) cümlenin `spans` içindeki sırası */
   current: number;
+  /** Ses kelime sınırı bildirdiyse o an okunan kelimenin metindeki konumu */
+  wordOffset: number | null;
+  /** Bu seste kelime takibi çalışıyor mu (bir kez sınır geldiyse) */
+  wordTracking: boolean;
   /** Verilen cümleden başlayarak seslendirir */
   play: (spanIndex: number) => void;
   /** Durdurur; kaldığı cümle `current` olarak kalır */
@@ -32,23 +37,40 @@ interface Options {
   wpm: number;
   /** Yeni bir cümleye geçildiğinde (ilerleme kaydı için) */
   onSentence: (span: SentenceSpan) => void;
+  /**
+   * Sıradaki cümleye kendiliğinden geçmeden sorulur; `false` dönerse ses
+   * burada durur (uyku zamanlayıcısı). Kullanıcının başlattığı oynatmada sorulmaz.
+   */
+  shouldContinue?: (next: SentenceSpan) => boolean;
+  /** `shouldContinue` yüzünden durulduğunda */
+  onAutoStop?: () => void;
 }
 
 const MIN_SESSION_MS = 3000;
 
-export function useSpeech({ docId, text, spans, wpm, onSentence }: Options): SpeechControls {
+export function useSpeech({
+  docId,
+  text,
+  spans,
+  wpm,
+  onSentence,
+  shouldContinue,
+  onAutoStop,
+}: Options): SpeechControls {
   const [voice, setVoice] = useState<VoiceStatus>('checking');
   const voiceId = useRef<string | undefined>(undefined);
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [wordOffset, setWordOffset] = useState<number | null>(null);
+  const [wordTracking, setWordTracking] = useState(false);
 
   // Her başlatmada artar: durdurulan bir seslendirmenin geç gelen `onDone`'u
   // yeni seslendirmeyi ilerletmesin
   const generation = useRef(0);
   const session = useRef<{ startedAt: number; words: number } | null>(null);
 
-  const latest = useRef({ docId, text, spans, wpm, onSentence });
-  latest.current = { docId, text, spans, wpm, onSentence };
+  const latest = useRef({ docId, text, spans, wpm, onSentence, shouldContinue, onAutoStop });
+  latest.current = { docId, text, spans, wpm, onSentence, shouldContinue, onAutoStop };
 
   useEffect(() => {
     let cancelled = false;
@@ -110,15 +132,38 @@ export function useSpeech({ docId, text, spans, wpm, onSentence }: Options): Spe
       }
       const span = list[index];
       setCurrent(index);
+      setWordOffset(null);
       latest.current.onSentence(span);
       const sentence = source.slice(span.charStart, span.charEnd).slice(0, Speech.maxSpeechInputLength);
       Speech.speak(sentence, {
         language: 'tr-TR',
         voice: voiceId.current,
         rate: ttsRate(rate),
+        // Telefonda {charIndex, charLength}, tarayıcıda SpeechSynthesisEvent
+        // (cümle sınırları da gelebiliyor: yalnızca "word" alınır)
+        onBoundary: (event: unknown) => {
+          if (run !== generation.current) return;
+          const boundary = event as { charIndex?: number; name?: string };
+          if (typeof boundary.charIndex !== 'number') return;
+          if (boundary.name !== undefined && boundary.name !== 'word') return;
+          setWordTracking(true);
+          setWordOffset(span.charStart + boundary.charIndex);
+        },
         onDone: () => {
           if (run !== generation.current) return;
           if (session.current) session.current.words += span.words;
+          const next = latest.current.spans[index + 1];
+          if (next && latest.current.shouldContinue && !latest.current.shouldContinue(next)) {
+            // Uyku zamanlayıcısı: cümle bitti, burada dur; devam edilince
+            // dinlenmiş cümle tekrar okunmasın diye konum sıradakine geçer
+            setPlaying(false);
+            setWordOffset(null);
+            setCurrent(index + 1);
+            latest.current.onSentence(next);
+            flushSession();
+            latest.current.onAutoStop?.();
+            return;
+          }
           speakFrom(index + 1, run);
         },
         onError: () => {
@@ -135,6 +180,7 @@ export function useSpeech({ docId, text, spans, wpm, onSentence }: Options): Spe
     generation.current += 1;
     void Speech.stop();
     setPlaying(false);
+    setWordOffset(null);
     flushSession();
   }, [flushSession]);
 
@@ -160,5 +206,5 @@ export function useSpeech({ docId, text, spans, wpm, onSentence }: Options): Spe
     [flushSession]
   );
 
-  return { voice, playing, current, play, stop };
+  return { voice, playing, current, wordOffset, wordTracking, play, stop };
 }
