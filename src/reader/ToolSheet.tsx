@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { askAboutText, explainWord, generateSections, generateSummary, type Section } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { createSearchIndex, MIN_QUERY, searchText } from '@/core/search';
+import { DictOfflineError, entryNote, lookupExact, lookupWord, type DictResult } from '@/ingest/tdk';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache, type AiChatTurn } from '@/storage/ai';
 import type { Bookmark } from '@/storage/bookmarks';
@@ -130,6 +131,8 @@ export function ToolSheet({
   const [question, setQuestion] = useState('');
   const [wordInfo, setWordInfo] = useState<{ word: string; text: string } | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  /** TDK sözlüğü: seçili kelime için sonuç */
+  const [dict, setDict] = useState<DictState | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const [quoteNote, setQuoteNote] = useState('');
   const [quoteSaved, setQuoteSaved] = useState(false);
@@ -173,6 +176,7 @@ export function ToolSheet({
     setQuoteSaved(false);
     setChoice(null);
     setSelectedWord(null);
+    setDict(null);
   }, [visible, initialTab, ai.configured]);
 
   // Saklanmış çıktıları yükle: aynı özet için ikinci kez ödeme yapılmasın
@@ -226,12 +230,27 @@ export function ToolSheet({
     setWordInfo({ word, text: value });
   };
 
+  /** `word`: seçili kelime (defter kaydı buna bağlı); `exact`: önerilen başka kök */
+  const lookUp = async (word: string, exact?: string) => {
+    setDict({ word, status: 'loading' });
+    try {
+      const result = exact ? await lookupExact(exact) : await lookupWord(word);
+      setDict(result ? { word, status: 'done', result } : { word, status: 'none' });
+    } catch (error) {
+      setDict({ word, status: error instanceof DictOfflineError ? 'offline' : 'error' });
+    }
+  };
+
   const save = async (word: string) => {
+    const dictNote =
+      dict?.status === 'done' && dict.word === word
+        ? dict.result.entries.slice(0, 2).map(entryNote).join('\n')
+        : undefined;
     await addVocab({
       word,
       sentence: activeSentence,
-      // Kelime o an açıklanmışsa açıklama nota geçer
-      note: wordInfo?.word === word ? wordInfo.text : undefined,
+      // Kelime o an açıklanmışsa açıklama (yoksa sözlük anlamı) nota geçer
+      note: wordInfo?.word === word ? wordInfo.text : dictNote,
       docId,
       docTitle,
     });
@@ -538,8 +557,8 @@ export function ToolSheet({
             <>
               <Txt variant="dim">
                 {ai.configured
-                  ? 'Ekrandaki kelimelerden birini seç: deftere kaydedebilir ya da bulunduğu cümledeki anlamını açıklatabilirsin.'
-                  : 'Ekrandaki kelimelerden birini seçip cümlesiyle birlikte deftere kaydet. Açıklama için Ayarlar’dan yapay zekâ tanımlaman gerekiyor.'}
+                  ? 'Ekrandaki kelimelerden birini seç: TDK sözlüğünde bakabilir, bulunduğu cümledeki anlamını açıklatabilir ya da deftere kaydedebilirsin.'
+                  : 'Ekrandaki kelimelerden birini seç: TDK sözlüğünde bakabilir ya da cümlesiyle birlikte deftere kaydedebilirsin.'}
               </Txt>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
                 {activeWords.map((word, index) => (
@@ -550,10 +569,21 @@ export function ToolSheet({
                     onPress={() => {
                       setSelectedWord(word);
                       setSaved(null);
+                      setDict(null);
                     }}
                   />
                 ))}
               </View>
+              {selectedWord ? (
+                <Button
+                  label="Sözlükte bak"
+                  icon="search"
+                  variant="secondary"
+                  disabled={dict?.status === 'loading'}
+                  onPress={() => lookUp(selectedWord)}
+                />
+              ) : null}
+              {selectedWord && dict ? <DictCard state={dict} onLookUp={(root) => lookUp(selectedWord, root)} /> : null}
               {selectedWord ? (
                 <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
                   <Button
@@ -646,5 +676,86 @@ export function ToolSheet({
         </ScrollView>
       </View>
     </Modal>
+  );
+}
+
+type DictState =
+  | { word: string; status: 'loading' }
+  | { word: string; status: 'done'; result: DictResult }
+  | { word: string; status: 'none' | 'offline' | 'error' };
+
+/** TDK sonucu: madde, köken, en çok 3 anlam (tür + örnek), başka kökler */
+function DictCard({ state, onLookUp }: { state: DictState; onLookUp: (word: string) => void }) {
+  const { theme } = useSettings();
+  if (state.status === 'loading') {
+    return (
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
+        <ActivityIndicator color={theme.colors.accent} />
+        <Txt variant="dim">Sözlükte aranıyor…</Txt>
+      </View>
+    );
+  }
+  if (state.status !== 'done') {
+    return (
+      <Txt variant="dim">
+        {state.status === 'none'
+          ? `"${state.word}" sözlükte bulunamadı. Özel ad ya da çok çekimli bir biçim olabilir.`
+          : state.status === 'offline'
+            ? 'Sözlüğe ulaşılamadı. İnternet bağlantını kontrol et; daha önce bakılan kelimeler çevrimdışı da açılır.'
+            : 'Sözlük yanıtı okunamadı.'}
+      </Txt>
+    );
+  }
+  const { result } = state;
+  return (
+    <Card style={{ gap: theme.space(2) }}>
+      {result.entries.map((entry, entryIndex) => (
+        <View key={`${entry.word}-${entryIndex}`} style={{ gap: theme.space(1) }}>
+          <Txt variant="body" style={{ fontSize: 17, ...fontStyle(theme, '700') }}>
+            {entry.word}
+            {entry.origin ? (
+              <Text style={{ color: theme.colors.textDim, fontSize: 13, ...fontStyle(theme, '400') }}>
+                {'  '}
+                {entry.origin}
+              </Text>
+            ) : null}
+          </Txt>
+          {entry.meanings.map((meaning, index) => (
+            <View key={index}>
+              <Txt variant="body" style={{ fontSize: 14 }}>
+                {index + 1}.{' '}
+                {meaning.tags.length ? (
+                  <Text style={{ color: theme.colors.accent }}>{meaning.tags.join(', ')} · </Text>
+                ) : null}
+                {meaning.text}
+              </Txt>
+              {meaning.example ? (
+                <Txt variant="dim" style={{ fontSize: 13, fontStyle: 'italic' }}>
+                  “{meaning.example}”
+                </Txt>
+              ) : null}
+            </View>
+          ))}
+        </View>
+      ))}
+      {result.query !== result.entries[0]?.word ? (
+        <Txt variant="dim" style={{ fontSize: 12 }}>
+          "{result.query}" biçiminin kökü olarak bulundu.
+        </Txt>
+      ) : null}
+      {result.alternatives.length ? (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.space(2) }}>
+          <Txt variant="dim" style={{ fontSize: 12 }}>
+            Başka kök:
+          </Txt>
+          {result.alternatives.map((word) => (
+            <Chip key={word} label={word} active={false} onPress={() => onLookUp(word)} />
+          ))}
+        </View>
+      ) : null}
+      <Txt variant="dim" style={{ fontSize: 11 }}>
+        Kaynak: TDK Güncel Türkçe Sözlük (sozluk.gov.tr)
+      </Txt>
+    </Card>
   );
 }

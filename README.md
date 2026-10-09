@@ -456,6 +456,21 @@ ve tekrar. Tekrar aralığı basit ve açıklanabilir: bilinen kelime her doğru
 tekrarda iki kat uzun aralıkla (1, 2, 4, 8… gün, en çok 30 gün), bilinmeyen
 kelime aynı gün içinde yeniden soruluyor (`src/train/review.ts`, testli).
 
+### TDK sözlüğü
+
+Kelime sekmesinde "Sözlükte bak" kelimeyi TDK Güncel Türkçe Sözlük'te
+(`sozluk.gov.tr/gts`) arar — yapay zekâ ya da anahtar gerekmez. Çekimli
+kelimeler sözlükte olmadığı için önce kelimenin kendisi, yoksa sondan ekleri
+soyarak üretilen aday kökler (`src/core/stem.ts`, testli: "kitaplarımızdan" →
+kitap, "geliyorum" → gelmek, "ağacın" → ağaç) sorulur; bulunanların en az
+soyulmuşu gösterilir, ötekiler "Başka kök" olarak seçilebilir. En çok 3 anlam,
+tür ve örnek cümle; "Deftere kaydet" anlamı nota yazar. Bulunan maddeler
+cihazda önbelleğe alınır (yedeğe girmez), daha önce bakılan kelimeler
+çevrimdışı da açılır. Kök bulma kurala dayalı, kusursuz değil: özel adlar ve
+çok çekimli biçimler bulunamayabilir. Tarayıcıda gerçek TDK yanıtlarıyla
+denendi; telefonda istek tarayıcı kimliğiyle gidiyor (sunucu aksi hâlde boş
+yanıt veriyor) — cihazda denenmedi.
+
 ## Paylaş → Hızlı Okuma (Android)
 
 Web sürümü PWA olarak kurulabiliyor ve kurulduğunda Android'in paylaş menüsünde
