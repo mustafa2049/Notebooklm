@@ -170,8 +170,8 @@ function TrainingSession({
 
   useSessionRecorder({
     docId,
-    // Sayfa modunda tempo yok; egzersiz tempolu olduğu için Vurgu gibi çizilir
-    mode: settings.mode === 'page' ? 'highlight' : settings.mode,
+    // Sayfa ve kaydırma modları egzersizde Vurgu gibi çizilir (egzersiz tempolu)
+    mode: settings.mode === 'page' || settings.mode === 'scroll' ? 'highlight' : settings.mode,
     targetWpm,
     words: engine.wordsRead,
     activeMs: engine.activeMs,
@@ -179,7 +179,8 @@ function TrainingSession({
 
   const startWords = useRef(engine.wordsRead);
   const wordsThisSession = Math.max(0, engine.wordsRead - startWords.current);
-  const flowMode = settings.mode === 'bionic' || settings.mode === 'highlight' || settings.mode === 'page';
+  const flowMode =
+    settings.mode === 'bionic' || settings.mode === 'highlight' || settings.mode === 'page' || settings.mode === 'scroll';
 
   if (done) {
     const seconds = exercise.durationMs / 1000;

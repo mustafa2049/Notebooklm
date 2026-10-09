@@ -4,7 +4,7 @@
  * Okuma modları. `page`: kitap gibi sayfa sayfa, tempo yok — kullanıcı kendi
  * hızında okuyup sayfayı kendisi çevirir.
  */
-export type ReaderMode = 'rsvp' | 'chunk' | 'bionic' | 'highlight' | 'page';
+export type ReaderMode = 'rsvp' | 'chunk' | 'bionic' | 'highlight' | 'page' | 'scroll';
 
 export interface Token {
   /** Kaynak metindeki hâliyle kelime (noktalama dahil: "gitti." ) */

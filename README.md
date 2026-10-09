@@ -28,6 +28,7 @@ npm run typecheck  # tip kontrolü
 | **Bionic** | Kelimelerin ilk heceleri koyulaştırılır | Kelime, tamamı taranmadan tanınır |
 | **Yürüyen vurgu** | Normal paragraf üzerinde akan vurgu | Geri dönüşleri (regresyon) engeller |
 | **Sayfa** | Metin kitap gibi sayfa sayfa; tempo yok, sayfayı sen çevirirsin | Öğrendiğini doğal okumaya aktarmak |
+| **Kaydırma** | Metin hedef hızda yukarı kayar, göz sabit okuma çizgisinde kalır | Sunucu ekranı gibi, eli serbest okumak |
 
 Kelime grubu boyutu (1–4) tempolu modların hepsinde ayarlanabilir; "Parça
 parça" bunun hazır bir profili.
@@ -56,6 +57,21 @@ parça" bunun hazır bir profili.
   çevrilen sayfanın kelimeleri sayılmıyor (1000 kel/dk'dan hızlı). Oturumlar
   günlük süreye ve seriye sayılır, "antrenman temposu" istatistiğine girmez.
   Odak seansı, göz molası ve "Aklında ne kaldı?" kartı sayfa modunda da çalışır.
+
+## Kaydırma modu
+
+- Metin kelime/dk hızına göre sürekli yukarı kayar; ekranın üst üçte birindeki
+  renkli bant okuma çizgisi. Hız, çizili paragrafların ölçülen yüksekliğinden
+  hesaplanıyor (piksel/kelime), böylece yazı boyutu değişse de tempo aynı kalır.
+- Metne dokunmak ya da boşluk durdurur/sürdürür; ←/→ paragraf atlar, kaydırıcı
+  konuma gider, ↑/↓ hız. Panel (arama, yer imi, görünüm) açılınca kayma durur.
+- Bütün kitap çizilmiyor: okunan yerin çevresinde ~700 kelimelik bir pencere
+  var; üstten çıkan paragraf atılırken kaydırma payı aynı çizimde düzeltildiği
+  için metin zıplamıyor (tarayıcıda 10 sn boyunca ölçüldü).
+- Konum ve ilerleme kaydedilir; sona gelince durur, "Metin bitti" der ve
+  "Aklında ne kaldı?" kartı açılır. Oturum `scroll` olarak yazılır, günlük
+  süreye ve seriye sayılır. Sayfa düzeni ayarları (yazı boyutu, hizalama,
+  heceleme) bu modda da geçerli.
 
 ## Okuma görünümü
 

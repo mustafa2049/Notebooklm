@@ -7,6 +7,7 @@ export const MODE_LABEL: Record<ReaderMode, string> = {
   bionic: 'Bionic',
   highlight: 'Yürüyen vurgu',
   page: 'Sayfa',
+  scroll: 'Kaydırma',
 };
 
 export const READER_MODES = Object.keys(MODE_LABEL) as ReaderMode[];

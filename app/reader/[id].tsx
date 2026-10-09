@@ -7,7 +7,8 @@ import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
 import { readingLayout, stepFontScale } from '@/appearance/typography';
 import { pageIndexFor, pageParagraphs } from '@/core/pages';
-import { indexFromCharOffset, progressRatio, wordsUpTo } from '@/core/progress';
+import { indexFromCharOffset, indexFromRatio, progressRatio, wordsUpTo } from '@/core/progress';
+import { paragraphOfChunk, scrollParagraphs } from '@/core/scroll';
 import { excerptAt } from '@/core/search';
 import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
@@ -20,6 +21,7 @@ import { PageControls } from '@/reader/PageControls';
 import { PageView } from '@/reader/PageView';
 import { RecallCard } from '@/reader/RecallCard';
 import { RsvpView } from '@/reader/RsvpView';
+import { ScrollFlow } from '@/reader/ScrollFlow';
 import { useReaderEngine } from '@/reader/useReaderEngine';
 import { useEyeBreak } from '@/reader/useEyeBreak';
 import { useFocusSession, type ReadingClock } from '@/reader/useFocusSession';
@@ -271,6 +273,32 @@ function Reader({
     if (!pageMode) setPacerOn(false);
   }, [pageMode]);
 
+  // ---- Otomatik kaydırma: metin hedef hızda kayar (bkz. ScrollFlow).
+  // Konum yine motorun indeksi; süre ve kelime ayrı bir oturuma yazılır
+  const scrollMode = mode === 'scroll' && !listening;
+  const [scrolling, setScrollingState] = useState(false);
+  const scrollTime = useRef({ ms: 0, since: 0 });
+  const scrollWords = useRef(0);
+  const setScrolling = useCallback((next: boolean) => {
+    const time = scrollTime.current;
+    if (next && !time.since) time.since = Date.now();
+    if (!next && time.since) {
+      time.ms += Date.now() - time.since;
+      time.since = 0;
+    }
+    setScrollingState(next);
+  }, []);
+  const scrollActiveMs = useCallback(
+    () => scrollTime.current.ms + (scrollTime.current.since ? Date.now() - scrollTime.current.since : 0),
+    []
+  );
+  useEffect(() => {
+    if (!scrollMode) setScrolling(false);
+  }, [scrollMode, setScrolling]);
+  /** Konum dışarıdan değişince (atlama, kaydırıcı) kayan metin o yerden yeniden kurulur */
+  const [scrollKey, setScrollKey] = useState(0);
+  const [scrollEnded, setScrollEnded] = useState(false);
+
   const pageClock = usePageClock({
     enabled: pageMode && !endReached,
     // Rehber oynarken okuma rehberin oturumuna yazılıyor; sayfa saati beklesin
@@ -284,10 +312,11 @@ function Reader({
    * sayfa saati. Odak seansı, göz molası ve özet kartı bunu kullanıyor.
    */
   const clock: ReadingClock = {
-    activeMs: () => engine.activeMs() + pageClock.activeMs(),
+    activeMs: () => engine.activeMs() + pageClock.activeMs() + scrollActiveMs(),
     pause: () => {
       engine.pause();
       pageClock.pause();
+      setScrolling(false);
     },
     wordsRead: engine.wordsRead,
   };
@@ -322,8 +351,8 @@ function Reader({
     if (focus.done) promptRecall('focusDone');
   }, [focus.done, promptRecall]);
   useEffect(() => {
-    if (engine.finished || endReached) promptRecall('finished');
-  }, [engine.finished, endReached, promptRecall]);
+    if (engine.finished || endReached || scrollEnded) promptRecall('finished');
+  }, [engine.finished, endReached, scrollEnded, promptRecall]);
   const leave = useCallback(() => {
     if (!promptRecall('leave')) onBack();
   }, [promptRecall, onBack]);
@@ -396,6 +425,14 @@ function Reader({
     words: engine.wordsRead,
     activeMs: engine.activeMs,
   });
+  // Kaydırma modunun okuması: kayan metnin süresi ve okuma çizgisinden geçen kelimeler
+  useSessionRecorder({
+    docId,
+    mode: 'scroll',
+    targetWpm: settings.wpm,
+    words: scrollWords.current,
+    activeMs: scrollActiveMs,
+  });
   // Sayfa modunun okuması ayrı oturum: süre sayfa saatinden, tempo istatistiğine girmez
   useSessionRecorder({
     docId,
@@ -413,6 +450,44 @@ function Reader({
     },
     [engine, recorder]
   );
+
+  // Panel, görünüm sayfası ya da özet kartı açılınca kaydırma dursun
+  useEffect(() => {
+    if (aiTab !== null || showAppearance || recall !== null) setScrolling(false);
+  }, [aiTab, showAppearance, recall, setScrolling]);
+
+  const scrollParas = useMemo(() => scrollParagraphs(engine.chunks), [engine.chunks]);
+  // Yalnızca yeniden kurulurken okunur (kayarken konum zaten oradan geliyor)
+  const scrollStart = useMemo(
+    () => paragraphOfChunk(scrollParas, engine.index),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [scrollParas, scrollKey]
+  );
+  const scrollJump = useCallback(
+    (index: number) => {
+      jumpTo(index);
+      setScrollEnded(false);
+      setScrollKey((key) => key + 1);
+    },
+    [jumpTo]
+  );
+  const onScrollPosition = useCallback(
+    (chunk: number) => {
+      const current = engine.index;
+      if (chunk > current) {
+        scrollWords.current += wordsUpTo(engine.chunks, chunk) - wordsUpTo(engine.chunks, current);
+      }
+      jumpTo(chunk);
+    },
+    [engine, jumpTo]
+  );
+  const onScrollEnd = useCallback(() => {
+    setScrolling(false);
+    setScrollEnded(true);
+    // Son bildirimden sonra okunanlar da sayılsın
+    onScrollPosition(engine.chunks.length - 1);
+    haptics.success(settings.haptics);
+  }, [setScrolling, onScrollPosition, engine.chunks.length, settings.haptics]);
 
   const turnPage = useCallback(
     (delta: 1 | -1) => {
@@ -634,20 +709,31 @@ function Reader({
       }
       return;
     }
+    if (scrollMode) {
+      if (!scrollEnded) setScrolling(!scrolling);
+      return;
+    }
     engine.toggle();
-  }, [engine, settings.haptics, listening, speech, beforePlay, listenSpan]);
+  }, [engine, settings.haptics, listening, speech, beforePlay, listenSpan, scrollMode, scrollEnded, scrolling, setScrolling]);
 
   const previousSentence = useCallback(() => {
     haptics.step(settings.haptics);
     if (listening) speech.play(Math.max(0, speech.current - 1));
-    else engine.previousSentence();
-  }, [engine, settings.haptics, listening, speech]);
+    else if (scrollMode) {
+      // Kaydırmada adım paragraf: bir önceki paragrafın başı
+      const paragraph = scrollParas[Math.max(0, paragraphOfChunk(scrollParas, engine.index) - 1)];
+      if (paragraph) scrollJump(paragraph.startChunk);
+    } else engine.previousSentence();
+  }, [engine, settings.haptics, listening, speech, scrollMode, scrollParas, scrollJump]);
 
   const nextSentence = useCallback(() => {
     haptics.step(settings.haptics);
     if (listening) speech.play(speech.current + 1);
-    else engine.nextSentence();
-  }, [engine, settings.haptics, listening, speech]);
+    else if (scrollMode) {
+      const paragraph = scrollParas[Math.min(scrollParas.length - 1, paragraphOfChunk(scrollParas, engine.index) + 1)];
+      if (paragraph) scrollJump(paragraph.startChunk);
+    } else engine.nextSentence();
+  }, [engine, settings.haptics, listening, speech, scrollMode, scrollParas, scrollJump]);
 
   // Metin bitince tek bir başarı titreşimi
   useEffect(() => {
@@ -757,7 +843,10 @@ function Reader({
         case 'r':
         case 'R':
           setEndReached(false);
-          engine.restart();
+          if (scrollMode) {
+            setScrolling(false);
+            scrollJump(0);
+          } else engine.restart();
           break;
         case 'f':
         case 'F':
@@ -896,6 +985,22 @@ function Reader({
             }}
           />
         </View>
+      ) : scrollMode ? (
+        <View style={{ flex: 1, paddingHorizontal: layout.marginPx }}>
+          <ScrollFlow
+            key={scrollKey}
+            paragraphs={scrollParas}
+            startParagraph={scrollStart}
+            playing={scrolling}
+            wpm={settings.wpm}
+            fontSize={pageFontSize}
+            lineHeight={pageLineHeight}
+            layout={layout}
+            onToggle={toggle}
+            onPosition={onScrollPosition}
+            onEnd={onScrollEnd}
+          />
+        </View>
       ) : (
       <View style={{ flex: 1 }}>
         {flowMode ? (
@@ -1013,7 +1118,7 @@ function Reader({
         </View>
       ) : null}
 
-      {engine.finished && !pageMode ? (
+      {(engine.finished || scrollEnded) && !pageMode ? (
         <View style={{ alignItems: 'center', paddingBottom: theme.space(2) }}>
           <Txt variant="dim" style={{ color: theme.colors.success }}>
             Metin bitti · {totalWords} kelime
@@ -1045,16 +1150,29 @@ function Reader({
           />
         ) : (
         <ReaderControls
-          playing={listening ? speech.playing : engine.playing}
-          ratio={listening && listenSpan ? progressRatio(engine.chunks, listenSpan.startChunk) : engine.ratio}
-          wordsRead={listening && listenSpan ? wordsUpTo(engine.chunks, listenSpan.startChunk) : engine.wordsRead}
+          playing={listening ? speech.playing : scrollMode ? scrolling : engine.playing}
+          ratio={listening && listenSpan ? progressRatio(engine.chunks, listenSpan.startChunk) : scrollEnded ? 1 : engine.ratio}
+          wordsRead={
+            listening && listenSpan
+              ? wordsUpTo(engine.chunks, listenSpan.startChunk)
+              : scrollEnded
+                ? totalWords
+                : engine.wordsRead
+          }
           totalWords={totalWords}
-          remainingMs={engine.remainingMs}
+          remainingMs={scrollEnded ? 0 : engine.remainingMs}
           onToggle={toggle}
-          onRestart={engine.restart}
+          onRestart={
+            scrollMode
+              ? () => {
+                  setScrolling(false);
+                  scrollJump(0);
+                }
+              : engine.restart
+          }
           onPreviousSentence={previousSentence}
           onNextSentence={nextSentence}
-          onSeek={engine.seekRatio}
+          onSeek={scrollMode ? (ratio) => scrollJump(indexFromRatio(engine.chunks, ratio)) : engine.seekRatio}
         />
         )}
       </View>
