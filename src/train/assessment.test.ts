@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   baselineWpm,
   improvement,
+  naturalWpm,
   nextTestPassageId,
   reliability,
   scoreAssessment,
@@ -146,6 +147,13 @@ describe('baselineWpm', () => {
 
   it('ilk güvenilir ölçümün doğal hızını kullanır', () => {
     expect(baselineWpm([test(5, 300, 4), test(1, 210, 4)])).toEqual({ wpm: 210, measured: true });
+  });
+});
+
+describe('naturalWpm', () => {
+  it('son güvenilir ölçümün hızı; ölçüm yoksa ortalama', () => {
+    expect(naturalWpm([])).toBe(230);
+    expect(naturalWpm([test(5, 300, 4), test(1, 210, 4), test(9, 500, 4, 'a', false)])).toBe(300);
   });
 });
 

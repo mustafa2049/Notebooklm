@@ -170,6 +170,20 @@ describe('mergeBackup', () => {
     expect(summarizeBackup(backupOf(other)).bookmarks).toBe(2);
   });
 
+  it('kitap başına tek plan: iki cihazda kurulmuşsa cihazdaki kalır', () => {
+    const mine = stored();
+    mine[k('plans')] = JSON.stringify([{ docId: 'd1', targetDay: '2026-10-20', createdAt: 5 }]);
+    const other = stored();
+    other[k('plans')] = JSON.stringify([
+      { docId: 'd1', targetDay: '2026-11-01', createdAt: 9 },
+      { docId: 'd2', targetDay: '2026-10-30', createdAt: 8 },
+    ]);
+    const result = mergeBackup({ keys: mine, textIds: new Set() }, backupOf(other), noSettings);
+    const plans = JSON.parse(result.keys[k('plans')]);
+    expect(plans).toHaveLength(2);
+    expect(plans.find((p: { docId: string }) => p.docId === 'd1').targetDay).toBe('2026-10-20');
+  });
+
   it('ayarları yalnızca istenirse alır ve API anahtarını korur', () => {
     const other = stored();
     other[k('settings')] = JSON.stringify({ wpm: 500, theme: 'dark' });

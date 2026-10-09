@@ -2,8 +2,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KEYS } from './keys';
 import { deleteText, readText, writeText } from './blobStore';
 import { removeBookmarksForDoc } from './bookmarks';
+import { removePlan } from './plans';
 
 export type DocumentSource = 'paste' | 'txt' | 'pdf' | 'epub' | 'url';
+
+export const SOURCE_LABEL: Record<DocumentSource, string> = {
+  paste: 'Yapıştırılan metin',
+  txt: 'TXT dosyası',
+  pdf: 'PDF',
+  epub: 'EPUB',
+  url: 'Bağlantı',
+};
 
 /**
  * Kütüphanedeki bir dokümanın künyesi. Metnin kendisi burada değil,
@@ -108,6 +117,7 @@ export async function removeDocument(id: string): Promise<void> {
   // Yer imi metindeki konum: metin gidince anlamı kalmıyor (alıntılar ise
   // cümlenin kendisini taşıdığı için defterde kalıyor)
   await removeBookmarksForDoc(id);
+  await removePlan(id);
   await deleteText(id);
 }
 

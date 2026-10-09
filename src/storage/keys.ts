@@ -14,6 +14,8 @@ export const KEYS = {
   badgesSeen: `${PREFIX}/badges-seen`,
   /** Alıntı defteri: altı çizilen cümleler ve notlar */
   highlights: `${PREFIX}/highlights`,
+  /** Kitap planları ("X günde bitir") */
+  plans: `${PREFIX}/plans`,
   /** Yer imleri: metinde işaretlenen konumlar */
   bookmarks: `${PREFIX}/bookmarks`,
   /** Okuduktan sonra kendi cümleleriyle yazılan özetler */

@@ -185,6 +185,8 @@ const LIST_RULES: Record<string, ListRule> = {
     max: 2000,
   },
   highlights: { identity: byId, max: 5000 },
+  // Kitap başına bir plan: iki cihazda kurulmuşsa cihazdaki kalır
+  plans: { identity: (p) => String(p.docId), max: 500 },
   // Aynı yere iki cihazda konmuş yer imi tek kayıt (bkz. addBookmark)
   bookmarks: { identity: (b) => `${b.docId}|${b.charOffset}`, max: 2000 },
   recalls: { identity: byId, max: 2000 },

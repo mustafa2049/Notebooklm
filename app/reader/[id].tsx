@@ -51,7 +51,7 @@ import {
   type DocumentMeta,
 } from '@/storage/documents';
 import { highlightsForDoc } from '@/storage/highlights';
-import { AVERAGE_ADULT_WPM, reliableTests } from '@/train/assessment';
+import { AVERAGE_ADULT_WPM, naturalWpm } from '@/train/assessment';
 import { AppearancePanel } from '@/ui/AppearancePanel';
 import { haptics } from '@/ui/haptics';
 import { Button, Card, IconButton, Txt } from '@/ui/primitives';
@@ -454,15 +454,12 @@ function Reader({
   );
 
   // Kalan süre tahmini: son güvenilir ölçümdeki doğal hız (yoksa ortalama yetişkin)
-  const [naturalWpm, setNaturalWpm] = useState(AVERAGE_ADULT_WPM);
+  const [readerWpm, setReaderWpm] = useState(AVERAGE_ADULT_WPM);
   useEffect(() => {
-    listAssessments().then((history) => {
-      const last = reliableTests(history).pop();
-      if (last) setNaturalWpm(last.wpm);
-    });
+    listAssessments().then((history) => setReaderWpm(naturalWpm(history)));
   }, []);
   const pageRemainingMs = page
-    ? (Math.max(0, totalWords - wordsUpTo(engine.chunks, page.start)) / Math.max(60, naturalWpm)) * 60000
+    ? (Math.max(0, totalWords - wordsUpTo(engine.chunks, page.start)) / Math.max(60, readerWpm)) * 60000
     : 0;
 
   // ---- Dinleyerek okuma: motor yerinde durur, ses cümle cümle ilerler

@@ -194,6 +194,11 @@ export function suggestTargetWpm(score: Score): number {
  */
 export const AVERAGE_ADULT_WPM = 230;
 
+/** Doğal okuma hızı: son güvenilir ölçüm; ölçüm yoksa ortalama yetişkin hızı */
+export function naturalWpm(history: AssessmentRecord[]): number {
+  return reliableTests(history).pop()?.wpm ?? AVERAGE_ADULT_WPM;
+}
+
 export function baselineWpm(history: AssessmentRecord[]): { wpm: number; measured: boolean } {
   const first = reliableTests(history)[0];
   return first ? { wpm: first.wpm, measured: true } : { wpm: AVERAGE_ADULT_WPM, measured: false };

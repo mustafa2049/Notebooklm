@@ -1,26 +1,24 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Alert, Platform, View } from 'react-native';
+import { PLAN_STATE_LABEL, planStatus, wordsReadToday, type BookPlan } from '@/habit/bookPlan';
 import { finishEstimateDays } from '@/habit/books';
 import { useSettings } from '@/store/SettingsContext';
 import {
   listDocumentsWithProgress,
   removeDocument,
+  SOURCE_LABEL,
   type DocumentMeta,
   type DocumentProgress,
 } from '@/storage/documents';
+import { listAssessments } from '@/storage/assessments';
+import { listPlans } from '@/storage/plans';
 import { listSessions, type ReadingSession } from '@/storage/stats';
+import { naturalWpm } from '@/train/assessment';
+import { planStateColor } from '@/ui/PlanSection';
 import { Icon } from '@/ui/Icon';
 import { formatNumber, formatPercent, formatShortDuration } from '@/ui/format';
 import { Button, Card, IconButton, ProgressBar, Screen, Txt } from '@/ui/primitives';
-
-const SOURCE_LABEL: Record<DocumentMeta['source'], string> = {
-  paste: 'Yapıştırılan metin',
-  txt: 'TXT dosyası',
-  pdf: 'PDF',
-  epub: 'EPUB',
-  url: 'Bağlantı',
-};
 
 export default function LibraryScreen() {
   const router = useRouter();
@@ -28,6 +26,8 @@ export default function LibraryScreen() {
   const [items, setItems] = useState<{ meta: DocumentMeta; progress: DocumentProgress | null }[]>([]);
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<ReadingSession[]>([]);
+  const [plans, setPlans] = useState<BookPlan[]>([]);
+  const [wpm, setWpm] = useState(230);
 
   const refresh = useCallback(() => {
     listDocumentsWithProgress().then((next) => {
@@ -36,6 +36,8 @@ export default function LibraryScreen() {
     });
     // Bitiş tahmini için: oturumlar okuyucudan dönünce güncellenmiş olur
     listSessions().then(setSessions);
+    listPlans().then(setPlans);
+    listAssessments().then((history) => setWpm(naturalWpm(history)));
   }, []);
 
   // Okuyucudan dönüldüğünde ilerleme güncellenmiş olur
@@ -95,6 +97,13 @@ export default function LibraryScreen() {
                   </Txt>
                 </View>
                 <IconButton
+                  name="book"
+                  size={18}
+                  emphasis="faint"
+                  onPress={() => router.push(`/book/${meta.id}`)}
+                  accessibilityLabel={`${meta.title}: kitap kartı`}
+                />
+                <IconButton
                   name="trash"
                   size={18}
                   emphasis="faint"
@@ -127,11 +136,64 @@ export default function LibraryScreen() {
                   </View>
                 </View>
               ) : null}
+              <PlanLine
+                plan={plans.find((plan) => plan.docId === meta.id)}
+                meta={meta}
+                progress={progress}
+                sessions={sessions}
+                wpm={wpm}
+              />
             </Card>
           ))}
         </View>
       )}
     </Screen>
+  );
+}
+
+/** Kitabın planı varsa tek satır: bugünkü pay ve durum */
+function PlanLine({
+  plan,
+  meta,
+  progress,
+  sessions,
+  wpm,
+}: {
+  plan: BookPlan | undefined;
+  meta: DocumentMeta;
+  progress: DocumentProgress | null;
+  sessions: ReadingSession[];
+  wpm: number;
+}) {
+  const { theme } = useSettings();
+  if (!plan) return null;
+  const now = Date.now();
+  const status = planStatus(
+    plan,
+    {
+      wordCount: meta.wordCount,
+      readWords: Math.round(meta.wordCount * (progress?.ratio ?? 0)),
+      finished: Boolean(progress?.finished),
+      todayRead: wordsReadToday(sessions, meta.id, now),
+    },
+    now,
+    wpm
+  );
+  const detail =
+    status.state === 'done'
+      ? 'plan tamamlandı'
+      : status.state === 'overdue'
+        ? 'süre doldu, yeni süre seç'
+        : status.todayLeft === 0
+          ? `bugünkü pay okundu · ${status.daysLeft} gün kaldı`
+          : `bugün ~${status.todayMinutes} dk · ${status.daysLeft} gün kaldı`;
+  return (
+    <Txt variant="dim" style={{ fontSize: 12, marginTop: theme.space(2) }}>
+      <Txt variant="dim" style={{ fontSize: 12, color: planStateColor(status.state, theme.colors) }}>
+        Plan: {PLAN_STATE_LABEL[status.state]}
+      </Txt>{' '}
+      · {detail}
+    </Txt>
   );
 }
 

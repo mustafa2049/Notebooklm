@@ -40,3 +40,13 @@ export function deriveTitle(text: string, fallback = 'Adsız metin'): string {
   const clipped = firstLine.length > 60 ? `${firstLine.slice(0, 57).trimEnd()}…` : firstLine;
   return clipped;
 }
+
+/** "2026-10-15" → "15 Ekim Perşembe" (gün anahtarı yerel takvim günü) */
+export function formatDayKey(key: string, weekday = true): string {
+  const [year, month, day] = key.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'long',
+    ...(weekday ? { weekday: 'long' as const } : {}),
+  });
+}

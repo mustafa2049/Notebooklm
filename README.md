@@ -103,6 +103,23 @@ antrenman ve ölçüm ekranları bununla çiziliyor.
 - İlerleme, sayfa çevrilip 2 sn içinde uygulamadan çıkılsa da kaydediliyor
   (arka plana alınma / sekme kapanma anında yazılıyor).
 
+## Kitap kartı ve bitirme planı
+
+Kütüphanede kitabın yanındaki kitap simgesi **kitap kartını** açar: ilerleme,
+harcanan süre, okuduğun günler, ilk/son okuma, bu kitaptaki kendi hızın (Sayfa
+modundan; en az 2 dakikalık okumayla), bu tempoyla bitiş tahmini, bölümler, yer
+imleri, alıntılar, özetlerin ve bu kitaptan kaydettiğin kelimeler. Bölüme, yer
+imine ya da alıntıya dokununca okuyucu o yerden açılır.
+
+**Bitirme planı** ("X günde bitir", `src/habit/bookPlan.ts`, testli): 3/7/14/30
+gün ya da gün gün ayarlanır; bugün 1. gün sayılır. Her günün payı **günün
+başında kalan kelimenin kalan günlere bölünmesiyle** bulunur: geride kalınca
+kalan kendiliğinden sonraki günlere yayılır, önde gidince pay küçülür — "dünü
+telafi et" diye ayrıca yük binmez. Durum: Öndesin / Yolunda / Geride / Süre
+doldu / Bitti (yarım günlük pay kadar fark gerekiyor). Dakika karşılığı son
+ölçümdeki doğal hızla. Bugün ekranında "Kitap planın" kartı, kütüphanede plan
+satırı. Planlar yedeğe dahil; kitap silinince planı da silinir.
+
 ## Türkçeye özel davranışlar
 
 Bunlar sonradan eklenmiş süsler değil, motorun içindeki kararlar:

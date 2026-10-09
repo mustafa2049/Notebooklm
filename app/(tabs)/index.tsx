@@ -2,6 +2,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { LEVEL_LABEL } from '@/content/passages';
+import { PLAN_STATE_LABEL, planStatus, wordsReadToday, type PlanStatus } from '@/habit/bookPlan';
 import { booksFinishedInYear, finishEstimateDays, yearlyGoalStatus } from '@/habit/books';
 import { dailySuggestions, type Suggestion } from '@/habit/today';
 import { useSettings } from '@/store/SettingsContext';
@@ -14,14 +15,16 @@ import {
 import { drillDoneOn, listDrillResults } from '@/storage/drills';
 import { dayKey, listSessions, summarize, type ReadingSession, type StatsSummary } from '@/storage/stats';
 import { listVocab } from '@/storage/vocab';
-import { improvement, testDue, type AssessmentRecord } from '@/train/assessment';
+import { improvement, naturalWpm, testDue, type AssessmentRecord } from '@/train/assessment';
 import { dueCount } from '@/train/review';
 import { newBadges, type Badge } from '@/habit/badges';
 import { loadBadges, loadSeenBadges, markBadgesSeen } from '@/storage/badges';
+import { listPlans } from '@/storage/plans';
 import { loadProgram } from '@/storage/program';
 import { nextLesson, type Lesson } from '@/train/program';
 import { DailyGoal } from '@/ui/DailyGoal';
-import { formatPercent } from '@/ui/format';
+import { formatNumber, formatPercent } from '@/ui/format';
+import { planStateColor } from '@/ui/PlanSection';
 import { Icon } from '@/ui/Icon';
 import { Button, Card, ProgressBar, Screen, SectionHeader, Txt } from '@/ui/primitives';
 
@@ -42,6 +45,8 @@ interface Snapshot {
   suggestions: Suggestion[];
   /** 4 haftalık programın sıradaki dersi (program başlatıldıysa) */
   lesson: Lesson | null;
+  /** Bitmemiş kitap planları ve bugünkü durumları */
+  plans: { meta: DocumentMeta; status: PlanStatus }[];
 }
 
 function greeting(now: number): string {
@@ -78,7 +83,8 @@ export default function TodayScreen() {
         loadBadges(),
         loadSeenBadges(),
         loadProgram(),
-      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen, program]) => {
+        listPlans(),
+      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen, program, plans]) => {
         if (cancelled) return;
         // Okumaya devam: en son dokunulan, bitmemiş doküman
         const unfinished = documents
@@ -86,7 +92,26 @@ export default function TodayScreen() {
           .sort((a, b) => (b.progress?.updatedAt ?? 0) - (a.progress?.updatedAt ?? 0));
         const tests = assessments.filter((record) => record.kind === 'test');
 
+        const wpm = naturalWpm(assessments);
+        const planned = plans.flatMap((plan) => {
+          const item = documents.find((doc) => doc.meta.id === plan.docId);
+          if (!item) return [];
+          const status = planStatus(
+            plan,
+            {
+              wordCount: item.meta.wordCount,
+              readWords: Math.round(item.meta.wordCount * (item.progress?.ratio ?? 0)),
+              finished: Boolean(item.progress?.finished),
+              todayRead: wordsReadToday(sessions, plan.docId, now),
+            },
+            now,
+            wpm
+          );
+          return status.state === 'done' ? [] : [{ meta: item.meta, status }];
+        });
+
         setSnapshot({
+          plans: planned,
           lesson: program ? nextLesson(program) : null,
           freshBadges: newBadges(badges, seen),
           summary: summarize(sessions, now),
@@ -205,6 +230,44 @@ export default function TodayScreen() {
           <Button label="Metin ekle" icon="plus" onPress={() => router.push('/import')} />
         </Card>
       )}
+
+      {snapshot.plans.length ? (
+        <>
+          <SectionHeader title="Kitap planın" />
+          <View style={{ gap: theme.space(2) }}>
+            {snapshot.plans.map(({ meta, status }) => (
+              <Card
+                key={meta.id}
+                onPress={() =>
+                  router.push(status.state === 'overdue' ? `/book/${meta.id}` : `/reader/${meta.id}`)
+                }
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Txt variant="body" numberOfLines={1}>
+                      {meta.title}
+                    </Txt>
+                    <Txt variant="dim" style={{ fontSize: 13 }}>
+                      {status.state === 'overdue'
+                        ? `Süre doldu · ${formatNumber(status.remainingWords)} kelime kaldı · yeni süre seç`
+                        : status.todayLeft === 0
+                          ? `Bugünkü payını okudun · ${status.daysLeft} gün kaldı`
+                          : `Bugün: ${formatNumber(status.todayLeft)} kelime · ~${status.todayMinutes} dk · ${status.daysLeft} gün kaldı`}
+                    </Txt>
+                    <Txt
+                      variant="dim"
+                      style={{ fontSize: 12, color: planStateColor(status.state, theme.colors) }}
+                    >
+                      {PLAN_STATE_LABEL[status.state]}
+                    </Txt>
+                  </View>
+                  <Icon name="chevronRight" size={20} color={theme.colors.textFaint} />
+                </View>
+              </Card>
+            ))}
+          </View>
+        </>
+      ) : null}
 
       {snapshot.suggestions.length > 0 || snapshot.lesson ? (
         <>
