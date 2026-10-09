@@ -9,9 +9,14 @@ import {
 import {
   FONT_SCALE_MAX,
   FONT_SCALE_MIN,
+  LETTER_SPACINGS,
   LINE_SPACINGS,
+  PAGE_MARGINS,
+  readingLayout,
   stepFontScale,
+  WORD_SPACINGS,
 } from '@/appearance/typography';
+import { typeset } from '@/core/typeset';
 import { MODE_CHUNK_SIZE, MODE_LABEL, READER_MODES } from '@/reader/modes';
 import { useSettings } from '@/store/SettingsContext';
 import { ColorPicker } from './ColorPicker';
@@ -19,10 +24,13 @@ import { Chip, Toggle, Txt } from './primitives';
 import { fontPreviewStyle, readingFontStyle, type ReadingFontId } from './theme';
 
 /**
- * Okuma görünümü paneli: mod, yazı boyutu, satır aralığı, yazı tipi, renk
- * teması, yazı rengi ve özel renkler. Okuyucudaki "Aa" sayfası ile Ayarlar
- * aynı bileşeni kullanır; değişiklik anında kaydedilir ve metne yansır.
+ * Okuma görünümü paneli: mod, yazı boyutu, satır aralığı, yazı tipi, sayfa
+ * düzeni, renk teması, yazı rengi ve özel renkler. Okuyucudaki "Aa" sayfası ile
+ * Ayarlar aynı bileşeni kullanır; değişiklik anında kaydedilir ve metne yansır.
  */
+
+const PREVIEW =
+  'Okuma alışkanlığı, her gün birkaç sayfayla kurulur. Kısa ama düzenli oturumlar, uzun ve seyrek olanlardan daha kalıcıdır.';
 
 const FONT_OPTIONS: { id: Exclude<ReadingFontId, 'auto'>; label: string }[] = [
   { id: 'sans', label: 'Sistem' },
@@ -37,11 +45,18 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
   const [picker, setPicker] = useState<PickerState>(null);
 
   const reading = readingTheme.colors;
+  const layout = readingLayout(settings);
+  const previewSize = 17 * Math.min(settings.fontScale, 1.4);
   const effectiveFont: Exclude<ReadingFontId, 'auto'> =
     settings.readingFont === 'auto' ? (settings.hyperlegible ? 'hyperlegible' : 'sans') : settings.readingFont;
 
   const section = (title: string) => (
     <Txt variant="label" style={{ marginTop: theme.space(2) }}>
+      {title}
+    </Txt>
+  );
+  const sub = (title: string) => (
+    <Txt variant="dim" style={{ fontSize: 13 }}>
       {title}
     </Txt>
   );
@@ -61,12 +76,14 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
         <Text
           style={{
             color: reading.text,
-            fontSize: 17 * Math.min(settings.fontScale, 1.4),
-            lineHeight: 17 * Math.min(settings.fontScale, 1.4) * settings.lineSpacing,
+            fontSize: previewSize,
+            lineHeight: previewSize * settings.lineSpacing,
+            letterSpacing: previewSize * layout.letterSpacingEm,
+            textAlign: layout.textAlign,
             ...readingFontStyle(readingTheme),
           }}
         >
-          Okuma alışkanlığı, her gün birkaç sayfayla kurulur.
+          {typeset(PREVIEW, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace })}
         </Text>
       </View>
       {readingTheme.textFallback ? (
@@ -169,6 +186,58 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
           );
         })}
       </View>
+
+      {section('Sayfa düzeni')}
+      {sub('Kenar boşluğu')}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+        {PAGE_MARGINS.map((option) => (
+          <Chip
+            key={option.id}
+            label={option.label}
+            active={layout.marginPx === option.px}
+            onPress={() => update({ pageMargin: option.id })}
+          />
+        ))}
+      </View>
+      {sub('Hizalama')}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+        <Chip label="Sola yaslı" active={!settings.justify} onPress={() => update({ justify: false })} />
+        <Chip label="İki yana" active={settings.justify} onPress={() => update({ justify: true })} />
+      </View>
+      {sub('Harf aralığı')}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+        {LETTER_SPACINGS.map((option, index) => (
+          <Chip
+            key={option.label}
+            label={option.label}
+            active={layout.letterSpacingEm === option.em}
+            onPress={() => update({ letterSpacing: index })}
+          />
+        ))}
+      </View>
+      {sub('Kelime aralığı')}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+        {WORD_SPACINGS.map((option, index) => (
+          <Chip
+            key={option.label}
+            label={option.label}
+            active={layout.extraWordSpace === option.thinSpaces}
+            onPress={() => update({ wordSpacing: index })}
+          />
+        ))}
+      </View>
+      <Toggle
+        label="Satır sonunda hecele"
+        hint="Uzun kelimeler hece sınırından bölünür (ki-tap-lık); iki yana yaslarken boşluklar azalır."
+        value={settings.hyphenate}
+        onChange={(hyphenate) => update({ hyphenate })}
+      />
+      <Toggle
+        label="Ekranı açık tut"
+        hint="Okurken ekran kararmaz; 10 dakika hiçbir şey olmazsa bırakılır."
+        value={settings.keepAwake}
+        onChange={(keepAwake) => update({ keepAwake })}
+      />
 
       {section('Renk teması')}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>

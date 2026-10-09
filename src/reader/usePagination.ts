@@ -35,24 +35,31 @@ export interface Pagination {
  * Sayfalar tahmini yüksekliğe göre kuruluyor (`buildFlowPages`), sonra
  * **ölçülüyor**: çizilen sayfa alana sığmadıysa pay %5 küçülüp sayfalar
  * yeniden kuruluyor. Uzun kelimeler, büyük yazı ya da geniş satır aralığı yüzünden
- * metnin kesilmesi böylece önleniyor. Yazı boyutu, tipi, satır aralığı ya da
- * alan değişince pay baştan başlıyor.
+ * metnin kesilmesi böylece önleniyor. Yazı boyutu, tipi, satır aralığı, sayfa
+ * düzeni ya da alan değişince pay baştan başlıyor.
  */
 export function usePagination(
   chunks: Chunk[],
-  metrics: { fontSize: number; lineHeight: number; charEm: number; paragraphGap: number },
+  metrics: {
+    fontSize: number;
+    lineHeight: number;
+    charEm: number;
+    paragraphGap: number;
+    /** Satır kırılmasını değiştiren diğer her şey (aralıklar, heceleme, kenar) */
+    variant: string;
+  },
   enabled: boolean
 ): Pagination {
   const [area, setArea] = useState({ width: 0, height: 0 });
   const [factor, setFactor] = useState(START_FACTOR);
   const [sampleHeight, setSampleHeight] = useState(0);
-  const { fontSize, lineHeight, charEm, paragraphGap } = metrics;
+  const { fontSize, lineHeight, charEm, paragraphGap, variant } = metrics;
   const charsPerLine = charsPerLineFromSample(sampleHeight, lineHeight);
 
   // Ölçüler değişince pay baştan (yükseklik hariç: aşağıda)
   useEffect(() => {
     setFactor(START_FACTOR);
-  }, [area.width, fontSize, lineHeight, charEm, paragraphGap, charsPerLine]);
+  }, [area.width, fontSize, lineHeight, charEm, paragraphGap, charsPerLine, variant]);
 
   /** Son çizilen sayfanın yüksekliği: alan sonradan ölçülürse/küçülürse yeniden bakılır */
   const contentHeight = useRef(0);
@@ -93,7 +100,7 @@ export function usePagination(
     setSampleHeight((current) => (Math.abs(current - height) < 0.5 ? current : height));
   }, []);
 
-  const layoutKey = [area.width, area.height, fontSize, lineHeight, charsPerLine ?? 0, factor].join(':');
+  const layoutKey = [area.width, area.height, fontSize, lineHeight, charsPerLine ?? 0, factor, variant].join(':');
 
   return { pages, ready, onAreaLayout, onContentHeight, onSampleHeight, layoutKey };
 }

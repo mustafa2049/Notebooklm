@@ -5,7 +5,7 @@ import { ActivityIndicator, BackHandler, Modal, Platform, Pressable, ScrollView,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
-import { stepFontScale } from '@/appearance/typography';
+import { readingLayout, stepFontScale } from '@/appearance/typography';
 import { pageIndexFor, pageParagraphs } from '@/core/pages';
 import { indexFromCharOffset, progressRatio, wordsUpTo } from '@/core/progress';
 import { excerptAt } from '@/core/search';
@@ -26,6 +26,7 @@ import { useFocusSession, type ReadingClock } from '@/reader/useFocusSession';
 import { usePageClock } from '@/reader/usePageClock';
 import { usePagination } from '@/reader/usePagination';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
+import { useScreenAwake } from '@/reader/useScreenAwake';
 import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
 import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
 import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
@@ -222,6 +223,12 @@ function Reader({
   const pageFontSize = PAGE_FONT_SIZE * settings.fontScale;
   const pageLineHeight = pageFontSize * settings.lineSpacing;
   const pageParagraphGap = pageLineHeight * 0.45;
+  // Kenar boşluğu, hizalama, harf/kelime aralığı, heceleme (Aa → Sayfa düzeni)
+  const { pageMargin, justify, letterSpacing, wordSpacing, hyphenate } = settings;
+  const layout = useMemo(
+    () => readingLayout({ pageMargin, justify, letterSpacing, wordSpacing, hyphenate }),
+    [pageMargin, justify, letterSpacing, wordSpacing, hyphenate]
+  );
   const pagination = usePagination(
     engine.chunks,
     {
@@ -229,6 +236,7 @@ function Reader({
       lineHeight: pageLineHeight,
       charEm: theme.readingFont.charEm,
       paragraphGap: pageParagraphGap,
+      variant: layout.key,
     },
     pageMode
   );
@@ -671,6 +679,9 @@ function Reader({
     toggleBookmark,
   ]);
 
+  // Okurken ekran kararmasın; 10 dakika hiçbir şey olmazsa bırakılır
+  useScreenAwake(settings.keepAwake, listening ? `dinle:${speech.current}` : engine.index);
+
   // Dinlerken metin her modda akış görünümünde: göz sesi takip edebilsin
   const flowMode = listening || mode === 'bionic' || mode === 'highlight';
 
@@ -745,7 +756,7 @@ function Reader({
         yarısını kullanır, satırlar gereksiz yerden kırılırdı.
       */}
       {pageMode ? (
-        <View style={{ flex: 1, paddingHorizontal: theme.space(6), paddingTop: theme.space(3) }}>
+        <View style={{ flex: 1, paddingHorizontal: layout.marginPx, paddingTop: theme.space(3) }}>
           <PageView
             chunks={engine.chunks}
             page={page}
@@ -754,6 +765,7 @@ function Reader({
             fontSize={pageFontSize}
             lineHeight={pageLineHeight}
             paragraphGap={pageParagraphGap}
+            layout={layout}
             markedSentences={markedSentences}
             flashSentence={flashSentence}
             onAreaLayout={pagination.onAreaLayout}
@@ -770,11 +782,12 @@ function Reader({
       ) : (
       <View style={{ flex: 1 }}>
         {flowMode ? (
-          <View style={{ flex: 1, paddingHorizontal: theme.space(5) }}>
+          <View style={{ flex: 1, paddingHorizontal: layout.marginPx }}>
             <FlowView
               chunks={engine.chunks}
               index={listening && listenSpan ? listenSpan.startChunk : engine.index}
               variant={!listening && mode === 'bionic' ? 'bionic' : 'highlight'}
+              layout={layout}
               markedSentences={markedSentences}
               activeSentence={listening ? listenSpan?.sentenceIndex : undefined}
             />

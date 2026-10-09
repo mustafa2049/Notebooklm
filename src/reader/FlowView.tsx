@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
+import type { ReadingLayout } from '@/appearance/typography';
 import { buildPages, pageIndexFor } from '@/core/pages';
 import { bionicPrefixLength } from '@/core/syllable';
+import { THIN_SPACE, typeset, type TypesetOptions } from '@/core/typeset';
 import type { Chunk } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle, type Theme } from '@/ui/theme';
@@ -17,12 +19,15 @@ export function FlowView({
   chunks,
   index,
   variant,
+  layout,
   markedSentences,
   activeSentence,
 }: {
   chunks: Chunk[];
   index: number;
   variant: 'bionic' | 'highlight';
+  /** Hizalama, harf/kelime aralığı, heceleme (Aa → Sayfa düzeni) */
+  layout: ReadingLayout;
   /** Alıntı defterine eklenmiş cümleler (cümle sırası) */
   markedSentences?: Set<number>;
   /** Sesli okumada seslendirilen cümle: bütün cümle vurgulanır */
@@ -42,12 +47,15 @@ export function FlowView({
   const wordsPerPage = useMemo(() => {
     if (box.height < lineHeight * 2 || box.width < 80) return 20;
     const lines = Math.floor(box.height / lineHeight);
-    // Ortalama Türkçe kelime ~6,5 harf + boşluk; harf genişliği yazı tipine göre
-    const wordWidth = 7.5 * fontSize * (theme.readingFont.charEm + 0.02);
+    // Ortalama Türkçe kelime ~6,5 harf + boşluk; harf genişliği yazı tipine,
+    // harf aralığına ve kelime aralığına (ince boşluk ≈ 0,2 em) göre
+    const wordWidth =
+      7.5 * fontSize * (theme.readingFont.charEm + 0.02 + layout.letterSpacingEm) +
+      layout.extraWordSpace * 0.2 * fontSize;
     const perLine = Math.max(1, box.width / wordWidth);
     // 0.8: satır sonlarında kalan boşluk payı (kelimeler satıra tam oturmaz)
     return Math.max(8, Math.floor(lines * perLine * 0.8));
-  }, [box, fontSize, lineHeight, theme.readingFont.charEm]);
+  }, [box, fontSize, lineHeight, theme.readingFont.charEm, layout.letterSpacingEm, layout.extraWordSpace]);
 
   const pages = useMemo(() => buildPages(chunks, wordsPerPage), [chunks, wordsPerPage]);
   const page = pages[pageIndexFor(pages, index)];
@@ -78,7 +86,17 @@ export function FlowView({
       // Ölçüm payı yanılırsa metin arayüzün üstüne binmesin
       style={{ flex: 1, overflow: 'hidden', justifyContent: 'center' }}
     >
-      <Text style={{ fontSize, lineHeight, color: baseColor, ...readingFontStyle(theme) }}>
+      <Text
+        style={{
+          fontSize,
+          lineHeight,
+          color: baseColor,
+          letterSpacing: fontSize * layout.letterSpacingEm,
+          textAlign: layout.textAlign,
+          ...readingFontStyle(theme),
+        }}
+        {...(Platform.OS === 'android' && layout.hyphenate ? { android_hyphenationFrequency: 'normal' as const } : {})}
+      >
         {visible.map(({ chunk, chunkIndex }) => (
           <ChunkSpan
             key={chunkIndex}
@@ -93,6 +111,8 @@ export function FlowView({
             theme={theme}
             bionicRatio={settings.bionicRatio}
             baseColor={baseColor}
+            hyphenate={layout.hyphenate}
+            extraWordSpace={layout.extraWordSpace}
             marked={markedSentences?.has(chunk.sentenceIndex) ?? false}
           />
         ))}
@@ -115,8 +135,12 @@ const ChunkSpan = React.memo(function ChunkSpan({
   bionicRatio,
   baseColor,
   marked,
+  hyphenate,
+  extraWordSpace,
 }: {
   chunk: Chunk;
+  hyphenate: boolean;
+  extraWordSpace: number;
   marked: boolean;
   current: boolean;
   read: boolean;
@@ -142,25 +166,30 @@ const ChunkSpan = React.memo(function ChunkSpan({
         ? theme.colors.accentSoft
         : undefined;
 
+  // Bionic'te kelime koyu/açık iki parçaya bölündüğü için heceleme yok;
+  // kelime aralığı yine uygulanıyor
+  const space = `${THIN_SPACE.repeat(extraWordSpace)} `;
   if (variant === 'bionic') {
     return (
       <Text style={{ color, backgroundColor: background }}>
         {chunk.tokens.map((token, i) => (
           <BionicWord
             key={i}
-            word={i < chunk.tokens.length - 1 ? `${token.text} ` : token.text}
+            word={i < chunk.tokens.length - 1 ? `${token.text}${space}` : token.text}
             ratio={bionicRatio}
             theme={theme}
             color={color}
             boldColor={current ? theme.colors.accent : theme.colors.text}
           />
-        ))}{' '}
+        ))}
+        {space}
       </Text>
     );
   }
 
+  const options: TypesetOptions = { hyphenate, extraWordSpace };
   return (
-    <Text style={{ color, backgroundColor: background }}>{chunk.text} </Text>
+    <Text style={{ color, backgroundColor: background }}>{typeset(`${chunk.text} `, options)}</Text>
   );
 });
 

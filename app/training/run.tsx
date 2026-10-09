@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { readingLayout } from '@/appearance/typography';
 import { FlowView } from '@/reader/FlowView';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
@@ -124,6 +125,11 @@ function TrainingSession({
 }) {
   const { theme, settings } = useSettings();
   const targetWpm = baseWpm ?? settings.wpm;
+  const { pageMargin, justify, letterSpacing, wordSpacing, hyphenate } = settings;
+  const layout = useMemo(
+    () => readingLayout({ pageMargin, justify, letterSpacing, wordSpacing, hyphenate }),
+    [pageMargin, justify, letterSpacing, wordSpacing, hyphenate]
+  );
   const exercise = exerciseById(exerciseId)!;
 
   const [elapsed, setElapsed] = useState(0);
@@ -223,11 +229,12 @@ function TrainingSession({
 
       <View style={{ flex: 1 }}>
         {flowMode ? (
-          <View style={{ flex: 1, paddingHorizontal: theme.space(5) }}>
+          <View style={{ flex: 1, paddingHorizontal: layout.marginPx }}>
             <FlowView
               chunks={engine.chunks}
               index={engine.index}
               variant={settings.mode === 'bionic' ? 'bionic' : 'highlight'}
+              layout={layout}
             />
           </View>
         ) : (

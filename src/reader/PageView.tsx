@@ -10,7 +10,9 @@ import {
   type GestureResponderEvent,
   type LayoutChangeEvent,
 } from 'react-native';
+import type { ReadingLayout } from '@/appearance/typography';
 import { pageParagraphs, SAMPLE_PARAGRAPH, type Page } from '@/core/pages';
+import { typeset } from '@/core/typeset';
 import type { Chunk } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
@@ -45,6 +47,7 @@ export function PageView({
   fontSize,
   lineHeight,
   paragraphGap,
+  layout,
   markedSentences,
   flashSentence = null,
   onAreaLayout,
@@ -67,6 +70,8 @@ export function PageView({
   lineHeight: number;
   /** Paragraflar arası boşluk — sayfalama da aynı değeri kullanıyor */
   paragraphGap: number;
+  /** Hizalama, harf/kelime aralığı, heceleme (ölçüm paragrafına da uygulanır) */
+  layout: ReadingLayout;
   /** Alıntılanmış cümleler (cümle sırası) */
   markedSentences: Set<number>;
   /** Aramadan gelinen cümle: sayfa çevrilene kadar belirgin */
@@ -82,7 +87,22 @@ export function PageView({
 }) {
   const { theme } = useSettings();
   const { width: windowWidth } = useWindowDimensions();
-  const paragraphs = useMemo(() => (page ? pageParagraphs(chunks, page) : []), [chunks, page]);
+  // Heceleme ve kelime aralığı görünmez işaretlerle yapılıyor (bkz. core/typeset)
+  const paragraphs = useMemo(() => {
+    if (!page) return [];
+    const options = { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace };
+    return pageParagraphs(chunks, page).map((paragraph) => ({
+      ...paragraph,
+      sentences: paragraph.sentences.map((sentence, index) => ({
+        ...sentence,
+        display: typeset(index === 0 ? sentence.text : ` ${sentence.text}`, options),
+      })),
+    }));
+  }, [chunks, page, layout.hyphenate, layout.extraWordSpace]);
+  const sample = useMemo(
+    () => typeset(SAMPLE_PARAGRAPH, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace }),
+    [layout.hyphenate, layout.extraWordSpace]
+  );
 
   // ---- Kısa kayma/solma; sistemde "hareketi azalt" açıksa yok
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -141,7 +161,17 @@ export function PageView({
     onTurn(event.nativeEvent.pageX < windowWidth * PREVIOUS_ZONE ? -1 : 1);
   };
 
-  const textStyle = { fontSize, lineHeight, color: theme.colors.text, ...readingFontStyle(theme) };
+  const textStyle = {
+    fontSize,
+    lineHeight,
+    color: theme.colors.text,
+    letterSpacing: fontSize * layout.letterSpacingEm,
+    textAlign: layout.textAlign,
+    ...readingFontStyle(theme),
+  };
+  // Android yumuşak tireyi ancak heceleme açıkken dikkate alıyor
+  const hyphenation =
+    Platform.OS === 'android' && layout.hyphenate ? { android_hyphenationFrequency: 'normal' as const } : {};
 
   return (
     <View style={{ flex: 1, overflow: 'hidden' }} onLayout={onAreaLayout}>
@@ -152,8 +182,12 @@ export function PageView({
         importantForAccessibility="no-hide-descendants"
         style={{ position: 'absolute', left: 0, right: 0, top: 0, opacity: 0 }}
       >
-        <Text style={textStyle} onLayout={(event) => onSampleHeight(event.nativeEvent.layout.height)}>
-          {SAMPLE_PARAGRAPH}
+        <Text
+          style={textStyle}
+          {...hyphenation}
+          onLayout={(event) => onSampleHeight(event.nativeEvent.layout.height)}
+        >
+          {sample}
         </Text>
       </View>
       <Pressable
@@ -175,6 +209,7 @@ export function PageView({
           {paragraphs.map((paragraph, index) => (
             <Text
               key={`${paragraph.paragraphIndex}-${index}`}
+              {...hyphenation}
               style={{
                 ...textStyle,
                 // Boşluk paragrafın üstünde: son paragrafın altına boşluk
@@ -193,7 +228,7 @@ export function PageView({
                         : undefined
                   }
                 >
-                  {sentenceIndex === 0 ? sentence.text : ` ${sentence.text}`}
+                  {sentence.display}
                 </Text>
               ))}
             </Text>

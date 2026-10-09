@@ -66,6 +66,22 @@ antrenman ve ölçüm ekranları bununla çiziliyor.
   kullanılıyor ve bu yazıyor.
 - **Özel renkler**: zemin ve yazı serbest seçilebilir (ızgara ya da renk kodu);
   kontrast oranı canlı gösteriliyor, 3:1'in altında "Uygula" kapalı.
+- **Sayfa düzeni**: kenar boşluğu (dar/normal/geniş), sola ya da iki yana
+  yaslama, harf aralığı, kelime aralığı ve satır sonunda heceleme. React
+  Native'de `hyphens` ve `wordSpacing` stili olmadığı için ikisi görünmez
+  işaretlerle yapılıyor (`src/core/typeset.ts`, testli): heceleme uzun
+  kelimelere hece sınırlarında yumuşak tire (U+00AD) koyuyor — Türkçe hece
+  yapısı düzenli, sözlük gerekmiyor; baş ve sonda tek harf ayrılmıyor, büyük
+  harfli kısaltmalar bölünmüyor. Kelime aralığı her boşluktan önce ince boşluk
+  (U+2009). Sayfalama aynı dönüşümü ölçüm paragrafına da uyguluyor; 5 düzen ×
+  3 yazı tipi × 4 boyutta (60 yapılandırma) hiçbir sayfa taşmadı. Android'de
+  yumuşak tire yalnızca heceleme açıkken dikkate alındığı için o anda
+  `android_hyphenationFrequency` da açılıyor; Bionic modda heceleme yok (kelime
+  iki parçaya bölünüyor).
+- **Ekranı açık tut** (varsayılan açık): okurken ekran kararmıyor
+  (`expo-keep-awake`; web'de tarayıcının Wake Lock API'si, her tarayıcıda yok).
+  10 dakika hiçbir şey olmazsa (sayfa çevrilmez, RSVP ilerlemezse) kilit
+  bırakılıyor; açık unutulan telefon pili bitirmesin.
 
 ## Arama ve yer imleri
 

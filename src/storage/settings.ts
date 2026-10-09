@@ -6,6 +6,7 @@ import {
   type ReadingThemeId,
   type TextColorId,
 } from '@/appearance/palettes';
+import type { PageMarginId } from '@/appearance/typography';
 import type { ReaderMode } from '@/core/types';
 import type { ReadingFontId } from '@/ui/theme';
 import { KEYS } from './keys';
@@ -46,6 +47,14 @@ export interface Settings {
   readingFont: ReadingFontId;
   /** Satır aralığı (yazı boyutunun katı) */
   lineSpacing: number;
+  /** Sayfa düzeni: kenar boşluğu, iki yana yaslama, harf/kelime aralığı (düzey), heceleme */
+  pageMargin: PageMarginId;
+  justify: boolean;
+  letterSpacing: number;
+  wordSpacing: number;
+  hyphenate: boolean;
+  /** Okurken ekran kararmasın (uzun süre dokunulmazsa bırakılır) */
+  keepAwake: boolean;
   /** Disleksi dostu font (Atkinson Hyperlegible) */
   hyperlegible: boolean;
   /** Titreşimli geri bildirim (yalnızca telefonda) */
@@ -128,6 +137,12 @@ export const DEFAULT_SETTINGS: Settings = {
   customText: DEFAULT_CUSTOM_TEXT,
   readingFont: 'auto',
   lineSpacing: 1.7,
+  pageMargin: 'normal',
+  justify: false,
+  letterSpacing: 0,
+  wordSpacing: 0,
+  hyphenate: false,
+  keepAwake: true,
   hyperlegible: false,
   haptics: true,
   urlProxy: 'https://r.jina.ai/',
