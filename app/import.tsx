@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
 import { countWordsInText, joinChapters, normalizeText } from '@/ingest/normalize';
-import { CLASSICS } from '@/content/classics';
+import { classicsByAuthor } from '@/content/classics';
 import { extractUrl } from '@/ingest/fromUrl';
 import { PdfBridge } from '@/ingest/PdfBridge';
 import { PDF_VIA_WEBVIEW, pickAndExtract } from '@/ingest/pickFile';
@@ -255,29 +255,36 @@ export default function ImportScreen() {
             Telif süresi dolmuş öyküler, Vikikaynak’tan. Dokununca kütüphaneye eklenir; internet
             bağlantısı gerekir.
           </Txt>
-          {CLASSICS.map((classic) => (
-            <Card
-              key={classic.url}
-              onPress={
-                busy
-                  ? undefined
-                  : () =>
-                      run(async () => {
-                        const article = await extractUrl(classic.url, settings.urlProxy);
-                        await save(
-                          `${classic.title} — ${classic.author}`,
-                          article.text,
-                          'url',
-                          classic.url
-                        );
-                      })
-              }
-            >
-              <Txt variant="body">{classic.title}</Txt>
-              <Txt variant="dim" style={{ fontSize: 13, marginTop: 2 }}>
-                {classic.author} · {classic.blurb}
+          {classicsByAuthor().map(({ author, items }) => (
+            <View key={author} style={{ gap: theme.space(2) }}>
+              <Txt variant="label" style={{ marginTop: theme.space(2) }}>
+                {author}
               </Txt>
-            </Card>
+              {items.map((classic) => (
+                <Card
+                  key={classic.url}
+                  onPress={
+                    busy
+                      ? undefined
+                      : () =>
+                          run(async () => {
+                            const article = await extractUrl(classic.url, settings.urlProxy);
+                            await save(
+                              `${classic.title} — ${classic.author}`,
+                              article.text,
+                              'url',
+                              classic.url
+                            );
+                          })
+                  }
+                >
+                  <Txt variant="body">{classic.title}</Txt>
+                  <Txt variant="dim" style={{ fontSize: 13, marginTop: 2 }}>
+                    {classic.blurb}
+                  </Txt>
+                </Card>
+              ))}
+            </View>
           ))}
         </View>
       ) : null}

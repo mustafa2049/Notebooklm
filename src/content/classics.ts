@@ -79,3 +79,10 @@ export const CLASSICS: Classic[] = [
     url: `${BASE}Kesik_Bıyık`,
   },
 ];
+
+/** Yazara göre gruplar; yazarlar listedeki ilk geçiş sırasıyla */
+export function classicsByAuthor(list: Classic[] = CLASSICS): { author: string; items: Classic[] }[] {
+  const groups = new Map<string, Classic[]>();
+  for (const classic of list) groups.set(classic.author, [...(groups.get(classic.author) ?? []), classic]);
+  return [...groups.entries()].map(([author, items]) => ({ author, items }));
+}
