@@ -22,6 +22,8 @@ export interface AiDocumentCache {
   summary?: { text: string; model: string; at: number };
   sections?: { items: Section[]; model: string; at: number };
   questions?: { items: AiQuestion[]; model: string; at: number };
+  /** Bölüm sonu soruları, bölüm sırasına göre */
+  chapterQuestions?: Record<string, { items: AiQuestion[]; model: string; at: number }>;
   chat?: AiChatTurn[];
 }
 

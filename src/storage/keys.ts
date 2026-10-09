@@ -8,6 +8,8 @@ export const KEYS = {
   progress: (id: string) => `${PREFIX}/progress/${id}`,
   /** Seviye testleri ve anlama testi sonuçları */
   assessments: `${PREFIX}/assessments`,
+  /** Bölüm sonu soruları: kitap başına önerilmiş bölümler */
+  chapterChecks: `${PREFIX}/chapter-checks`,
   /** Egzersiz sonuçları (Schulte, flaş kelime, tarama, göz gezdirme) */
   drills: `${PREFIX}/drills`,
   /** Kullanıcıya duyurulmuş rozetler */

@@ -184,7 +184,7 @@ export function programProgress(state: ProgramState): ProgramProgress {
 export interface LessonEvidence {
   drills: { drill: string; at: number }[];
   sessions: { docId: string; at: number; ms: number; mode: string }[];
-  assessments: { kind: 'test' | 'quiz'; at: number; docId?: string; correct: number; total: number }[];
+  assessments: { kind: 'test' | 'quiz' | 'chapter'; at: number; docId?: string; correct: number; total: number }[];
 }
 
 export interface LessonStatus {

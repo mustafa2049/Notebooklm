@@ -93,6 +93,8 @@ export interface Settings {
   yearlyBookGoal: number;
   /** Anlamlı bir okumadan sonra "kendi cümlenle anlat" kartı */
   recallPrompt: boolean;
+  /** Bölümlü kitapta bölüm bitince (AI tanımlıysa) 3 anlama sorusu önerilir */
+  chapterQuestions: boolean;
   /** Göz molası: bu kadar dakika okuyunca 20 saniye uzağa bak (0 = kapalı) */
   eyeBreakMinutes: number;
   /** Günlük hatırlatıcı (yalnızca telefonda) */
@@ -163,6 +165,7 @@ export const DEFAULT_SETTINGS: Settings = {
   focusMinutes: 10,
   yearlyBookGoal: 0,
   recallPrompt: true,
+  chapterQuestions: true,
   eyeBreakMinutes: 0,
   reminderEnabled: false,
   reminderHour: 20,

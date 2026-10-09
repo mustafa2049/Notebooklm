@@ -290,6 +290,12 @@ export default function SettingsScreen() {
           value={settings.recallPrompt}
           onChange={(recallPrompt) => update({ recallPrompt })}
         />
+        <Toggle
+          label="Bölüm sonu soruları"
+          hint="Bölümlü bir kitapta (EPUB, Word) bir bölümü okuyup bitirince 3 soruyla anlamanı ölçmeyi önerir. Yapay zekâ tanımlıysa çalışır; her bölüm bir kez sorulur."
+          value={settings.chapterQuestions}
+          onChange={(chapterQuestions) => update({ chapterQuestions })}
+        />
 
         <Divider />
         <Txt variant="body">Yıllık kitap hedefi</Txt>

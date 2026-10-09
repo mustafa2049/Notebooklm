@@ -30,6 +30,7 @@ import { usePagination } from '@/reader/usePagination';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useScreenAwake } from '@/reader/useScreenAwake';
 import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
+import { finishedChapter } from '@/habit/chapterCheck';
 import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
 import {
   choiceOf,
@@ -44,6 +45,7 @@ import {
 import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
 import { listAssessments } from '@/storage/assessments';
 import { addBookmark, bookmarksForDoc, removeBookmarks, type Bookmark } from '@/storage/bookmarks';
+import { askedChapters, markChapterAsked } from '@/storage/chapterChecks';
 import {
   getDocument,
   getDocumentText,
@@ -374,6 +376,38 @@ function Reader({
     }
     return `${index + 1}/${chapters.length}`;
   }, [chapters, engine.chunk]);
+
+  /**
+   * Bölüm sonu soruları: bir bölüm okuyarak bitirilip sonrakine geçilince
+   * (atlayınca değil) o bölümden 3 soru önerilir. Kitap başına bölüm bir kez.
+   */
+  const router = useRouter();
+  const [chapterOffer, setChapterOffer] = useState<number | null>(null);
+  const chapterAsked = useRef<number[] | null>(null);
+  const lastOffset = useRef<number | null>(null);
+  const chapterChecksOn = aiReady && settings.chapterQuestions && Boolean(chapters && chapters.length > 1);
+  useEffect(() => {
+    if (!chapterChecksOn) return;
+    let cancelled = false;
+    void askedChapters(docId).then((list) => {
+      if (!cancelled) chapterAsked.current = list;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [chapterChecksOn, docId]);
+  useEffect(() => {
+    const offset = engine.chunk?.charStart ?? 0;
+    const from = lastOffset.current;
+    lastOffset.current = offset;
+    if (!chapterChecksOn || !chapters || from === null || !chapterAsked.current || listening) return;
+    const finished = finishedChapter(chapters, from, offset, text.length, chapterAsked.current);
+    if (finished === null) return;
+    chapterAsked.current = [...chapterAsked.current, finished];
+    void markChapterAsked(docId, finished);
+    clockRef.current.pause();
+    setChapterOffer(finished);
+  }, [engine.chunk, chapterChecksOn, chapters, text.length, docId, listening]);
 
   /** Kelime açıklaması için: ekrandaki kelimeler ve içinde geçtiği cümle. */
   const context = React.useMemo(() => {
@@ -1059,6 +1093,42 @@ function Reader({
           onCycleSleep={cycleSleep}
           onExit={stopListening}
         />
+      ) : null}
+
+      {chapterOffer !== null && chapters?.[chapterOffer] ? (
+        <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
+          <Card style={{ gap: theme.space(2), borderColor: theme.colors.accent }}>
+            <Txt variant="heading">Bölüm bitti</Txt>
+            <Txt variant="dim">
+              “{chapters[chapterOffer].title}” bölümünü bitirdin. 3 soruyla ne kadar anladığını ölçmek
+              ister misin? Sorular bu bölümden yapay zekâyla üretilir.
+            </Txt>
+            <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+              <Button
+                label="Sorulara geç"
+                icon="sparkle"
+                style={{ flex: 1 }}
+                onPress={() => {
+                  const chapter = chapterOffer;
+                  setChapterOffer(null);
+                  router.push({
+                    pathname: '/training/quiz',
+                    params: { docId, chapter: String(chapter), wpm: String(settings.wpm) },
+                  });
+                }}
+              />
+              <Button
+                label="Şimdi değil"
+                variant="secondary"
+                style={{ flex: 1 }}
+                onPress={() => {
+                  setChapterOffer(null);
+                  pageClock.resume();
+                }}
+              />
+            </View>
+          </Card>
+        </View>
       ) : null}
 
       {eyeBreak.active ? (

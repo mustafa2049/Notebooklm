@@ -300,6 +300,19 @@ Bölüm konumları, her bölüm **ayrı ayrı** normalleştirilip birleştiriler
 hesaplanıyor (`joinChapters`); önce birleştirip sonra normalleştirmek konumları
 kaydırırdı.
 
+### Bölüm sonu anlama soruları
+
+Bölümlü bir kitapta (EPUB, Word) bir bölümü **okuyarak** bitirip sonrakine
+geçince, yapay zekâ tanımlıysa okuyucuda "Bölüm bitti" kartı çıkar ve okuma
+durur: "Sorulara geç" o bölümden 3 soru üretir (çok uzun bölümde son 12 bin
+karakterden), her cevabın altında kanıt cümlesi. Atlamak (içindekiler,
+kaydırıcı, büyük sıçrama), 1.500 karakterden kısa bölümler ve daha önce
+önerilmiş bölümler sorulmaz (`src/habit/chapterCheck.ts`, testli). Sonuç
+`kind: 'chapter'` olarak saklanır; Gelişim'de "bölüm anlama" satırı olur,
+seviye testi ve tempo istatistiklerine girmez. Üretilen sorular bölüm başına
+önbelleğe alınır. Ayarlar → "Bölüm sonu soruları" ile kapatılabilir.
+Tarayıcıda sahte bir yapay zekâ sunucusuyla denendi.
+
 ## Günlük hedef ve hatırlatıcı
 
 Ayarlar → Alışkanlık'tan günlük kelime hedefi verilebiliyor; kütüphanenin

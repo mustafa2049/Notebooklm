@@ -4,12 +4,13 @@ import { ActivityIndicator, View } from 'react-native';
 import { generateQuestions } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { buildCloze } from '@/core/cloze';
+import { chapterText } from '@/habit/chapterCheck';
 import { tokenize, tokenIndexForCharOffset } from '@/core/tokenizer';
 import { passageById } from '@/content/passages';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache } from '@/storage/ai';
 import { recordAssessment } from '@/storage/assessments';
-import { getDocumentText, loadProgress } from '@/storage/documents';
+import { getDocument, getDocumentText, loadProgress } from '@/storage/documents';
 import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
 import { QuestionCard } from '@/ui/QuestionCard';
 import { arrangeOptions } from '@/train/shuffle';
@@ -34,8 +35,12 @@ interface QuizItem {
 }
 
 export default function QuizScreen() {
-  const params = useLocalSearchParams<{ docId: string; wpm?: string; program?: string }>();
+  const params = useLocalSearchParams<{ docId: string; wpm?: string; program?: string; chapter?: string }>();
   const { docId } = params;
+  /** Bölüm sonu soruları: yalnızca o bölümden 3 soru (`kind: 'chapter'`) */
+  const chapter = params.chapter !== undefined && Number(params.chapter) >= 0 ? Number(params.chapter) : null;
+  const questionCount = chapter !== null ? 3 : 5;
+  const [chapterTitle, setChapterTitle] = useState<string | null>(null);
   /** 4 haftalık programdan gelindiyse: tempo programa ait, ayar önerisi yok */
   const fromProgram = params.program === '1';
   /** Gömülü pratik metni: soruları elle yazılmış, metinden kanıtlı */
@@ -59,6 +64,22 @@ export default function QuizScreen() {
       return;
     }
     let cancelled = false;
+    if (chapter !== null) {
+      Promise.all([getDocumentText(docId), getDocument(docId), loadAiCache(docId)]).then(([content, meta, cache]) => {
+        if (cancelled) return;
+        const chapters = meta?.chapters ?? [];
+        const body = content && chapters[chapter] ? chapterText(content, chapters, chapter) : '';
+        setChapterTitle(chapters[chapter]?.title ?? null);
+        setText(body);
+        setReadUntil(body.length);
+        const cached = cache.chapterQuestions?.[String(chapter)];
+        if (cached?.items.length) setAiItems(cached.items.map(toQuizItem));
+        else setAutoGenerate(true);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
     Promise.all([getDocumentText(docId), loadProgress(docId), loadAiCache(docId)]).then(
       ([content, progress, cache]) => {
         if (cancelled) return;
@@ -71,7 +92,7 @@ export default function QuizScreen() {
     return () => {
       cancelled = true;
     };
-  }, [docId, passage]);
+  }, [docId, passage, chapter]);
 
   const embeddedItems = useMemo<QuizItem[] | null>(
     () =>
@@ -94,14 +115,14 @@ export default function QuizScreen() {
       readUntil > 0
         ? tokenIndexForCharOffset(tokens, readUntil)
         : Math.min(tokens.length, 200);
-    return buildCloze(tokens, { count: 5, from: 0, to: Math.max(30, readTokenCount) }).map(
+    return buildCloze(tokens, { count: questionCount, from: 0, to: Math.max(30, readTokenCount) }).map(
       (question) => ({
         prompt: question.prompt,
         options: question.options,
         answer: question.answer,
       })
     );
-  }, [text, readUntil]);
+  }, [text, readUntil, questionCount]);
 
   const questions = embeddedItems ?? aiItems ?? clozeItems;
   const quizWpm = Number(params.wpm) > 0 ? Number(params.wpm) : settings.wpm;
@@ -111,14 +132,29 @@ export default function QuizScreen() {
     if (!text || !docId) return;
     const upTo = readUntil > 0 ? Math.max(600, readUntil) : Math.min(text.length, 4000);
     const value = await ai.run((provider, signal) =>
-      generateQuestions(provider, text.slice(0, upTo), 5, signal)
+      generateQuestions(provider, text.slice(0, upTo), questionCount, signal)
     );
     if (!value) return;
     setAnswers({});
     recorded.current = false;
     setAiItems(value.map(toQuizItem));
-    await patchAiCache(docId, { questions: { items: value, model: '', at: Date.now() } });
+    const entry = { items: value, model: '', at: Date.now() };
+    if (chapter !== null) {
+      const cache = await loadAiCache(docId);
+      await patchAiCache(docId, { chapterQuestions: { ...cache.chapterQuestions, [String(chapter)]: entry } });
+    } else {
+      await patchAiCache(docId, { questions: entry });
+    }
   };
+
+  // Bölüm sorularına okuyucudan gelindiyse sorular kendiliğinden üretilir
+  const [autoGenerate, setAutoGenerate] = useState(false);
+  useEffect(() => {
+    if (!autoGenerate || !text || !ai.configured) return;
+    setAutoGenerate(false);
+    void makeAiQuestions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGenerate, text, ai.configured]);
 
   const answeredCount = Object.keys(answers).length;
   const correctCount = questions.filter((q, index) => answers[index] === q.answer).length;
@@ -133,7 +169,8 @@ export default function QuizScreen() {
     if (!allAnswered || recorded.current || !docId) return;
     recorded.current = true;
     void recordAssessment({
-      kind: 'quiz',
+      kind: chapter !== null ? 'chapter' : 'quiz',
+      ...(chapter !== null ? { chapter, chapterTitle: chapterTitle ?? undefined } : {}),
       at: Date.now(),
       docId,
       ms: 0,
@@ -144,7 +181,7 @@ export default function QuizScreen() {
       source: embeddedItems ? 'gömülü' : aiItems ? 'ai' : 'cloze',
       reliable: true,
     });
-  }, [allAnswered, correctCount, questions.length, docId, quizWpm, aiItems, embeddedItems]);
+  }, [allAnswered, correctCount, questions.length, docId, quizWpm, aiItems, embeddedItems, chapter, chapterTitle]);
 
   if (text === null) {
     return (
@@ -172,7 +209,14 @@ export default function QuizScreen() {
           marginBottom: theme.space(4),
         }}
       >
-        <Txt variant="title">Anlama testi</Txt>
+        <View style={{ flex: 1 }}>
+          <Txt variant="title">{chapter !== null ? 'Bölüm soruları' : 'Anlama testi'}</Txt>
+          {chapterTitle ? (
+            <Txt variant="dim" numberOfLines={1}>
+              {chapterTitle}
+            </Txt>
+          ) : null}
+        </View>
         <IconButton name="close" onPress={() => router.back()} accessibilityLabel="Kapat" />
       </View>
 
@@ -253,7 +297,16 @@ export default function QuizScreen() {
               <Txt variant="title">
                 {correctCount} / {questions.length}
               </Txt>
-              {fromProgram ? (
+              {chapter !== null ? (
+                <Txt variant="dim">
+                  {correctCount === questions.length
+                    ? 'Bölümü iyi kavramışsın.'
+                    : correctCount >= 2
+                      ? 'Ana çizgiyi yakalamışsın; kaçan ayrıntıya kanıt cümlesinden bakabilirsin.'
+                      : 'Bu bölüm tam oturmamış olabilir. Kanıt cümlelerine bakıp bölümün sonunu yeniden gözden geçirmek iyi gelir.'}{' '}
+                  Sonuç Gelişim ekranında “bölüm anlama” olarak görünür.
+                </Txt>
+              ) : fromProgram ? (
                 <Txt variant="dim">
                   Programın temposu bu sonuca göre ders bitince ayarlanır: %80 ve üstü biraz
                   hızlandırır, %60'ın altı yavaşlatır.
@@ -267,7 +320,7 @@ export default function QuizScreen() {
                     : 'Hız fazla gelmiş olabilir. Hedefi biraz düşürüp anlamayı geri kazan.'}
               </Txt>
               )}
-              {!fromProgram && suggestedWpm !== settings.wpm && !applied ? (
+              {!fromProgram && chapter === null && suggestedWpm !== settings.wpm && !applied ? (
                 <Button
                   label={`Hedefi ${suggestedWpm} kelime/dk yap`}
                   onPress={() => {
@@ -283,7 +336,7 @@ export default function QuizScreen() {
                 </Txt>
               ) : null}
               <Button
-                label={fromProgram ? 'Derse dön' : 'Bitir'}
+                label={fromProgram ? 'Derse dön' : chapter !== null ? 'Okumaya dön' : 'Bitir'}
                 variant="secondary"
                 onPress={() => router.back()}
                 style={{ marginTop: theme.space(2) }}

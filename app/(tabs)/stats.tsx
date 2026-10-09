@@ -227,6 +227,12 @@ function RealProgress({
   const change = improvement(assessments);
   const due = testDue(assessments, Date.now());
   const quizzes = assessments.filter((record) => record.kind === 'quiz').slice(0, 5);
+  const chapterChecks = assessments.filter((record) => record.kind === 'chapter').slice(0, 10);
+  const chapterComprehension =
+    chapterChecks.length > 0
+      ? chapterChecks.reduce((sum, record) => sum + record.correct / Math.max(1, record.total), 0) /
+        chapterChecks.length
+      : null;
   const quizComprehension =
     quizzes.length > 0
       ? quizzes.reduce((sum, record) => sum + record.correct / Math.max(1, record.total), 0) /
@@ -292,6 +298,12 @@ function RealProgress({
       {quizComprehension !== null ? (
         <Txt variant="dim" style={{ fontSize: 13, marginTop: theme.space(2) }}>
           Son {quizzes.length} anlama testinde ortalama anlama: %{Math.round(quizComprehension * 100)}
+        </Txt>
+      ) : null}
+      {chapterComprehension !== null ? (
+        <Txt variant="dim" style={{ fontSize: 13, marginTop: theme.space(1) }}>
+          Bölüm anlama: son {chapterChecks.length} bölümde ortalama %{Math.round(chapterComprehension * 100)}
+          {chapterChecks[0]?.chapterTitle ? ` · en son “${chapterChecks[0].chapterTitle}”` : ''}
         </Txt>
       ) : null}
     </>

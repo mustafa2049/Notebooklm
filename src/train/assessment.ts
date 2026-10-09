@@ -9,7 +9,8 @@
 
 import type { PassageLevel } from '@/content/passages';
 
-export type AssessmentKind = 'test' | 'quiz';
+/** `chapter`: bölüm sonu anlama soruları (seviye/tempo istatistiğine girmez) */
+export type AssessmentKind = 'test' | 'quiz' | 'chapter';
 
 export interface AssessmentRecord {
   id: string;
@@ -21,6 +22,9 @@ export interface AssessmentRecord {
   /** Test metninin seviyesi. Seviyeler eklenmeden önceki kayıtlar orta seviyedir. */
   level?: PassageLevel;
   docId?: string;
+  /** Bölüm sorularında bölümün sırası ve başlığı */
+  chapter?: number;
+  chapterTitle?: string;
   /** Okuma süresi (yalnızca test; quiz'de uygulamanın temposu belirli) */
   ms: number;
   words: number;
