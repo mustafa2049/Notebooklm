@@ -1,15 +1,20 @@
-import {
-  AtkinsonHyperlegibleNext_400Regular,
-  AtkinsonHyperlegibleNext_700Bold,
-  useFonts,
-} from '@expo-google-fonts/atkinson-hyperlegible-next';
+// Yalnızca kullanılan iki ağırlık: paketin kökünden almak 14 dosyanın
+// hepsini pakete (ve web'de çevrimdışı önbelleğe) sokuyordu
+import { AtkinsonHyperlegibleNext_400Regular } from '@expo-google-fonts/atkinson-hyperlegible-next/400Regular';
+import { AtkinsonHyperlegibleNext_700Bold } from '@expo-google-fonts/atkinson-hyperlegible-next/700Bold';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useReminder } from '@/habit/useReminder';
+import { startPwa } from '@/pwa/pwa';
 import { SettingsProvider, useTheme } from '@/store/SettingsContext';
+
+// Web: çevrimdışı önbellek ve "ana ekrana ekle". Bileşen dışında, en başta:
+// tarayıcının kurulum olayı uygulama çizilmeden gelebiliyor
+startPwa();
 
 export default function RootLayout() {
   return (

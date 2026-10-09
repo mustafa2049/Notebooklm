@@ -1,0 +1,9 @@
+# Netlify yanıt başlıkları (Netlify bu dosyayı yayın klasöründe okur).
+
+# Service worker her açılışta sunucuya sorulsun: yeni sürüm gecikmeden kurulur
+/sw.js
+  Cache-Control: no-cache
+
+# Paketleyicinin dosya adları içerik özeti taşıyor; içerik değişirse ad değişir
+/_expo/static/*
+  Cache-Control: public, max-age=31536000, immutable

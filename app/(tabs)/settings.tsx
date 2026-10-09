@@ -13,6 +13,7 @@ import type { ThemePreference } from '@/storage/settings';
 import { AiSettings } from '@/ui/AiSettings';
 import { AppearancePanel } from '@/ui/AppearancePanel';
 import { BackupCard } from '@/ui/BackupCard';
+import { InstallCard } from '@/ui/InstallCard';
 import { Slider } from '@/ui/Slider';
 import {
   Button,
@@ -360,6 +361,8 @@ export default function SettingsScreen() {
       </Card>
 
       <AiSettings />
+
+      <InstallCard />
 
       <SectionHeader title="Veriler" />
       <Card style={{ gap: theme.space(3) }}>

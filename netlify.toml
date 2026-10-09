@@ -3,7 +3,8 @@
 # `public/_redirects` içinde ve derleme çıktısına kopyalanıyor.
 
 [build]
-  command = "npx expo export -p web"
+  # expo export + service worker (bkz. scripts/generate-sw.mjs)
+  command = "npm run build:web"
   publish = "dist"
 
 [build.environment]

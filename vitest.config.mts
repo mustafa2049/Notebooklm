@@ -21,6 +21,8 @@ export default defineConfig({
       'src/content/**/*.test.ts',
       'src/backup/**/*.test.ts',
       'src/appearance/**/*.test.ts',
+      // Derleme betikleri (service worker listesi)
+      'scripts/**/*.test.mjs',
     ],
     environment: 'node',
   },

@@ -321,6 +321,32 @@ ne geldiği görünüyor ve ekleme kararı kullanıcıda kalıyor.
 Aynı parametreler derin bağlantıyla da çalışıyor:
 `hizliokuma://import?sharedText=...` veya `?sharedUrl=...`.
 
+## Çevrimdışı kullanım (web)
+
+Web sürümü ilk açılışta kendini tarayıcıya kaydediyor; sonraki açılışlarda
+**internet olmadan da** açılıyor. Kitaplar zaten cihazda (IndexedDB), önbelleğe
+alınan yalnızca uygulamanın dosyaları (~3,9 MB, PDF okuyucu dahil).
+
+- `npm run build:web`, `expo export`'tan sonra `scripts/generate-sw.mjs`'i
+  çalıştırıyor: derleme çıktısındaki dosyalar içerik özetleriyle listelenip
+  `dist/sw.js`'e yazılıyor (şablon `scripts/sw/template.js`, yeni bağımlılık yok).
+  Netlify'a yüklenen klasörde `sw.js` olmalı; `expo export`'u tek başına
+  çalıştırmak onu üretmez.
+- Sayfa açılışı **önce ağdan**: yeni sürüm hemen görünüyor. Ağ yoksa ya da
+  4 saniyede yanıt gelmezse önbellekteki uygulama açılıyor.
+- Yeni sürümde yalnızca değişen dosyalar iniyor (adında içerik özeti olanlar bir
+  önceki önbellekten kopyalanıyor). Bir önceki sürümün önbelleği bir sürüm daha
+  tutuluyor: eski sürümle açık kalmış bir sekme sonradan yüklediği parçaları
+  (ör. PDF okuyucu) bulmaya devam etsin.
+- Service worker yalnızca üretim derlemesinde kaydediliyor; geliştirme
+  sunucusunda kapalı.
+- `public/_headers`: `sw.js` önbelleğe alınmıyor, `/_expo/static/*` (adları
+  içerik özetli) bir yıl önbellekte.
+
+İnternet isteyenler: bağlantıdan ve klasiklerden içe aktarma, yapay zekâ.
+Ayarlar → **Uygulama olarak kullan** kartı önbelleğin durumunu gösteriyor ve
+Android Chrome'da "Ana ekrana ekle" düğmesi, iPhone'da Safari talimatı veriyor.
+
 ## CI ve dağıtım
 
 `.github/workflows/ci.yml` her push'ta üç şeyi koşuyor: tip kontrolü, testler ve
@@ -361,6 +387,10 @@ pdf.js ve jszip artık **kullanıldıklarında** yükleniyor (`await import(...)
 Metro bunları ayrı parçalara ayırdığı için ilk yüklemede inen paket
 3,33 MB'tan **1,43 MB**'a düştü; PDF içe aktaran kullanıcı pdf.js parçalarını o
 anda indiriyor, hiç PDF açmayan hiç indirmiyor.
+
+Disleksi dostu yazı tipinin yalnızca kullanılan iki ağırlığı (normal, kalın)
+pakete giriyor: paketin kökünden içe aktarmak 14 dosyanın hepsini (~700 KB)
+ekliyordu.
 
 ## Veri
 
