@@ -41,6 +41,8 @@ export default function QuizScreen() {
   const chapter = params.chapter !== undefined && Number(params.chapter) >= 0 ? Number(params.chapter) : null;
   const questionCount = chapter !== null ? 3 : 5;
   const [chapterTitle, setChapterTitle] = useState<string | null>(null);
+  // Bölüm sorularına okuyucudan gelindiyse sorular kendiliğinden üretilir
+  const [autoGenerate, setAutoGenerate] = useState(false);
   /** 4 haftalık programdan gelindiyse: tempo programa ait, ayar önerisi yok */
   const fromProgram = params.program === '1';
   /** Gömülü pratik metni: soruları elle yazılmış, metinden kanıtlı */
@@ -147,8 +149,6 @@ export default function QuizScreen() {
     }
   };
 
-  // Bölüm sorularına okuyucudan gelindiyse sorular kendiliğinden üretilir
-  const [autoGenerate, setAutoGenerate] = useState(false);
   useEffect(() => {
     if (!autoGenerate || !text || !ai.configured) return;
     setAutoGenerate(false);
