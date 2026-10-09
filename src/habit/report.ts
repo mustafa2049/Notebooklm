@@ -1,4 +1,5 @@
 import { weeklyComparison, type SessionLike } from './summary';
+import { CARD_FONT, escapeXml } from './svgText';
 
 /**
  * Haftalık rapor kartı — saf, testli.
@@ -93,12 +94,6 @@ export function reportText(report: WeeklyReport): string {
   return lines.join('\n');
 }
 
-function escapeXml(value: string): string {
-  return value.replace(/[<>&'"]/g, (ch) =>
-    ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch === '&' ? '&amp;' : ch === "'" ? '&apos;' : '&quot;'
-  );
-}
-
 export interface ReportPalette {
   bg: string;
   surface: string;
@@ -112,7 +107,7 @@ export interface ReportPalette {
  * olarak sistem yazı tipi kullanılıyor ki dışarıdan dosya yüklemek gerekmesin.
  */
 export function reportSvg(report: WeeklyReport, palette: ReportPalette): string {
-  const font = "font-family=\"system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif\"";
+  const font = CARD_FONT;
   const cell = (x: number, y: number, value: string, label: string) => `
     <rect x="${x}" y="${y}" width="250" height="130" rx="20" fill="${palette.surface}"/>
     <text x="${x + 24}" y="${y + 70}" ${font} font-size="48" font-weight="700" fill="${palette.text}">${escapeXml(value)}</text>

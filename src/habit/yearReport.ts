@@ -1,5 +1,6 @@
 import { BOOK_MIN_WORDS } from './books';
 import { dayKey, longestFlexibleStreak, type SessionLike } from './summary';
+import { CARD_FONT, escapeXml, wrapLines } from './svgText';
 
 /**
  * Okuduğum kitaplar ve "Okuma yılım" kartı — saf, testli.
@@ -136,42 +137,6 @@ export function yearText(report: YearReport): string {
   return lines.join('\n');
 }
 
-/**
- * Metni satırlara böler (SVG'de kendiliğinden satır kaydırma yok). En çok
- * `maxLines` satır; sığmazsa son satır "…" ile biter. Kelime ortasından
- * bölmez (tek kelime satırdan uzunsa kesilir).
- */
-export function wrapLines(text: string, maxChars: number, maxLines: number): string[] {
-  const words = text.replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
-  const lines: string[] = [];
-  let current = '';
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i].length > maxChars ? `${words[i].slice(0, maxChars - 1)}…` : words[i];
-    const next = current ? `${current} ${word}` : word;
-    if (next.length <= maxChars) {
-      current = next;
-      continue;
-    }
-    lines.push(current);
-    current = word;
-    if (lines.length === maxLines) {
-      current = '';
-      // Sığmayan kısım kaldı: son satırı "…" ile kapat
-      const last = lines[maxLines - 1];
-      lines[maxLines - 1] = last.length + 1 <= maxChars ? `${last}…` : `${last.slice(0, maxChars - 1)}…`;
-      return lines;
-    }
-  }
-  if (current) lines.push(current);
-  return lines;
-}
-
-function escapeXml(value: string): string {
-  return value.replace(/[<>&'"]/g, (ch) =>
-    ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch === '&' ? '&amp;' : ch === "'" ? '&apos;' : '&quot;'
-  );
-}
-
 export interface YearPalette {
   bg: string;
   surface: string;
@@ -184,7 +149,7 @@ export const YEAR_CARD_SIZE = { width: 600, height: 800 };
 
 /** "Okuma yılım" kartı (600×800 SVG); haftalık kartla aynı dil */
 export function yearSvg(report: YearReport, palette: YearPalette): string {
-  const font = "font-family=\"system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif\"";
+  const font = CARD_FONT;
   const cell = (x: number, y: number, value: string, label: string) => `
     <rect x="${x}" y="${y}" width="250" height="130" rx="20" fill="${palette.surface}"/>
     <text x="${x + 24}" y="${y + 70}" ${font} font-size="${value.length > 7 ? 38 : 48}" font-weight="700" fill="${palette.text}">${escapeXml(value)}</text>

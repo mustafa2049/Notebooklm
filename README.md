@@ -360,6 +360,10 @@ grupları, tempo ve tarama, pekiştirme ve aktarım.
   notla kaydedilir; akış modlarında işaretli cümleler hafif zeminle görünür.
   Antrenman → Alıntılar ve özetler: kitap kitap liste, dokununca metindeki
   yerine dönülür, kopyala/paylaş, sil.
+- **Alıntı kartı**: alıntının yanındaki görsel düğmesi cümleyi kitabın adıyla
+  kare bir karta çevirir (okuma temasının renkleriyle; web'de PNG iner,
+  telefonda metin paylaşılır). Kısa alıntı büyük, uzun alıntı küçük yazıyla;
+  çok uzunsa "…" ile kesilir (`src/habit/quoteCard.ts`, testli).
 - **"Aklında ne kaldı?"**: odak seansı bitince, metin bitince ya da en az 3
   dakika okuyup çıkarken okuduğunu 1–2 cümleyle anlatman istenir (hatırlama
   pratiği; bir kez sorar, her zaman geçilebilir, ayardan kapatılabilir). Yapay

@@ -5,7 +5,6 @@ import {
   buildYearReport,
   finishedBooks,
   hoursLabel,
-  wrapLines,
   yearSvg,
   yearText,
 } from './yearReport';
@@ -107,11 +106,4 @@ describe('yardımcılar', () => {
     expect(hoursLabel(125)).toBe('2 sa 5 dk');
   });
 
-  it('satırlara bölüyor, sığmazsa "…"', () => {
-    expect(wrapLines('bir iki üç dört beş', 9, 5)).toEqual(['bir iki', 'üç dört', 'beş']);
-    const cut = wrapLines('bir iki üç dört beş altı yedi', 9, 2);
-    expect(cut).toHaveLength(2);
-    expect(cut[1].endsWith('…')).toBe(true);
-    for (const line of wrapLines('a '.repeat(100), 10, 3)) expect(line.length).toBeLessThanOrEqual(10);
-  });
 });

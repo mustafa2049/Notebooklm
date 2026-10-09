@@ -6,6 +6,7 @@ import { listDocuments } from '@/storage/documents';
 import { deleteHighlight, listHighlights, type Highlight } from '@/storage/highlights';
 import { deleteRecall, listRecalls, type Recall } from '@/storage/recalls';
 import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
+import { shareQuoteCard } from '@/ui/shareReport';
 
 /**
  * Alıntı defteri: altı çizilen cümleler, kitap kitap.
@@ -24,7 +25,7 @@ interface Group {
 
 export default function HighlightsScreen() {
   const router = useRouter();
-  const { theme } = useSettings();
+  const { theme, readingTheme } = useSettings();
   const [items, setItems] = useState<Highlight[] | null>(null);
   const [recalls, setRecalls] = useState<Recall[]>([]);
   const [docIds, setDocIds] = useState<Set<string>>(new Set());
@@ -77,6 +78,20 @@ export default function HighlightsScreen() {
   const removeRecall = async (id: string) => {
     await deleteRecall(id);
     setRecalls((list) => list.filter((item) => item.id !== id));
+  };
+
+  /** Alıntı kartı okuma temasının renkleriyle (sepya okuyanın kartı da sepya) */
+  const card = async (item: Highlight) => {
+    try {
+      const colors = readingTheme.colors;
+      const result = await shareQuoteCard(
+        { sentence: item.sentence, title: item.docTitle || 'Adsız metin', note: item.note },
+        { bg: colors.bg, text: colors.text, dim: colors.textDim, accent: colors.accent }
+      );
+      setCopied(result === 'downloaded' ? `${item.id}:kart` : null);
+    } catch {
+      setCopied(null);
+    }
   };
 
   const remove = async (id: string) => {
@@ -136,7 +151,7 @@ export default function HighlightsScreen() {
                         day: 'numeric',
                         month: 'long',
                       })}
-                      {copied === item.id ? ' · kopyalandı' : ''}
+                      {copied === item.id ? ' · kopyalandı' : copied === `${item.id}:kart` ? ' · kart indirildi' : ''}
                     </Txt>
                     {group.available ? (
                       <IconButton
@@ -147,6 +162,13 @@ export default function HighlightsScreen() {
                         onPress={() => router.push(`/reader/${item.docId}?konum=${item.charOffset}`)}
                       />
                     ) : null}
+                    <IconButton
+                      name="image"
+                      size={18}
+                      emphasis="faint"
+                      accessibilityLabel={Platform.OS === 'web' ? 'Kart olarak indir' : 'Kart olarak paylaş'}
+                      onPress={() => void card(item)}
+                    />
                     <IconButton
                       name="share"
                       size={18}

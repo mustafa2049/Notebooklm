@@ -1,5 +1,6 @@
 import { Platform, Share } from 'react-native';
 import { reportSvg, reportText, type ReportPalette, type WeeklyReport } from '@/habit/report';
+import { QUOTE_CARD_SIZE, quoteSvg, quoteText, type QuoteInput, type QuotePalette } from '@/habit/quoteCard';
 import { YEAR_CARD_SIZE, yearSvg, yearText, type YearReport } from '@/habit/yearReport';
 
 /**
@@ -71,5 +72,14 @@ export function shareYearReport(report: YearReport, palette: ReportPalette): Pro
     ...YEAR_CARD_SIZE,
     fileName: `okuma-yilim-${report.year}`,
     text: yearText(report),
+  });
+}
+
+export function shareQuoteCard(quote: QuoteInput, palette: QuotePalette): Promise<'downloaded' | 'shared'> {
+  return shareCard({
+    svg: quoteSvg(quote, palette),
+    ...QUOTE_CARD_SIZE,
+    fileName: `alinti-${dateStamp()}`,
+    text: quoteText(quote),
   });
 }
