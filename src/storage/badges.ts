@@ -4,6 +4,7 @@ import { BOOK_MIN_WORDS } from '@/habit/books';
 import { longestFlexibleStreak, totalsByDay } from '@/habit/summary';
 import { improvement, reliableTests } from '@/train/assessment';
 import { listAssessments } from './assessments';
+import { listChallenges } from './challenges';
 import { listDocumentsWithProgress } from './documents';
 import { listDrillResults } from './drills';
 import { KEYS } from './keys';
@@ -12,12 +13,13 @@ import { listVocab } from './vocab';
 
 /** Bütün depolardan rozet girdisini toplayıp rozetleri hesaplar. */
 export async function loadBadges(): Promise<Badge[]> {
-  const [sessions, assessments, documents, drills, vocab] = await Promise.all([
+  const [sessions, assessments, documents, drills, vocab, challenges] = await Promise.all([
     listSessions(),
     listAssessments(),
     listDocumentsWithProgress(),
     listDrillResults(),
     listVocab(),
+    listChallenges(),
   ]);
 
   const finished = documents.filter((item) => item.progress?.finished);
@@ -38,6 +40,7 @@ export async function loadBadges(): Promise<Badge[]> {
       .map((record) => record.correct / Math.max(1, record.total)),
     knownWords: vocab.filter((entry) => entry.known).length,
     schulte5BestMs: schulte5.length ? Math.min(...schulte5.map((result) => result.ms)) : null,
+    challengesDone: challenges.filter((entry) => entry.completedAt !== undefined).length,
   });
 }
 

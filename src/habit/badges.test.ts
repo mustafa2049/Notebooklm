@@ -12,6 +12,7 @@ const empty: BadgeInput = {
   recentComprehension: [],
   knownWords: 0,
   schulte5BestMs: null,
+  challengesDone: 0,
 };
 
 const earned = (input: BadgeInput) => computeBadges(input).filter((b) => b.earned).map((b) => b.id);

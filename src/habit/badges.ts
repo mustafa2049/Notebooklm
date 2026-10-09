@@ -22,6 +22,8 @@ export interface BadgeInput {
   knownWords: number;
   /** Schulte 5×5 en iyi süre (ms) */
   schulte5BestMs: number | null;
+  /** Tamamlanan meydan okuma sayısı */
+  challengesDone: number;
 }
 
 export interface Badge {
@@ -60,6 +62,12 @@ const RULES: { id: string; title: string; detail: string; test: (input: BadgeInp
     test: (i) => i.recentComprehension.length >= 3 && i.recentComprehension.slice(0, 3).every((c) => c >= 0.8),
   },
   { id: 'vocab20', title: 'Kelime avcısı', detail: 'Defterdeki 20 kelimeyi öğren', test: (i) => i.knownWords >= 20 },
+  {
+    id: 'challenge1',
+    title: 'Meydan okuyan',
+    detail: 'Bir okuma meydan okumasını tamamla',
+    test: (i) => i.challengesDone >= 1,
+  },
   {
     id: 'schulte',
     title: 'Keskin göz',

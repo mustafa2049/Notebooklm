@@ -334,6 +334,16 @@ ekrana bakan herkes "600 okumuş" görünür. Bu yüzden gelişim ayrıca ölç�
 - **Rozetler**: 14 kilometre taşı, puan/seviye yok. Hız rozeti bilerek yok;
   efektif hız gelişimi ödüllendiriliyor.
 
+## Meydan okumalar
+
+Bugün → "Meydan okumaların" (ya da `/challenges`): süreli, küçük hedefler —
+7 gün üst üste, iki haftada 10 gün 15'er dakika, haftada 3 saat, haftada
+20 bin kelime, 30 günde bir kitap, 3 ayda 3 kitap. Süre başlatıldığı gün
+başlar; ilerleme oturumlardan ve bitirilen kitaplardan **hesaplanır**
+(`src/habit/challenges.ts`, testli). Gün sayan hedeflerde kalan günler artık
+yetmiyorsa "kaçtı" denir, yeniden başlatılabilir. Tamamlanan bir kez Bugün'de
+kutlanır ve "Meydan okuyan" rozetini verir. Yedeğe dahil.
+
 ## Egzersizler
 
 | Egzersiz | Ne çalıştırır | Not |

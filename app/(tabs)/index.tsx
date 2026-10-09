@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { LEVEL_LABEL } from '@/content/passages';
 import { PLAN_STATE_LABEL, planStatus, wordsReadToday, type PlanStatus } from '@/habit/bookPlan';
+import { progressLabel } from '@/habit/challenges';
 import { booksFinishedInYear, finishEstimateDays, yearlyGoalStatus } from '@/habit/books';
 import { dailySuggestions, type Suggestion } from '@/habit/today';
 import { useSettings } from '@/store/SettingsContext';
@@ -19,6 +20,7 @@ import { improvement, naturalWpm, testDue, type AssessmentRecord } from '@/train
 import { dueCount } from '@/train/review';
 import { newBadges, type Badge } from '@/habit/badges';
 import { loadBadges, loadSeenBadges, markBadgesSeen } from '@/storage/badges';
+import { loadChallenges, markCelebrated } from '@/storage/challenges';
 import { listPlans } from '@/storage/plans';
 import { loadProgram } from '@/storage/program';
 import { nextLesson, type Lesson } from '@/train/program';
@@ -47,6 +49,8 @@ interface Snapshot {
   lesson: Lesson | null;
   /** Bitmemiş kitap planları ve bugünkü durumları */
   plans: { meta: DocumentMeta; status: PlanStatus }[];
+  /** Meydan okumalar (sürenler ve kutlanmamış tamamlananlar) */
+  challenges: Awaited<ReturnType<typeof loadChallenges>>;
 }
 
 function greeting(now: number): string {
@@ -74,17 +78,20 @@ export default function TodayScreen() {
     useCallback(() => {
       let cancelled = false;
       const now = Date.now();
+      const challengesReady = loadChallenges(now);
       Promise.all([
         listSessions(),
         listAssessments(),
         listDocumentsWithProgress(),
         listDrillResults(),
         listVocab(),
-        loadBadges(),
+        // Rozetler meydan okumalar güncellendikten sonra: yeni tamamlanan hemen sayılsın
+        challengesReady.then(() => loadBadges()),
         loadSeenBadges(),
         loadProgram(),
         listPlans(),
-      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen, program, plans]) => {
+        challengesReady,
+      ]).then(([sessions, assessments, documents, drills, vocab, badges, seen, program, plans, challenges]) => {
         if (cancelled) return;
         // Okumaya devam: en son dokunulan, bitmemiş doküman
         const unfinished = documents
@@ -112,6 +119,9 @@ export default function TodayScreen() {
 
         setSnapshot({
           plans: planned,
+          challenges: challenges.filter(
+            (item) => item.status === 'active' || (item.status === 'done' && !item.entry.celebrated)
+          ),
           lesson: program ? nextLesson(program) : null,
           freshBadges: newBadges(badges, seen),
           summary: summarize(sessions, now),
@@ -268,6 +278,61 @@ export default function TodayScreen() {
           </View>
         </>
       ) : null}
+
+      <SectionHeader title="Meydan okumaların" />
+      <View style={{ gap: theme.space(2) }}>
+        {snapshot.challenges.map((item) =>
+          item.status === 'done' ? (
+            <Card
+              key={`${item.def.id}-${item.entry.startedAt}`}
+              style={{ gap: theme.space(2), borderColor: theme.colors.success }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
+                <Icon name="award" size={22} color={theme.colors.success} />
+                <Txt variant="heading" style={{ flex: 1 }}>
+                  Tamamladın: {item.def.title}
+                </Txt>
+              </View>
+              <Button
+                label="Tamam"
+                variant="secondary"
+                onPress={() => {
+                  void markCelebrated(item.entry);
+                  setSnapshot({ ...snapshot, challenges: snapshot.challenges.filter((other) => other !== item) });
+                }}
+              />
+            </Card>
+          ) : (
+            <Card key={`${item.def.id}-${item.entry.startedAt}`} onPress={() => router.push('/challenges')} style={{ gap: theme.space(2) }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: theme.space(2) }}>
+                <Txt variant="body" style={{ flex: 1 }}>
+                  {item.def.title}
+                </Txt>
+                <Txt variant="dim" style={{ fontSize: 13 }}>
+                  {item.daysLeft === 1 ? 'son gün' : `${item.daysLeft} gün kaldı`}
+                </Txt>
+              </View>
+              <ProgressBar ratio={item.ratio} />
+              <Txt variant="dim" style={{ fontSize: 12 }}>
+                {progressLabel(item)}
+              </Txt>
+            </Card>
+          )
+        )}
+        {!snapshot.challenges.some((item) => item.status === 'active') ? (
+          <Card onPress={() => router.push('/challenges')}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Txt variant="body">Bir meydan okuma seç</Txt>
+                <Txt variant="dim" style={{ fontSize: 13 }}>
+                  7 gün üst üste, haftada 3 saat, 30 günde bir kitap…
+                </Txt>
+              </View>
+              <Icon name="chevronRight" size={20} color={theme.colors.textFaint} />
+            </View>
+          </Card>
+        ) : null}
+      </View>
 
       {snapshot.suggestions.length > 0 || snapshot.lesson ? (
         <>

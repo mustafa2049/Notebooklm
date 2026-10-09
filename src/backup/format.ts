@@ -185,6 +185,8 @@ const LIST_RULES: Record<string, ListRule> = {
     max: 2000,
   },
   highlights: { identity: byId, max: 5000 },
+  // Aynı an başlatılmış aynı meydan okuma tek kayıt
+  challenges: { identity: (c) => `${c.id}|${c.startedAt}`, max: 300 },
   // Günlükte kitap başına bir kayıt
   journal: { identity: (j) => String(j.docId), max: 2000 },
   // Kitap başına bir plan: iki cihazda kurulmuşsa cihazdaki kalır
