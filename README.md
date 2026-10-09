@@ -44,6 +44,13 @@ parça" bunun hazır bir profili.
   alanı aşarsa pay küçülüp sayfalar yeniden kuruluyor — metin kesilmiyor.
   3 yazı tipi × 3 satır aralığı × %70–200 boyutta denendi, hiçbir sayfa
   taşmadı.
+- **Tempo rehberi**: alt çubuktaki "Rehber" (web'de P) motoru sayfa modunda
+  hedef hızda yürütür: geçerli parça vurgulanır, sayfa sonunda sayfa
+  kendiliğinden döner — normal okurken hızlı okuma pratiği (meta-guiding).
+  Sayfaya dokunmak ya da boşluk duraklatır/sürdürür, −/+ (web'de ↑/↓) hızı
+  değiştirir, elle sayfa çevirmek rehberi kapatır. Rehberli okuma "yürüyen
+  vurgu" oturumu olarak kaydedilir (tempo istatistiğine girer); sayfalar
+  chunk parçalarıyla çizildiği için satır kırılımı değişmez.
 - Okuma süresi sayfanın ekranda kaldığı süreden sayılıyor, ama açık bırakılan
   ekran okuma sayılmıyor (sayfa başına en çok 50 kel/dk'lık süre) ve hızla
   çevrilen sayfanın kelimeleri sayılmıyor (1000 kel/dk'dan hızlı). Oturumlar

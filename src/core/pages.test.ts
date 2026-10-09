@@ -152,6 +152,15 @@ describe('pageParagraphs', () => {
     expect(paragraphs[1].sentences[0].words).toEqual(['Yeni', 'paragraf', 'başlıyor']);
   });
 
+  it('cümleyi chunk parçalarına ayırır; parçalar birleşince metin', () => {
+    const chunks = buildChunks(tokenize(text), { ...DEFAULT_CHUNK_OPTIONS, chunkSize: 2 });
+    const sentence = pageParagraphs(chunks, { start: 0, end: chunks.length })[0].sentences[1];
+    expect(sentence.parts.map((part) => part.text).join(' ')).toBe(sentence.text);
+    for (const part of sentence.parts) {
+      expect(chunks[part.chunkIndex].text).toBe(part.text);
+    }
+  });
+
   it('bölünmüş uzun kelimeyi bir kez ve bütün olarak yazar', () => {
     const chunks = buildChunks(tokenize(text), { ...DEFAULT_CHUNK_OPTIONS, chunkSize: 1, splitLongWords: 14 });
     expect(chunks.some((chunk) => chunk.partOf)).toBe(true);

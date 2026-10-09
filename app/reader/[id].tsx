@@ -261,10 +261,20 @@ function Reader({
   const [turn, setTurn] = useState<{ id: number; direction: 1 | -1 }>({ id: 0, direction: 1 });
   /** Son sayfadan ileri gidildi: metin bitti */
   const [endReached, setEndReached] = useState(false);
+  /**
+   * Tempo rehberi: Sayfa modunda motor hedef hızda ilerler, geçerli parça
+   * vurgulanır, sayfa kendiliğinden döner. Elle sayfa çevirince kapanır.
+   */
+  const [pacerOn, setPacerOn] = useState(false);
+  const pacing = pageMode && pacerOn && engine.playing;
+  useEffect(() => {
+    if (!pageMode) setPacerOn(false);
+  }, [pageMode]);
 
   const pageClock = usePageClock({
     enabled: pageMode && !endReached,
-    blocked: aiTab !== null || recall !== null || showAppearance,
+    // Rehber oynarken okuma rehberin oturumuna yazılıyor; sayfa saati beklesin
+    blocked: aiTab !== null || recall !== null || showAppearance || pacing,
     pageKey: endReached ? -2 : (page?.start ?? -1),
     pageWords,
   });
@@ -377,6 +387,8 @@ function Reader({
   // kadarki RSVP okuması "sayfa" sayılmasın
   const pacedMode = useRef<ReaderMode>(mode === 'page' ? 'rsvp' : mode);
   if (mode !== 'page') pacedMode.current = mode;
+  // Sayfa modunda tempo rehberi: yürüyen vurguyla aynı iş, öyle kaydedilir
+  else if (pacerOn) pacedMode.current = 'highlight';
   const recorder = useSessionRecorder({
     docId,
     mode: pacedMode.current,
@@ -408,6 +420,11 @@ function Reader({
       const target = pageIndex + delta;
       if (target < 0) return;
       haptics.step(settings.haptics);
+      // Elle çevirmek rehberi kapatır (okur kendi hızına döndü)
+      if (pacerOn) {
+        engine.pause();
+        setPacerOn(false);
+      }
       if (target >= pages.length) {
         if (endReached) return;
         // Son sayfa da okundu: metin bitmiş sayılsın (ilerleme %100)
@@ -423,20 +440,50 @@ function Reader({
       setTurn((current) => ({ id: current.id + 1, direction: delta }));
       jumpTo(pages[target].start);
     },
-    [pages, pageIndex, settings.haptics, endReached, pageClock, jumpTo, engine.chunks.length]
+    [pages, pageIndex, settings.haptics, endReached, pageClock, jumpTo, engine, pacerOn]
   );
 
   const seekPage = useCallback(
     (target: number) => {
       const next = pages[Math.max(0, Math.min(pages.length - 1, target))];
       if (!next) return;
+      if (pacerOn) {
+        engine.pause();
+        setPacerOn(false);
+      }
       setEndReached(false);
       setFlashSentence(null);
       setTurn((current) => ({ id: current.id + 1, direction: target >= pageIndex ? 1 : -1 }));
       jumpTo(next.start);
     },
-    [pages, pageIndex, jumpTo]
+    [pages, pageIndex, jumpTo, pacerOn, engine]
   );
+
+  const togglePacer = useCallback(() => {
+    if (!pageMode) return;
+    haptics.tap(settings.haptics);
+    if (engine.playing) {
+      engine.pause();
+      return;
+    }
+    if (!pacerOn) {
+      setPacerOn(true);
+      // Rehber görünen sayfanın başından başlar
+      if (page && !endReached) jumpTo(page.start);
+    }
+    setEndReached(false);
+    engine.play();
+  }, [pageMode, settings.haptics, engine, pacerOn, page, endReached, jumpTo]);
+
+  // Rehber metnin sonuna gelince sayfa modu da "bitti" desin
+  useEffect(() => {
+    if (pageMode && pacerOn && engine.finished) setEndReached(true);
+  }, [pageMode, pacerOn, engine.finished]);
+
+  /** Rehberin vurguladığı chunk (bölünmüş uzun kelimede kelimenin ilk parçası) */
+  const pacerChunk = pacerOn
+    ? engine.index - (engine.chunks[engine.index]?.partOf?.index ?? 0)
+    : null;
 
   /** Sayfa modunda araç paneli "hangi cümle?" diye sayfanın cümlelerini sunar. */
   const pageChoices = useMemo<SentenceChoice[] | undefined>(
@@ -557,6 +604,7 @@ function Reader({
 
   const startListening = useCallback(() => {
     engine.pause();
+    setPacerOn(false);
     setListening(true);
     const index = spanIndexForChunk(spans, engine.index);
     beforePlay(spans[index]?.charStart ?? 0);
@@ -657,7 +705,22 @@ function Reader({
       }
       if (pageMode) {
         switch (event.key) {
+          case 'p':
+          case 'P':
+            togglePacer();
+            return;
           case ' ':
+            event.preventDefault();
+            // Rehber açıkken boşluk rehberi durdurur/sürdürür
+            if (pacerOn) togglePacer();
+            else turnPage(1);
+            return;
+          case 'ArrowUp':
+          case 'ArrowDown':
+            if (!pacerOn) break;
+            event.preventDefault();
+            update({ wpm: Math.max(100, Math.min(1200, settings.wpm + (event.key === 'ArrowUp' ? 25 : -25))) });
+            return;
           case 'ArrowRight':
           case 'PageDown':
             event.preventDefault();
@@ -723,6 +786,8 @@ function Reader({
     previousSentence,
     nextSentence,
     toggleBookmark,
+    togglePacer,
+    pacerOn,
   ]);
 
   // Okurken ekran kararmasın; 10 dakika hiçbir şey olmazsa bırakılır
@@ -814,6 +879,12 @@ function Reader({
             layout={layout}
             markedSentences={markedSentences}
             flashSentence={flashSentence}
+            activeChunk={pacerChunk}
+            onTap={() => {
+              if (!pacerOn) return false;
+              togglePacer();
+              return true;
+            }}
             onAreaLayout={pagination.onAreaLayout}
             onContentHeight={pagination.onContentHeight}
             onSampleHeight={pagination.onSampleHeight}
@@ -964,6 +1035,13 @@ function Reader({
             finished={endReached}
             onTurn={turnPage}
             onSeekPage={seekPage}
+            pacer={{
+              on: pacerOn,
+              playing: pacing,
+              wpm: settings.wpm,
+              onToggle: togglePacer,
+              onSpeed: (delta: number) => update({ wpm: Math.max(100, Math.min(1200, settings.wpm + delta)) }),
+            }}
           />
         ) : (
         <ReaderControls

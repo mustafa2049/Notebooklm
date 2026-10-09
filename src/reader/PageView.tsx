@@ -50,6 +50,8 @@ export function PageView({
   layout,
   markedSentences,
   flashSentence = null,
+  activeChunk = null,
+  onTap,
   onAreaLayout,
   onContentHeight,
   onSampleHeight,
@@ -76,6 +78,10 @@ export function PageView({
   markedSentences: Set<number>;
   /** Aramadan gelinen cümle: sayfa çevrilene kadar belirgin */
   flashSentence?: number | null;
+  /** Tempo rehberinin bulunduğu chunk (rehber kapalıyken null) */
+  activeChunk?: number | null;
+  /** Dokunma: `true` dönerse sayfa çevrilmez (ör. rehber duraklatıldı) */
+  onTap?: () => boolean;
   onAreaLayout: (event: LayoutChangeEvent) => void;
   onContentHeight: (height: number) => void;
   /** Gizli örnek paragrafın yüksekliği (satır başına karakter ölçümü) */
@@ -91,11 +97,16 @@ export function PageView({
   const paragraphs = useMemo(() => {
     if (!page) return [];
     const options = { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace };
+    // Cümleler chunk parçalarıyla çiziliyor: tempo rehberi geçerli parçayı
+    // vurgulayabilsin. Satır kırılımı aynı (parçalar satır içi)
     return pageParagraphs(chunks, page).map((paragraph) => ({
       ...paragraph,
-      sentences: paragraph.sentences.map((sentence, index) => ({
+      sentences: paragraph.sentences.map((sentence, sentenceIndex) => ({
         ...sentence,
-        display: typeset(index === 0 ? sentence.text : ` ${sentence.text}`, options),
+        parts: sentence.parts.map((part, partIndex) => ({
+          ...part,
+          display: typeset(sentenceIndex === 0 && partIndex === 0 ? part.text : ` ${part.text}`, options),
+        })),
       })),
     }));
   }, [chunks, page, layout.hyphenate, layout.extraWordSpace]);
@@ -158,6 +169,7 @@ export function PageView({
       swiped.current = false;
       return;
     }
+    if (onTap?.()) return;
     onTurn(event.nativeEvent.pageX < windowWidth * PREVIOUS_ZONE ? -1 : 1);
   };
 
@@ -228,7 +240,14 @@ export function PageView({
                         : undefined
                   }
                 >
-                  {sentence.display}
+                  {sentence.parts.map((part) => (
+                    <PagePart
+                      key={part.chunkIndex}
+                      text={part.display}
+                      active={part.chunkIndex === activeChunk}
+                      color={theme.colors.highlight}
+                    />
+                  ))}
                 </Text>
               ))}
             </Text>
@@ -239,3 +258,27 @@ export function PageView({
     </View>
   );
 }
+
+/**
+ * Cümlenin bir chunk'lık parçası. `memo`: rehber ilerledikçe yalnızca eski ve
+ * yeni geçerli parça yeniden çizilir, sayfanın kalanı değil.
+ */
+const PagePart = React.memo(function PagePart({
+  text,
+  active,
+  color,
+}: {
+  text: string;
+  active: boolean;
+  color: string;
+}) {
+  if (!active) return <Text>{text}</Text>;
+  // Baştaki boşluk vurgunun dışında: yalnızca kelimeler boyansın
+  const lead = /^[\s\u2009]*/.exec(text)?.[0] ?? '';
+  return (
+    <Text>
+      {lead}
+      <Text style={{ backgroundColor: color }}>{text.slice(lead.length)}</Text>
+    </Text>
+  );
+});

@@ -203,6 +203,11 @@ export interface PageSentence {
   /** Metindeki başlangıç konumu */
   charStart: number;
   words: string[];
+  /**
+   * Cümlenin chunk'lara göre parçaları (birleşince `text`). Tempo rehberi
+   * geçerli chunk'ı bunlarla vurgular.
+   */
+  parts: { chunkIndex: number; text: string }[];
 }
 
 export interface PageParagraph {
@@ -228,10 +233,13 @@ export function pageParagraphs(chunks: Chunk[], page: Page): PageParagraph[] {
       }
       let sentence = paragraph.sentences[paragraph.sentences.length - 1];
       if (!sentence || sentence.sentenceIndex !== token.sentenceIndex) {
-        sentence = { sentenceIndex: token.sentenceIndex, text: '', charStart: token.start, words: [] };
+        sentence = { sentenceIndex: token.sentenceIndex, text: '', charStart: token.start, words: [], parts: [] };
         paragraph.sentences.push(sentence);
       }
       sentence.text = sentence.text ? `${sentence.text} ${token.text}` : token.text;
+      const part = sentence.parts[sentence.parts.length - 1];
+      if (part && part.chunkIndex === i) part.text = `${part.text} ${token.text}`;
+      else sentence.parts.push({ chunkIndex: i, text: token.text });
       if (token.core) sentence.words.push(token.core);
     }
   }
