@@ -2,14 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { tr } from '../../i18n/tr';
 import { dayKey } from '../../model/time';
-import { isIos, isStandalone, notificationsSupported, notify, requestNotificationPermission } from '../../platform/notifications';
-import { buildIcs } from '../../platform/reminders';
 import { exportCsv, exportJson, importJson } from '../../storage/export';
 import { useProfile, useStore } from '../../storage/store';
 import { DisclaimerText, Segmented } from '../../ui/components';
-import { CameraCalibration } from '../../ui/DistanceMeter';
+import { CameraCalibration, PatchCheckPreview } from '../../ui/DistanceMeter';
 import { shareOrDownloadFile } from '../../platform/share';
 import { RxForm } from '../rx/RxForm';
+import { NotificationSettings } from './NotificationSettings';
 
 export default function SettingsPage() {
   const profile = useProfile();
@@ -52,8 +51,6 @@ function Settings() {
   const nav = useNavigate();
   const loc = useLocation();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [perm, setPerm] = useState(notificationsSupported() ? Notification.permission : 'unsupported');
-  const [newTime, setNewTime] = useState('18:00');
   const [pinDraft, setPinDraft] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
   const up = (patch: Parameters<typeof updateProfile>[1]) => updateProfile(profile.id, patch);
@@ -192,7 +189,7 @@ function Settings() {
         </div>
       </div>
 
-      <h2 id="kamera">Kamera ile mesafe</h2>
+      <h2 id="kamera">Kamera: mesafe ve bant kontrolü</h2>
       <div className="card stack">
         <p className="muted small" style={{ margin: 0 }}>
           Ön kamera yüzünü ve gözlerinin irisini algılayarak ekrana uzaklığını tahmin eder. Görüntü yalnızca bu cihazda işlenir;
@@ -213,6 +210,36 @@ function Settings() {
         <CameraCalibration />
         {profile.cameraFocalPx && <span className="muted small">Kamera kalibre edildi ✓</span>}
       </div>
+      <div className="card stack">
+        <strong>🏴‍☠️ Bant kontrolü</strong>
+        <Segmented
+          label="Bant kontrolü"
+          value={profile.patchCheck ? 'on' : 'off'}
+          onChange={(v) => up({ patchCheck: v === 'on' })}
+          options={[
+            { value: 'off', label: 'Kapalı' },
+            { value: 'on', label: '📷 Bantlı oyunlarda kontrol et' },
+          ]}
+        />
+        <span className="muted small">
+          Açıkken bantla oynanan oyunlarda ön kamera iki göz bölgesini karşılaştırır. Sağlam göz birkaç saniye açık görünürse oyun
+          durur ve “bandı kontrol et” uyarısı çıkar. Görüntü yalnızca bu cihazda işlenir, kaydedilmez.
+        </span>
+        <div className="field">
+          <strong>Hassasiyet</strong>
+          <Segmented
+            label="Hassasiyet"
+            value={profile.patchCheckLevel}
+            onChange={(patchCheckLevel) => up({ patchCheckLevel })}
+            options={[
+              { value: 'low', label: 'Düşük' },
+              { value: 'medium', label: 'Orta' },
+              { value: 'high', label: 'Yüksek' },
+            ]}
+          />
+        </div>
+        <PatchCheckPreview />
+      </div>
 
       <h2>Ses</h2>
       <div className="card stack">
@@ -228,58 +255,8 @@ function Settings() {
         <span className="muted small">Doğru, yanlış ve seviye atlama anlarında kısa sesler çalar.</span>
       </div>
 
-      <h2>Hatırlatıcılar</h2>
-      <div className="card stack">
-        <div className="row">
-          {profile.reminderTimes.map((t) => (
-            <span key={t} className="badge-pill" style={{ fontSize: '0.95em' }}>
-              ⏰ {t}{' '}
-              <button
-                className="btn ghost"
-                style={{ minHeight: 24, padding: '0 4px' }}
-                aria-label={`${t} hatırlatıcısını sil`}
-                onClick={() => up({ reminderTimes: profile.reminderTimes.filter((x) => x !== t) })}
-              >
-                ✕
-              </button>
-            </span>
-          ))}
-          {profile.reminderTimes.length === 0 && <span className="muted">Hatırlatıcı yok.</span>}
-        </div>
-        <div className="row">
-          <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
-          <button
-            className="btn"
-            onClick={() => newTime && !profile.reminderTimes.includes(newTime) && up({ reminderTimes: [...profile.reminderTimes, newTime].sort() })}
-          >
-            ＋ Ekle
-          </button>
-        </div>
-        <div className="row">
-          {perm !== 'granted' && perm !== 'unsupported' && (
-            <button className="btn" onClick={async () => setPerm(await requestNotificationPermission())}>
-              🔔 Bildirimlere izin ver
-            </button>
-          )}
-          {perm === 'granted' && (
-            <button className="btn" onClick={() => notify('Deneme bildirimi', 'Bildirimler çalışıyor 👍', 'test')}>
-              🔔 Bildirimi dene
-            </button>
-          )}
-          <button
-            className="btn primary"
-            disabled={profile.reminderTimes.length === 0}
-            onClick={() => shareOrDownloadFile('goz-kapama-hatirlatici.ics', buildIcs(profile), 'text/calendar', 'Göz kapama hatırlatıcısı')}
-          >
-            📅 Telefon takvimine ekle
-          </button>
-        </div>
-        <p className="muted small" style={{ margin: 0 }}>
-          Uygulama içi bildirimler uygulama açıkken çalışır{isIos() && !isStandalone() ? ' (iPhone’da önce “Ana Ekrana Ekle” gerekir)' : ''}.
-          Uygulama kapalıyken de hatırlatılmak için <b>“Telefon takvimine ekle”</b> ile her gün tekrar eden alarmlı bir
-          etkinlik oluşturun.
-        </p>
-      </div>
+      <h2 id="bildirimler">Bildirimler</h2>
+      <NotificationSettings profile={profile} />
 
       {profile.mode === 'child' && (
         <>

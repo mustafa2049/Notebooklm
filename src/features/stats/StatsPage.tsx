@@ -8,13 +8,15 @@ import { usePatchStats, useProfileResults } from '../../storage/selectors';
 import { useProfile } from '../../storage/store';
 import { Segmented } from '../../ui/components';
 import { BarChart, LineChart } from '../../ui/charts';
+import { OrientationBars } from '../meridional/MeridionalPage';
 
 const fmtDay = (ts: number) => new Date(ts).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
 
 export default function StatsPage() {
   const profile = useProfile();
   const { byDay, goal, today, streak, now } = usePatchStats();
-  const { results, gabor, visionTests, stereoTests } = useProfileResults();
+  const { results, gabor, visionTests, stereoTests, orientationTests } = useProfileResults();
+  const lastOrientation = [...orientationTests].filter((o) => o.mode === 'test').sort((a, b) => b.at - a.at)[0];
   const [range, setRange] = useState(14);
   const [cycles, setCycles] = useState(6);
 
@@ -187,6 +189,25 @@ export default function StatsPage() {
         ) : (
           <p className="muted">
             Bu incelikte henüz seans yok. <Link to="/play/gabor">Gabor eğitimini dene →</Link>
+          </p>
+        )}
+      </div>
+
+      <div className="card stack" data-testid="orientation-stats">
+        <strong>📐 Yöne göre kontrast (astigmat)</strong>
+        {lastOrientation ? (
+          <>
+            <OrientationBars t={lastOrientation.thresholds} />
+            <p className="muted small" style={{ margin: 0 }}>
+              Son ölçüm: {new Date(lastOrientation.at).toLocaleDateString('tr-TR')} · toplam{' '}
+              {orientationTests.filter((o) => o.mode === 'test').length} ölçüm,{' '}
+              {orientationTests.filter((o) => o.mode === 'train').length} çalışma.{' '}
+              <Link to="/play/meridional">Yeniden ölç →</Link>
+            </p>
+          </>
+        ) : (
+          <p className="muted" style={{ margin: 0 }}>
+            Henüz ölçüm yok. <Link to="/play/meridional">Astigmat yönü testini dene →</Link>
           </p>
         )}
       </div>

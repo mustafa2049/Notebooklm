@@ -10,6 +10,7 @@ import { useProfile } from '../../storage/store';
 import { Segmented } from '../../ui/components';
 import { RxSummary } from '../rx/RxForm';
 import { formatArcsec } from '../stereo/StereoPage';
+import { directionName } from '../meridional/meridional';
 import { toTenths } from '../vision/acuity';
 import { decodeReport, encodeReport, reportUrl, type SharedReport } from './share';
 import { buildSummary } from './summary';
@@ -20,7 +21,7 @@ const pct = (v: number) => `%${Math.round(v * 100)}`;
 export default function ReportPage() {
   const profile = useProfile();
   const { sessions, now } = usePatchStats();
-  const { results, gabor, visionTests, stereoTests, diary } = useProfileResults();
+  const { results, gabor, visionTests, stereoTests, orientationTests, diary } = useProfileResults();
   const [weeks, setWeeks] = useState<number>(4);
   const [linkMsg, setLinkMsg] = useState<string | null>(null);
 
@@ -32,6 +33,7 @@ export default function ReportPage() {
       ...gabor.map((x) => x.at),
       ...visionTests.map((x) => x.at),
       ...stereoTests.map((x) => x.at),
+      ...orientationTests.map((x) => x.at),
     );
     const from = weeks === 0 ? earliest : addDays(startOfDay(now), -(weeks * 7 - 1));
     return {
@@ -45,11 +47,11 @@ export default function ReportPage() {
       ...(profile.prescription ? { prescription: profile.prescription } : {}),
       wearsGlasses: profile.wearsGlasses,
       generatedAt: now,
-      summary: buildSummary({ profile, sessions, results, gabor, visionTests, stereoTests, diary, from, now }),
+      summary: buildSummary({ profile, sessions, results, gabor, visionTests, stereoTests, orientationTests, diary, from, now }),
     };
     // Rapor dakikada bir yenilenir (zamanlayıcı çalışırken her saniye değil)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, sessions, results, gabor, visionTests, stereoTests, diary, Math.floor(now / 60_000), weeks]);
+  }, [profile, sessions, results, gabor, visionTests, stereoTests, orientationTests, diary, Math.floor(now / 60_000), weeks]);
 
   const shareLink = async () => {
     const url = reportUrl(await encodeReport(report));
@@ -216,7 +218,7 @@ export function ReportView({ r }: { r: SharedReport }) {
       )}
 
       <h3>Ölçümler (ev testleri, yaklaşık)</h3>
-      {s.vision.length === 0 && s.gabor.length === 0 && !s.stereo && <p className="muted">Bu dönemde ölçüm yok.</p>}
+      {s.vision.length === 0 && s.gabor.length === 0 && !s.stereo && !s.orientation?.length && <p className="muted">Bu dönemde ölçüm yok.</p>}
       {s.stereo && (
         <p style={{ margin: '6px 0' }}>
           3D (stereo) görme eşiği: {formatArcsec(s.stereo.first)} → <b>{formatArcsec(s.stereo.last)}</b> ({s.stereo.n} test; küçük
@@ -271,6 +273,33 @@ export function ReportView({ r }: { r: SharedReport }) {
                   <b>%{(g.last * 100).toFixed(1)}</b>
                 </td>
                 <td>{g.n}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {s.orientation?.length > 0 && (
+        <table className="report-table" style={{ marginTop: 8 }}>
+          <thead>
+            <tr>
+              <th>Yöne göre kontrast eşiği (tembel göz)</th>
+              <th>İlk</th>
+              <th>Son</th>
+              <th>Test</th>
+            </tr>
+          </thead>
+          <tbody>
+            {s.orientation.map((o) => (
+              <tr key={o.deg}>
+                <td>
+                  {directionName(o.deg)} çizgiler ({o.deg}°)
+                </td>
+                <td>%{(o.first * 100).toFixed(1)}</td>
+                <td>
+                  <b>%{(o.last * 100).toFixed(1)}</b>
+                </td>
+                <td>{o.n}</td>
               </tr>
             ))}
           </tbody>

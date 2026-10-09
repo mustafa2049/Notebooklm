@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PATCH_THRESHOLDS } from '../platform/eyeCheck';
 import { calibrateFocal } from '../platform/distance';
 import { cameraStatusText, useFaceDistance, type FaceDistance } from '../platform/useFaceDistance';
 import { useProfile, useStore } from '../storage/store';
@@ -79,6 +80,46 @@ export function CameraCalibration() {
           {msg && <div className="banner">{msg}</div>}
         </>
       )}
+    </div>
+  );
+}
+
+/** Bant kontrolü denemesi: canlı benzerlik ve "iki göz açık / bir göz kapalı" kararı. */
+export function PatchCheckPreview() {
+  const profile = useProfile();
+  const [on, setOn] = useState(false);
+  const d = useFaceDistance(on, profile.cameraFocalPx, { analyzeEyes: true });
+  const threshold = PATCH_THRESHOLDS[profile.patchCheckLevel];
+  const m = d.status === 'ok' ? (d.eyeMatch ?? null) : null;
+
+  if (!on) {
+    return (
+      <button className="btn" onClick={() => setOn(true)}>
+        🏴‍☠️ Bant kontrolünü dene
+      </button>
+    );
+  }
+  return (
+    <div className="stack" style={{ gap: 6 }} data-testid="patch-preview">
+      <div className="small" role="status">
+        {d.status !== 'ok'
+          ? cameraStatusText(d)
+          : m == null
+            ? 'Gözler aranıyor…'
+            : m >= threshold
+              ? '👀 İki göz açık görünüyor'
+              : '🏴‍☠️ Bir göz kapalı görünüyor'}
+      </div>
+      <div className="progress" aria-label="Göz benzerliği">
+        <div style={{ width: `${Math.max(0, Math.min(1, m ?? 0)) * 100}%`, background: m != null && m >= threshold ? 'var(--warning)' : undefined }} />
+      </div>
+      <span className="muted small">
+        Benzerlik {m == null ? '–' : `%${Math.round(Math.max(0, m) * 100)}`} · uyarı eşiği %{Math.round(threshold * 100)}. Önce iki gözün açıkken,
+        sonra bandı takınca dene: bantla çubuk eşiğin altına inmeli. İnmiyorsa hassasiyeti düşür; açık gözde uyarı gelmiyorsa yükselt.
+      </span>
+      <button className="btn" onClick={() => setOn(false)}>
+        Kamerayı kapat
+      </button>
     </div>
   );
 }

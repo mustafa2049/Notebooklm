@@ -11,6 +11,7 @@ import ExercisePlay from './features/exercises/ExercisePlay';
 import Calibration from './features/dichoptic/Calibration';
 import DichopticPlay from './features/dichoptic/DichopticPlay';
 import GaborPage from './features/gabor/GaborPage';
+import MeridionalPage from './features/meridional/MeridionalPage';
 import VideoPlay from './features/dichoptic/VideoPlay';
 import ReadingPage from './features/reading/ReadingPage';
 import VisionPage from './features/vision/VisionPage';
@@ -23,10 +24,12 @@ import BadgesPage from './features/kids/BadgesPage';
 import SetupPage from './features/setup/SetupPage';
 import { useReminders } from './platform/reminders';
 import { setSoundEnabled } from './platform/sound';
+import { useNotificationSync } from './platform/nativeNotifications';
 
 export default function App() {
   const { loaded, profile } = useStore();
   useReminders();
+  useNotificationSync();
 
   useEffect(() => {
     document.documentElement.dataset.mode = profile?.mode ?? 'adult';
@@ -52,6 +55,7 @@ export default function App() {
           <Route path="/play/exercise/:kind" element={<ExercisePlay />} />
           <Route path="/play/dichoptic/:kind" element={<DichopticPlay />} />
           <Route path="/play/gabor" element={<GaborPage />} />
+          <Route path="/play/meridional" element={<MeridionalPage />} />
           <Route path="/play/video" element={<VideoPlay />} />
           <Route path="/play/reading" element={<ReadingPage />} />
           <Route path="/vision" element={<VisionPage />} />

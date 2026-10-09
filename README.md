@@ -7,6 +7,10 @@ tedavisinde şunlara yardım eder:
 |---|---|
 | 🧭 **Kolay kurulum sihirbazı** | İlk açılıştan sonra 6 adım: tembel göz, gözlük reçetesi, doktorun planı, ekran ölçüsü, kırmızı-mavi gözlük ayarı ve ilk görme testi. Ana sayfada “Kurulum x/6” kartı. |
 | 👓 **Gözlük reçetesi ve takma takibi** | Reçete (SPH/CYL/AKS) kaydı, sferik eşdeğer ve iki göz farkı (anizometropi); egzersiz öncesi gözlük hatırlatması, günlükte “gözlüğü ne kadar taktın?” sorusu, görme testinin gözlükle/gözlüksüz kaydı. Rapor ve CSV'de görünür. |
+| 🔔 **Telefon bildirimleri** | Android uygulamasında uygulama kapalıyken de: kapama saati (hedef dolduysa gelmez), “hedefe ulaştın, bandı çıkarabilirsin”, unutulan bant, günlük, görme testi günü ve kontrol randevusu. Bildirime dokununca ilgili sayfa açılır. Tarayıcı sürümünde uygulama açıkken çalışır. |
+| 📐 **Astigmat yönü (meridyonal)** | Reçetedeki astigmat eksenine göre iki ana yönde (ya da 4 yönde) soluk desenlerle yöne göre kontrast eşiği ölçümü; en zayıf yönü çalıştırma modu. İlerleme sayfasında, raporda ve CSV'de. |
+| 🎤 **Sesle cevap** | Görme ve 3D testlerinde “sağ, sol, yukarı, aşağı, göremiyorum” diyerek cevap verme (uzaktan testte kolaylık). Android uygulamasında ve Chrome/Edge'de çalışır; ses kaydedilmez. |
+| 🏴‍☠️ **Kamera ile bant kontrolü** | İsteğe bağlı: bantlı oyunlarda ön kamera iki göz bölgesini karşılaştırır, sağlam göz açık görünürse oyunu durdurup uyarır. Görme testinde kapatılan gözü de kontrol eder. Ayarlar'da canlı deneme ve hassasiyet ayarı. |
 | 📅 **Haftalık özet** | Bu haftanın günlük kapama, hedef tutan gün, oyun süresi ve gözlük oranı; geçen haftayla ▲▼ karşılaştırma ve kısa yorum. |
 | 🏴‍☠️ **Kapama zamanlayıcısı** | Bandı taktığınızda başlatın, çıkardığınızda durdurun. Günlük hedef halkası, takvim, seri sayacı, hatırlatıcılar ve elle kayıt ekleme. Telefon kilitlense de süre doğru hesaplanır. |
 | 🔍 **Bant takılıyken egzersizler** | Tembel gözle oynanan yakın görme oyunları: *Farklı Olanı Bul*, *Balon Patlat*, *Hedef Yakala*, *Labirent*, *Noktaları Birleştir*, *Dönen E*. Başarıya göre zorlaşır (harfler küçülür ve sıklaşır, hedefler hızlanır). |

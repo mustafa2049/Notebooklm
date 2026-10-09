@@ -76,8 +76,23 @@ export interface Profile {
   rxSkipped?: boolean;
   /** Kurulumda doktorun planı onaylandı. */
   planConfirmed?: boolean;
+  /** Bildirim: kapama hedefine ulaşınca. */
+  notifyGoal: boolean;
+  /** Bildirim: hedeften 1 saat sonra zamanlayıcı hâlâ çalışıyorsa. */
+  notifyForgot: boolean;
+  /** Bildirim: görme testi günü. */
+  notifyVision: boolean;
+  /** Bildirim: kontrol randevusundan önce. */
+  notifyVisit: boolean;
+  /** Günlük hatırlatma saati "HH:MM" (null = kapalı). */
+  notifyDiaryTime: string | null;
+  /** Bantlı oyunlarda kamera ile sağlam gözün kapalı olduğunu kontrol et. */
+  patchCheck: boolean;
+  patchCheckLevel: PatchCheckLevel;
   createdAt: number;
 }
+
+export type PatchCheckLevel = 'low' | 'medium' | 'high';
 
 /** Yeni ve eski profiller için varsayılan alanlar. */
 export const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => ({
@@ -93,6 +108,13 @@ export const profileDefaults = (): Omit<Profile, 'id' | 'name' | 'anaglyph'> => 
   doctorNote: '',
   proximityWarn: false,
   wearsGlasses: false,
+  notifyGoal: true,
+  notifyForgot: true,
+  notifyVision: true,
+  notifyVisit: true,
+  notifyDiaryTime: '20:30',
+  patchCheck: false,
+  patchCheckLevel: 'medium',
   createdAt: Date.now(),
 });
 
@@ -149,6 +171,19 @@ export interface GaborResult {
   viewing: GaborViewing;
 }
 
+/** Yöne göre (astigmat ekseni) kontrast eşiği ölçümü ya da eğitimi. */
+export interface OrientationTest {
+  id: string;
+  profileId: string;
+  at: number;
+  eye: Eye;
+  cycles: number;
+  viewing: GaborViewing;
+  mode: 'test' | 'train';
+  /** Çizgi açısı (derece, ekranda yataydan saat yönü tersine) ve Michelson kontrast eşiği. */
+  thresholds: { deg: number; threshold: number }[];
+}
+
 /** Evde yapılan görme keskinliği testi. */
 export interface VisionTest {
   id: string;
@@ -197,6 +232,7 @@ export interface AppData {
   gabor: GaborResult[];
   visionTests: VisionTest[];
   stereoTests: StereoTest[];
+  orientationTests: OrientationTest[];
   diary: DiaryEntry[];
   /** Profil başına çalışan zamanlayıcının başlangıç zamanı (yoksa null). */
   timers: Record<string, number | null>;
@@ -211,6 +247,7 @@ export const emptyData = (): AppData => ({
   gabor: [],
   visionTests: [],
   stereoTests: [],
+  orientationTests: [],
   diary: [],
   timers: {},
 });

@@ -41,4 +41,14 @@
     <!-- Ön kamera ile ekrana uzaklık ölçümü (isteğe bağlı; görüntü cihazda işlenir) -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+    <!-- Hatırlatma bildirimlerinin tam saatinde gelmesi için (izin verilmezse birkaç dakika kayabilir) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Görme testinde sesle cevap (konuşma tanıma); mikrofon sesi kaydedilmez -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 </manifest>

@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { defaultAnaglyph, emptyData, type AppData } from '../model/types';
+import { defaultAnaglyph, emptyData, profileDefaults, type AppData } from '../model/types';
 import { exportCsv, exportJson, importJson, normalizeData } from './export';
 
 const sample = (): AppData => ({
   ...emptyData(),
   profiles: [
     {
+      ...profileDefaults(),
       id: 'p1',
       name: 'Ayşe',
       mode: 'child',
@@ -52,6 +53,7 @@ describe('export/import', () => {
   it('fills defaults and drops invalid records', () => {
     const data = normalizeData({
       profiles: [{ id: 'x', name: 'Ali' }, { foo: 1 }],
+      orientationTests: [{ id: 'o', profileId: 'x', thresholds: [] }, { bad: 1 }],
       sessions: [{ start: 10, end: 5 }, { id: 's', profileId: 'x', start: 1, end: 2 }],
       activeProfileId: 'missing',
     });
@@ -66,6 +68,9 @@ describe('export/import', () => {
     expect(data.stereoTests).toEqual([]);
     expect(data.profiles[0].proximityWarn).toBe(false);
     expect(data.profiles[0].wearsGlasses).toBe(false);
+    expect(data.profiles[0].notifyDiaryTime).toBe('20:30');
+    expect(data.profiles[0].patchCheck).toBe(false);
+    expect(data.orientationTests).toHaveLength(1);
     expect(data.sessions).toHaveLength(1);
     expect(data.activeProfileId).toBe('x');
   });

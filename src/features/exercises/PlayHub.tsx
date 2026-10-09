@@ -81,6 +81,11 @@ export default function PlayHub() {
             Soluk çizgili desenlerin yönünü bul. Kontrast duyarlılığını ölçer ve geliştirmeyi hedefler.
           </span>
         </Link>
+        <Link className="tile" to="/play/meridional">
+          <span className="icon">📐</span>
+          <strong>Astigmat yönü</strong>
+          <span className="muted small">Hangi yöndeki çizgileri daha zor gördüğünü ölç ve o yönü çalıştır.</span>
+        </Link>
       </div>
 
       <p className="muted small" style={{ marginTop: 24 }}>

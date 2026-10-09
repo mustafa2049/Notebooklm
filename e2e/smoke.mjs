@@ -269,14 +269,51 @@ await click('Kamerayı aç ve mesafeyi gör');
 await page.getByText(/Yüz aranıyor|Kamera kullanılamıyor|başlatılamadı/).first().waitFor({ timeout: 60000 });
 const camText = await page.getByRole('status').first().innerText();
 if (!/Yüz aranıyor/.test(camText)) errors.push(`Kamera durumu beklenmedik: ${camText}`);
-await page.getByText('Kamera ile mesafe').first().scrollIntoViewIfNeeded();
+await page.getByText('Kamera: mesafe').first().scrollIntoViewIfNeeded();
 await shot('30-camera');
 await click('Kamerayı kapat');
+
+// Bant kontrolü: ayar ve canlı deneme (sahte kamerada yüz yok)
+await click('📷 Bantlı oyunlarda kontrol et');
+await click('Bant kontrolünü dene');
+await page.getByTestId('patch-preview').getByText(/Yüz aranıyor|Gözler aranıyor|Kamera kullanılamıyor|başlatılamadı/).first().waitFor({ timeout: 60000 });
+await page.getByTestId('patch-preview').scrollIntoViewIfNeeded();
+await shot('33-patch-check');
+await page.getByTestId('patch-preview').getByRole('button', { name: 'Kamerayı kapat' }).click();
+
+// Bildirimler: ayarlar ve sıradaki bildirimler listesi
+await page.getByTestId('notification-settings').scrollIntoViewIfNeeded();
+await page.getByTestId('upcoming-notifications').waitFor();
+if ((await page.getByTestId('upcoming-notifications').locator('li').count()) < 1) errors.push('Sıradaki bildirim listesi boş');
+await shot('34-notifications');
+
+// Görme testinde sesle cevap seçeneği (tarayıcı destekliyorsa)
+await page.goto(`${BASE}#/vision`);
+await page.getByRole('heading', { name: /Evde görme testi/ }).waitFor();
+const hasVoice = await page.getByRole('button', { name: '🎤 Sesle' }).count();
+console.log('Sesle cevap seçeneği:', hasVoice ? 'var' : 'yok (tarayıcı desteklemiyor)');
+
+// Astigmat yönü testi: rastgele cevaplarla sonuca kadar
+await page.goto(`${BASE}#/play/meridional`);
+await page.getByRole('heading', { name: /Astigmat yönü/ }).waitFor();
+await shot('35-meridional-setup');
+await page.getByRole('button', { name: 'Başla', exact: true }).click();
+await wait(1300);
+await shot('36-meridional-test');
+for (let i = 0; i < 400; i++) {
+  if (await page.getByRole('heading', { name: /Sonuç 📐/ }).isVisible()) break;
+  await page.keyboard.press(i % 3 ? 'ArrowLeft' : 'ArrowRight');
+  await wait(450);
+}
+await page.getByRole('heading', { name: /Sonuç 📐/ }).waitFor();
+await shot('37-meridional-result');
+await page.goto(`${BASE}#/stats`);
+await page.getByTestId('orientation-stats').getByText(/eğik/).first().waitFor();
 
 // Doktor raporu
 await page.goto(`${BASE}#/report`);
 await page.getByTestId('report').waitFor();
-for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test notu', 'Dikoptik Okuma', 'Gözlük reçetesi', '+2,50 / −1,75 × 5°', 'Gözlük takma']) {
+for (const t of ['Göz tembelliği tedavi özeti', 'Görme keskinliği', 'Test notu', 'Dikoptik Okuma', 'Gözlük reçetesi', '+2,50 / −1,75 × 5°', 'Gözlük takma', 'Yöne göre kontrast']) {
   if (!(await page.getByTestId('report').getByText(t).first().isVisible())) errors.push(`Raporda "${t}" yok`);
 }
 await shot('27-report');

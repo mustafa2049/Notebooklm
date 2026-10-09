@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { speechStatusText, useSpeechAvailable, useSpeechCommands } from '../../platform/speech';
 import { Link } from 'react-router-dom';
 import { makePalette } from '../../games/dichoptic/anaglyph';
 import { sfx, unlockAudio } from '../../platform/sound';
@@ -27,6 +28,8 @@ export default function StereoPage() {
   const { stereoTests } = useProfileResults();
   const [phase, setPhase] = useState<'setup' | 'test' | 'result'>('setup');
   const [useCamera, setUseCamera] = useState(false);
+  const voiceAvailable = useSpeechAvailable();
+  const [voice, setVoice] = useState(false);
   const dist = useFaceDistance(useCamera && phase !== 'result', profile.cameraFocalPx);
   const samples = useRef<number[]>([]);
   const [result, setResult] = useState<{ arcsec: number | null; reachedBest: boolean; distanceCm: number } | null>(null);
@@ -56,6 +59,7 @@ export default function StereoPage() {
         levels={levels}
         onExit={() => setPhase('setup')}
         meter={<DistanceMeter d={dist} targetCm={TARGET_CM} compact />}
+        voice={voice && voiceAvailable}
         onDone={(passed, reachedBest) => {
           // Gerçek mesafe ölçüldüyse açısal disparite ona göre düzeltilir (açı mesafeyle ters orantılı).
           const s = samples.current;
@@ -148,6 +152,21 @@ export default function StereoPage() {
           </>
         )}
       </div>
+      {voiceAvailable && (
+        <div className="field">
+          <strong>Nasıl cevap vereceksin?</strong>
+          <Segmented
+            label="Cevap"
+            value={voice ? 'voice' : 'touch'}
+            onChange={(v) => setVoice(v === 'voice')}
+            options={[
+              { value: 'touch', label: '👆 Dokunarak' },
+              { value: 'voice', label: '🎤 Sesle' },
+            ]}
+          />
+          {voice && <span className="muted small">“Sağ, sol, yukarı, aşağı” ya da “göremiyorum” de. Ses kaydedilmez.</span>}
+        </div>
+      )}
       <GlassesHint show={profile.wearsGlasses} anaglyph />
       <button
         className="btn primary big"
@@ -169,11 +188,13 @@ function StereoRunner({
   onDone,
   onExit,
   meter,
+  voice,
 }: {
   levels: { arcsec: number; px: number }[];
   onDone(passed: number | null, reachedBest: boolean): void;
   onExit(): void;
   meter: React.ReactNode;
+  voice: boolean;
 }) {
   const profile = useProfile();
   // Palet sabit tutulur; yoksa her yeniden çizimde (ör. mesafe göstergesi) noktalar yeniden üretilirdi.
@@ -229,6 +250,8 @@ function StereoRunner({
     [dir, onDone],
   );
 
+  const speech = useSpeechCommands(voice, (c) => answer(c === 'skip' ? null : c));
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((DIRS as string[]).includes(e.key)) {
@@ -252,6 +275,12 @@ function StereoRunner({
         <span style={{ minWidth: 44, textAlign: 'right' }}>{flash === null ? '' : flash ? '✓' : '·'}</span>
       </div>
       <div style={{ textAlign: 'center', padding: '0 8px' }}>{meter}</div>
+      {voice && (
+        <div className="small" style={{ textAlign: 'center', padding: '0 8px', color: '#ddd' }} role="status">
+          {speechStatusText(speech.status)}
+          {speech.heard && <b> · “{speech.heard}”</b>}
+        </div>
+      )}
       <div className="game-canvas-wrap">
         <canvas ref={canvasRef} />
       </div>

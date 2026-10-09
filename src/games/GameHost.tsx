@@ -7,6 +7,9 @@ import { useStore } from '../storage/store';
 import { useFaceDistance } from '../platform/useFaceDistance';
 import { runGame, type Game, type GameStats } from './engine';
 import { GlassesHint } from '../ui/GlassesHint';
+import { PatchMonitor, PATCH_THRESHOLDS } from '../platform/eyeCheck';
+import { fellowEyeOf } from './dichoptic/anaglyph';
+import { tr } from '../i18n/tr';
 
 type Phase = 'intro' | 'playing' | 'paused' | 'done';
 
@@ -38,11 +41,26 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
   useWakeLock(phase === 'playing');
   const { profile, updateProfile } = useStore();
   const soundOn = profile?.soundOn ?? true;
-  // İsteğe bağlı: kamera ile yüz ekrana 25 cm'den yaklaşınca oyunu beklet.
-  const face = useFaceDistance(!!profile?.proximityWarn && phase === 'playing', profile?.cameraFocalPx);
-  const tooClose = face.status === 'ok' && face.distanceCm != null && face.distanceCm < TOO_CLOSE_CM;
+  // İsteğe bağlı kamera: yüz ekrana 25 cm'den yaklaşınca ya da bantlı oyunda sağlam göz açık görünürse oyunu beklet.
+  const [patchOff, setPatchOff] = useState(false);
+  const patchCheck = theme === 'light' && !!profile?.patchCheck && !patchOff;
+  const face = useFaceDistance((!!profile?.proximityWarn || patchCheck) && phase === 'playing', profile?.cameraFocalPx, {
+    analyzeEyes: patchCheck,
+  });
+  const tooClose = !!profile?.proximityWarn && face.status === 'ok' && face.distanceCm != null && face.distanceCm < TOO_CLOSE_CM;
+  const monitor = useRef(new PatchMonitor(PATCH_THRESHOLDS[profile?.patchCheckLevel ?? 'medium']));
+  monitor.current.threshold = PATCH_THRESHOLDS[profile?.patchCheckLevel ?? 'medium'];
+  const [patchAlert, setPatchAlert] = useState(false);
+  useEffect(() => {
+    if (!patchCheck || phase !== 'playing' || patchAlert) return;
+    if (monitor.current.update(performance.now(), face.status === 'ok' ? (face.eyeMatch ?? null) : null)) {
+      setPatchAlert(true);
+      sfx('miss');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [face]);
   const tooCloseRef = useRef(false);
-  tooCloseRef.current = tooClose;
+  tooCloseRef.current = tooClose || patchAlert;
   const play = () => {
     unlockAudio();
     setPhase('playing');
@@ -113,7 +131,34 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
       </div>
       <div className="game-canvas-wrap">
         <canvas ref={canvasRef} />
-        {phase === 'playing' && tooClose && (
+        {phase === 'playing' && patchAlert && (
+          <div className="game-overlay" role="alert" data-testid="patch-alert">
+            <div className="panel">
+              <div style={{ fontSize: 48 }}>🏴‍☠️</div>
+              <h2 style={{ margin: 0 }}>{profile ? tr.eye[fellowEyeOf(profile.amblyopicEye)] : 'Sağlam göz'} açık görünüyor</h2>
+              <p style={{ margin: 0 }}>Bu oyunda sağlam gözün bantla kapalı olmalı. Bandı kontrol et.</p>
+              <button
+                className="btn primary big"
+                onClick={() => {
+                  monitor.current.snooze(performance.now());
+                  setPatchAlert(false);
+                }}
+              >
+                Bant takılı, devam
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  setPatchOff(true);
+                  setPatchAlert(false);
+                }}
+              >
+                Bu oyunda kontrol etme
+              </button>
+            </div>
+          </div>
+        )}
+        {phase === 'playing' && tooClose && !patchAlert && (
           <div className="game-overlay" role="alert">
             <div className="panel">
               <div style={{ fontSize: 48 }}>📏</div>
@@ -130,6 +175,7 @@ export function GameHost({ title, intro, create, durationSec, theme, onFinish, c
               <h2 style={{ margin: 0 }}>{title}</h2>
               {intro}
               <GlassesHint show={profile?.wearsGlasses} anaglyph={theme === 'dark'} />
+              {patchCheck && <div className="muted small">📷 Bant kontrolü açık: kamera sağlam gözünün kapalı olduğuna bakar (görüntü cihazdan çıkmaz).</div>}
               <button className="btn primary big" onClick={play}>
                 Başla
               </button>

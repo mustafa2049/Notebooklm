@@ -28,6 +28,11 @@ describe('buildSummary', () => {
       { id: 'v2', profileId: 'p', at: at('2026-03-07'), eye: 'left', logMAR: 0.4, distanceCm: 40 },
       { id: 'v3', profileId: 'p', at: at('2026-03-07'), eye: 'right', logMAR: 0.0, distanceCm: 40 },
     ],
+    orientationTests: [
+      { id: 'o1', profileId: 'p', at: at('2026-03-02'), eye: 'right', cycles: 6, viewing: 'patch', mode: 'test', thresholds: [{ deg: 175, threshold: 0.08 }, { deg: 85, threshold: 0.03 }] },
+      { id: 'o2', profileId: 'p', at: at('2026-03-04'), eye: 'right', cycles: 6, viewing: 'patch', mode: 'train', thresholds: [{ deg: 175, threshold: 0.07 }] },
+      { id: 'o3', profileId: 'p', at: at('2026-03-06'), eye: 'right', cycles: 6, viewing: 'patch', mode: 'test', thresholds: [{ deg: 175, threshold: 0.05 }, { deg: 85, threshold: 0.03 }] },
+    ],
     diary: [
       { id: 'x', profileId: 'p', day: '2026-03-02', symptoms: ['headache'], compliance: 'partial', note: 'Bant kaşındırdı' },
       { id: 'y', profileId: 'p', day: '2026-03-03', symptoms: ['none'], compliance: 'full', glasses: 'most', note: '' },
@@ -61,6 +66,10 @@ describe('buildSummary', () => {
     ]);
     expect(s.symptoms.headache).toBe(1);
     expect(s.compliance).toEqual({ full: 2, partial: 1, none: 0 });
+    expect(s.orientation).toEqual([
+      { deg: 85, first: 0.03, last: 0.03, n: 2 },
+      { deg: 175, first: 0.08, last: 0.05, n: 2 },
+    ]);
     expect(s.glasses).toEqual({ all: 0, most: 1, little: 1, none: 0, rate: 0.5 });
     expect(s.notes).toEqual([{ day: '2026-03-02', note: 'Bant kaşındırdı' }]);
   });

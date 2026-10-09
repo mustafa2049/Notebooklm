@@ -8,6 +8,7 @@ import {
   type Eye,
   type GaborResult,
   type GlassesWear,
+  type OrientationTest,
   type PatchSession,
   type Profile,
   type StereoTest,
@@ -22,6 +23,7 @@ export interface ReportInput {
   gabor: GaborResult[];
   visionTests: VisionTest[];
   stereoTests?: StereoTest[];
+  orientationTests?: OrientationTest[];
   diary: DiaryEntry[];
   /** Dönemin ilk günü (dahil). */
   from: number;
@@ -58,6 +60,8 @@ export interface ReportSummary {
   vision: (FirstLast & { eye: Eye })[];
   /** Stereo eşiği (arcsaniye; null = algılanamadı). */
   stereo: { first: number | null; last: number | null; n: number } | null;
+  /** Yöne göre kontrast eşiği (yalnızca ölçüm modundaki testler): yön başına ilk ve son. */
+  orientation: (FirstLast & { deg: number })[];
   symptoms: Record<Symptom, number>;
   compliance: Record<Compliance, number>;
   /** Gözlük takma günlüğü; `rate` = "bütün gün" ya da "çoğunlukla" günlerin oranı (cevap yoksa null). */
@@ -138,6 +142,16 @@ export function buildSummary(i: ReportInput): ReportSummary {
     stereo: (() => {
       const st = (i.stereoTests ?? []).filter((v) => v.profileId === pid && inRange(v.at)).sort((a, b) => a.at - b.at);
       return st.length ? { first: st[0].arcsec, last: st[st.length - 1].arcsec, n: st.length } : null;
+    })(),
+    orientation: (() => {
+      const ot = (i.orientationTests ?? [])
+        .filter((o) => o.profileId === pid && o.mode === 'test' && inRange(o.at))
+        .sort((a, b) => a.at - b.at);
+      const degs = [...new Set(ot.flatMap((o) => o.thresholds.map((t) => t.deg)))].sort((a, b) => a - b);
+      return degs.map((deg) => ({
+        deg,
+        ...firstLast(ot.flatMap((o) => o.thresholds.filter((t) => t.deg === deg).map((t) => t.threshold)))!,
+      }));
     })(),
     symptoms,
     compliance,

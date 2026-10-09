@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FaceLandmarker } from '@mediapipe/tasks-vision';
 import { distanceMm, focalFromFov, irisWidthPx } from './distance';
+import { eyeSimilarity, toGray } from './eyeCheck';
 
 export type CameraStatus = 'off' | 'loading' | 'searching' | 'ok' | 'denied' | 'error';
 
@@ -11,6 +12,8 @@ export interface FaceDistance {
   /** Kalibrasyon için ham ölçüm. */
   irisPx: number | null;
   frameWidth: number;
+  /** İki göz bölgesinin benzerliği (yalnızca `analyzeEyes` açıkken; bant kontrolü için). */
+  eyeMatch?: number | null;
   error?: string;
 }
 
@@ -44,7 +47,9 @@ function loadLandmarker(): Promise<FaceLandmarker> {
  * Ön kamerayla yüz-ekran mesafesini ölçer. Görüntü yalnızca cihazda işlenir, hiçbir yere gönderilmez.
  * `focalRef` kalibrasyonla ölçülen odak uzaklığıdır; yoksa tipik görüş açısından tahmin edilir.
  */
-export function useFaceDistance(enabled: boolean, focalRef?: number): FaceDistance {
+export function useFaceDistance(enabled: boolean, focalRef?: number, opts: { analyzeEyes?: boolean } = {}): FaceDistance {
+  const analyzeRef = useRef(!!opts.analyzeEyes);
+  analyzeRef.current = !!opts.analyzeEyes;
   const [state, setState] = useState<FaceDistance>({ status: 'off', distanceCm: null, irisPx: null, frameWidth: 0 });
   const focalRefRef = useRef(focalRef ?? focalFromFov());
   focalRefRef.current = focalRef ?? focalFromFov();
@@ -76,6 +81,17 @@ export function useFaceDistance(enabled: boolean, focalRef?: number): FaceDistan
         if (cancelled) return;
         // Ölçümleri yumuşatmak için son birkaç değerin ortancası kullanılır.
         const recent: number[] = [];
+        const frame = document.createElement('canvas');
+        const fctx = frame.getContext('2d', { willReadFrequently: true });
+        const eyeMatchOf = (lm: { x: number; y: number }[]): number | null => {
+          if (!analyzeRef.current || !fctx) return null;
+          const w = video.videoWidth;
+          const h = video.videoHeight;
+          if (frame.width !== w) frame.width = w;
+          if (frame.height !== h) frame.height = h;
+          fctx.drawImage(video, 0, 0, w, h);
+          return eyeSimilarity(toGray(fctx.getImageData(0, 0, w, h).data, w, h), w, h, lm);
+        };
         const tick = () => {
           if (cancelled) return;
           if (video.readyState >= 2 && video.videoWidth > 0) {
@@ -86,7 +102,13 @@ export function useFaceDistance(enabled: boolean, focalRef?: number): FaceDistan
               recent.push(distanceMm(iris, video.videoWidth, focalRefRef.current) / 10);
               if (recent.length > 5) recent.shift();
               const med = [...recent].sort((a, b) => a - b)[Math.floor(recent.length / 2)];
-              setState({ status: 'ok', distanceCm: Math.round(med), irisPx: iris, frameWidth: video.videoWidth });
+              setState({
+                status: 'ok',
+                distanceCm: Math.round(med),
+                irisPx: iris,
+                frameWidth: video.videoWidth,
+                eyeMatch: eyeMatchOf(lm),
+              });
             } else {
               recent.length = 0;
               setState({ status: 'searching', distanceCm: null, irisPx: null, frameWidth: video.videoWidth });

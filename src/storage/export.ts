@@ -35,6 +35,9 @@ export function normalizeData(raw: unknown): AppData {
     stereoTests: arr<AppData['stereoTests'][number]>(raw.stereoTests).filter(
       (v) => isObj(v) && (v.arcsec === null || num(v.arcsec)),
     ),
+    orientationTests: arr<AppData['orientationTests'][number]>(raw.orientationTests).filter(
+      (o) => isObj(o) && Array.isArray(o.thresholds),
+    ),
     diary: arr<AppData['diary'][number]>(raw.diary).filter((d) => isObj(d) && typeof d.day === 'string'),
     timers: isObj(raw.timers) ? (raw.timers as AppData['timers']) : {},
   };
@@ -121,6 +124,14 @@ export function exportCsv(data: AppData, profileId: string, now = Date.now()): s
     .filter((v) => v.profileId === profileId)
     .sort((a, b) => a.at - b.at)
     .forEach((v) => row(dayKey(v.at), v.arcsec ?? 'algılanamadı', v.distanceCm));
+  row('');
+  row('Tarih', 'Yön (°)', 'Kontrast eşiği (%)', 'Tür', 'Görüntüleme');
+  data.orientationTests
+    .filter((o) => o.profileId === profileId)
+    .sort((a, b) => a.at - b.at)
+    .forEach((o) =>
+      o.thresholds.forEach((t) => row(dayKey(o.at), t.deg, (t.threshold * 100).toFixed(2), o.mode === 'test' ? 'ölçüm' : 'çalışma', o.viewing)),
+    );
   row('');
   row('Tarih', 'Belirtiler', 'Bant uyumu', 'Gözlük', 'Not');
   data.diary

@@ -10,6 +10,9 @@ import { useProfile, useStore } from '../../storage/store';
 import { Segmented } from '../../ui/components';
 import { DistanceMeter } from '../../ui/DistanceMeter';
 import { useFaceDistance } from '../../platform/useFaceDistance';
+import { PatchMonitor, PATCH_THRESHOLDS } from '../../platform/eyeCheck';
+import { speechStatusText, useSpeechAvailable, useSpeechCommands } from '../../platform/speech';
+import { isCapacitor } from '../../platform/native';
 import {
   AcuityTest,
   CARD_WIDTH_MM,
@@ -45,6 +48,8 @@ export default function VisionPage() {
   const [distance, setDistance] = useState(40);
   const [bothEyes, setBothEyes] = useState(true);
   const [withGlasses, setWithGlasses] = useState(profile.wearsGlasses);
+  const voiceAvailable = useSpeechAvailable();
+  const [voice, setVoice] = useState(false);
   const fromSetup = useSearchParams()[0].get('from') === 'setup';
   const [queue, setQueue] = useState<Eye[]>([]);
   const [results, setResults] = useState<{ eye: Eye; logMAR: number; reachedBest: boolean }[]>([]);
@@ -56,7 +61,15 @@ export default function VisionPage() {
   // Kamera ölçümü yalnızca 1 m'ye kadar güvenilir (uzakta iris çok küçük görünür).
   const [useCamera, setUseCamera] = useState(false);
   const cameraOn = useCamera && distance <= 100 && (phase === 'setup' || phase === 'cover' || phase === 'test');
-  const dist = useFaceDistance(cameraOn, profile.cameraFocalPx);
+  const dist = useFaceDistance(cameraOn, profile.cameraFocalPx, { analyzeEyes: cameraOn && phase === 'test' });
+  // Kamera açıkken kapatılan gözün gerçekten kapalı olduğu da kontrol edilir.
+  const eyeMon = useRef(new PatchMonitor(PATCH_THRESHOLDS[profile.patchCheckLevel], 2000));
+  const [peeking, setPeeking] = useState(false);
+  useEffect(() => {
+    if (phase !== 'test' || !cameraOn) return setPeeking(false);
+    if (eyeMon.current.update(performance.now(), dist.status === 'ok' ? (dist.eyeMatch ?? null) : null)) setPeeking(true);
+    else if (eyeMon.current.state === 'covered') setPeeking(false);
+  }, [dist, phase, cameraOn]);
   const samples = useRef<number[]>([]);
   useEffect(() => {
     if (phase === 'test' && dist.status === 'ok' && dist.distanceCm) samples.current.push(dist.distanceCm);
@@ -114,7 +127,9 @@ export default function VisionPage() {
         <p className="muted" style={{ margin: 0 }}>
           Ekranla gözün arasında <b>{distance >= 100 ? `${distance / 100} metre` : `${distance} cm`}</b> olsun. Ortadaki E
           harfinin bacaklarının hangi yöne baktığını seç. Emin değilsen tahmin et; hiç göremiyorsan “Göremiyorum”a bas.
-          {distance >= 100 && ' Uzaktan klavyenin ok tuşlarını kullanabilir ya da yanındaki birine söyleyip dokunmasını isteyebilirsin.'}
+          {voice && voiceAvailable
+            ? ' Cevabını yüksek sesle söyle: “sağ”, “sol”, “yukarı”, “aşağı” ya da “göremiyorum”.'
+            : distance >= 100 && ' Uzaktan klavyenin ok tuşlarını kullanabilir ya da yanındaki birine söyleyip dokunmasını isteyebilirsin.'}
         </p>
         <DistanceMeter d={dist} targetCm={distance} />
         <button className="btn primary big" onClick={() => setPhase('test')}>
@@ -134,7 +149,17 @@ export default function VisionPage() {
         pxPerMm={pxPerMm}
         onDone={onEyeDone}
         onExit={() => setPhase('setup')}
-        meter={<DistanceMeter d={dist} targetCm={distance} compact />}
+        meter={
+          <>
+            <DistanceMeter d={dist} targetCm={distance} compact />
+            {peeking && (
+              <div className="banner warn small" role="alert">
+                Kapalı olması gereken göz açık görünüyor; avucunla tam kapat (bastırmadan).
+              </div>
+            )}
+          </>
+        }
+        voice={voice && voiceAvailable}
       />
     );
   }
@@ -241,6 +266,27 @@ export default function VisionPage() {
           ]}
         />
       </div>
+      {voiceAvailable && (
+        <div className="field">
+          <strong>Nasıl cevap vereceksin?</strong>
+          <Segmented
+            label="Cevap"
+            value={voice ? 'voice' : 'touch'}
+            onChange={(v) => setVoice(v === 'voice')}
+            options={[
+              { value: 'touch', label: '👆 Dokunarak' },
+              { value: 'voice', label: '🎤 Sesle' },
+            ]}
+          />
+          <span className="muted small">
+            {voice
+              ? `Ekrana dokunmadan “sağ, sol, yukarı, aşağı” diyerek cevap ver; uzaktan testte kolaylık sağlar.${isCapacitor() ? ' Telefonda Türkçe dil paketi yüklüyse internet gerekmez.' : ' Tarayıcıda internet bağlantısı gerekir.'} Ses kaydedilmez.`
+              : distance >= 100
+                ? 'Uzaktan test için “Sesle” daha rahat olabilir.'
+                : 'Harfin yönünü düğmelerle, ok tuşlarıyla ya da kaydırarak seç.'}
+          </span>
+        </div>
+      )}
       <div className="field">
         <strong>👓 Numaralı gözlükle mi?</strong>
         <Segmented
@@ -364,8 +410,10 @@ function AcuityRunner({
   onDone,
   onExit,
   meter,
+  voice = false,
 }: {
   meter?: React.ReactNode;
+  voice?: boolean;
   startLine: number;
   bestLine: number;
   distanceMm: number;
@@ -428,6 +476,8 @@ function AcuityRunner({
     [dir, onDone],
   );
 
+  const speech = useSpeechCommands(voice, (c) => answer(c === 'skip' ? null : c));
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((DIRS as string[]).includes(e.key)) {
@@ -451,6 +501,12 @@ function AcuityRunner({
         <span style={{ minWidth: 44, textAlign: 'right' }}>{flash === null ? '' : flash ? '✓' : '·'}</span>
       </div>
       {meter && <div style={{ textAlign: 'center', padding: '0 8px' }}>{meter}</div>}
+      {voice && (
+        <div className="small" style={{ textAlign: 'center', padding: '0 8px' }} role="status" data-testid="voice-status">
+          {speechStatusText(speech.status)}
+          {speech.heard && <b> · “{speech.heard}”</b>}
+        </div>
+      )}
       <div
         className="game-canvas-wrap"
         onPointerDown={(e) => (swipe.current = [e.clientX, e.clientY])}
