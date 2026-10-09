@@ -4,7 +4,7 @@ import { deleteText, readText, writeText } from './blobStore';
 import { removeBookmarksForDoc } from './bookmarks';
 import { removePlan } from './plans';
 
-export type DocumentSource = 'paste' | 'txt' | 'pdf' | 'epub' | 'docx' | 'url';
+export type DocumentSource = 'paste' | 'txt' | 'pdf' | 'epub' | 'docx' | 'url' | 'photo';
 
 export const SOURCE_LABEL: Record<DocumentSource, string> = {
   paste: 'Yapıştırılan metin',
@@ -13,6 +13,7 @@ export const SOURCE_LABEL: Record<DocumentSource, string> = {
   epub: 'EPUB',
   docx: 'Word',
   url: 'Bağlantı',
+  photo: 'Fotoğraf',
 };
 
 /**

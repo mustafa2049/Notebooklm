@@ -12,10 +12,11 @@ import { addDocument, type DocumentChapter, type DocumentSource } from '@/storag
 import { Icon } from '@/ui/Icon';
 import { deriveTitle, formatNumber } from '@/ui/format';
 import { Button, Card, Chip, IconButton, Screen, Txt } from '@/ui/primitives';
+import { PhotoImport } from '@/ui/PhotoImport';
 import { fontStyle } from '@/ui/theme';
 import { SAMPLE_TEXT } from '@/data/sampleText';
 
-type Tab = 'paste' | 'file' | 'url' | 'classics';
+type Tab = 'paste' | 'file' | 'photo' | 'url' | 'classics';
 
 /**
  * Paylaşımdan gelen parametreler.
@@ -149,6 +150,7 @@ export default function ImportScreen() {
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2), marginBottom: theme.space(4) }}>
         <Chip label="Yapıştır" active={tab === 'paste'} onPress={() => setTab('paste')} />
         <Chip label="Dosya" active={tab === 'file'} onPress={() => setTab('file')} />
+        <Chip label="Fotoğraf" active={tab === 'photo'} onPress={() => setTab('photo')} />
         <Chip label="Bağlantı" active={tab === 'url'} onPress={() => setTab('url')} />
         <Chip label="Klasikler" active={tab === 'classics'} onPress={() => setTab('classics')} />
       </View>
@@ -241,6 +243,10 @@ export default function ImportScreen() {
             }
           />
         </View>
+      ) : null}
+
+      {tab === 'photo' ? (
+        <PhotoImport saving={busy} onSave={(title, text) => void run(() => save(title, text, 'photo'))} />
       ) : null}
 
       {tab === 'classics' ? (

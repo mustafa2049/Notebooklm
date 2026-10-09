@@ -90,11 +90,22 @@ export function createAnthropicProvider(options: AnthropicOptions): AiProvider {
         headers['anthropic-dangerous-direct-browser-access'] = 'true';
       }
 
+      // Görseller metinden önce: Messages API'nin önerdiği sıra
+      const content = request.images?.length
+        ? [
+            ...request.images.map((image) => ({
+              type: 'image',
+              source: { type: 'base64', media_type: image.mediaType, data: image.base64 },
+            })),
+            { type: 'text', text: request.prompt },
+          ]
+        : request.prompt;
+
       const base = {
         model,
         max_tokens: request.maxTokens,
         system: request.system,
-        messages: [{ role: 'user', content: request.prompt }],
+        messages: [{ role: 'user', content }],
       };
 
       const schemaFormat = request.schema

@@ -20,9 +20,19 @@ export interface AiSchema {
   schema: Record<string, unknown>;
 }
 
+/** İsteğe eklenen görsel (ör. kitap sayfasının fotoğrafı) */
+export interface AiImage {
+  /** "image/jpeg", "image/png", "image/webp" */
+  mediaType: string;
+  /** Ham base64 (data: öneki olmadan) */
+  base64: string;
+}
+
 export interface AiRequest {
   system: string;
   prompt: string;
+  /** Verilirse istemden önce modele gösterilir */
+  images?: AiImage[];
   /** Verilirse yanıt JSON olarak şemaya uydurulur */
   schema?: AiSchema;
   maxTokens: number;

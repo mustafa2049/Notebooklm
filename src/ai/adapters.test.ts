@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createAnthropicProvider } from './anthropic';
 import { createOpenAiCompatibleProvider } from './openaiCompatible';
-import { summaryRequest } from './prompts';
+import { summaryRequest, transcribeRequest } from './prompts';
 import { AiError, type AiRequest } from './types';
 
 /**
@@ -198,6 +198,38 @@ describe('Anthropic bağdaştırıcısı', () => {
     } catch (caught) {
       expect((caught as AiError).retryable).toBe(true);
     }
+  });
+});
+
+describe('görselli istek (fotoğraftan metin)', () => {
+  const image = { mediaType: 'image/jpeg', base64: 'QUJD' };
+
+  it('Anthropic: görsel bloğu metinden önce, base64 kaynakla', async () => {
+    stubFetch([{ status: 200, body: anthropicOk }]);
+    await createAnthropicProvider({ apiKey: 'k' }).complete(transcribeRequest(image));
+    const content = calls[0].body.messages[0].content;
+    expect(content[0]).toEqual({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: 'QUJD' } });
+    expect(content[1].type).toBe('text');
+    expect(content[1].text).toContain('birebir');
+  });
+
+  it('OpenAI uyumlu: metin + data URL olarak image_url', async () => {
+    stubFetch([
+      {
+        status: 200,
+        body: { model: 'gpt-test', choices: [{ message: { content: 'Metin.' }, finish_reason: 'stop' }], usage: {} },
+      },
+    ]);
+    await createOpenAiCompatibleProvider({ apiKey: 'k', model: 'gpt-test' }).complete(transcribeRequest(image));
+    const content = calls[0].body.messages[1].content;
+    expect(content[0].type).toBe('text');
+    expect(content[1]).toEqual({ type: 'image_url', image_url: { url: 'data:image/jpeg;base64,QUJD' } });
+  });
+
+  it('görselsiz istekte içerik düz metin kalıyor', async () => {
+    stubFetch([{ status: 200, body: anthropicOk }]);
+    await createAnthropicProvider({ apiKey: 'k' }).complete(summaryRequest('m'));
+    expect(typeof calls[0].body.messages[0].content).toBe('string');
   });
 });
 

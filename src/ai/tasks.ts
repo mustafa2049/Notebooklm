@@ -1,14 +1,16 @@
 import { normalizeForSearch } from '@/core/search';
 import {
   chatRequest,
+  NO_TEXT_MARKER,
   questionsRequest,
   recallRequest,
   sectionsRequest,
   summaryRequest,
+  transcribeRequest,
   wordRequest,
 } from './prompts';
 import { pickPassages, splitPassages } from './retrieve';
-import { AiError, type AiProvider, type TokenUsage } from './types';
+import { AiError, type AiImage, type AiProvider, type TokenUsage } from './types';
 import {
   parseQuestions,
   parseRecall,
@@ -39,6 +41,26 @@ export async function generateSummary(
 ): Promise<AiResult<string>> {
   const response = await provider.complete(summaryRequest(text), signal);
   return { value: response.text, usage: response.usage, model: response.model };
+}
+
+/**
+ * Sayfa fotoğrafını metne çevirir. Model metin bulamazsa anlaşılır hata;
+ * modelin yine de eklediği tırnak ya da kod bloğu kalıntısı temizlenir.
+ */
+export async function transcribeImage(
+  provider: AiProvider,
+  image: AiImage,
+  signal?: AbortSignal
+): Promise<AiResult<string>> {
+  const response = await provider.complete(transcribeRequest(image), signal);
+  const text = response.text
+    .replace(/^```[a-z]*\n?|\n?```$/g, '')
+    .trim();
+  const bare = text.replace(/["“”'.]/g, '').trim().toLocaleUpperCase('tr');
+  if (!text || bare === NO_TEXT_MARKER) {
+    throw new AiError('Bu fotoğrafta okunabilir metin bulunamadı. Sayfayı daha yakından ve net çekmeyi dene.');
+  }
+  return { value: text, usage: response.usage, model: response.model };
 }
 
 export async function generateQuestions(

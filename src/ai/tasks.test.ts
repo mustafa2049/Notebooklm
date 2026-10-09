@@ -6,6 +6,7 @@ import {
   generateSections,
   generateSummary,
   locateFirstWords,
+  transcribeImage,
 } from './tasks';
 import { AiError, type AiProvider, type AiRequest } from './types';
 
@@ -35,6 +36,27 @@ describe('generateSummary', () => {
     expect(result.value).toBe('Kısa özet.');
     expect(result.usage.inputTokens).toBe(100);
     expect(result.model).toBe('test-model');
+  });
+});
+
+describe('transcribeImage', () => {
+  const image = { mediaType: 'image/jpeg', base64: 'QUJD' };
+
+  it('görseli istekle gönderip metni döndürüyor; kod bloğu kalıntısını temizliyor', async () => {
+    const provider = fakeProvider({ text: '```\nBirinci paragraf.\n\nİkinci paragraf.\n```' });
+    const result = await transcribeImage(provider, image);
+    expect(result.value).toBe('Birinci paragraf.\n\nİkinci paragraf.');
+    expect(provider.seen[0].images).toEqual([image]);
+  });
+
+  it('metin yoksa anlaşılır hata veriyor', async () => {
+    await expect(transcribeImage(fakeProvider({ text: 'METİN YOK' }), image)).rejects.toThrow(AiError);
+    await expect(transcribeImage(fakeProvider({ text: '"Metin yok."' }), image)).rejects.toThrow(/okunabilir metin/);
+  });
+
+  it('"Metin yok" diye başlayan gerçek bir sayfayı reddetmiyor', async () => {
+    const result = await transcribeImage(fakeProvider({ text: 'Metin yoktu ama söz vardı.' }), image);
+    expect(result.value).toBe('Metin yoktu ama söz vardı.');
   });
 });
 

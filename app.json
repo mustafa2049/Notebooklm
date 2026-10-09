@@ -39,7 +39,15 @@
           "backgroundColor": "#0B0D10"
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Kitap sayfalarının fotoğraflarını metne çevirmek için galerine erişir.",
+          "cameraPermission": "Kitap sayfalarını çekip metne çevirmek için kamerayı kullanır.",
+          "microphonePermission": false
+        }
+      ]
     ]
   }
 }

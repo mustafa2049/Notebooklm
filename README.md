@@ -228,6 +228,36 @@ soruları, kelime açıklaması, metinle sohbet ve bölümlere ayırma açılıy
   `response_format` desteklemiyorsa istek bu alanlar düşürülüp yeniden deneniyor;
   istem JSON biçimini zaten tarif ediyor ve yanıt çalışma anında doğrulanıyor.
 
+## Fotoğraftan metin
+
+İçe aktarma → **Fotoğraf**: basılı kitabın sayfalarını kamerayla çek ya da
+galeriden seç (birden çok sayfa); her sayfa yapay zekâyla metne çevrilip
+sırayla eklenir, kaydetmeden önce düzeltilebilir. Kurallar istemde açık
+(`transcribeRequest`): birebir aktar, düzeltme/özet yok, paragrafları koru,
+satır sonu tirelerini birleştir, sayfa numarası ve üst/alt bilgiyi atla, metin
+yoksa "METİN YOK" yaz (uygulama bunu anlaşılır hataya çevirir; sayfaya
+dokunup yeniden denenebilir). Görsel Anthropic'e `image` bloğu, OpenAI uyumlu
+sağlayıcılara `image_url` (data URL) olarak gider — istek gövdeleri testli.
+
+- Web'de fotoğraf tuvalde uzun kenarı 1600 px'e küçültülüp JPEG yapılıyor
+  (sağlayıcılar zaten bu civara indiriyor; fazlası yükleme ve token israfı).
+  Telefonda küçültme modülü yok; kalite %60'la boyut sınırda tutuluyor.
+- Yapay zekâ tanımlı değilse sekme bunu ve nedenini söylüyor: cihazda Türkçe
+  metin tanıma bu uygulama için fazla ağır. Fotoğraf yalnızca seçilen
+  sağlayıcıya gider. Sayfa başına yaklaşık 2–3 bin token.
+- `expo-image-picker` (Expo SDK modülü); izin metinleri `app.json`'da Türkçe,
+  mikrofon izni istenmiyor.
+
+## Word (.docx) dosyaları
+
+Dosya seçici .docx kabul ediyor (`src/ingest/fromDocx.ts`, testli): paragraflar
+ve satır sonları korunuyor, tablolar satır satır okunuyor, izlenen
+değişiklikte silinmiş metin atlanıyor. **Başlık stilleri bölüm oluyor**
+(EPUB'daki gibi içindekiler, uyku zamanlayıcısının "bölüm sonu" ve kitap
+kartındaki bölüm listesi bunu kullanıyor); stil adları `styles.xml`'den
+okunduğu için Türkçe Word'ün "Balk1" kimlikleri de tanınıyor. "Title" stili
+belgenin adı oluyor. Eski .doc biçimi desteklenmiyor (anlaşılır hata).
+
 ## EPUB bölümleri
 
 EPUB'lar artık tek metne düz biçimde birleşmiyor: bölüm başlıkları dosyanın

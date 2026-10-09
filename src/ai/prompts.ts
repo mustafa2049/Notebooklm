@@ -264,3 +264,35 @@ Yalnızca şu biçimde JSON döndür, başka hiçbir şey yazma:
     maxTokens: 800,
   };
 }
+
+// ------------------------------------------------ fotoğraftan metin
+
+/** Model sayfada metin bulamazsa yalnızca bunu yazıyor */
+export const NO_TEXT_MARKER = 'METİN YOK';
+
+/**
+ * Basılı sayfanın fotoğrafını metne çevirir. Amaç okumak: metin **birebir**
+ * aktarılır, düzeltilmez, özetlenmez; yalnızca dizgi kalıntıları (satır sonu
+ * tireleri, sayfa numarası, üst/alt bilgi) temizlenir.
+ */
+export function transcribeRequest(image: { mediaType: string; base64: string }): AiRequest {
+  return {
+    system: `Sen bir metin aktarıcısın. Fotoğraftaki basılı ya da yazılı metni olduğu gibi
+düz metne çeviriyorsun; yorum, özet ya da düzeltme yapmıyorsun.`,
+    prompt: `Bu fotoğraftaki metni aktar.
+
+Kurallar:
+- Metni birebir yaz: kelimeleri değiştirme, düzeltme, çevirme, özetleme.
+- Türkçe karakterleri (ç, ğ, ı, İ, ö, ş, ü, â, î, û) doğru yaz.
+- Paragrafları koru: paragraflar arasında bir boş satır bırak; paragraf içindeki
+  satır sonlarını birleştir.
+- Satır sonunda tireyle bölünmüş kelimeleri birleştir ("ki-" + "tap" → "kitap").
+- Sayfa numarasını, üst ve alt bilgiyi (kitap/bölüm adı tekrarı) yazma.
+- İki sütun varsa önce soldaki sütunu, sonra sağdakini yaz.
+- Okunamayan kısım için [okunamadı] yaz.
+- Fotoğrafta okunacak metin yoksa yalnızca "${NO_TEXT_MARKER}" yaz.
+- Aktarılan metin dışında hiçbir şey yazma (açıklama, başlık, tırnak yok).`,
+    images: [image],
+    maxTokens: 4000,
+  };
+}

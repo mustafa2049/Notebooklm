@@ -56,7 +56,19 @@ export function createOpenAiCompatibleProvider(options: OpenAiOptions): AiProvid
         max_tokens: request.maxTokens,
         messages: [
           { role: 'system', content: request.system },
-          { role: 'user', content: request.prompt },
+          {
+            role: 'user',
+            // Görselli istekte içerik parçalı: metin + data URL olarak görseller
+            content: request.images?.length
+              ? [
+                  { type: 'text', text: request.prompt },
+                  ...request.images.map((image) => ({
+                    type: 'image_url',
+                    image_url: { url: `data:${image.mediaType};base64,${image.base64}` },
+                  })),
+                ]
+              : request.prompt,
+          },
         ],
         ...(request.schema
           ? {

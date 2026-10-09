@@ -40,7 +40,9 @@ export type IconName =
   | 'headphones'
   | 'share'
   | 'bookmark'
-  | 'bookmarkFilled';
+  | 'bookmarkFilled'
+  | 'camera'
+  | 'image';
 
 interface IconProps {
   name: IconName;
@@ -218,6 +220,19 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
           <Line x1={12} y1={15.5} x2={12} y2={4.5} {...stroke} />
           <Polyline points="7,9 12,4 17,9" {...stroke} />
           <Path d="M4.5 16v2.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V16" {...stroke} />
+        </>
+      )}
+      {name === 'camera' && (
+        <>
+          <Path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" {...stroke} />
+          <Circle cx={12} cy={13} r={3.5} {...stroke} />
+        </>
+      )}
+      {name === 'image' && (
+        <>
+          <Rect x={3} y={5} width={18} height={14} rx={2} {...stroke} />
+          <Circle cx={9} cy={10} r={1.8} {...stroke} />
+          <Polyline points="21,16 15,11 5,19" {...stroke} />
         </>
       )}
       {(name === 'bookmark' || name === 'bookmarkFilled') && (
