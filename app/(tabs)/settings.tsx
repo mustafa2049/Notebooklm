@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Platform, View } from 'react-native';
 import type { ReaderMode } from '@/core/types';
+import { MODE_LABEL } from '@/reader/modes';
 import { CUE_OPTIONS } from '@/habit/cue';
 import { EYE_BREAK_OPTIONS } from '@/habit/eyeBreak';
 import { formatClock } from '@/habit/goal';
@@ -10,6 +11,7 @@ import { useSettings } from '@/store/SettingsContext';
 import { KEYS } from '@/storage/keys';
 import type { ThemePreference } from '@/storage/settings';
 import { AiSettings } from '@/ui/AiSettings';
+import { AppearancePanel } from '@/ui/AppearancePanel';
 import { BackupCard } from '@/ui/BackupCard';
 import { Slider } from '@/ui/Slider';
 import {
@@ -24,12 +26,7 @@ import {
   Txt,
 } from '@/ui/primitives';
 
-const MODE_LABEL: Record<ReaderMode, string> = {
-  rsvp: 'Kelime akışı',
-  chunk: 'Parça parça',
-  bionic: 'Bionic',
-  highlight: 'Yürüyen vurgu',
-};
+
 
 const THEME_LABEL: Record<ThemePreference, string> = {
   dark: 'Koyu',
@@ -128,16 +125,6 @@ export default function SettingsScreen() {
         </View>
 
         <Slider
-          value={settings.fontScale}
-          min={0.7}
-          max={1.6}
-          step={0.1}
-          onChange={(fontScale) => update({ fontScale })}
-          label="Yazı boyutu"
-          format={(scale) => `${Math.round(scale * 100)}%`}
-        />
-
-        <Slider
           value={settings.bionicRatio}
           min={0.2}
           max={0.6}
@@ -149,8 +136,8 @@ export default function SettingsScreen() {
 
         <Divider />
         <Toggle
-          label="Disleksi dostu font"
-          hint="Atkinson Hyperlegible — harfleri birbirinden ayırt etmesi kolay."
+          label="Arayüzde disleksi dostu font"
+          hint="Atkinson Hyperlegible — harfleri birbirinden ayırt etmesi kolay. Okunan metnin yazı tipi aşağıda ayrıca seçilebilir."
           value={settings.hyperlegible}
           onChange={(hyperlegible) => update({ hyperlegible })}
         />
@@ -178,6 +165,14 @@ export default function SettingsScreen() {
             />
           </>
         ) : null}
+      </Card>
+
+      <SectionHeader
+        title="Okuma görünümü"
+        hint="Okunan metnin boyutu, yazı tipi ve renkleri — uygulamanın temasından ayrı. Okurken başlıktaki 'Aa' ile de değiştirebilirsin."
+      />
+      <Card>
+        <AppearancePanel />
       </Card>
 
       <SectionHeader

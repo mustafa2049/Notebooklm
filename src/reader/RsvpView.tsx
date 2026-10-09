@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import type { Chunk } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
-import { fontStyle } from '@/ui/theme';
+import { readingFontStyle } from '@/ui/theme';
 
 /**
  * RSVP (Rapid Serial Visual Presentation) — kelimeler tek bir noktada belirir.
@@ -69,7 +69,7 @@ export function RsvpView({ chunk }: { chunk: Chunk | undefined }) {
     fontSize,
     lineHeight: fontSize * 1.25,
     color: theme.colors.text,
-    ...fontStyle(theme, '600'),
+    ...readingFontStyle(theme, '600'),
   };
 
   const guideHeight = fontSize * 0.3;

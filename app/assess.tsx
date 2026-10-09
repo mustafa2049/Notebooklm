@@ -10,7 +10,7 @@ import {
   type PassageLevel,
 } from '@/content/passages';
 import { countWordsInText } from '@/ingest/normalize';
-import { useSettings } from '@/store/SettingsContext';
+import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
 import { listAssessments, recordAssessment } from '@/storage/assessments';
 import { recordSession } from '@/storage/stats';
 import {
@@ -30,7 +30,7 @@ import { arrangeOptions } from '@/train/shuffle';
 import { formatNumber } from '@/ui/format';
 import { Button, Card, Chip, IconButton, Screen, Txt } from '@/ui/primitives';
 import { QuestionCard } from '@/ui/QuestionCard';
-import { fontStyle } from '@/ui/theme';
+import { readingFontStyle } from '@/ui/theme';
 
 /**
  * Seviye testi: kendi hızında okuma + anlama soruları.
@@ -46,7 +46,16 @@ import { fontStyle } from '@/ui/theme';
 
 type Phase = 'intro' | 'reading' | 'questions' | 'result';
 
-export default function AssessScreen() {
+/** Ölçüm metni de okuma görünümüyle (renk, yazı tipi, satır aralığı) okunur. */
+export default function AssessRoute() {
+  return (
+    <ReadingThemeProvider>
+      <AssessScreen />
+    </ReadingThemeProvider>
+  );
+}
+
+function AssessScreen() {
   const { passage: requested } = useLocalSearchParams<{ passage?: string }>();
   const router = useRouter();
   const { theme } = useSettings();
@@ -232,8 +241,8 @@ function Assessment({
               variant="body"
               style={{
                 fontSize: 18 * settings.fontScale,
-                lineHeight: 18 * settings.fontScale * 1.6,
-                ...fontStyle(theme),
+                lineHeight: 18 * settings.fontScale * settings.lineSpacing,
+                ...readingFontStyle(theme),
               }}
             >
               {paragraph}

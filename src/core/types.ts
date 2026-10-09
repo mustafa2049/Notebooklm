@@ -1,6 +1,10 @@
 /** Okuma motorunun ortak tipleri. Bu dosyada React veya platform bağımlılığı yoktur. */
 
-export type ReaderMode = 'rsvp' | 'chunk' | 'bionic' | 'highlight';
+/**
+ * Okuma modları. `page`: kitap gibi sayfa sayfa, tempo yok — kullanıcı kendi
+ * hızında okuyup sayfayı kendisi çevirir.
+ */
+export type ReaderMode = 'rsvp' | 'chunk' | 'bionic' | 'highlight' | 'page';
 
 export interface Token {
   /** Kaynak metindeki hâliyle kelime (noktalama dahil: "gitti." ) */

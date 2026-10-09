@@ -7,7 +7,8 @@ export interface ReadingSession {
   docId: string;
   /**
    * `test`: seviye testinde kendi hızında okuma (uygulama temposu yok);
-   * `listen`: sesli okumayla takip (süre sayılır, tempo istatistiğine girmez)
+   * `listen`: sesli okumayla takip; `page`: sayfa modu (kendi hızında). Bu
+   * üçü süreye sayılır, tempo istatistiğine girmez.
    */
   mode: ReaderMode | 'test' | 'listen';
   /** Oturumun bittiği an */

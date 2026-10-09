@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ReaderEngine } from './useReaderEngine';
+/**
+ * Okuma saati: tempolu modlarda motorun oynatma süresi, Sayfa modunda sayfa
+ * saati. Odak seansı ve göz molası yalnızca bunu görür, hangi modda
+ * okunduğunu bilmez. `ReaderEngine` bu arayüzü zaten sağlıyor.
+ */
+export interface ReadingClock {
+  /** Toplam okuma süresi (ms) */
+  activeMs: () => number;
+  /** Okumayı durdurur */
+  pause: () => void;
+  /** Şu ana kadar okunan kelime */
+  wordsRead: number;
+}
 
 /**
  * Odak seansı: belirli bir süre okuyup durmak.
@@ -19,7 +31,7 @@ export interface FocusSession {
   dismiss: () => void;
 }
 
-export function useFocusSession(engine: ReaderEngine, seconds: number): FocusSession {
+export function useFocusSession(engine: ReadingClock, seconds: number): FocusSession {
   const targetMs = Math.max(0, seconds) * 1000;
   const start = useRef<{ ms: number; words: number } | null>(null);
   const [elapsed, setElapsed] = useState(0);

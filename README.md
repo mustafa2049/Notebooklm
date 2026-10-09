@@ -27,9 +27,45 @@ npm run typecheck  # tip kontrolü
 | **Parça parça** | 2–4 kelime birlikte gösterilir | Çevresel görüşü kullanmayı öğretir |
 | **Bionic** | Kelimelerin ilk heceleri koyulaştırılır | Kelime, tamamı taranmadan tanınır |
 | **Yürüyen vurgu** | Normal paragraf üzerinde akan vurgu | Geri dönüşleri (regresyon) engeller |
+| **Sayfa** | Metin kitap gibi sayfa sayfa; tempo yok, sayfayı sen çevirirsin | Öğrendiğini doğal okumaya aktarmak |
 
-Kelime grubu boyutu (1–4) dört modun hepsinde ayarlanabilir; "Parça parça"
-bunun hazır bir profili.
+Kelime grubu boyutu (1–4) tempolu modların hepsinde ayarlanabilir; "Parça
+parça" bunun hazır bir profili.
+
+## Sayfa modu
+
+- Sağa dokun ya da sola kaydır: sonraki sayfa; sol kenara dokun ya da sağa
+  kaydır: önceki sayfa. Web'de ←/→, PageUp/PageDown, boşluk. Alt çubuktaki
+  kaydırıcı sayfaya atlar; kalan süre son ölçümdeki doğal hızınla tahmin
+  edilir. Uzun bas → "Hangi cümle?" → alıntı ya da kelime defteri.
+- Sayfalar **yükseklikle** kuruluyor: her paragrafın kaç satır tutacağı, gizlice
+  çizilen bir örnek paragrafla ölçülen satır kapasitesinden hesaplanıyor
+  (yazı tipi, boyut ve ekran genişliği ne olursa olsun). Çizilen sayfa yine de
+  alanı aşarsa pay küçülüp sayfalar yeniden kuruluyor — metin kesilmiyor.
+  3 yazı tipi × 3 satır aralığı × %70–200 boyutta denendi, hiçbir sayfa
+  taşmadı.
+- Okuma süresi sayfanın ekranda kaldığı süreden sayılıyor, ama açık bırakılan
+  ekran okuma sayılmıyor (sayfa başına en çok 50 kel/dk'lık süre) ve hızla
+  çevrilen sayfanın kelimeleri sayılmıyor (1000 kel/dk'dan hızlı). Oturumlar
+  günlük süreye ve seriye sayılır, "antrenman temposu" istatistiğine girmez.
+  Odak seansı, göz molası ve "Aklında ne kaldı?" kartı sayfa modunda da çalışır.
+
+## Okuma görünümü
+
+Okuyucuda başlıktaki **Aa** (ya da Ayarlar → Okuma görünümü): mod, yazı boyutu
+(%70–200; web'de +/− tuşları), satır aralığı (sıkı/normal/geniş), yazı tipi
+(sistem, tırnaklı, disleksi dostu) ve renkler. Okuma görünümü uygulama
+temasından ayrı: arayüz koyu kalırken metin sepya zeminde okunabilir; okuyucu,
+antrenman ve ölçüm ekranları bununla çiziliyor.
+
+- **Renk temaları**: Uygulamayla aynı, Koyu, Siyah (OLED), Gece (sıcak), Açık,
+  Beyaz, Sepya, Yeşil. Testler her temada yazı/zemin kontrastının en az 7:1
+  olduğunu doğruluyor.
+- **Yazı rengi**: seçili zeminde rahat okunmayan (WCAG 4,5:1 altı) renkler
+  listede hiç çıkmıyor; tema değişip seçili renk okunmaz kalırsa temanın rengi
+  kullanılıyor ve bu yazıyor.
+- **Özel renkler**: zemin ve yazı serbest seçilebilir (ızgara ya da renk kodu);
+  kontrast oranı canlı gösteriliyor, 3:1'in altında "Uygula" kapalı.
 
 ## Türkçeye özel davranışlar
 

@@ -1,25 +1,34 @@
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, BackHandler, Platform, Pressable, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, BackHandler, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
+import { stepFontScale } from '@/appearance/typography';
+import { pageIndexFor, pageParagraphs } from '@/core/pages';
 import { indexFromCharOffset, progressRatio, wordsUpTo } from '@/core/progress';
 import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
 import type { ReaderMode } from '@/core/types';
-import { ToolSheet, type AiTab } from '@/reader/ToolSheet';
+import { ToolSheet, type AiTab, type SentenceChoice } from '@/reader/ToolSheet';
 import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
+import { MODE_LABEL } from '@/reader/modes';
+import { PageControls } from '@/reader/PageControls';
+import { PageView } from '@/reader/PageView';
 import { RecallCard } from '@/reader/RecallCard';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
 import { useEyeBreak } from '@/reader/useEyeBreak';
-import { useFocusSession } from '@/reader/useFocusSession';
+import { useFocusSession, type ReadingClock } from '@/reader/useFocusSession';
+import { usePageClock } from '@/reader/usePageClock';
+import { usePagination } from '@/reader/usePagination';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
 import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
 import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
-import { useSettings } from '@/store/SettingsContext';
+import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
+import { listAssessments } from '@/storage/assessments';
 import {
   getDocument,
   getDocumentText,
@@ -29,8 +38,10 @@ import {
   type DocumentMeta,
 } from '@/storage/documents';
 import { highlightsForDoc } from '@/storage/highlights';
+import { AVERAGE_ADULT_WPM, reliableTests } from '@/train/assessment';
+import { AppearancePanel } from '@/ui/AppearancePanel';
 import { haptics } from '@/ui/haptics';
-import { Button, Card, Chip, IconButton, Txt } from '@/ui/primitives';
+import { Button, Card, IconButton, Txt } from '@/ui/primitives';
 
 /**
  * Web'de tıklanan düğme odakta kalıyor; ardından basılan boşluk tuşu hem
@@ -48,22 +59,24 @@ function formatClockMs(ms: number): string {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
 }
 
-const MODE_LABEL: Record<ReaderMode, string> = {
-  rsvp: 'Kelime akışı',
-  chunk: 'Parça parça',
-  bionic: 'Bionic',
-  highlight: 'Yürüyen vurgu',
-};
+/** Sayfa modunda temel yazı boyutu (yazı boyutu çarpanıyla büyür) */
+const PAGE_FONT_SIZE = 19;
 
-/** "Parça parça", kelime akışının hazır bir profili: aynı çizim, farklı ayar. */
-const MODE_CHUNK_SIZE: Partial<Record<ReaderMode, number>> = { rsvp: 1, chunk: 3 };
+/** Okuyucu okuma görünümüyle (renk, yazı tipi) çizilir. */
+export default function ReaderRoute() {
+  return (
+    <ReadingThemeProvider>
+      <ReaderScreen />
+    </ReadingThemeProvider>
+  );
+}
 
-export default function ReaderScreen() {
+function ReaderScreen() {
   const { id, seans, konum } = useLocalSearchParams<{ id: string; seans?: string; konum?: string }>();
   const router = useRouter();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const { theme, settings, update, setFocusMode } = useSettings();
+  const { theme, settings, setFocusMode } = useSettings();
 
   const [meta, setMeta] = useState<DocumentMeta | null>(null);
   const [text, setText] = useState<string | null>(null);
@@ -153,7 +166,6 @@ export default function ReaderScreen() {
       insetBottom={insets.bottom}
       focusSeconds={Number(seans) > 0 ? Number(seans) : 0}
       mode={settings.mode}
-      onModeChange={(mode) => update({ mode, ...(MODE_CHUNK_SIZE[mode] ? { chunkSize: MODE_CHUNK_SIZE[mode]! } : {}) })}
     />
   );
 }
@@ -170,7 +182,6 @@ interface ReaderProps {
   insetTop: number;
   insetBottom: number;
   mode: ReaderMode;
-  onModeChange: (mode: ReaderMode) => void;
   /** Odak seansı süresi (saniye); 0 = seans yok */
   focusSeconds: number;
 }
@@ -186,12 +197,13 @@ function Reader({
   insetTop,
   insetBottom,
   mode,
-  onModeChange,
   focusSeconds,
 }: ReaderProps) {
   const { theme, settings, update, focusMode, setFocusMode } = useSettings();
-  const [showModes, setShowModes] = useState(false);
+  const [showAppearance, setShowAppearance] = useState(false);
   const [aiTab, setAiTab] = useState<AiTab | null>(null);
+  const [recall, setRecall] = useState<RecallTrigger | null>(null);
+  const [listening, setListening] = useState(false);
 
   const engine = useReaderEngine({
     text,
@@ -200,18 +212,69 @@ function Reader({
   });
 
   const totalWords = React.useMemo(() => countWords(engine.chunks), [engine.chunks]);
-  const focus = useFocusSession(engine, focusSeconds);
-  const eyeBreak = useEyeBreak(engine, settings.eyeBreakMinutes);
+
+  // ---- Sayfa modu: kitap gibi, tempo yok; sayfayı kullanıcı çevirir.
+  // Konum yine motorun indeksi (sayfanın ilk chunk'ı): ilerleme kaydı,
+  // alıntıya atlama ve dinleme sonrası konum değişmeden çalışıyor.
+  const pageMode = mode === 'page' && !listening;
+  const pageFontSize = PAGE_FONT_SIZE * settings.fontScale;
+  const pageLineHeight = pageFontSize * settings.lineSpacing;
+  const pageParagraphGap = pageLineHeight * 0.45;
+  const pagination = usePagination(
+    engine.chunks,
+    {
+      fontSize: pageFontSize,
+      lineHeight: pageLineHeight,
+      charEm: theme.readingFont.charEm,
+      paragraphGap: pageParagraphGap,
+    },
+    pageMode
+  );
+  const pages = pagination.pages;
+  const pageIndex = pages.length ? pageIndexFor(pages, engine.index) : 0;
+  const page = pages[pageIndex];
+  const pageWords = useMemo(
+    () => (page ? countWords(engine.chunks.slice(page.start, page.end)) : 0),
+    [engine.chunks, page]
+  );
+  /** Kullanıcının son sayfa çevirmesi: animasyonun yönü ve tetikleyicisi */
+  const [turn, setTurn] = useState<{ id: number; direction: 1 | -1 }>({ id: 0, direction: 1 });
+  /** Son sayfadan ileri gidildi: metin bitti */
+  const [endReached, setEndReached] = useState(false);
+
+  const pageClock = usePageClock({
+    enabled: pageMode && !endReached,
+    blocked: aiTab !== null || recall !== null || showAppearance,
+    pageKey: endReached ? -2 : (page?.start ?? -1),
+    pageWords,
+  });
+
+  /**
+   * Ortak okuma saati: tempolu modlarda motorun oynatma süresi, Sayfa modunda
+   * sayfa saati. Odak seansı, göz molası ve özet kartı bunu kullanıyor.
+   */
+  const clock: ReadingClock = {
+    activeMs: () => engine.activeMs() + pageClock.activeMs(),
+    pause: () => {
+      engine.pause();
+      pageClock.pause();
+    },
+    wordsRead: engine.wordsRead,
+  };
+
+  const focus = useFocusSession(clock, focusSeconds);
+  const eyeBreak = useEyeBreak(clock, settings.eyeBreakMinutes);
 
   // "Kendi cümlenle anlat": bu açılışta okunan aralık için, en fazla bir kez
-  const [recall, setRecall] = useState<RecallTrigger | null>(null);
   const recallAsked = useRef(false);
+  const clockRef = useRef(clock);
+  clockRef.current = clock;
   const promptRecall = useCallback(
     (trigger: RecallTrigger) => {
       if (
         !shouldPromptRecall({
           trigger,
-          activeMs: engine.activeMs(),
+          activeMs: clockRef.current.activeMs(),
           alreadyAsked: recallAsked.current,
           enabled: settings.recallPrompt,
         })
@@ -219,18 +282,18 @@ function Reader({
         return false;
       }
       recallAsked.current = true;
-      engine.pause();
+      clockRef.current.pause();
       setRecall(trigger);
       return true;
     },
-    [engine, settings.recallPrompt]
+    [settings.recallPrompt]
   );
   useEffect(() => {
     if (focus.done) promptRecall('focusDone');
   }, [focus.done, promptRecall]);
   useEffect(() => {
-    if (engine.finished) promptRecall('finished');
-  }, [engine.finished, promptRecall]);
+    if (engine.finished || endReached) promptRecall('finished');
+  }, [engine.finished, endReached, promptRecall]);
   const leave = useCallback(() => {
     if (!promptRecall('leave')) onBack();
   }, [promptRecall, onBack]);
@@ -280,16 +343,97 @@ function Reader({
     return marked;
   }, [quoteOffsets, engine.chunks]);
 
+  // Motorun oturumu en son tempolu modla yazılır: Sayfa moduna geçince o ana
+  // kadarki RSVP okuması "sayfa" sayılmasın
+  const pacedMode = useRef<ReaderMode>(mode === 'page' ? 'rsvp' : mode);
+  if (mode !== 'page') pacedMode.current = mode;
   const recorder = useSessionRecorder({
     docId,
-    mode,
+    mode: pacedMode.current,
     targetWpm: settings.wpm,
     words: engine.wordsRead,
     activeMs: engine.activeMs,
   });
+  // Sayfa modunun okuması ayrı oturum: süre sayfa saatinden, tempo istatistiğine girmez
+  useSessionRecorder({
+    docId,
+    mode: 'page',
+    targetWpm: settings.wpm,
+    words: pageClock.words,
+    activeMs: pageClock.activeMs,
+  });
+
+  /** Okumadan konum değiştirmek (sayfa çevirmek, atlamak) okunan kelime sayılmasın. */
+  const jumpTo = useCallback(
+    (index: number) => {
+      engine.jumpToIndex(index);
+      recorder.rebase(wordsUpTo(engine.chunks, index));
+    },
+    [engine, recorder]
+  );
+
+  const turnPage = useCallback(
+    (delta: 1 | -1) => {
+      if (!pages.length) return;
+      const target = pageIndex + delta;
+      if (target < 0) return;
+      haptics.step(settings.haptics);
+      if (target >= pages.length) {
+        if (endReached) return;
+        // Son sayfa da okundu: metin bitmiş sayılsın (ilerleme %100)
+        pageClock.markForward();
+        setEndReached(true);
+        jumpTo(engine.chunks.length - 1);
+        haptics.success(settings.haptics);
+        return;
+      }
+      if (delta > 0 && !endReached) pageClock.markForward();
+      setEndReached(false);
+      setTurn((current) => ({ id: current.id + 1, direction: delta }));
+      jumpTo(pages[target].start);
+    },
+    [pages, pageIndex, settings.haptics, endReached, pageClock, jumpTo, engine.chunks.length]
+  );
+
+  const seekPage = useCallback(
+    (target: number) => {
+      const next = pages[Math.max(0, Math.min(pages.length - 1, target))];
+      if (!next) return;
+      setEndReached(false);
+      setTurn((current) => ({ id: current.id + 1, direction: target >= pageIndex ? 1 : -1 }));
+      jumpTo(next.start);
+    },
+    [pages, pageIndex, jumpTo]
+  );
+
+  /** Sayfa modunda araç paneli "hangi cümle?" diye sayfanın cümlelerini sunar. */
+  const pageChoices = useMemo<SentenceChoice[] | undefined>(
+    () =>
+      pageMode && page
+        ? pageParagraphs(engine.chunks, page).flatMap((paragraph) =>
+            paragraph.sentences.map((sentence) => ({
+              text: sentence.text,
+              offset: sentence.charStart,
+              words: sentence.words,
+            }))
+          )
+        : undefined,
+    [pageMode, page, engine.chunks]
+  );
+
+  // Kalan süre tahmini: son güvenilir ölçümdeki doğal hız (yoksa ortalama yetişkin)
+  const [naturalWpm, setNaturalWpm] = useState(AVERAGE_ADULT_WPM);
+  useEffect(() => {
+    listAssessments().then((history) => {
+      const last = reliableTests(history).pop();
+      if (last) setNaturalWpm(last.wpm);
+    });
+  }, []);
+  const pageRemainingMs = page
+    ? (Math.max(0, totalWords - wordsUpTo(engine.chunks, page.start)) / Math.max(60, naturalWpm)) * 60000
+    : 0;
 
   // ---- Dinleyerek okuma: motor yerinde durur, ses cümle cümle ilerler
-  const [listening, setListening] = useState(false);
   const spans = React.useMemo(() => sentenceSpans(engine.chunks), [engine.chunks]);
   const speech = useSpeech({
     docId,
@@ -312,9 +456,8 @@ function Reader({
     if (!listenSpan) return;
     // Okuyucu, dinlemenin kaldığı cümleden devam etsin; atlanan kelimeler
     // okuma oturumuna "okundu" diye yazılmasın
-    engine.jumpToIndex(listenSpan.startChunk);
-    recorder.rebase(wordsUpTo(engine.chunks, listenSpan.startChunk));
-  }, [speech, listenSpan, engine, recorder]);
+    jumpTo(listenSpan.startChunk);
+  }, [speech, listenSpan, jumpTo]);
 
   // Titreşim yalnızca kullanıcının başlattığı eylemlerde: her kelimede
   // titretmek pili tüketir ve okumayı dağıtır
@@ -365,7 +508,31 @@ function Reader({
       // Not ya da özet yazarken boşluk tuşu okumayı başlatmasın
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
-      if (recall !== null) return;
+      if (recall !== null || showAppearance) return;
+      // Yazı boyutu her modda
+      if (event.key === '+' || event.key === '=') {
+        update({ fontScale: stepFontScale(settings.fontScale, 1) });
+        return;
+      }
+      if (event.key === '-') {
+        update({ fontScale: stepFontScale(settings.fontScale, -1) });
+        return;
+      }
+      if (pageMode) {
+        switch (event.key) {
+          case ' ':
+          case 'ArrowRight':
+          case 'PageDown':
+            event.preventDefault();
+            turnPage(1);
+            return;
+          case 'ArrowLeft':
+          case 'PageUp':
+            event.preventDefault();
+            turnPage(-1);
+            return;
+        }
+      }
       switch (event.key) {
         case ' ':
           event.preventDefault();
@@ -378,15 +545,18 @@ function Reader({
           nextSentence();
           break;
         case 'ArrowUp':
+          if (pageMode) break;
           event.preventDefault();
           update({ wpm: Math.min(1200, settings.wpm + 25) });
           break;
         case 'ArrowDown':
+          if (pageMode) break;
           event.preventDefault();
           update({ wpm: Math.max(100, settings.wpm - 25) });
           break;
         case 'r':
         case 'R':
+          setEndReached(false);
           engine.restart();
           break;
         case 'f':
@@ -400,13 +570,30 @@ function Reader({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [engine, update, settings.wpm, focusMode, setFocusMode, leave, recall, toggle, previousSentence, nextSentence]);
+  }, [
+    engine,
+    update,
+    settings.wpm,
+    settings.fontScale,
+    focusMode,
+    setFocusMode,
+    leave,
+    recall,
+    showAppearance,
+    pageMode,
+    turnPage,
+    toggle,
+    previousSentence,
+    nextSentence,
+  ]);
 
   // Dinlerken metin her modda akış görünümünde: göz sesi takip edebilsin
   const flowMode = listening || mode === 'bionic' || mode === 'highlight';
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.bg, paddingTop: insetTop }}>
+      {/* Durum çubuğu okuma temasına uysun (sepya zeminde açık renk yazı kaybolur) */}
+      <StatusBar style={theme.dark ? 'light' : 'dark'} />
       <View
         style={{
           flexDirection: 'row',
@@ -420,9 +607,18 @@ function Reader({
           {title}
           {chapterLabel ? ` · ${chapterLabel}` : ''}
         </Txt>
-        <Pressable onPress={() => setShowModes((value) => !value)} hitSlop={8}>
+        <Pressable
+          onPress={() => {
+            releaseFocus();
+            engine.pause();
+            setShowAppearance(true);
+          }}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Okuma görünümü ve mod"
+        >
           <Txt variant="dim" style={{ fontSize: 13, color: theme.colors.accent }}>
-            {MODE_LABEL[mode]}
+            Aa · {MODE_LABEL[mode]}
           </Txt>
         </Pressable>
         <IconButton
@@ -458,35 +654,34 @@ function Reader({
         />
       </View>
 
-      {showModes ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: theme.space(2),
-            paddingHorizontal: theme.space(4),
-            paddingVertical: theme.space(3),
-          }}
-        >
-          {(Object.keys(MODE_LABEL) as ReaderMode[]).map((option) => (
-            <Chip
-              key={option}
-              label={MODE_LABEL[option]}
-              active={option === mode}
-              onPress={() => {
-                onModeChange(option);
-                setShowModes(false);
-              }}
-            />
-          ))}
-        </View>
-      ) : null}
-
       {/*
         Okuma alanı. Dokunma bölgeleri mutlak konumlu katman olarak duruyor:
         yerleşimde yer kaplasalardı akış modlarındaki metin ekranın yalnızca
         yarısını kullanır, satırlar gereksiz yerden kırılırdı.
       */}
+      {pageMode ? (
+        <View style={{ flex: 1, paddingHorizontal: theme.space(6), paddingTop: theme.space(3) }}>
+          <PageView
+            chunks={engine.chunks}
+            page={page}
+            direction={turn.direction}
+            turnId={turn.id}
+            fontSize={pageFontSize}
+            lineHeight={pageLineHeight}
+            paragraphGap={pageParagraphGap}
+            markedSentences={markedSentences}
+            onAreaLayout={pagination.onAreaLayout}
+            onContentHeight={pagination.onContentHeight}
+            onSampleHeight={pagination.onSampleHeight}
+            layoutKey={pagination.layoutKey}
+            onTurn={turnPage}
+            onLongPress={() => {
+              haptics.step(settings.haptics);
+              setAiTab('quote');
+            }}
+          />
+        </View>
+      ) : (
       <View style={{ flex: 1 }}>
         {flowMode ? (
           <View style={{ flex: 1, paddingHorizontal: theme.space(5) }}>
@@ -524,6 +719,7 @@ function Reader({
           accessibilityLabel="Sonraki cümle"
         />
       </View>
+      )}
 
       {listening ? <ListenStatus voice={speech.voice} playing={speech.playing} onExit={stopListening} /> : null}
 
@@ -544,7 +740,8 @@ function Reader({
               onPress={() => {
                 const resume = eyeBreak.remaining === 0;
                 eyeBreak.finish();
-                if (resume) engine.toggle();
+                if (pageMode) pageClock.resume();
+                else if (resume) engine.toggle();
               }}
             />
           </Card>
@@ -573,14 +770,17 @@ function Reader({
                 label="Okumaya devam"
                 variant="secondary"
                 style={{ flex: 1 }}
-                onPress={focus.dismiss}
+                onPress={() => {
+                  focus.dismiss();
+                  pageClock.resume();
+                }}
               />
             </View>
           </Card>
         </View>
       ) : null}
 
-      {engine.finished ? (
+      {engine.finished && !pageMode ? (
         <View style={{ alignItems: 'center', paddingBottom: theme.space(2) }}>
           <Txt variant="dim" style={{ color: theme.colors.success }}>
             Metin bitti · {totalWords} kelime
@@ -594,6 +794,16 @@ function Reader({
           paddingBottom: insetBottom + theme.space(3),
         }}
       >
+        {pageMode ? (
+          <PageControls
+            pageIndex={pageIndex}
+            pageCount={pages.length}
+            remainingMs={pageRemainingMs}
+            finished={endReached}
+            onTurn={turnPage}
+            onSeekPage={seekPage}
+          />
+        ) : (
         <ReaderControls
           playing={listening ? speech.playing : engine.playing}
           ratio={listening && listenSpan ? progressRatio(engine.chunks, listenSpan.startChunk) : engine.ratio}
@@ -606,6 +816,7 @@ function Reader({
           onNextSentence={nextSentence}
           onSeek={engine.seekRatio}
         />
+        )}
       </View>
 
       <RecallCard
@@ -614,7 +825,11 @@ function Reader({
         docTitle={title}
         text={text}
         fromChar={startOffset}
-        toChar={engine.chunk?.charEnd ?? startOffset}
+        toChar={
+          pageMode && page
+            ? (engine.chunks[page.end - 1]?.charEnd ?? startOffset)
+            : (engine.chunk?.charEnd ?? startOffset)
+        }
         leaving={recall === 'leave'}
         onDone={() => {
           const wasLeaving = recall === 'leave';
@@ -631,14 +846,54 @@ function Reader({
         docTitle={title}
         fileChapters={chapters}
         text={text}
-        charOffset={engine.chunk?.charStart ?? 0}
+        charOffset={pageMode && page ? (engine.chunks[page.start]?.charStart ?? 0) : (engine.chunk?.charStart ?? 0)}
         words={context.words}
         sentence={context.sentence}
         sentenceOffset={context.sentenceOffset}
+        sentenceChoices={pageChoices}
         onHighlightSaved={loadQuotes}
-        onJumpTo={engine.seekCharOffset}
+        onJumpTo={(offset) => {
+          setEndReached(false);
+          jumpTo(indexFromCharOffset(engine.chunks, offset));
+        }}
       />
+
+      <AppearanceSheet visible={showAppearance} onClose={() => setShowAppearance(false)} />
     </View>
+  );
+}
+
+/** Okuyucunun "Aa" sayfası: mod, yazı boyutu, satır aralığı, yazı tipi, renkler. */
+function AppearanceSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { theme } = useSettings();
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={{ flex: 1, backgroundColor: '#00000066' }} onPress={onClose} />
+      <View
+        style={{
+          maxHeight: '78%',
+          backgroundColor: theme.colors.bg,
+          borderTopLeftRadius: theme.radius.lg,
+          borderTopRightRadius: theme.radius.lg,
+          borderTopWidth: 1,
+          borderColor: theme.colors.border,
+          paddingTop: theme.space(4),
+          paddingHorizontal: theme.space(4),
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.space(2) }}>
+          <Txt variant="heading" style={{ flex: 1, fontSize: 18 }}>
+            Okuma görünümü
+          </Txt>
+          <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button">
+            <Txt variant="dim">kapat</Txt>
+          </Pressable>
+        </View>
+        <ScrollView contentContainerStyle={{ paddingBottom: theme.space(8) }}>
+          <AppearancePanel showModes />
+        </ScrollView>
+      </View>
+    </Modal>
   );
 }
 

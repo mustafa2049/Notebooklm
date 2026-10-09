@@ -4,7 +4,7 @@ import { buildPages, pageIndexFor } from '@/core/pages';
 import { bionicPrefixLength } from '@/core/syllable';
 import type { Chunk } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
-import { fontStyle, type Theme } from '@/ui/theme';
+import { readingFontStyle, type Theme } from '@/ui/theme';
 
 /**
  * Akış hâlindeki iki mod: **Bionic** ve **Yürüyen Vurgu**.
@@ -32,7 +32,7 @@ export function FlowView({
   const [box, setBox] = useState({ width: 0, height: 0 });
 
   const fontSize = 20 * settings.fontScale;
-  const lineHeight = fontSize * 1.7;
+  const lineHeight = fontSize * settings.lineSpacing;
 
   /**
    * Sayfaya kaç kelime konacağını **ölçerek** belirliyoruz. Sabit bir sayı
@@ -42,12 +42,12 @@ export function FlowView({
   const wordsPerPage = useMemo(() => {
     if (box.height < lineHeight * 2 || box.width < 80) return 20;
     const lines = Math.floor(box.height / lineHeight);
-    // Ortalama Türkçe kelime ~6,5 harf + boşluk; oransal fontta bir harf ≈ 0.52em
-    const wordWidth = 7.5 * fontSize * 0.52;
+    // Ortalama Türkçe kelime ~6,5 harf + boşluk; harf genişliği yazı tipine göre
+    const wordWidth = 7.5 * fontSize * (theme.readingFont.charEm + 0.02);
     const perLine = Math.max(1, box.width / wordWidth);
     // 0.8: satır sonlarında kalan boşluk payı (kelimeler satıra tam oturmaz)
     return Math.max(8, Math.floor(lines * perLine * 0.8));
-  }, [box, fontSize, lineHeight]);
+  }, [box, fontSize, lineHeight, theme.readingFont.charEm]);
 
   const pages = useMemo(() => buildPages(chunks, wordsPerPage), [chunks, wordsPerPage]);
   const page = pages[pageIndexFor(pages, index)];
@@ -78,7 +78,7 @@ export function FlowView({
       // Ölçüm payı yanılırsa metin arayüzün üstüne binmesin
       style={{ flex: 1, overflow: 'hidden', justifyContent: 'center' }}
     >
-      <Text style={{ fontSize, lineHeight, color: baseColor, ...fontStyle(theme) }}>
+      <Text style={{ fontSize, lineHeight, color: baseColor, ...readingFontStyle(theme) }}>
         {visible.map(({ chunk, chunkIndex }) => (
           <ChunkSpan
             key={chunkIndex}
@@ -181,7 +181,7 @@ function BionicWord({
   const split = bionicPrefixLength(word.trimEnd(), ratio);
   return (
     <Text>
-      <Text style={{ color: boldColor, ...fontStyle(theme, '800') }}>{word.slice(0, split)}</Text>
+      <Text style={{ color: boldColor, ...readingFontStyle(theme, '800') }}>{word.slice(0, split)}</Text>
       <Text style={{ color }}>{word.slice(split)}</Text>
     </Text>
   );

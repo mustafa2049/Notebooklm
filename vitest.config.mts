@@ -20,6 +20,7 @@ export default defineConfig({
       'src/habit/**/*.test.ts',
       'src/content/**/*.test.ts',
       'src/backup/**/*.test.ts',
+      'src/appearance/**/*.test.ts',
     ],
     environment: 'node',
   },

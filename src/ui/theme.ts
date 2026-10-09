@@ -1,82 +1,34 @@
 import { Platform, type TextStyle } from 'react-native';
+import {
+  APP_DARK,
+  APP_LIGHT,
+  readingColors,
+  type ColorSet,
+  type ReadingInput,
+} from '@/appearance/palettes';
+
+export interface FontSet {
+  regular: string | undefined;
+  bold: string | undefined;
+  /**
+   * Özel font kullanılıyor mu. Android'de özel bir font ailesinde `fontWeight`
+   * çalışmaz — kalın için ayrı dosya seçmek gerekir. Bu bayrak `fontStyle`
+   * yardımcısının hangi yolu izleyeceğini belirler.
+   */
+  custom: boolean;
+  /** Sayfa kapasitesi tahmini için: harflerin ortalama genişliği (em) */
+  charEm: number;
+}
 
 export interface Theme {
   dark: boolean;
-  colors: {
-    bg: string;
-    surface: string;
-    surfaceAlt: string;
-    border: string;
-    text: string;
-    textDim: string;
-    textFaint: string;
-    accent: string;
-    accentSoft: string;
-    /** RSVP pivot harfinin rengi */
-    pivot: string;
-    /** Vurgu modunda okunan grubun zemini */
-    highlight: string;
-    success: string;
-    warning: string;
-    danger: string;
-  };
+  colors: ColorSet;
   radius: { sm: number; md: number; lg: number; pill: number };
   space: (n: number) => number;
-  font: {
-    regular: string | undefined;
-    bold: string | undefined;
-    mono: string;
-    /**
-     * Özel font kullanılıyor mu. Android'de özel bir font ailesinde `fontWeight`
-     * çalışmaz — kalın için ayrı dosya seçmek gerekir. Bu bayrak `fontStyle`
-     * yardımcısının hangi yolu izleyeceğini belirler.
-     */
-    custom: boolean;
-  };
+  font: FontSet & { mono: string };
+  /** Okunan metnin yazı tipi (arayüzden ayrı seçilebiliyor) */
+  readingFont: FontSet;
 }
-
-/**
- * Okuma uygulamasında renk seçimi işlevseldir, süs değil:
- * - Koyu arka plan tam siyah değil (#0B0D10): OLED ekranda tam siyah zeminde
- *   beyaz metin, harf kenarlarında hâle (halation) yapıp okumayı yoruyor.
- *   Tam siyahı yalnızca kullanıcı odak modunu açtığında kullanıyoruz.
- * - Accent sıcak turuncu: uzun okumada mavi ışıktan daha az yorucu.
- * - Pivot rengi accent'ten ayrı ve daha doygun: gözün sabitlendiği tek nokta o.
- */
-const DARK: Theme['colors'] = {
-  bg: '#0B0D10',
-  surface: '#14181D',
-  surfaceAlt: '#1B2027',
-  border: '#272E38',
-  text: '#E9EDF2',
-  textDim: '#98A3B0',
-  textFaint: '#5D6875',
-  accent: '#F97C4A',
-  accentSoft: '#3A2318',
-  pivot: '#FF5C39',
-  highlight: '#2A3340',
-  success: '#3DD68C',
-  warning: '#FFB020',
-  danger: '#F4574C',
-};
-
-const LIGHT: Theme['colors'] = {
-  // Kâğıt tonu: saf beyaz yerine hafif sıcak, uzun okumada daha rahat
-  bg: '#FAF8F4',
-  surface: '#FFFFFF',
-  surfaceAlt: '#F1EEE8',
-  border: '#DFDAD1',
-  text: '#16191D',
-  textDim: '#5D6875',
-  textFaint: '#96A0AC',
-  accent: '#D9541F',
-  accentSoft: '#FBE7DC',
-  pivot: '#D02F0C',
-  highlight: '#FBE7DC',
-  success: '#1F9D5B',
-  warning: '#B7791F',
-  danger: '#C6362C',
-};
 
 const SYSTEM_FONT = Platform.select({ ios: 'System', android: 'Roboto', default: undefined });
 
@@ -84,18 +36,42 @@ const SYSTEM_FONT = Platform.select({ ios: 'System', android: 'Roboto', default:
 export const HYPERLEGIBLE_REGULAR = 'AtkinsonHyperlegibleNext_400Regular';
 export const HYPERLEGIBLE_BOLD = 'AtkinsonHyperlegibleNext_700Bold';
 
+/**
+ * Tırnaklı (kitap) yazı tipi: platformun hazır fontu — ek dosya indirilmiyor.
+ * Web'de yedekli liste: Georgia yoksa Times, o da yoksa tarayıcının serif'i.
+ */
+const SERIF_FONT = Platform.select({
+  ios: 'Georgia',
+  android: 'serif',
+  default: 'Georgia, "Times New Roman", serif',
+});
+
+export type ReadingFontId = 'auto' | 'sans' | 'serif' | 'hyperlegible';
+
+const FONTS: Record<Exclude<ReadingFontId, 'auto'>, FontSet> = {
+  sans: { regular: SYSTEM_FONT, bold: SYSTEM_FONT, custom: false, charEm: 0.5 },
+  serif: { regular: SERIF_FONT, bold: SERIF_FONT, custom: false, charEm: 0.5 },
+  hyperlegible: { regular: HYPERLEGIBLE_REGULAR, bold: HYPERLEGIBLE_BOLD, custom: true, charEm: 0.56 },
+};
+
+/** `auto`: uygulamanın yazı tipi (disleksi dostu anahtarı açıksa o). */
+export function resolveReadingFont(id: ReadingFontId, hyperlegible: boolean): FontSet {
+  if (id === 'auto') return hyperlegible ? FONTS.hyperlegible : FONTS.sans;
+  return FONTS[id];
+}
+
 export function createTheme(options: {
   dark: boolean;
   focusMode?: boolean;
   hyperlegible?: boolean;
 }): Theme {
-  const colors = { ...(options.dark ? DARK : LIGHT) };
+  const colors = { ...(options.dark ? APP_DARK : APP_LIGHT) };
   if (options.dark && options.focusMode) {
     colors.bg = '#000000';
     colors.surface = '#0A0C0F';
   }
 
-  const custom = Boolean(options.hyperlegible);
+  const font = options.hyperlegible ? FONTS.hyperlegible : FONTS.sans;
 
   return {
     dark: options.dark,
@@ -103,11 +79,33 @@ export function createTheme(options: {
     radius: { sm: 8, md: 14, lg: 22, pill: 999 },
     space: (n: number) => n * 4,
     font: {
-      regular: custom ? HYPERLEGIBLE_REGULAR : SYSTEM_FONT,
-      bold: custom ? HYPERLEGIBLE_BOLD : SYSTEM_FONT,
+      ...font,
       mono: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
-      custom,
     },
+    readingFont: font,
+  };
+}
+
+export interface ReadingTheme extends Theme {
+  /** Seçilen yazı rengi zeminde okunmadığı için temanın rengi kullanılıyor */
+  textFallback: boolean;
+}
+
+/**
+ * Okuma ekranlarının teması: uygulama temasının üstüne okuma renkleri ve
+ * okuma yazı tipi. Okuyucu, antrenman ve ölçüm bununla çiziliyor.
+ */
+export function createReadingTheme(
+  base: Theme,
+  input: Omit<ReadingInput, 'appDark'> & { readingFont: ReadingFontId; hyperlegible: boolean }
+): ReadingTheme {
+  const result = readingColors({ ...input, appDark: base.dark });
+  return {
+    ...base,
+    dark: result.dark,
+    colors: result.colors,
+    readingFont: resolveReadingFont(input.readingFont, input.hyperlegible),
+    textFallback: result.textFallback,
   };
 }
 
@@ -119,9 +117,23 @@ export function createTheme(options: {
  * Sistem fontunda ise tersine, `fontWeight` doğru yoldur.
  */
 export function fontStyle(theme: Theme, weight: TextStyle['fontWeight'] = 'normal'): TextStyle {
+  return styleFor(theme.font, weight);
+}
+
+/** Okunan metin için aynı kural, okuma yazı tipiyle. */
+export function readingFontStyle(theme: Theme, weight: TextStyle['fontWeight'] = 'normal'): TextStyle {
+  return styleFor(theme.readingFont, weight);
+}
+
+function styleFor(font: FontSet, weight: TextStyle['fontWeight']): TextStyle {
   const bold = weight === 'bold' || (typeof weight === 'string' && Number(weight) >= 600);
-  if (theme.font.custom) {
-    return { fontFamily: bold ? theme.font.bold : theme.font.regular };
+  if (font.custom) {
+    return { fontFamily: bold ? font.bold : font.regular };
   }
-  return { fontFamily: theme.font.regular, fontWeight: weight };
+  return { fontFamily: font.regular, fontWeight: weight };
+}
+
+/** Bir yazı tipi kimliğinin seçenek etiketinde kullanılacak stili (önizleme). */
+export function fontPreviewStyle(id: Exclude<ReadingFontId, 'auto'>): TextStyle {
+  return styleFor(FONTS[id], 'normal');
 }

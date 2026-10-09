@@ -54,6 +54,11 @@ interface Props {
   sentenceOffset: number;
   /** Alıntı kaydedilince okuyucu işaretleri yenilesin */
   onHighlightSaved?: () => void;
+  /**
+   * Sayfa modunda sayfadaki cümleler. Verilirse Kelime ve Alıntı sekmeleri
+   * önce "hangi cümle?" diye sorar — sayfada tek bir "o anki cümle" yok.
+   */
+  sentenceChoices?: SentenceChoice[];
   /** Bölüm başına atlama */
   onJumpTo: (charOffset: number) => void;
   /** Kelime defteri kaydında kaynağı göstermek için */
@@ -63,6 +68,12 @@ interface Props {
    * yerine bunlar gösteriliyor — uydurulmuş değil, dosyadan geliyorlar.
    */
   fileChapters?: Section[];
+}
+
+export interface SentenceChoice {
+  text: string;
+  offset: number;
+  words: string[];
 }
 
 export function ToolSheet({
@@ -76,6 +87,7 @@ export function ToolSheet({
   sentence,
   sentenceOffset,
   onHighlightSaved,
+  sentenceChoices,
   onJumpTo,
   docTitle,
   fileChapters,
@@ -96,6 +108,15 @@ export function ToolSheet({
   const [saved, setSaved] = useState<string | null>(null);
   const [quoteNote, setQuoteNote] = useState('');
   const [quoteSaved, setQuoteSaved] = useState(false);
+  /** Sayfa modunda seçilen cümle (`sentenceChoices` içindeki sıra) */
+  const [choice, setChoice] = useState<number | null>(null);
+  const chosen: SentenceChoice | null = sentenceChoices
+    ? choice !== null
+      ? (sentenceChoices[choice] ?? null)
+      : null
+    : { text: sentence, offset: sentenceOffset, words };
+  const activeSentence = chosen?.text ?? '';
+  const activeWords = chosen?.words ?? [];
   const hasFileChapters = Boolean(fileChapters?.length);
   const tabs = ai.configured
     ? (Object.keys(TAB_LABEL) as AiTab[])
@@ -110,6 +131,8 @@ export function ToolSheet({
     setSaved(null);
     setQuoteNote('');
     setQuoteSaved(false);
+    setChoice(null);
+    setSelectedWord(null);
   }, [visible, initialTab, ai.configured]);
 
   // Saklanmış çıktıları yükle: aynı özet için ikinci kez ödeme yapılmasın
@@ -158,7 +181,7 @@ export function ToolSheet({
   };
 
   const explain = async (word: string) => {
-    const value = await ai.run((provider, signal) => explainWord(provider, word, sentence, signal));
+    const value = await ai.run((provider, signal) => explainWord(provider, word, activeSentence, signal));
     if (value === null) return;
     setWordInfo({ word, text: value });
   };
@@ -166,7 +189,7 @@ export function ToolSheet({
   const save = async (word: string) => {
     await addVocab({
       word,
-      sentence,
+      sentence: activeSentence,
       // Kelime o an açıklanmışsa açıklama nota geçer
       note: wordInfo?.word === word ? wordInfo.text : undefined,
       docId,
@@ -179,8 +202,8 @@ export function ToolSheet({
     await addHighlight({
       docId,
       docTitle: docTitle ?? '',
-      charOffset: sentenceOffset,
-      sentence,
+      charOffset: chosen?.offset ?? sentenceOffset,
+      sentence: activeSentence,
       note: quoteNote.trim() || undefined,
     });
     setQuoteSaved(true);
@@ -343,7 +366,35 @@ export function ToolSheet({
             </>
           ) : null}
 
-          {tab === 'word' ? (
+          {(tab === 'word' || tab === 'quote') && sentenceChoices && choice === null ? (
+            <>
+              <Txt variant="dim">Hangi cümle? Sayfadaki cümlelerden birine dokun.</Txt>
+              {sentenceChoices.map((item, index) => (
+                <Card key={`${item.offset}-${index}`} onPress={() => setChoice(index)}>
+                  <Txt variant="body" numberOfLines={3} style={{ fontSize: 14 }}>
+                    {item.text}
+                  </Txt>
+                </Card>
+              ))}
+            </>
+          ) : null}
+
+          {(tab === 'word' || tab === 'quote') && sentenceChoices && choice !== null ? (
+            <Pressable
+              onPress={() => {
+                setChoice(null);
+                setSelectedWord(null);
+                setQuoteSaved(false);
+              }}
+              hitSlop={8}
+            >
+              <Txt variant="dim" style={{ fontSize: 13, color: theme.colors.accent }}>
+                ‹ Başka bir cümle seç
+              </Txt>
+            </Pressable>
+          ) : null}
+
+          {tab === 'word' && chosen ? (
             <>
               <Txt variant="dim">
                 {ai.configured
@@ -351,7 +402,7 @@ export function ToolSheet({
                   : 'Ekrandaki kelimelerden birini seçip cümlesiyle birlikte deftere kaydet. Açıklama için Ayarlar’dan yapay zekâ tanımlaman gerekiyor.'}
               </Txt>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
-                {words.map((word, index) => (
+                {activeWords.map((word, index) => (
                   <Chip
                     key={`${word}-${index}`}
                     label={word}
@@ -394,24 +445,24 @@ export function ToolSheet({
                   </Txt>
                 </Card>
               ) : null}
-              {sentence ? (
+              {activeSentence ? (
                 <Txt variant="dim" style={{ fontSize: 12 }}>
-                  Bağlam: {sentence}
+                  Bağlam: {activeSentence}
                 </Txt>
               ) : null}
             </>
           ) : null}
 
-          {tab === 'quote' ? (
+          {tab === 'quote' && chosen ? (
             <>
               <Txt variant="dim">
                 Önemli bulduğun cümlenin altını çiz. Alıntılar defterinde kitap kitap birikir;
                 dokununca metindeki yerine dönersin.
               </Txt>
-              {sentence ? (
+              {activeSentence ? (
                 <Card style={{ borderLeftWidth: 3, borderLeftColor: theme.colors.accent }}>
                   <Txt variant="body" style={{ fontSize: 15 }}>
-                    {sentence}
+                    {activeSentence}
                   </Txt>
                 </Card>
               ) : null}
@@ -427,7 +478,7 @@ export function ToolSheet({
               <Button
                 label={quoteSaved ? 'Alıntılara eklendi' : 'Alıntıyı kaydet'}
                 icon={quoteSaved ? 'check' : 'quote'}
-                disabled={quoteSaved || !sentence}
+                disabled={quoteSaved || !activeSentence}
                 onPress={() => void saveQuote()}
               />
             </>

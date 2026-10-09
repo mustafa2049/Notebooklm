@@ -79,6 +79,13 @@ describe('summarize', () => {
     expect(summary.todayMs).toBe(120000);
   });
 
+  it('sayfa modu oturumları süreye sayılır, tempoya katılmaz', () => {
+    const summary = summarize([session(0, 600, 60000, 'rsvp'), session(0, 250, 60000, 'page')], NOW);
+    expect(summary.averageWpm).toBe(600);
+    expect(summary.todayWords).toBe(850);
+    expect(summary.todayMs).toBe(120000);
+  });
+
   it('son 14 günü eskiden yeniye verir', () => {
     const summary = summarize([session(0), session(13)], NOW);
     expect(summary.daily).toHaveLength(14);

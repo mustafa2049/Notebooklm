@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { eyeBreakDue, eyeBreakRemaining } from '@/habit/eyeBreak';
-import type { ReaderEngine } from './useReaderEngine';
+import type { ReadingClock } from './useFocusSession';
 
 export interface EyeBreak {
   /** Mola ekranı açık mı */
@@ -12,7 +12,7 @@ export interface EyeBreak {
 }
 
 /** Okuma süresi eşiği geçince okumayı durdurup göz molası sayacı açar. */
-export function useEyeBreak(engine: ReaderEngine, minutes: number): EyeBreak {
+export function useEyeBreak(engine: ReadingClock, minutes: number): EyeBreak {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const lastBreak = useRef(engine.activeMs());

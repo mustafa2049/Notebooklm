@@ -6,7 +6,7 @@ import { FlowView } from '@/reader/FlowView';
 import { RsvpView } from '@/reader/RsvpView';
 import { useReaderEngine } from '@/reader/useReaderEngine';
 import { useSessionRecorder } from '@/reader/useSessionRecorder';
-import { useSettings } from '@/store/SettingsContext';
+import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
 import { passageById } from '@/content/passages';
 import { getDocumentText, loadProgress, saveProgress } from '@/storage/documents';
 import { exerciseById, nextPhaseInMs, phaseAt } from '@/train/exercises';
@@ -16,7 +16,16 @@ import { formatNumber } from '@/ui/format';
 /** Evre değişimini yakalamak için yeterli çözünürlük; her karede gerekmiyor. */
 const TICK_MS = 200;
 
-export default function TrainingRunScreen() {
+/** Antrenman da okuma görünümüyle (renk, yazı tipi) çizilir. */
+export default function TrainingRunRoute() {
+  return (
+    <ReadingThemeProvider>
+      <TrainingRunScreen />
+    </ReadingThemeProvider>
+  );
+}
+
+function TrainingRunScreen() {
   const params = useLocalSearchParams<{ exercise: string; docId: string; wpm?: string; program?: string }>();
   const { exercise: exerciseId, docId } = params;
   /** Programdan gelindiyse programın temposu; yoksa ayardaki hedef hız */
@@ -155,7 +164,8 @@ function TrainingSession({
 
   useSessionRecorder({
     docId,
-    mode: settings.mode,
+    // Sayfa modunda tempo yok; egzersiz tempolu olduğu için Vurgu gibi çizilir
+    mode: settings.mode === 'page' ? 'highlight' : settings.mode,
     targetWpm,
     words: engine.wordsRead,
     activeMs: engine.activeMs,
@@ -163,7 +173,7 @@ function TrainingSession({
 
   const startWords = useRef(engine.wordsRead);
   const wordsThisSession = Math.max(0, engine.wordsRead - startWords.current);
-  const flowMode = settings.mode === 'bionic' || settings.mode === 'highlight';
+  const flowMode = settings.mode === 'bionic' || settings.mode === 'highlight' || settings.mode === 'page';
 
   if (done) {
     const seconds = exercise.durationMs / 1000;

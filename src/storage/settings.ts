@@ -1,6 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AiProviderKind } from '@/ai/types';
+import {
+  DEFAULT_CUSTOM_BG,
+  DEFAULT_CUSTOM_TEXT,
+  type ReadingThemeId,
+  type TextColorId,
+} from '@/appearance/palettes';
 import type { ReaderMode } from '@/core/types';
+import type { ReadingFontId } from '@/ui/theme';
 import { KEYS } from './keys';
 
 export type ThemePreference = 'dark' | 'light' | 'system';
@@ -24,8 +31,21 @@ export interface Settings {
   /** Vurgu modunda okunmayan kısmı soldur */
   dimSurrounding: boolean;
   theme: ThemePreference;
-  /** Yazı boyutu çarpanı */
+  /** Yazı boyutu çarpanı (0,7–2) */
   fontScale: number;
+
+  // ---- Okuma görünümü (uygulama temasından ayrı) --------------------------
+  /** Okuma ekranlarının renk teması; `auto` uygulama temasını izler */
+  readingTheme: ReadingThemeId;
+  /** Yazı rengi: temanın rengi (`auto`), hazır bir renk ya da `custom` */
+  textColor: TextColorId;
+  /** Özel tema zemini ve özel yazı rengi (#RRGGBB) */
+  customBg: string;
+  customText: string;
+  /** Okunan metnin yazı tipi; `auto` uygulamanın yazı tipi */
+  readingFont: ReadingFontId;
+  /** Satır aralığı (yazı boyutunun katı) */
+  lineSpacing: number;
   /** Disleksi dostu font (Atkinson Hyperlegible) */
   hyperlegible: boolean;
   /** Titreşimli geri bildirim (yalnızca telefonda) */
@@ -102,6 +122,12 @@ export const DEFAULT_SETTINGS: Settings = {
   dimSurrounding: true,
   theme: 'dark',
   fontScale: 1,
+  readingTheme: 'auto',
+  textColor: 'auto',
+  customBg: DEFAULT_CUSTOM_BG,
+  customText: DEFAULT_CUSTOM_TEXT,
+  readingFont: 'auto',
+  lineSpacing: 1.7,
   hyperlegible: false,
   haptics: true,
   urlProxy: 'https://r.jina.ai/',
