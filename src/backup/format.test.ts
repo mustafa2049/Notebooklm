@@ -102,6 +102,7 @@ describe('summarizeBackup', () => {
       assessments: 1,
       vocab: 1,
       highlights: 0,
+      bookmarks: 0,
       hasSettings: true,
     });
   });
@@ -153,6 +154,20 @@ describe('mergeBackup', () => {
     other[k('vocab')] = JSON.stringify([{ id: 'v9', word: 'müphem ', createdAt: 20 }]);
     const result = mergeBackup({ keys: stored(), textIds: new Set() }, backupOf(other), noSettings);
     expect(result.keys[k('vocab')]).toBeUndefined();
+  });
+
+  it('aynı yerdeki yer imini iki cihazdan gelse de tek tutar', () => {
+    const mine = stored();
+    mine[k('bookmarks')] = JSON.stringify([{ id: 'b1', docId: 'd1', charOffset: 120, createdAt: 10 }]);
+    const other = stored();
+    other[k('bookmarks')] = JSON.stringify([
+      { id: 'b7', docId: 'd1', charOffset: 120, createdAt: 30 },
+      { id: 'b8', docId: 'd1', charOffset: 900, createdAt: 40 },
+    ]);
+    const result = mergeBackup({ keys: mine, textIds: new Set() }, backupOf(other), noSettings);
+    const merged = JSON.parse(result.keys[k('bookmarks')]);
+    expect(merged.map((b: { id: string }) => b.id).sort()).toEqual(['b1', 'b8']);
+    expect(summarizeBackup(backupOf(other)).bookmarks).toBe(2);
   });
 
   it('ayarları yalnızca istenirse alır ve API anahtarını korur', () => {

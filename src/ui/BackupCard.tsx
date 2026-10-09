@@ -77,7 +77,8 @@ export function BackupCard() {
           })}{' '}
           tarihli yedek: {summary.documents} metin, {summary.sessions} okuma oturumu,{' '}
           {summary.assessments} ölçüm, {summary.vocab} kelime
-          {summary.highlights ? `, ${summary.highlights} alıntı` : ''}.
+          {summary.highlights ? `, ${summary.highlights} alıntı` : ''}
+          {summary.bookmarks ? `, ${summary.bookmarks} yer imi` : ''}.
         </Txt>
         <Txt variant="dim" style={{ fontSize: 13 }}>
           Bu cihazdakilerle birleştirilir; hiçbir kayıt silinmez, aynı kayıt iki kez eklenmez.

@@ -46,6 +46,7 @@ export function PageView({
   lineHeight,
   paragraphGap,
   markedSentences,
+  flashSentence = null,
   onAreaLayout,
   onContentHeight,
   onSampleHeight,
@@ -68,6 +69,8 @@ export function PageView({
   paragraphGap: number;
   /** Alıntılanmış cümleler (cümle sırası) */
   markedSentences: Set<number>;
+  /** Aramadan gelinen cümle: sayfa çevrilene kadar belirgin */
+  flashSentence?: number | null;
   onAreaLayout: (event: LayoutChangeEvent) => void;
   onContentHeight: (height: number) => void;
   /** Gizli örnek paragrafın yüksekliği (satır başına karakter ölçümü) */
@@ -183,9 +186,11 @@ export function PageView({
                 <Text
                   key={sentence.sentenceIndex}
                   style={
-                    markedSentences.has(sentence.sentenceIndex)
-                      ? { backgroundColor: theme.colors.accentSoft }
-                      : undefined
+                    sentence.sentenceIndex === flashSentence
+                      ? { backgroundColor: theme.colors.highlight }
+                      : markedSentences.has(sentence.sentenceIndex)
+                        ? { backgroundColor: theme.colors.accentSoft }
+                        : undefined
                   }
                 >
                   {sentenceIndex === 0 ? sentence.text : ` ${sentence.text}`}

@@ -8,10 +8,11 @@ import { countWords } from '@/core/chunker';
 import { stepFontScale } from '@/appearance/typography';
 import { pageIndexFor, pageParagraphs } from '@/core/pages';
 import { indexFromCharOffset, progressRatio, wordsUpTo } from '@/core/progress';
+import { excerptAt } from '@/core/search';
 import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
 import type { ReaderMode } from '@/core/types';
-import { ToolSheet, type AiTab, type SentenceChoice } from '@/reader/ToolSheet';
+import { ToolSheet, type AiTab, type JumpReason, type SentenceChoice } from '@/reader/ToolSheet';
 import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
 import { MODE_LABEL } from '@/reader/modes';
@@ -29,6 +30,7 @@ import { useSpeech, type VoiceStatus } from '@/reader/useSpeech';
 import { shouldPromptRecall, type RecallTrigger } from '@/habit/recall';
 import { ReadingThemeProvider, useSettings } from '@/store/SettingsContext';
 import { listAssessments } from '@/storage/assessments';
+import { addBookmark, bookmarksForDoc, removeBookmarks, type Bookmark } from '@/storage/bookmarks';
 import {
   getDocument,
   getDocumentText,
@@ -343,6 +345,16 @@ function Reader({
     return marked;
   }, [quoteOffsets, engine.chunks]);
 
+  // ---- Yer imleri
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const loadBookmarks = useCallback(() => {
+    void bookmarksForDoc(docId).then(setBookmarks);
+  }, [docId]);
+  useEffect(loadBookmarks, [loadBookmarks]);
+
+  /** Aramadan gelinince bulunan cümle sayfada belirgin olsun (sayfa çevrilene kadar) */
+  const [flashSentence, setFlashSentence] = useState<number | null>(null);
+
   // Motorun oturumu en son tempolu modla yazılır: Sayfa moduna geçince o ana
   // kadarki RSVP okuması "sayfa" sayılmasın
   const pacedMode = useRef<ReaderMode>(mode === 'page' ? 'rsvp' : mode);
@@ -389,6 +401,7 @@ function Reader({
       }
       if (delta > 0 && !endReached) pageClock.markForward();
       setEndReached(false);
+      setFlashSentence(null);
       setTurn((current) => ({ id: current.id + 1, direction: delta }));
       jumpTo(pages[target].start);
     },
@@ -400,6 +413,7 @@ function Reader({
       const next = pages[Math.max(0, Math.min(pages.length - 1, target))];
       if (!next) return;
       setEndReached(false);
+      setFlashSentence(null);
       setTurn((current) => ({ id: current.id + 1, direction: target >= pageIndex ? 1 : -1 }));
       jumpTo(next.start);
     },
@@ -443,6 +457,56 @@ function Reader({
     onSentence: (span) => onProgress(span.charStart, progressRatio(engine.chunks, span.startChunk)),
   });
   const listenSpan = spans[Math.min(speech.current, spans.length - 1)];
+
+  /**
+   * Yer iminin "bulunulan yer"i: Sayfa modunda görünen sayfa, diğer modlarda
+   * okunan (dinlenen) cümle. Bu aralıkta yer imi varsa düğme dolu görünür.
+   */
+  const here = useMemo(() => {
+    if (pageMode && page) {
+      return {
+        start: engine.chunks[page.start]?.charStart ?? 0,
+        end: engine.chunks[page.end - 1]?.charEnd ?? 0,
+      };
+    }
+    const span = listening ? listenSpan : spans[spanIndexForChunk(spans, engine.index)];
+    return span ? { start: span.charStart, end: span.charEnd } : null;
+  }, [pageMode, page, engine.chunks, engine.index, listening, listenSpan, spans]);
+  const bookmarksHere = useMemo(
+    () => (here ? bookmarks.filter((item) => item.charOffset >= here.start && item.charOffset < here.end) : []),
+    [bookmarks, here]
+  );
+
+  const toggleBookmark = useCallback(async () => {
+    if (!here) return;
+    haptics.step(settings.haptics);
+    if (bookmarksHere.length) {
+      await removeBookmarks(bookmarksHere.map((item) => item.id));
+    } else {
+      await addBookmark({ docId, charOffset: here.start, excerpt: excerptAt(text, here.start) });
+    }
+    loadBookmarks();
+  }, [here, bookmarksHere, docId, text, settings.haptics, loadBookmarks]);
+
+  const jumpToOffset = useCallback(
+    (offset: number, reason: JumpReason) => {
+      const index = indexFromCharOffset(engine.chunks, offset);
+      setEndReached(false);
+      setFlashSentence(reason === 'search' ? (engine.chunks[index]?.sentenceIndex ?? null) : null);
+      jumpTo(index);
+    },
+    [engine.chunks, jumpTo]
+  );
+
+  /** Listelerde konum: Sayfa modunda sayfa numarası, diğerlerinde yüzde */
+  const positionLabel = useCallback(
+    (offset: number) => {
+      const index = indexFromCharOffset(engine.chunks, offset);
+      if (pageMode && pages.length) return `Sayfa ${pageIndexFor(pages, index) + 1}`;
+      return `%${Math.round(progressRatio(engine.chunks, index) * 100)}`;
+    },
+    [engine.chunks, pageMode, pages]
+  );
 
   const startListening = useCallback(() => {
     engine.pause();
@@ -509,6 +573,25 @@ function Reader({
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
       if (recall !== null || showAppearance) return;
+      // Tarayıcının kendi araması Sayfa modunda yalnızca görünen sayfayı
+      // görür: Ctrl+F (ve /) metnin tamamında arayan paneli açar
+      if ((event.key === 'f' || event.key === 'F') && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        engine.pause();
+        setAiTab('search');
+        return;
+      }
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key === '/') {
+        event.preventDefault();
+        engine.pause();
+        setAiTab('search');
+        return;
+      }
+      if (event.key === 'b' || event.key === 'B') {
+        void toggleBookmark();
+        return;
+      }
       // Yazı boyutu her modda
       if (event.key === '+' || event.key === '=') {
         update({ fontScale: stepFontScale(settings.fontScale, 1) });
@@ -585,6 +668,7 @@ function Reader({
     toggle,
     previousSentence,
     nextSentence,
+    toggleBookmark,
   ]);
 
   // Dinlerken metin her modda akış görünümünde: göz sesi takip edebilsin
@@ -622,12 +706,23 @@ function Reader({
           </Txt>
         </Pressable>
         <IconButton
-          name={aiReady ? 'sparkle' : 'book'}
+          name={bookmarksHere.length ? 'bookmarkFilled' : 'bookmark'}
           onPress={() => {
-            engine.pause();
-            setAiTab(aiReady ? 'summary' : chapters?.length ? 'sections' : 'word');
+            releaseFocus();
+            void toggleBookmark();
           }}
-          accessibilityLabel={aiReady ? 'Yapay zekâ paneli' : 'Kelime defteri'}
+          accessibilityLabel={bookmarksHere.length ? 'Yer imini kaldır' : 'Buraya yer imi koy'}
+          emphasis={bookmarksHere.length ? 'strong' : 'faint'}
+          size={20}
+        />
+        <IconButton
+          name={aiReady ? 'sparkle' : 'search'}
+          onPress={() => {
+            releaseFocus();
+            engine.pause();
+            setAiTab(aiReady ? 'summary' : 'search');
+          }}
+          accessibilityLabel={aiReady ? 'Araçlar ve yapay zekâ' : 'Ara, yer imleri ve araçlar'}
           emphasis="faint"
           size={20}
         />
@@ -640,16 +735,6 @@ function Reader({
           }}
           accessibilityLabel={listening ? 'Dinlemeyi bitir' : 'Dinleyerek oku'}
           emphasis={listening ? 'strong' : 'faint'}
-          size={20}
-        />
-        <IconButton
-          name="focus"
-          onPress={() => {
-            releaseFocus();
-            setFocusMode(!focusMode);
-          }}
-          accessibilityLabel="Odak modu"
-          emphasis={focusMode ? 'strong' : 'faint'}
           size={20}
         />
       </View>
@@ -670,6 +755,7 @@ function Reader({
             lineHeight={pageLineHeight}
             paragraphGap={pageParagraphGap}
             markedSentences={markedSentences}
+            flashSentence={flashSentence}
             onAreaLayout={pagination.onAreaLayout}
             onContentHeight={pagination.onContentHeight}
             onSampleHeight={pagination.onSampleHeight}
@@ -852,10 +938,10 @@ function Reader({
         sentenceOffset={context.sentenceOffset}
         sentenceChoices={pageChoices}
         onHighlightSaved={loadQuotes}
-        onJumpTo={(offset) => {
-          setEndReached(false);
-          jumpTo(indexFromCharOffset(engine.chunks, offset));
-        }}
+        onJumpTo={jumpToOffset}
+        bookmarks={bookmarks}
+        onRemoveBookmark={(bookmarkId) => void removeBookmarks([bookmarkId]).then(loadBookmarks)}
+        positionLabel={positionLabel}
       />
 
       <AppearanceSheet visible={showAppearance} onClose={() => setShowAppearance(false)} />

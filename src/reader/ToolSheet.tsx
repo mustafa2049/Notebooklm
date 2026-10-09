@@ -1,22 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Modal, Pressable, ScrollView, View } from 'react-native';
+import React, { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { askAboutText, explainWord, generateSections, generateSummary, type Section } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
+import { createSearchIndex, MIN_QUERY, searchText } from '@/core/search';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache, type AiChatTurn } from '@/storage/ai';
+import type { Bookmark } from '@/storage/bookmarks';
 import { addHighlight } from '@/storage/highlights';
 import { addVocab } from '@/storage/vocab';
 import { previewOfText } from '@/train/drills/reading';
-import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
+import { Button, Card, Chip, Divider, Field, IconButton, Txt } from '@/ui/primitives';
+import { fontStyle } from '@/ui/theme';
 
 /**
- * Okuyucunun araç paneli: kelime defteri her zaman, özet / bölümler / sohbet
- * ise yalnızca yapay zekâ ayarlıysa.
+ * Okuyucunun araç paneli: arama, yer imleri, önizleme, kelime defteri ve
+ * alıntı her zaman; özet / bölümler / sohbet ise yalnızca yapay zekâ ayarlıysa.
  *
  * Üç kural panelin tamamına hâkim:
- * 1. **AI olmadan da işe yarar.** Kelime sekmesi anahtar gerektirmiyor:
- *    kelimeyi cümlesiyle deftere kaydetmek için modele ihtiyaç yok.
+ * 1. **AI olmadan da işe yarar.** Arama, yer imleri, kelime ve alıntı anahtar
+ *    gerektirmiyor: kelimeyi cümlesiyle deftere kaydetmek için modele ihtiyaç yok.
  * 2. **Bir kez üretilir, saklanır.** Özet ve bölümler doküman başına
  *    önbelleğe yazılır; her açılışta yeniden para harcanmaz. Kullanıcı isterse
  *    "yeniden üret" ile ödemeyi kendisi seçer.
@@ -24,19 +27,33 @@ import { Button, Card, Chip, Divider, Field, Txt } from '@/ui/primitives';
  *    girilmişse tutar) panelin altında yazar.
  */
 
-export type AiTab = 'summary' | 'sections' | 'chat' | 'word' | 'quote' | 'preview';
+export type AiTab =
+  | 'search'
+  | 'bookmarks'
+  | 'summary'
+  | 'sections'
+  | 'chat'
+  | 'word'
+  | 'quote'
+  | 'preview';
 
+/** Sekmeler bu sırayla gösterilir */
 const TAB_LABEL: Record<AiTab, string> = {
+  search: 'Ara',
+  bookmarks: 'İmler',
+  sections: 'Bölümler',
   preview: 'Önizle',
   summary: 'Özet',
-  sections: 'Bölümler',
   chat: 'Sohbet',
   word: 'Kelime',
   quote: 'Alıntı',
 };
 
-/** AI kapalıyken kelime defteri her zaman, bölümler yalnızca gerçek bölüm varsa. */
-const OFFLINE_TABS: AiTab[] = ['preview', 'word', 'quote'];
+/** AI kapalıyken de çalışanlar; bölümler yalnızca dosyanın kendi bölümleri varsa. */
+const OFFLINE_TABS: AiTab[] = ['search', 'bookmarks', 'preview', 'word', 'quote'];
+
+/** Atlamanın nedeni: aramadan gelinince okuyucu bulunan cümleyi gösterir */
+export type JumpReason = 'search' | 'bookmark' | 'section';
 
 interface Props {
   visible: boolean;
@@ -59,8 +76,13 @@ interface Props {
    * önce "hangi cümle?" diye sorar — sayfada tek bir "o anki cümle" yok.
    */
   sentenceChoices?: SentenceChoice[];
-  /** Bölüm başına atlama */
-  onJumpTo: (charOffset: number) => void;
+  /** Bölüm başına, arama sonucuna, yer imine atlama */
+  onJumpTo: (charOffset: number, reason: JumpReason) => void;
+  /** Bu kitabın yer imleri, metindeki sırasıyla */
+  bookmarks?: Bookmark[];
+  onRemoveBookmark?: (id: string) => void;
+  /** Konumu kullanıcıya göstermek için ("Sayfa 12" ya da "%34") */
+  positionLabel?: (charOffset: number) => string;
   /** Kelime defteri kaydında kaynağı göstermek için */
   docTitle?: string;
   /**
@@ -89,6 +111,9 @@ export function ToolSheet({
   onHighlightSaved,
   sentenceChoices,
   onJumpTo,
+  bookmarks = [],
+  onRemoveBookmark,
+  positionLabel,
   docTitle,
   fileChapters,
 }: Props) {
@@ -118,16 +143,31 @@ export function ToolSheet({
   const activeSentence = chosen?.text ?? '';
   const activeWords = chosen?.words ?? [];
   const hasFileChapters = Boolean(fileChapters?.length);
-  const tabs = ai.configured
-    ? (Object.keys(TAB_LABEL) as AiTab[])
-    : hasFileChapters
-      ? [...OFFLINE_TABS, 'sections' as AiTab]
-      : OFFLINE_TABS;
+  const tabs = (Object.keys(TAB_LABEL) as AiTab[]).filter(
+    (option) =>
+      ai.configured || OFFLINE_TABS.includes(option) || (option === 'sections' && hasFileChapters)
+  );
+  const where = (offset: number) =>
+    positionLabel ? positionLabel(offset) : `%${Math.round((offset / Math.max(1, text.length)) * 100)}`;
+
+  // ---- Arama: dizin sekme ilk açıldığında bir kez kurulur (uzun kitapta her
+  // tuşta metni baştan işlememek için); yazarken liste geriden gelebilir
+  const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
+  const [searchUsed, setSearchUsed] = useState(false);
+  useEffect(() => {
+    if (visible && tab === 'search') setSearchUsed(true);
+  }, [visible, tab]);
+  const searchIndex = useMemo(() => (searchUsed ? createSearchIndex(text) : null), [searchUsed, text]);
+  const results = useMemo(
+    () => (searchIndex ? searchText(searchIndex, deferredQuery) : null),
+    [searchIndex, deferredQuery]
+  );
 
   useEffect(() => {
     if (!visible) return;
-    // AI kapalıyken yalnızca kelime sekmesi var; başka bir sekme istenirse ona düş
-    setTab(ai.configured || tabs.includes(initialTab) ? initialTab : 'word');
+    // AI kapalıyken istenen sekme yoksa aramaya düş
+    setTab(tabs.includes(initialTab) ? initialTab : 'search');
     setSaved(null);
     setQuoteNote('');
     setQuoteSaved(false);
@@ -227,7 +267,7 @@ export function ToolSheet({
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
           <Txt variant="heading" style={{ flex: 1, fontSize: 18 }}>
-            {ai.configured ? 'Yapay zekâ' : 'Araçlar'}
+            Araçlar
           </Txt>
           <Pressable onPress={onClose} hitSlop={10}>
             <Txt variant="dim">kapat</Txt>
@@ -247,7 +287,108 @@ export function ToolSheet({
 
         <Divider />
 
-        <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ gap: theme.space(3) }}>
+        <ScrollView
+          style={{ maxHeight: 420 }}
+          contentContainerStyle={{ gap: theme.space(3) }}
+          keyboardShouldPersistTaps="handled"
+        >
+          {tab === 'search' ? (
+            <>
+              <Field
+                value={query}
+                onChangeText={setQuery}
+                placeholder="Metinde ara…"
+                right={
+                  query ? (
+                    <Pressable onPress={() => setQuery('')} hitSlop={8} accessibilityLabel="Aramayı temizle">
+                      <Txt variant="dim">temizle</Txt>
+                    </Pressable>
+                  ) : undefined
+                }
+              />
+              {query.trim().length < MIN_QUERY ? (
+                <Txt variant="dim">
+                  En az iki harf yaz. Büyük/küçük harf fark etmez; Türkçe harf kullanmazsan
+                  "ogretmen" yazınca "öğretmen" de bulunur.
+                </Txt>
+              ) : results && results.total === 0 ? (
+                <Txt variant="dim">Bu metinde "{query.trim()}" geçmiyor.</Txt>
+              ) : results ? (
+                <Txt variant="dim" style={{ fontSize: 13 }}>
+                  {results.total} sonuç
+                  {results.total > results.hits.length ? ` · ilk ${results.hits.length} tanesi` : ''} ·
+                  dokununca oraya gidersin
+                </Txt>
+              ) : null}
+              {query.trim().length >= MIN_QUERY
+                ? results?.hits.map((hit) => (
+                    <Card
+                      key={hit.start}
+                      onPress={() => {
+                        onJumpTo(hit.start, 'search');
+                        onClose();
+                      }}
+                    >
+                      <Txt variant="body" style={{ fontSize: 14 }}>
+                        {hit.before}
+                        <Text style={{ color: theme.colors.accent, ...fontStyle(theme, '700') }}>
+                          {hit.match}
+                        </Text>
+                        {hit.after}
+                      </Txt>
+                      <Txt variant="dim" style={{ fontSize: 12, marginTop: 2 }}>
+                        {where(hit.start)}
+                      </Txt>
+                    </Card>
+                  ))
+                : null}
+            </>
+          ) : null}
+
+          {tab === 'bookmarks' ? (
+            <>
+              {bookmarks.length === 0 ? (
+                <Txt variant="dim">
+                  Henüz yer imi yok. Okurken başlıktaki yer imi düğmesine dokun: bulunduğun yer
+                  buraya eklenir, dokununca geri dönersin.
+                </Txt>
+              ) : null}
+              {bookmarks.map((bookmark) => (
+                <Card
+                  key={bookmark.id}
+                  onPress={() => {
+                    onJumpTo(bookmark.charOffset, 'bookmark');
+                    onClose();
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
+                    <View style={{ flex: 1 }}>
+                      <Txt variant="body" numberOfLines={2} style={{ fontSize: 14 }}>
+                        {bookmark.excerpt || '…'}
+                      </Txt>
+                      <Txt variant="dim" style={{ fontSize: 12, marginTop: 2 }}>
+                        {where(bookmark.charOffset)} ·{' '}
+                        {new Date(bookmark.createdAt).toLocaleDateString('tr-TR', {
+                          day: 'numeric',
+                          month: 'short',
+                        })}
+                      </Txt>
+                    </View>
+                    {onRemoveBookmark ? (
+                      <IconButton
+                        name="trash"
+                        size={18}
+                        emphasis="faint"
+                        accessibilityLabel="Yer imini sil"
+                        onPress={() => onRemoveBookmark(bookmark.id)}
+                      />
+                    ) : null}
+                  </View>
+                </Card>
+              ))}
+            </>
+          ) : null}
+
           {tab === 'summary' ? (
             <>
               {summary ? (
@@ -282,7 +423,7 @@ export function ToolSheet({
                   <Card
                     key={`${section.charOffset}-${index}`}
                     onPress={() => {
-                      onJumpTo(section.charOffset);
+                      onJumpTo(section.charOffset, 'section');
                       onClose();
                     }}
                   >
@@ -290,8 +431,7 @@ export function ToolSheet({
                       {index + 1}. {section.title}
                     </Txt>
                     <Txt variant="dim" style={{ fontSize: 12, marginTop: 2 }}>
-                      %{Math.round((section.charOffset / Math.max(1, text.length)) * 100)} · atlamak
-                      için dokun
+                      {where(section.charOffset)} · atlamak için dokun
                     </Txt>
                   </Card>
                 ))

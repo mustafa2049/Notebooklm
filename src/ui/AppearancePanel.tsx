@@ -15,7 +15,7 @@ import {
 import { MODE_CHUNK_SIZE, MODE_LABEL, READER_MODES } from '@/reader/modes';
 import { useSettings } from '@/store/SettingsContext';
 import { ColorPicker } from './ColorPicker';
-import { Chip, Txt } from './primitives';
+import { Chip, Toggle, Txt } from './primitives';
 import { fontPreviewStyle, readingFontStyle, type ReadingFontId } from './theme';
 
 /**
@@ -33,7 +33,7 @@ const FONT_OPTIONS: { id: Exclude<ReadingFontId, 'auto'>; label: string }[] = [
 type PickerState = null | 'theme' | 'text';
 
 export function AppearancePanel({ showModes = false }: { showModes?: boolean }) {
-  const { theme, appTheme, readingTheme, settings, update, focusMode } = useSettings();
+  const { theme, appTheme, readingTheme, settings, update, focusMode, setFocusMode } = useSettings();
   const [picker, setPicker] = useState<PickerState>(null);
 
   const reading = readingTheme.colors;
@@ -93,6 +93,13 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
               />
             ))}
           </View>
+          {/* Okuyucuya özel: başlıkta yer kalmadığı için buraya taşındı (F tuşu da çalışır) */}
+          <Toggle
+            label="Odak modu"
+            hint="Koyu temalarda zemin tam siyah olur. Klavyede F."
+            value={focusMode}
+            onChange={setFocusMode}
+          />
         </>
       ) : null}
 

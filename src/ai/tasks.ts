@@ -1,4 +1,4 @@
-import { trLower } from '@/core/turkish';
+import { normalizeForSearch } from '@/core/search';
 import {
   chatRequest,
   questionsRequest,
@@ -163,43 +163,6 @@ export async function generateSections(
   // İlk bölüm metnin başından başlasın: kullanıcı baştaki kısmı kaybetmesin
   if (sections[0].charOffset > 0) sections[0] = { ...sections[0], charOffset: 0 };
   return { value: sections, usage: response.usage, model: response.model };
-}
-
-interface Normalized {
-  text: string;
-  /** Normalleştirilmiş metnin her karakterinin özgün metindeki konumu */
-  offsets: number[];
-}
-
-/**
- * Metni aramaya uygun hâle getirir: boşluk dizileri tek boşluğa iner, harfler
- * Türkçe kurallarına göre küçültülür. Konum eşlemesi tutulur ki bulunan yerin
- * **özgün** metindeki karakter indeksini döndürebilelim.
- */
-function normalizeForSearch(source: string): Normalized {
-  let text = '';
-  const offsets: number[] = [];
-  let inSpace = false;
-
-  for (let i = 0; i < source.length; i++) {
-    const ch = source[i];
-    if (/\s/.test(ch)) {
-      if (!inSpace && text) {
-        text += ' ';
-        offsets.push(i);
-        inSpace = true;
-      }
-      continue;
-    }
-    inSpace = false;
-    const lowered = trLower(ch);
-    // Bazı karakterler küçültüldüğünde uzunluk değiştirebilir; eşlemeyi
-    // bozmamak için tek karaktere indiriyoruz.
-    text += lowered.length === 1 ? lowered : lowered[0];
-    offsets.push(i);
-  }
-
-  return { text, offsets };
 }
 
 /**

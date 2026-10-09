@@ -38,7 +38,9 @@ export type IconName =
   | 'upload'
   | 'quote'
   | 'headphones'
-  | 'share';
+  | 'share'
+  | 'bookmark'
+  | 'bookmarkFilled';
 
 interface IconProps {
   name: IconName;
@@ -217,6 +219,13 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
           <Polyline points="7,9 12,4 17,9" {...stroke} />
           <Path d="M4.5 16v2.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V16" {...stroke} />
         </>
+      )}
+      {(name === 'bookmark' || name === 'bookmarkFilled') && (
+        <Path
+          d="M7 3.5h10a1 1 0 0 1 1 1V20.5l-6-4.2-6 4.2V4.5a1 1 0 0 1 1-1z"
+          {...stroke}
+          fill={name === 'bookmarkFilled' ? color : 'none'}
+        />
       )}
       {name === 'quote' && (
         <>

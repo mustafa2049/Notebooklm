@@ -130,6 +130,7 @@ export interface BackupSummary {
   assessments: number;
   vocab: number;
   highlights: number;
+  bookmarks: number;
   hasSettings: boolean;
 }
 
@@ -152,6 +153,7 @@ export function summarizeBackup(backup: Backup): BackupSummary {
     assessments: arrayLength(key('assessments')),
     vocab: arrayLength(key('vocab')),
     highlights: arrayLength(key('highlights')),
+    bookmarks: arrayLength(key('bookmarks')),
     hasSettings: Boolean(key('settings')),
   };
 }
@@ -183,6 +185,8 @@ const LIST_RULES: Record<string, ListRule> = {
     max: 2000,
   },
   highlights: { identity: byId, max: 5000 },
+  // Aynı yere iki cihazda konmuş yer imi tek kayıt (bkz. addBookmark)
+  bookmarks: { identity: (b) => `${b.docId}|${b.charOffset}`, max: 2000 },
   recalls: { identity: byId, max: 2000 },
 };
 

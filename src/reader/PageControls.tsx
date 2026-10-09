@@ -71,7 +71,7 @@ export function PageControls({
           numberOfLines={1}
           style={{ fontSize: 12, textAlign: 'center', color: theme.colors.textFaint }}
         >
-          ←/→: sayfa · +/−: yazı boyutu · uzun bas: alıntı
+          ←/→ sayfa · / ara · B yer imi · uzun bas: alıntı
         </Txt>
       ) : null}
     </View>

@@ -67,6 +67,26 @@ antrenman ve ölçüm ekranları bununla çiziliyor.
 - **Özel renkler**: zemin ve yazı serbest seçilebilir (ızgara ya da renk kodu);
   kontrast oranı canlı gösteriliyor, 3:1'in altında "Uygula" kapalı.
 
+## Arama ve yer imleri
+
+- **Ara**: okuyucuda büyüteç (yapay zekâ açıksa ✦ panelinde "Ara" sekmesi);
+  web'de `/` ya da Ctrl+F. Tarayıcının kendi araması Sayfa modunda yalnızca
+  görünen sayfayı görür; bu arama metnin tamamında. Büyük/küçük harf Türkçe
+  kurallarıyla ("İSTANBUL" ↔ "istanbul", "IŞIK" ↔ "ışık"), satır sonu ve çift
+  boşluk fark etmiyor. Aranan sözde Türkçe harf yoksa şapkasız yazım da
+  bulunuyor ("ogretmen" → "öğretmen"); Türkçe harf varsa yazıldığı gibi
+  ("ılık", "ilik"i bulmaz). Sonuca dokununca o yere gidiliyor; Sayfa modunda
+  bulunan cümle, sayfa çevrilene kadar vurgulu. En çok 200 sonuç listeleniyor,
+  toplam yine yazıyor (`src/core/search.ts`, testli).
+- **Yer imi**: başlıktaki yer imi düğmesi (web'de B). Sayfa modunda görünen
+  sayfa, diğer modlarda okunan cümle imlenir; bulunulan yerde yer imi varsa
+  düğme dolu ve dokununca kalkar. "İmler" sekmesinde sayfa numarası (ya da
+  yüzde) ve ilk kelimelerle listelenir. Yedeğe dahil; kitap silinince yer
+  imleri de silinir (alıntılar defterde kalır).
+- Odak modu düğmesi yer açmak için **Aa** paneline taşındı (F tuşu aynı).
+- İlerleme, sayfa çevrilip 2 sn içinde uygulamadan çıkılsa da kaydediliyor
+  (arka plana alınma / sekme kapanma anında yazılıyor).
+
 ## Türkçeye özel davranışlar
 
 Bunlar sonradan eklenmiş süsler değil, motorun içindeki kararlar:

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KEYS } from './keys';
 import { deleteText, readText, writeText } from './blobStore';
+import { removeBookmarksForDoc } from './bookmarks';
 
 export type DocumentSource = 'paste' | 'txt' | 'pdf' | 'epub' | 'url';
 
@@ -104,6 +105,9 @@ export async function removeDocument(id: string): Promise<void> {
   await writeIndex(documents.filter((d) => d.id !== id));
   await AsyncStorage.removeItem(KEYS.progress(id));
   await AsyncStorage.removeItem(KEYS.aiCache(id));
+  // Yer imi metindeki konum: metin gidince anlamı kalmıyor (alıntılar ise
+  // cümlenin kendisini taşıdığı için defterde kalıyor)
+  await removeBookmarksForDoc(id);
   await deleteText(id);
 }
 

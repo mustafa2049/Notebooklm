@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AppState, Platform } from 'react-native';
 import { buildChunks } from '@/core/chunker';
 import { chunkDuration, estimateRemainingMs, rampMultiplier } from '@/core/pacing';
 import {
@@ -201,10 +202,22 @@ export function useReaderEngine(options: ReaderEngineOptions): ReaderEngine {
   }, [chunk, chunks, playback.index]);
 
   useEffect(() => {
-    return () => {
+    const flush = () => {
       const list = chunksRef.current;
       const last = list[playbackRef.current.index];
       if (last) onProgressRef.current?.(last.charStart, progressRatio(list, playbackRef.current.index));
+    };
+    // Arka plana alınınca ya da sekme kapanınca kısma beklenmeden yazılır:
+    // sayfa çevirip hemen çıkan kullanıcı o sayfayı kaybetmesin (tarayıcı
+    // kapanırken React'in temizleme adımı çalışmıyor)
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') flush();
+    });
+    if (Platform.OS === 'web') window.addEventListener('pagehide', flush);
+    return () => {
+      subscription.remove();
+      if (Platform.OS === 'web') window.removeEventListener('pagehide', flush);
+      flush();
     };
   }, []);
 
