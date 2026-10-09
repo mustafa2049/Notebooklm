@@ -185,6 +185,8 @@ const LIST_RULES: Record<string, ListRule> = {
     max: 2000,
   },
   highlights: { identity: byId, max: 5000 },
+  // Günlükte kitap başına bir kayıt
+  journal: { identity: (j) => String(j.docId), max: 2000 },
   // Kitap başına bir plan: iki cihazda kurulmuşsa cihazdaki kalır
   plans: { identity: (p) => String(p.docId), max: 500 },
   // Aynı yere iki cihazda konmuş yer imi tek kayıt (bkz. addBookmark)

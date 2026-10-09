@@ -1,6 +1,6 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
 import { finishEstimateDays } from '@/habit/books';
 import { bookStats } from '@/habit/bookStats';
 import { useSettings } from '@/store/SettingsContext';
@@ -9,18 +9,21 @@ import { bookmarksForDoc, removeBookmarks, type Bookmark } from '@/storage/bookm
 import {
   getDocument,
   loadProgress,
+  saveProgress,
   SOURCE_LABEL,
   type DocumentMeta,
   type DocumentProgress,
 } from '@/storage/documents';
 import { highlightsForDoc, type Highlight } from '@/storage/highlights';
+import { journalFor, saveJournal } from '@/storage/journal';
 import { listRecalls, type Recall } from '@/storage/recalls';
 import { listSessions, type ReadingSession } from '@/storage/stats';
 import { listVocab, type VocabEntry } from '@/storage/vocab';
 import { naturalWpm } from '@/train/assessment';
 import { formatDuration, formatNumber, formatPercent, formatShortDuration } from '@/ui/format';
 import { PlanSection } from '@/ui/PlanSection';
-import { Button, Card, Chip, IconButton, ProgressBar, Screen, SectionHeader, Txt } from '@/ui/primitives';
+import { Button, Card, Chip, Field, IconButton, ProgressBar, Screen, SectionHeader, Txt } from '@/ui/primitives';
+import { fontStyle } from '@/ui/theme';
 
 /**
  * Kitap kartı: bir kitapla ilgili her şey tek yerde — ilerleme, harcanan
@@ -146,7 +149,41 @@ export default function BookScreen() {
           icon="play"
           onPress={() => open(finished ? 0 : undefined)}
         />
+        {!finished ? (
+          <Button
+            label="Bitirdim"
+            icon="check"
+            variant="secondary"
+            onPress={() => {
+              const now = Date.now();
+              // Kâğıttan ya da başka yerde bitirilen kitap da günlüğe girebilsin
+              void saveProgress(meta.id, {
+                charOffset: meta.charCount,
+                ratio: 1,
+                updatedAt: now,
+                finished: true,
+                finishedAt: now,
+              }).then(load);
+            }}
+          />
+        ) : null}
       </Card>
+
+      {finished ? (
+        <>
+          <SectionHeader title="Okuma günlüğü" />
+          <Card>
+            <JournalSection meta={meta} finishedAt={progress?.finishedAt ?? Date.now()} />
+          </Card>
+          <Txt
+            variant="dim"
+            style={{ color: theme.colors.accent, fontSize: 13, marginTop: theme.space(2) }}
+            onPress={() => router.push('/books')}
+          >
+            Okuduğum kitaplar ›
+          </Txt>
+        </>
+      ) : null}
 
       <SectionHeader title="Okuma" />
       <Card style={{ gap: theme.space(2) }}>
@@ -289,6 +326,83 @@ export default function BookScreen() {
         </>
       ) : null}
     </Screen>
+  );
+}
+
+/** Bitirilen kitaba puan (1–5) ve kısa not: "Okuduğum kitaplar"da görünür. */
+function JournalSection({ meta, finishedAt }: { meta: DocumentMeta; finishedAt: number }) {
+  const { theme } = useSettings();
+  const [rating, setRating] = useState(0);
+  const [note, setNote] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    void journalFor(meta.id).then((entry) => {
+      if (!entry) return;
+      setRating(entry.rating);
+      setNote(entry.note);
+      setSaved(true);
+    });
+  }, [meta.id]);
+
+  const save = async () => {
+    await saveJournal({
+      docId: meta.id,
+      title: meta.title,
+      wordCount: meta.wordCount,
+      finishedAt,
+      rating,
+      note: note.trim(),
+      updatedAt: Date.now(),
+    });
+    setSaved(true);
+  };
+
+  return (
+    <View style={{ gap: theme.space(3) }}>
+      <Txt variant="dim">Nasıldı? Puan ve kısa bir not "Okuduğum kitaplar"da kalır.</Txt>
+      <View style={{ flexDirection: 'row', gap: theme.space(1) }}>
+        {[1, 2, 3, 4, 5].map((value) => (
+          <Pressable
+            key={value}
+            onPress={() => {
+              setRating(value === rating ? 0 : value);
+              setSaved(false);
+            }}
+            hitSlop={4}
+            accessibilityRole="button"
+            accessibilityLabel={`${value} yıldız`}
+            accessibilityState={{ selected: value <= rating }}
+            style={{ padding: theme.space(1) }}
+          >
+            <Text
+              style={{
+                fontSize: 30,
+                color: value <= rating ? theme.colors.accent : theme.colors.textFaint,
+                ...fontStyle(theme, '700'),
+              }}
+            >
+              {value <= rating ? '★' : '☆'}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      <Field
+        value={note}
+        onChangeText={(value) => {
+          setNote(value);
+          setSaved(false);
+        }}
+        placeholder="Kısa not (isteğe bağlı): aklında ne kaldı?"
+        multiline
+      />
+      <Button
+        label={saved ? 'Günlüğe kaydedildi' : 'Günlüğe kaydet'}
+        icon="check"
+        disabled={saved}
+        onPress={() => void save()}
+      />
+    </View>
   );
 }
 

@@ -120,6 +120,19 @@ doldu / Bitti (yarım günlük pay kadar fark gerekiyor). Dakika karşılığı 
 ölçümdeki doğal hızla. Bugün ekranında "Kitap planın" kartı, kütüphanede plan
 satırı. Planlar yedeğe dahil; kitap silinince planı da silinir.
 
+## Okuma günlüğü ve "Okuma yılım" kartı
+
+- Kitap kartında **Bitirdim** (kâğıttan ya da başka yerde bitirilen kitap
+  için de) ve bitince 1–5 yıldız + kısa not. Günlük yedeğe dahil; kitap
+  kütüphaneden silinse de günlükte kalır.
+- **Okuduğum kitaplar** (Kütüphane başlığındaki bağlantı, kitap kartı ya da
+  Bugün'deki yıllık hedef kartı): bitirilenler yıl yıl, puan ve notuyla. Kısa
+  metinler (5.000 kelimenin altı) günlüğe yazılmadıkça kitap sayılmaz.
+- Her yıl için **Okuma yılım** kartı (`src/habit/yearReport.ts`, testli):
+  bitirilen kitap, okuma süresi, kelime, okunan gün, en uzun seri, yılın kitabı
+  (en yüksek puan) ve yılın alıntısı (notlu olan öncelikli). Haftalık kartla aynı
+  yöntem: web'de PNG iner, telefonda metin paylaşılır.
+
 ## Türkçeye özel davranışlar
 
 Bunlar sonradan eklenmiş süsler değil, motorun içindeki kararlar:

@@ -68,7 +68,12 @@ export default function LibraryScreen() {
       >
         <View>
           <Txt variant="title">Kütüphane</Txt>
-          <Txt variant="dim">{settings.wpm} kelime/dakika hedefi</Txt>
+          <Txt variant="dim">
+            {settings.wpm} kelime/dakika hedefi ·{' '}
+            <Txt variant="dim" style={{ color: theme.colors.accent }} onPress={() => router.push('/books')}>
+              Okuduğum kitaplar
+            </Txt>
+          </Txt>
         </View>
         <IconButton
           name="plus"

@@ -383,9 +383,10 @@ function StreakCard({ summary }: { summary: StatsSummary }) {
 
 function YearlyBooks({ finished, goal }: { finished: number; goal: number }) {
   const { theme } = useSettings();
+  const router = useRouter();
   const status = yearlyGoalStatus(finished, goal, Date.now());
   return (
-    <Card style={{ gap: theme.space(2), marginTop: theme.space(3) }}>
+    <Card style={{ gap: theme.space(2), marginTop: theme.space(3) }} onPress={() => router.push('/books')}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Txt variant="body">Bu yılın kitapları</Txt>
         <Txt variant="dim" style={{ fontSize: 13 }}>
