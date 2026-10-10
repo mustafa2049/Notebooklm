@@ -570,8 +570,12 @@ her derlemede `expo prebuild` ile üretiliyor.
 3. İmza: kendi anahtarınla `android/app/build.gradle` içine `release`
    imza ayarı ekle (anahtar dosyası `*.jks` git dışında). **Güncellemeler aynı
    anahtarla imzalanmalı**, yoksa telefon eski sürümün üstüne kurmaz.
-4. Süreyi kısaltmak için `android/gradle.properties` içinde
-   `reactNativeArchitectures=armeabi-v7a,arm64-v8a` (telefonların hemen hepsi).
+4. `android/gradle.properties`: `reactNativeArchitectures=arm64-v8a`
+   (2017 sonrası telefonların hemen hepsi; eski 32-bit telefonlar için
+   `armeabi-v7a` eklenir) ve `expo.useLegacyPackaging=true` (yerel
+   kütüphaneler sıkıştırılır). Böyle APK ~29 MB; iki mimariyle ve
+   sıkıştırmasız ~59 MB. R8 küçültmesi (`android.enableMinifyInReleaseBuilds`)
+   20 MB'a indiriyor ama telefonda denenmediği için kapalı bırakıldı.
 5. `cd android && ./gradlew assembleRelease` →
    `android/app/build/outputs/apk/release/app-release.apk`
 
