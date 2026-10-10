@@ -559,6 +559,25 @@ sessizce atlanıyor (CI kırmızıya düşmüyor) ve günlükte nedenini yazıyo
 Alternatif olarak Netlify'a depo doğrudan bağlanabilir; `netlify.toml` bunun için
 hazır duruyor.
 
+## Android APK'yı yerelde derlemek
+
+Paket adı `com.hizliokuma.app` (`app.json`). `android/` klasörü depoda yok;
+her derlemede `expo prebuild` ile üretiliyor.
+
+1. Android SDK: `platforms;android-36`, `build-tools;36.0.0`,
+   `ndk;27.1.12297006`, `cmake;3.30.5` (`sdkmanager` ile), `ANDROID_HOME` ayarlı.
+2. `npx expo prebuild -p android --no-install`
+3. İmza: kendi anahtarınla `android/app/build.gradle` içine `release`
+   imza ayarı ekle (anahtar dosyası `*.jks` git dışında). **Güncellemeler aynı
+   anahtarla imzalanmalı**, yoksa telefon eski sürümün üstüne kurmaz.
+4. Süreyi kısaltmak için `android/gradle.properties` içinde
+   `reactNativeArchitectures=armeabi-v7a,arm64-v8a` (telefonların hemen hepsi).
+5. `cd android && ./gradlew assembleRelease` →
+   `android/app/build/outputs/apk/release/app-release.apk`
+
+Telefona kurmak için APK'yı telefona at, açınca "bilinmeyen kaynaklardan
+yükleme" iznini ver.
+
 ## Telefonda PDF (WebView köprüsü)
 
 Akış: dosya seçiliyor → baytlar base64'e çevriliyor → 0×0 boyutlu gizli bir
