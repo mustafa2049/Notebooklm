@@ -5,6 +5,7 @@ import { CUE_OPTIONS } from '@/habit/cue';
 import { formatClock } from '@/habit/goal';
 import { REMINDER_SUPPORTED } from '@/habit/reminder';
 import { useSettings } from '@/store/SettingsContext';
+import { EasyReadingToggle } from '@/ui/EasyReadingToggle';
 import { Button, Card, Chip, IconButton, Screen, Toggle, Txt } from '@/ui/primitives';
 
 /**
@@ -142,6 +143,8 @@ export default function OnboardingScreen() {
               burada hız değil, efektif hız (hız × anlama) ölçülüyor.
             </Txt>
           </Card>
+          {/* Okurken zorlanan, testten önce rahat görünümü açabilsin */}
+          <EasyReadingToggle />
           <Button label="Seviye testini yap" icon="check" onPress={() => finish(true)} />
           <Button label="Sonra" variant="secondary" onPress={() => finish(false)} />
         </View>

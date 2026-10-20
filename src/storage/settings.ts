@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AiProviderKind } from '@/ai/types';
+import type { EasyFields } from '@/appearance/easyReading';
 import {
   DEFAULT_CUSTOM_BG,
   DEFAULT_CUSTOM_TEXT,
@@ -60,6 +61,10 @@ export interface Settings {
   eveningStart: number;
   eveningEnd: number;
   eveningTheme: ReadingThemeId;
+  /** Kolay okuma önayarı açık mı (bkz. appearance/easyReading) */
+  easyReading: boolean;
+  /** Kolay okuma açılmadan önceki görünüm: kapatınca geri yazılır */
+  easyBackup: EasyFields | null;
   /** Disleksi dostu font (Atkinson Hyperlegible) */
   hyperlegible: boolean;
   /** Titreşimli geri bildirim (yalnızca telefonda) */
@@ -156,6 +161,8 @@ export const DEFAULT_SETTINGS: Settings = {
   eveningStart: 21,
   eveningEnd: 7,
   eveningTheme: 'night',
+  easyReading: false,
+  easyBackup: null,
   hyperlegible: false,
   haptics: true,
   urlProxy: 'https://r.jina.ai/',

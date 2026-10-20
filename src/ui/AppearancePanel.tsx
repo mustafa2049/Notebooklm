@@ -26,6 +26,7 @@ import { typeset } from '@/core/typeset';
 import { MODE_CHUNK_SIZE, MODE_LABEL, READER_MODES } from '@/reader/modes';
 import { useSettings } from '@/store/SettingsContext';
 import { ColorPicker } from './ColorPicker';
+import { EasyReadingToggle } from './EasyReadingToggle';
 import { Chip, Toggle, Txt } from './primitives';
 import { fontPreviewStyle, readingFontStyle, type ReadingFontId } from './theme';
 
@@ -97,6 +98,8 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
           Seçtiğin yazı rengi bu zeminde okunmuyor; temanın kendi rengi kullanılıyor.
         </Txt>
       ) : null}
+
+      <EasyReadingToggle />
 
       {showModes ? (
         <>
