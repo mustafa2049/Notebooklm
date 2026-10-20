@@ -5,6 +5,7 @@ import { ActivityIndicator, BackHandler, Modal, Platform, Pressable, ScrollView,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
+import { syllableColorFor } from '@/appearance/palettes';
 import { readingLayout, stepFontScale } from '@/appearance/typography';
 import { pageIndexFor, pageParagraphs } from '@/core/pages';
 import { indexFromCharOffset, indexFromRatio, progressRatio, wordsUpTo } from '@/core/progress';
@@ -242,6 +243,11 @@ function Reader({
   const layout = useMemo(
     () => readingLayout({ pageMargin, justify, letterSpacing, wordSpacing, hyphenate }),
     [pageMargin, justify, letterSpacing, wordSpacing, hyphenate]
+  );
+  // Hece renklendirme: ikinci hecelerin rengi okuma zeminine göre
+  const syllableColor = useMemo(
+    () => (settings.syllableColors ? syllableColorFor(theme.colors) : null),
+    [settings.syllableColors, theme.colors]
   );
   const pagination = usePagination(
     engine.chunks,
@@ -814,6 +820,10 @@ function Reader({
         void toggleBookmark();
         return;
       }
+      if (event.key === 'h' || event.key === 'H') {
+        update({ syllableColors: !settings.syllableColors });
+        return;
+      }
       // Yazı boyutu her modda
       if (event.key === '+' || event.key === '=') {
         update({ fontScale: stepFontScale(settings.fontScale, 1) });
@@ -898,6 +908,7 @@ function Reader({
     update,
     settings.wpm,
     settings.fontScale,
+    settings.syllableColors,
     focusMode,
     setFocusMode,
     leave,
@@ -1003,6 +1014,7 @@ function Reader({
             markedSentences={markedSentences}
             flashSentence={flashSentence}
             activeChunk={pacerChunk}
+            syllableColor={syllableColor}
             onTap={() => {
               if (!pacerOn) return false;
               togglePacer();
@@ -1030,6 +1042,7 @@ function Reader({
             fontSize={pageFontSize}
             lineHeight={pageLineHeight}
             layout={layout}
+            syllableColor={syllableColor}
             onToggle={toggle}
             onPosition={onScrollPosition}
             onEnd={onScrollEnd}

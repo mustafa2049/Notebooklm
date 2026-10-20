@@ -5,6 +5,7 @@ import {
   APP_LIGHT,
   READING_THEMES,
   readingColors,
+  syllableColorFor,
   TEXT_COLORS,
   textColorChoices,
   type ReadingInput,
@@ -100,5 +101,26 @@ describe('özel renkler', () => {
 
   it('geçersiz özel zemin varsayılana döner', () => {
     expect(readingColors({ ...base, readingTheme: 'custom', customBg: 'xyz' }).colors.bg).toBe('#1C1F25');
+  });
+});
+
+describe('hece rengi', () => {
+  it('hazır temaların hepsinde zeminde ≥ 4,5:1 ve yazıdan ayrı', () => {
+    for (const { id } of READING_THEMES) {
+      if (id === 'custom') continue;
+      for (const appDark of [true, false]) {
+        for (const focusMode of [false, true]) {
+          const { colors } = readingColors({ ...base, readingTheme: id, appDark, focusMode });
+          const color = syllableColorFor(colors);
+          expect(contrastRatio(color, colors.bg)).toBeGreaterThanOrEqual(4.5);
+          expect(color).not.toBe(colors.text);
+        }
+      }
+    }
+  });
+
+  it('orta tonlu özel zeminde en okunur aday', () => {
+    const color = syllableColorFor({ bg: '#808080' });
+    expect(contrastRatio(color, '#808080')).toBeGreaterThanOrEqual(4.5);
   });
 });

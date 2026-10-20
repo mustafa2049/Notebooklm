@@ -16,6 +16,7 @@ import { typeset } from '@/core/typeset';
 import type { Chunk } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
+import { SyllableText } from './SyllableText';
 
 /**
  * Web'de yatay kaydırmayı tarayıcı kendisi yorumluyordu (ör. "geri git"
@@ -51,6 +52,7 @@ export function PageView({
   markedSentences,
   flashSentence = null,
   activeChunk = null,
+  syllableColor = null,
   onTap,
   onAreaLayout,
   onContentHeight,
@@ -80,6 +82,8 @@ export function PageView({
   flashSentence?: number | null;
   /** Tempo rehberinin bulunduğu chunk (rehber kapalıyken null) */
   activeChunk?: number | null;
+  /** Hece renklendirme açıksa ikinci hecelerin rengi */
+  syllableColor?: string | null;
   /** Dokunma: `true` dönerse sayfa çevrilmez (ör. rehber duraklatıldı) */
   onTap?: () => boolean;
   onAreaLayout: (event: LayoutChangeEvent) => void;
@@ -246,6 +250,7 @@ export function PageView({
                       text={part.display}
                       active={part.chunkIndex === activeChunk}
                       color={theme.colors.highlight}
+                      syllableColor={syllableColor}
                     />
                   ))}
                 </Text>
@@ -267,18 +272,21 @@ const PagePart = React.memo(function PagePart({
   text,
   active,
   color,
+  syllableColor,
 }: {
   text: string;
   active: boolean;
   color: string;
+  syllableColor: string | null;
 }) {
-  if (!active) return <Text>{text}</Text>;
+  const content = (value: string) => (syllableColor ? <SyllableText text={value} color={syllableColor} /> : value);
+  if (!active) return <Text>{content(text)}</Text>;
   // Baştaki boşluk vurgunun dışında: yalnızca kelimeler boyansın
   const lead = /^[\s\u2009]*/.exec(text)?.[0] ?? '';
   return (
     <Text>
       {lead}
-      <Text style={{ backgroundColor: color }}>{text.slice(lead.length)}</Text>
+      <Text style={{ backgroundColor: color }}>{content(text.slice(lead.length))}</Text>
     </Text>
   );
 });

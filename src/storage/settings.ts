@@ -61,6 +61,8 @@ export interface Settings {
   eveningStart: number;
   eveningEnd: number;
   eveningTheme: ReadingThemeId;
+  /** Hece renklendirme: 2., 4. heceler ikinci renkle (Sayfa ve Kaydırma modları) */
+  syllableColors: boolean;
   /** Kolay okuma önayarı açık mı (bkz. appearance/easyReading) */
   easyReading: boolean;
   /** Kolay okuma açılmadan önceki görünüm: kapatınca geri yazılır */
@@ -161,6 +163,7 @@ export const DEFAULT_SETTINGS: Settings = {
   eveningStart: 21,
   eveningEnd: 7,
   eveningTheme: 'night',
+  syllableColors: false,
   easyReading: false,
   easyBackup: null,
   hyperlegible: false,

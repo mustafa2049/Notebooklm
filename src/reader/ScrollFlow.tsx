@@ -5,6 +5,7 @@ import { chunkAt, locateLine, scrollSpeed, type ScrollParagraph } from '@/core/s
 import { typeset } from '@/core/typeset';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
+import { SyllableText } from './SyllableText';
 
 /**
  * Otomatik kaydırma modu: metin hedef hızda yukarı kayar, göz sabit bir okuma
@@ -31,6 +32,7 @@ export function ScrollFlow({
   fontSize,
   lineHeight,
   layout,
+  syllableColor = null,
   onToggle,
   onPosition,
   onEnd,
@@ -43,6 +45,8 @@ export function ScrollFlow({
   fontSize: number;
   lineHeight: number;
   layout: ReadingLayout;
+  /** Hece renklendirme açıksa ikinci hecelerin rengi */
+  syllableColor?: string | null;
   onToggle: () => void;
   /** Okuma çizgisindeki chunk (seyrek bildirilir) */
   onPosition: (chunkIndex: number) => void;
@@ -170,7 +174,11 @@ export function ScrollFlow({
               onLayout={(event) => heights.current.set(paragraph.index, event.nativeEvent.layout.height)}
             >
               <Text style={textStyle} {...hyphenation}>
-                {typeset(paragraph.text, options)}
+                {syllableColor ? (
+                  <SyllableText text={typeset(paragraph.text, options)} color={syllableColor} />
+                ) : (
+                  typeset(paragraph.text, options)
+                )}
               </Text>
             </View>
           ))}

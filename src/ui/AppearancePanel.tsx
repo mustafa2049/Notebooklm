@@ -9,6 +9,7 @@ import {
 import {
   readingColors,
   READING_THEMES,
+  syllableColorFor,
   textColorChoices,
   type ReadingThemeId,
 } from '@/appearance/palettes';
@@ -24,6 +25,7 @@ import {
 } from '@/appearance/typography';
 import { typeset } from '@/core/typeset';
 import { MODE_CHUNK_SIZE, MODE_LABEL, READER_MODES } from '@/reader/modes';
+import { SyllableText } from '@/reader/SyllableText';
 import { useSettings } from '@/store/SettingsContext';
 import { ColorPicker } from './ColorPicker';
 import { EasyReadingToggle } from './EasyReadingToggle';
@@ -54,6 +56,7 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
   const reading = readingTheme.colors;
   const layout = readingLayout(settings);
   const previewSize = 17 * Math.min(settings.fontScale, 1.4);
+  const previewText = typeset(PREVIEW, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace });
   const effectiveFont: Exclude<ReadingFontId, 'auto'> =
     settings.readingFont === 'auto' ? (settings.hyperlegible ? 'hyperlegible' : 'sans') : settings.readingFont;
 
@@ -90,7 +93,11 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
             ...readingFontStyle(readingTheme),
           }}
         >
-          {typeset(PREVIEW, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace })}
+          {settings.syllableColors ? (
+            <SyllableText text={previewText} color={syllableColorFor(reading)} />
+          ) : (
+            previewText
+          )}
         </Text>
       </View>
       {readingTheme.textFallback ? (
@@ -128,6 +135,14 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
           />
         </>
       ) : null}
+
+      {section('Okuma yardımları')}
+      <Toggle
+        label="Hece renklendirme"
+        hint="Kelimeler hecelerine göre iki renkle yazılır (ar·ka·daş). Sayfa ve Kaydırma modlarında. Klavyede H."
+        value={settings.syllableColors}
+        onChange={(syllableColors) => update({ syllableColors })}
+      />
 
       {section('Yazı boyutu')}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>

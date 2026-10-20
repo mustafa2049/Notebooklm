@@ -265,6 +265,27 @@ export function readingColors(input: ReadingInput): ReadingColors {
   return { colors: withText(base, wanted), dark, textFallback: false };
 }
 
+// ------------------------------------------------------- hece renklendirme
+
+/** İkinci hecelerin rengi: yazı renginden açıkça ayrışan mavi, zemine göre */
+const SYLLABLE_ON_DARK = ['#8DB8FF', '#A9C9FF', '#C6DBFF'];
+const SYLLABLE_ON_LIGHT = ['#2457C5', '#1F4FB8', '#173C8C'];
+/** Orta tonlu zeminler için uç mavi tonlar */
+const SYLLABLE_EXTREMES = ['#06122E', '#E4EEFF'];
+
+/**
+ * Hece renklendirmesinde 2., 4. hecelerin rengi. Zeminde en az 4,5:1 okunan
+ * ilk aday; hiçbiri tutmazsa (orta tonlu özel zemin) en okunur olanı.
+ */
+export function syllableColorFor(colors: Pick<ColorSet, 'bg'>): string {
+  const candidates = isDarkColor(colors.bg) ? SYLLABLE_ON_DARK : SYLLABLE_ON_LIGHT;
+  const readable = candidates.find((color) => contrastRatio(color, colors.bg) >= COMFORT_CONTRAST);
+  if (readable) return readable;
+  return [...candidates, ...SYLLABLE_EXTREMES].reduce((best, color) =>
+    contrastRatio(color, colors.bg) > contrastRatio(best, colors.bg) ? color : best
+  );
+}
+
 /** Renk seçicinin hızlı seçenekleri: koyular, açıklar, yazıya uygun tonlar. */
 export const PICKER_SWATCHES = [
   '#000000', '#0B0D10', '#1C1F25', '#17140F', '#2A2118', '#102018', '#0F1A2E', '#2B1B2E',
