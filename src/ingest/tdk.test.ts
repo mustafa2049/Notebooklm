@@ -91,6 +91,19 @@ describe('lookupWord', () => {
     expect(await lookupWord('zxqwlar')).toBeNull();
   });
 
+  it('tek kopuşta yeniden dener', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', async (url: string) => {
+      calls += 1;
+      if (calls === 1) throw new TypeError('Failed to fetch');
+      const word = decodeURIComponent(url.split('ara=')[1]);
+      return { ok: true, json: async () => (word === 'kalem' ? KALEM : NOT_FOUND) } as Response;
+    });
+    const result = await lookupWord('kalem');
+    expect(result?.entries[0].word).toBe('kalem');
+    expect(calls).toBe(2);
+  });
+
   it('ağ yoksa çevrimdışı hatası', async () => {
     vi.stubGlobal('fetch', async () => {
       throw new TypeError('Failed to fetch');

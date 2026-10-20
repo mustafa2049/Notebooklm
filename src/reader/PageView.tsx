@@ -15,10 +15,12 @@ import type { ReadingLayout } from '@/appearance/typography';
 import { focusBand, lineTops, type ParagraphBox } from '@/core/lineFocus';
 import { pageParagraphs, SAMPLE_PARAGRAPH, type Page, type PageParagraph, type PageSentence } from '@/core/pages';
 import { typeset } from '@/core/typeset';
-import type { Chunk } from '@/core/types';
+import type { Chunk, Token } from '@/core/types';
+import { hitFromGeometry, plainIndex, tokenAtPlainIndex, type ParagraphGeometry } from '@/core/wordHit';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
 import { SyllableText } from './SyllableText';
+import { domHit, measureOrigin, textLayout } from './textHit';
 
 /**
  * Web'de yatay kaydırmayı tarayıcı kendisi yorumluyordu (ör. "geri git"
@@ -66,6 +68,7 @@ export function PageView({
   layoutKey,
   onTurn,
   onLongPress,
+  onWordLongPress,
 }: {
   chunks: Chunk[];
   page: Page | undefined;
@@ -110,7 +113,10 @@ export function PageView({
   /** Sayfalama anahtarı: değişince içerik yeniden kurulup yeniden ölçülür */
   layoutKey: string;
   onTurn: (delta: 1 | -1) => void;
+  /** Uzun basma: kelime bulunamazsa (boşluk, ölçü yok) */
   onLongPress: () => void;
+  /** Uzun basılan kelime (verilirse önce bu denenir) */
+  onWordLongPress?: (token: Token) => void;
 }) {
   const { theme } = useSettings();
   const { width: windowWidth } = useWindowDimensions();
@@ -167,11 +173,52 @@ export function PageView({
 
   // ---- Dokunma ve kaydırma
   const pressStart = useRef<{ x: number; y: number } | null>(null);
+  /** Son dokunuşun yeri: uzun basmada hangi kelime olduğu buradan bulunur */
+  const pressPoint = useRef<{ x: number; y: number } | null>(null);
   const swiped = useRef(false);
 
   const onPressIn = (event: GestureResponderEvent) => {
     pressStart.current = { x: event.nativeEvent.pageX, y: event.nativeEvent.pageY };
+    pressPoint.current = pressStart.current;
     swiped.current = false;
+  };
+
+  // ---- Uzun basılan kelime
+  const contentRef = useRef<View>(null);
+  const geometry = useRef<Map<string, ParagraphGeometry>>(new Map());
+  const findToken = async (point: { x: number; y: number }): Promise<Token | null> => {
+    let hit: { key: string; index: number } | null = null;
+    if (Platform.OS === 'web') {
+      hit = domHit(point.x - window.scrollX, point.y - window.scrollY, PARAGRAPH_ID);
+    } else {
+      const origin = await measureOrigin(contentRef.current);
+      if (origin) {
+        hit = hitFromGeometry(geometry.current, point.x - origin.x, point.y - origin.y, {
+          fontSize,
+          letterSpacing: fontSize * layout.letterSpacingEm,
+          justify: layout.textAlign === 'justify',
+        });
+      }
+    }
+    const paragraph = hit ? paragraphs[Number(hit.key)] : undefined;
+    if (!hit || !paragraph) return null;
+    const display = paragraph.sentences.flatMap((sentence) => sentence.parts.map((part) => part.display)).join('');
+    const ordinal = tokenAtPlainIndex(
+      paragraph.tokens.map((token) => token.text),
+      plainIndex(display, hit.index)
+    );
+    const token = paragraph.tokens[ordinal];
+    return token?.core ? token : null;
+  };
+  const handleLongPress = () => {
+    const point = pressPoint.current;
+    if (!onWordLongPress || !point) {
+      onLongPress();
+      return;
+    }
+    findToken(point)
+      .then((token) => (token ? onWordLongPress(token) : onLongPress()))
+      .catch(() => onLongPress());
   };
   const onPressOut = (event: GestureResponderEvent) => {
     const start = pressStart.current;
@@ -236,9 +283,9 @@ export function PageView({
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         onPress={onPress}
-        onLongPress={onLongPress}
+        onLongPress={handleLongPress}
         delayLongPress={450}
-        accessibilityHint="Sağa dokun ya da sola kaydır: sonraki sayfa. Sol kenara dokun: önceki sayfa. Uzun bas: alıntı ve kelime."
+        accessibilityHint="Sağa dokun ya da sola kaydır: sonraki sayfa. Sol kenara dokun: önceki sayfa. Kelimeye uzun bas: anlamı."
         style={[{ flex: 1 }, WEB_GESTURES]}
       >
         {/* Animasyonlu katman yerinde kalır; ölçülen içerik onun içinde ve
@@ -258,12 +305,17 @@ export function PageView({
             lineFocus={lineFocus}
             onFocusLines={onFocusLines}
             onContentHeight={onContentHeight}
+            contentRef={contentRef}
+            geometry={geometry}
           />
         </Animated.View>
       </Pressable>
     </View>
   );
 }
+
+/** Paragraf köklerinin kimlik öneki (web'de kelime bulmak için) */
+const PARAGRAPH_ID = 'rp';
 
 /** Sayfanın paragrafları; her parça çizilecek biçimiyle (`typeset`) */
 type PageParagraphs = (Omit<PageParagraph, 'sentences'> & {
@@ -287,6 +339,8 @@ function PageContent({
   lineFocus,
   onFocusLines,
   onContentHeight,
+  contentRef,
+  geometry,
 }: {
   paragraphs: PageParagraphs;
   textStyle: TextStyle;
@@ -300,9 +354,17 @@ function PageContent({
   lineFocus: { size: number; start: number; hidden: boolean } | null;
   onFocusLines?: (count: number) => void;
   onContentHeight: (height: number) => void;
+  /** Telefonda kelime bulmak için: içerik alanı ve paragrafların ölçüleri */
+  contentRef: React.RefObject<View | null>;
+  geometry: React.MutableRefObject<Map<string, ParagraphGeometry>>;
 }) {
   const { theme } = useSettings();
   const [boxes, setBoxes] = useState<Record<number, ParagraphBox>>({});
+  // Önceki sayfanın ölçüleri bu sayfanın kelimeleriyle karışmasın
+  useEffect(() => {
+    const map = geometry.current;
+    return () => map.clear();
+  }, [geometry]);
   const tops = useMemo(() => lineTops(Object.values(boxes), lineHeight), [boxes, lineHeight]);
   const focusOn = lineFocus !== null;
   useEffect(() => {
@@ -311,7 +373,9 @@ function PageContent({
   const band = lineFocus && !lineFocus.hidden ? focusBand(tops, lineFocus.start, lineFocus.size, lineHeight) : null;
 
   const measure = (index: number) => (event: LayoutChangeEvent) => {
-    const { y, height } = event.nativeEvent.layout;
+    const { x, y, width, height } = event.nativeEvent.layout;
+    const key = String(index);
+    geometry.current.set(key, { ...geometry.current.get(key), x, y, width, height });
     setBoxes((current) => {
       const previous = current[index];
       if (previous && Math.abs(previous.y - y) < 0.5 && Math.abs(previous.height - height) < 0.5) return current;
@@ -322,11 +386,13 @@ function PageContent({
   const shade = { position: 'absolute' as const, left: 0, right: 0, backgroundColor: theme.colors.bg, opacity: 0.78 };
 
   return (
-    <View onLayout={(event) => onContentHeight(event.nativeEvent.layout.height)}>
+    <View ref={contentRef} onLayout={(event) => onContentHeight(event.nativeEvent.layout.height)}>
       {paragraphs.map((paragraph, index) => (
         <Text
           key={`${paragraph.paragraphIndex}-${index}`}
+          id={`${PARAGRAPH_ID}${index}`}
           {...hyphenation}
+          {...textLayout(geometry, String(index))}
           onLayout={measure(index)}
           style={{
             ...textStyle,

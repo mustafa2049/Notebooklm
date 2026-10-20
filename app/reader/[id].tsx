@@ -23,8 +23,10 @@ import { paragraphOfChunk, scrollParagraphs } from '@/core/scroll';
 import { excerptAt } from '@/core/search';
 import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
-import type { ReaderMode } from '@/core/types';
+import { sentenceOf, type SentenceInfo } from '@/core/wordHit';
+import type { ReaderMode, Token } from '@/core/types';
 import { ToolSheet, type AiTab, type JumpReason, type SentenceChoice } from '@/reader/ToolSheet';
+import { WordSheet } from '@/reader/WordSheet';
 import { FlowView } from '@/reader/FlowView';
 import { ReaderControls } from '@/reader/ReaderControls';
 import { MODE_LABEL } from '@/reader/modes';
@@ -343,6 +345,26 @@ function Reader({
   useEffect(() => {
     if (!scrollMode) setScrolling(false);
   }, [scrollMode, setScrolling]);
+
+  /**
+   * Kelimeye uzun basınca açılan sayfa: basılan kelime ve cümlesi. Okuma
+   * (tempo, kaydırma, sayfa saati) sayfa açıkken durur.
+   */
+  const [wordSheet, setWordSheet] = useState<{ word: string; sentence: SentenceInfo } | null>(null);
+  const openWord = useCallback(
+    (token: Token) => {
+      engine.pause();
+      setScrolling(false);
+      haptics.step(settings.haptics);
+      const sentence = sentenceOf(engine.tokens, token.sentenceIndex) ?? {
+        text: token.text,
+        offset: token.start,
+        words: [token.core],
+      };
+      setWordSheet({ word: token.core, sentence });
+    },
+    [engine, setScrolling, settings.haptics]
+  );
   /** Konum dışarıdan değişince (atlama, kaydırıcı) kayan metin o yerden yeniden kurulur */
   const [scrollKey, setScrollKey] = useState(0);
   const [scrollEnded, setScrollEnded] = useState(false);
@@ -350,7 +372,7 @@ function Reader({
   const pageClock = usePageClock({
     enabled: pageMode && !endReached,
     // Rehber oynarken okuma rehberin oturumuna yazılıyor; sayfa saati beklesin
-    blocked: aiTab !== null || recall !== null || showAppearance || pacing,
+    blocked: aiTab !== null || recall !== null || showAppearance || pacing || wordSheet !== null,
     pageKey: endReached ? -2 : (page?.start ?? -1),
     pageWords,
   });
@@ -853,7 +875,7 @@ function Reader({
       // Not ya da özet yazarken boşluk tuşu okumayı başlatmasın
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
-      if (recall !== null || showAppearance) return;
+      if (recall !== null || showAppearance || wordSheet !== null) return;
       // Tarayıcının kendi araması Sayfa modunda yalnızca görünen sayfayı
       // görür: Ctrl+F (ve /) metnin tamamında arayan paneli açar
       if ((event.key === 'f' || event.key === 'F') && (event.ctrlKey || event.metaKey)) {
@@ -985,6 +1007,7 @@ function Reader({
     leave,
     recall,
     showAppearance,
+    wordSheet,
     pageMode,
     turnPage,
     toggle,
@@ -1128,6 +1151,7 @@ function Reader({
             onSampleHeight={pagination.onSampleHeight}
             layoutKey={pagination.layoutKey}
             onTurn={turnPage}
+            onWordLongPress={openWord}
             onLongPress={() => {
               haptics.step(settings.haptics);
               setAiTab('quote');
@@ -1155,6 +1179,12 @@ function Reader({
             syllableColor={syllableColor}
             onToggle={toggle}
             onPosition={onScrollPosition}
+            onWordLongPress={openWord}
+            onLongPress={() => {
+              setScrolling(false);
+              haptics.step(settings.haptics);
+              setAiTab('word');
+            }}
             onEnd={onScrollEnd}
           />
         </View>
@@ -1189,8 +1219,13 @@ function Reader({
         />
         <Pressable
           onPress={toggle}
-          // Uzun bas: ekrandaki kelimeyi deftere kaydet ya da açıklat
+          // Uzun bas: ekrandaki kelimenin anlamı (kelime yoksa araç paneli)
           onLongPress={() => {
+            const token = engine.chunk?.tokens.find((item) => item.core);
+            if (token) {
+              openWord(token);
+              return;
+            }
             engine.pause();
             haptics.step(settings.haptics);
             setAiTab('word');
@@ -1427,6 +1462,22 @@ function Reader({
           if (wasLeaving) onBack();
         }}
       />
+
+      {wordSheet ? (
+        <WordSheet
+          visible
+          word={wordSheet.word}
+          sentence={wordSheet.sentence}
+          docId={docId}
+          docTitle={title}
+          onClose={() => setWordSheet(null)}
+          onMoreTools={() => {
+            setWordSheet(null);
+            setAiTab(pageMode ? 'quote' : 'word');
+          }}
+          onHighlightSaved={loadQuotes}
+        />
+      ) : null}
 
       <ToolSheet
         visible={aiTab !== null}

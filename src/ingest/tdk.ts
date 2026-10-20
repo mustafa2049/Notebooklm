@@ -19,6 +19,8 @@ const ENDPOINT = 'https://sozluk.gov.tr/gts?ara=';
 const CACHE_KEY = 'hizliokuma-cache/v1/tdk';
 const CACHE_LIMIT = 300;
 const TIMEOUT_MS = 10_000;
+/** Ağ hatasında yeniden deneme sayısı */
+const RETRIES = 1;
 /** Bir maddeden gösterilen en çok anlam */
 const MAX_MEANINGS = 3;
 
@@ -133,6 +135,25 @@ async function fetchWord(word: string): Promise<DictEntry[]> {
   const cached = (await readCache())[word];
   if (cached) return cached.entries;
 
+  // Mobil bağlantıda tek bir kopuş, kökün "bulunamadı" sayılmasına yol açmasın:
+  // ağ hatasında bir kez daha denenir ("bulunamadı" yanıtı kesindir, denenmez)
+  let body: unknown;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      body = await requestWord(word);
+      break;
+    } catch (error) {
+      if (attempt >= RETRIES) throw error;
+    }
+  }
+  const entries = parseTdk(body);
+  if (entries.length) await remember(word, entries);
+  else missing.add(word);
+  return entries;
+}
+
+/** Tek istek; yanıt yoksa ya da okunamıyorsa `DictOfflineError` */
+async function requestWord(word: string): Promise<unknown> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   let response: Response;
@@ -153,16 +174,11 @@ async function fetchWord(word: string): Promise<DictEntry[]> {
     clearTimeout(timer);
   }
   if (!response.ok) throw new DictOfflineError();
-  let body: unknown;
   try {
-    body = await response.json();
+    return await response.json();
   } catch {
     throw new DictOfflineError();
   }
-  const entries = parseTdk(body);
-  if (entries.length) await remember(word, entries);
-  else missing.add(word);
-  return entries;
 }
 
 /**

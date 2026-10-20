@@ -1,4 +1,4 @@
-import type { Chunk } from './types';
+import type { Chunk, Token } from './types';
 
 /**
  * Akış hâlindeki modlar (Bionic, Yürüyen Vurgu) metni **sayfalara** bölerek
@@ -213,6 +213,8 @@ export interface PageSentence {
 export interface PageParagraph {
   paragraphIndex: number;
   sentences: PageSentence[];
+  /** Paragrafın bu sayfadaki token'ları, sırasıyla (metin = tek boşlukla birleşimleri) */
+  tokens: Token[];
 }
 
 /**
@@ -228,9 +230,10 @@ export function pageParagraphs(chunks: Chunk[], page: Page): PageParagraph[] {
     for (const token of chunk.tokens) {
       let paragraph = paragraphs[paragraphs.length - 1];
       if (!paragraph || paragraph.paragraphIndex !== token.paragraphIndex) {
-        paragraph = { paragraphIndex: token.paragraphIndex, sentences: [] };
+        paragraph = { paragraphIndex: token.paragraphIndex, sentences: [], tokens: [] };
         paragraphs.push(paragraph);
       }
+      paragraph.tokens.push(token);
       let sentence = paragraph.sentences[paragraph.sentences.length - 1];
       if (!sentence || sentence.sentenceIndex !== token.sentenceIndex) {
         sentence = { sentenceIndex: token.sentenceIndex, text: '', charStart: token.start, words: [], parts: [] };

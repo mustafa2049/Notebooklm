@@ -1,4 +1,4 @@
-import type { Chunk } from './types';
+import type { Chunk, Token } from './types';
 
 /**
  * Otomatik kaydırma modu — saf, testli.
@@ -17,6 +17,8 @@ export interface ScrollParagraph {
   endChunk: number;
   words: number;
   text: string;
+  /** Paragrafın token'ları (metin = tek boşlukla birleşimleri) */
+  tokens: Token[];
 }
 
 /** Chunk'lardan paragraflar (bölünmüş uzun kelime bir kez ve bütün yazılır) */
@@ -41,10 +43,11 @@ export function scrollParagraphs(chunks: Chunk[]): ScrollParagraph[] {
     for (const token of chunk.tokens) {
       if (!current || token.paragraphIndex !== current.index) {
         close();
-        current = { index: token.paragraphIndex, startChunk: i, endChunk: i + 1, words: 0, text: '' };
+        current = { index: token.paragraphIndex, startChunk: i, endChunk: i + 1, words: 0, text: '', tokens: [] };
       }
       current.endChunk = i + 1;
       pieces.push(token.text);
+      current.tokens.push(token);
       if (token.core) current.words += 1;
     }
   }

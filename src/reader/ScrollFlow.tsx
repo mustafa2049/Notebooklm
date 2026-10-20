@@ -5,7 +5,13 @@ import { chunkAt, locateLine, scrollSpeed, type ScrollParagraph } from '@/core/s
 import { typeset } from '@/core/typeset';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
+import type { Token } from '@/core/types';
+import { hitFromGeometry, plainIndex, tokenAtPlainIndex, type ParagraphGeometry } from '@/core/wordHit';
 import { SyllableText } from './SyllableText';
+import { domHit, measureOrigin, textLayout } from './textHit';
+
+/** Paragraf köklerinin kimlik öneki (web'de kelime bulmak için) */
+const PARAGRAPH_ID = 'rp';
 
 /**
  * Otomatik kaydırma modu: metin hedef hızda yukarı kayar, göz sabit bir okuma
@@ -36,6 +42,8 @@ export function ScrollFlow({
   onToggle,
   onPosition,
   onEnd,
+  onWordLongPress,
+  onLongPress,
 }: {
   paragraphs: ScrollParagraph[];
   /** Açılışta okuma çizgisinde olacak paragraf */
@@ -52,6 +60,10 @@ export function ScrollFlow({
   onPosition: (chunkIndex: number) => void;
   /** Son paragraf okuma çizgisini geçti */
   onEnd: () => void;
+  /** Uzun basılan kelime */
+  onWordLongPress?: (token: Token) => void;
+  /** Uzun basma: kelime bulunamazsa */
+  onLongPress?: () => void;
 }) {
   const { theme } = useSettings();
   const gap = lineHeight * 0.6;
@@ -155,12 +167,60 @@ export function ScrollFlow({
   const hyphenation =
     Platform.OS === 'android' && layout.hyphenate ? { android_hyphenationFrequency: 'normal' as const } : {};
 
+  // ---- Uzun basılan kelime (bkz. PageView): web'de tarayıcıdan, telefonda satır ölçülerinden
+  const outerRef = useRef<View>(null);
+  const geometry = useRef(new Map<string, ParagraphGeometry>());
+  const pressPoint = useRef<{ x: number; y: number } | null>(null);
+  const findToken = async (point: { x: number; y: number }): Promise<Token | null> => {
+    let hit: { key: string; index: number } | null = null;
+    if (Platform.OS === 'web') {
+      hit = domHit(point.x - window.scrollX, point.y - window.scrollY, PARAGRAPH_ID);
+    } else {
+      // Pencereden atılmış paragrafların eski ölçüleri karışmasın
+      const visible = new Set(windowParagraphs.map((item) => String(item.index)));
+      for (const key of [...geometry.current.keys()]) if (!visible.has(key)) geometry.current.delete(key);
+      const origin = await measureOrigin(outerRef.current);
+      // Metin `offset` kadar yukarı kaymış: içerikteki konum aşağıda
+      if (origin) {
+        hit = hitFromGeometry(geometry.current, point.x - origin.x, point.y - origin.y + offset.current, {
+          fontSize,
+          letterSpacing: fontSize * layout.letterSpacingEm,
+          justify: layout.textAlign === 'justify',
+        });
+      }
+    }
+    const paragraph = hit ? windowParagraphs.find((item) => String(item.index) === hit.key) : undefined;
+    if (!hit || !paragraph) return null;
+    const ordinal = tokenAtPlainIndex(
+      paragraph.tokens.map((token) => token.text),
+      plainIndex(typeset(paragraph.text, options), hit.index)
+    );
+    const token = paragraph.tokens[ordinal];
+    return token?.core ? token : null;
+  };
+  const handleLongPress = () => {
+    const point = pressPoint.current;
+    if (!point || !onWordLongPress) {
+      onLongPress?.();
+      return;
+    }
+    findToken(point)
+      .then((token) => (token ? onWordLongPress(token) : onLongPress?.()))
+      .catch(() => onLongPress?.());
+  };
+
   return (
     <View
+      ref={outerRef}
       style={{ flex: 1, overflow: 'hidden' }}
       onLayout={(event: LayoutChangeEvent) => setArea(event.nativeEvent.layout.height)}
     >
       <Pressable
+        onPressIn={(event) => {
+          pressPoint.current = { x: event.nativeEvent.pageX, y: event.nativeEvent.pageY };
+        }}
+        onLongPress={handleLongPress}
+        delayLongPress={450}
         onPress={onToggle}
         accessibilityRole="button"
         accessibilityLabel={playing ? 'Kaydırmayı duraklat' : 'Kaydırmayı başlat'}
@@ -171,9 +231,19 @@ export function ScrollFlow({
             <View
               key={paragraph.index}
               style={{ marginBottom: gap }}
-              onLayout={(event) => heights.current.set(paragraph.index, event.nativeEvent.layout.height)}
+              onLayout={(event) => {
+                const { x, y, width, height } = event.nativeEvent.layout;
+                heights.current.set(paragraph.index, height);
+                const key = String(paragraph.index);
+                geometry.current.set(key, { ...geometry.current.get(key), x, y, width, height });
+              }}
             >
-              <Text style={textStyle} {...hyphenation}>
+              <Text
+                id={`${PARAGRAPH_ID}${paragraph.index}`}
+                style={textStyle}
+                {...hyphenation}
+                {...textLayout(geometry, String(paragraph.index))}
+              >
                 {syllableColor ? (
                   <SyllableText text={typeset(paragraph.text, options)} color={syllableColor} />
                 ) : (
