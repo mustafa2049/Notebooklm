@@ -38,7 +38,8 @@ parça" bunun hazır bir profili.
 - Sağa dokun ya da sola kaydır: sonraki sayfa; sol kenara dokun ya da sağa
   kaydır: önceki sayfa. Web'de ←/→, PageUp/PageDown, boşluk. Alt çubuktaki
   kaydırıcı sayfaya atlar; kalan süre son ölçümdeki doğal hızınla tahmin
-  edilir. Uzun bas → "Hangi cümle?" → alıntı ya da kelime defteri.
+  edilir. Kelimeye uzun bas → TDK anlamı, deftere kaydetme, alıntı (bkz.
+  "Okumayı kolaylaştıran araçlar"); boşluğa uzun bas → araç paneli.
 - Sayfalar **yükseklikle** kuruluyor: her paragrafın kaç satır tutacağı, gizlice
   çizilen bir örnek paragrafla ölçülen satır kapasitesinden hesaplanıyor
   (yazı tipi, boyut ve ekran genişliği ne olursa olsun). Çizilen sayfa yine de
@@ -110,6 +111,51 @@ antrenman ve ölçüm ekranları bununla çiziliyor.
   (`expo-keep-awake`; web'de tarayıcının Wake Lock API'si, her tarayıcıda yok).
   10 dakika hiçbir şey olmazsa (sayfa çevrilmez, RSVP ilerlemezse) kilit
   bırakılıyor; açık unutulan telefon pili bitirmesin.
+
+## Okumayı kolaylaştıran araçlar
+
+Hepsi okuyucudaki **Aa** sayfasında ve Ayarlar → Okuma görünümünde.
+
+- **Kolay okuma**: tek anahtarla okunaklı görünüm — yazı en az %120, geniş
+  satır/harf/kelime aralığı, disleksi dostu yazı tipi (Atkinson Hyperlegible),
+  sola yaslı ve satır sonunda bölünmeyen kelimeler; parlak beyaz zemin sepyaya,
+  tam siyah koyu griye döner. Açmadan önceki ayarlar saklanır, kapatınca geri
+  gelir (`src/appearance/easyReading.ts`, testli). İlk açılış sihirbazında da var.
+- **Hece renklendirme** (Sayfa ve Kaydırma modları, web'de H): her kelimenin
+  2. ve 4. hecesi ikinci renkle (ar·**ka**·daş). Yalnızca renk değişir; satır
+  kırılımı ve sayfa sayısı aynı kalır (tarayıcıda ölçüldü). İkinci renk her
+  hazır temada zeminde en az 4,5:1 okunur (test). Büyük harfli kısaltmalar
+  boyanmaz (`src/core/syllableRuns.ts`).
+- **Satır odağı** (Sayfa modu, web'de L; ↓/boşluk ve ↑): okunan 1 ya da 3
+  satırın dışı karartılır. Sağa dokununca bant bir satır iner, sol kenara
+  dokununca çıkar; sayfa bitince sayfa döner, geri çevrilince önceki sayfanın
+  son satırlarından başlar. Kaydırma yine sayfa çevirir; tempo rehberi
+  oynarken bant gizlenir. Satırlar paragrafların ölçülen yüksekliğinden
+  bulunuyor (`src/core/lineFocus.ts`).
+- **Sade tam ekran** (başlıktaki köşe simgesi, web'de T): menüler ve durum
+  çubuğu gizlenir. Sayfa modunda ekranın ortasına dokununca menüler gelir,
+  kenarlar sayfa (satır odağı açıksa satır) çevirir; diğer modlarda okuma
+  duraklayınca görünür. Menüler metnin üstüne bindiği için açıp kapatmak
+  sayfaları yeniden kurmaz. Android'de gezinme çubuğu gizlenmez (ek yerel paket
+  gerektirir).
+- **Kelimeye bas, anlamı gör**: kelimeye uzun basınca TDK anlamı doğrudan
+  açılır (eskiden cümle ve kelime seçmek gerekiyordu). Cümlenin kelimeleri
+  çip olarak gelir — başka bir kelimeye tek dokunuşla geçilir. Buradan
+  deftere kaydedilir (anlam not olur), yapay zekâyla bağlamına göre
+  açıklatılır, cümle alıntılanır. Sayfa ve Kaydırma modunda basılan kelime
+  bulunur: web'de tarayıcının karakter kutularından kesin olarak; telefonda
+  satır ölçülerinden (`onTextLayout`) ve harf genişliği tahmininden
+  (`src/core/wordHit.ts`, testli). Diğer modlarda ekrandaki kelime açılır.
+  Boşluğa basınca eski araç paneli açılır.
+- **Zor sayfayı sadeleştir** (yapay zekâ tanımlıysa; Sayfa modunda alt
+  çubukta "Sade"): okunan sayfa (diğer modlarda okunan paragraf, uzunsa
+  çevresindeki cümleler) kısa cümlelerle, günlük kelimelerle yeniden yazılır;
+  terimler parantez içinde açıklanır, bilgi eklenmez ya da atlanmaz. Sonuç
+  saklanır, aynı yer için ikinci kez ödeme yapılmaz.
+
+Doğrulama: hepsi tarayıcıda (360 px) denendi; sadeleştirme sahte bir yapay
+zekâ sunucusuyla. Telefonda kelime bulmanın isabeti, durum çubuğunun
+gizlenmesi ve genel görünüm cihazda denenmedi.
 
 ## Arama ve yer imleri
 
