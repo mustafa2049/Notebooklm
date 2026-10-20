@@ -9,9 +9,11 @@ import {
   View,
   type GestureResponderEvent,
   type LayoutChangeEvent,
+  type TextStyle,
 } from 'react-native';
 import type { ReadingLayout } from '@/appearance/typography';
-import { pageParagraphs, SAMPLE_PARAGRAPH, type Page } from '@/core/pages';
+import { focusBand, lineTops, type ParagraphBox } from '@/core/lineFocus';
+import { pageParagraphs, SAMPLE_PARAGRAPH, type Page, type PageParagraph, type PageSentence } from '@/core/pages';
 import { typeset } from '@/core/typeset';
 import type { Chunk } from '@/core/types';
 import { useSettings } from '@/store/SettingsContext';
@@ -53,6 +55,9 @@ export function PageView({
   flashSentence = null,
   activeChunk = null,
   syllableColor = null,
+  lineFocus = null,
+  onFocusLines,
+  onFocusMove,
   onTap,
   onAreaLayout,
   onContentHeight,
@@ -84,6 +89,15 @@ export function PageView({
   activeChunk?: number | null;
   /** Hece renklendirme açıksa ikinci hecelerin rengi */
   syllableColor?: string | null;
+  /**
+   * Satır odağı: bandın boyu (satır), ilk satırı (`LAST` = son satırlar) ve
+   * gizli olup olmadığı (rehber oynarken). Kapalıysa `null`.
+   */
+  lineFocus?: { size: number; start: number; hidden: boolean } | null;
+  /** Sayfadaki satır sayısı (bant hareketi için) */
+  onFocusLines?: (count: number) => void;
+  /** Satır odağı açıkken dokunuş sayfa yerine bandı oynatır */
+  onFocusMove?: (delta: 1 | -1) => void;
   /** Dokunma: `true` dönerse sayfa çevrilmez (ör. rehber duraklatıldı) */
   onTap?: () => boolean;
   onAreaLayout: (event: LayoutChangeEvent) => void;
@@ -174,7 +188,10 @@ export function PageView({
       return;
     }
     if (onTap?.()) return;
-    onTurn(event.nativeEvent.pageX < windowWidth * PREVIOUS_ZONE ? -1 : 1);
+    const delta = event.nativeEvent.pageX < windowWidth * PREVIOUS_ZONE ? -1 : 1;
+    // Satır odağında dokunuş bandı bir satır oynatır; sayfa sonunda sayfa döner
+    if (lineFocus && !lineFocus.hidden && onFocusMove) onFocusMove(delta);
+    else onTurn(delta);
   };
 
   const textStyle = {
@@ -218,48 +235,137 @@ export function PageView({
         {/* Animasyonlu katman yerinde kalır; ölçülen içerik onun içinde ve
             sayfalama değişince yeniden kurulur (animasyonu bölmeden) */}
         <Animated.View style={{ opacity, transform: [{ translateX: shift }] }}>
-          <View
+          <PageContent
             key={`${page?.start ?? -1}-${page?.end ?? -1}-${layoutKey}`}
-            onLayout={(event) => onContentHeight(event.nativeEvent.layout.height)}
-          >
-          {paragraphs.map((paragraph, index) => (
+            paragraphs={paragraphs}
+            textStyle={textStyle}
+            hyphenation={hyphenation}
+            lineHeight={lineHeight}
+            paragraphGap={paragraphGap}
+            markedSentences={markedSentences}
+            flashSentence={flashSentence}
+            activeChunk={activeChunk}
+            syllableColor={syllableColor}
+            lineFocus={lineFocus}
+            onFocusLines={onFocusLines}
+            onContentHeight={onContentHeight}
+          />
+        </Animated.View>
+      </Pressable>
+    </View>
+  );
+}
+
+/** Sayfanın paragrafları; her parça çizilecek biçimiyle (`typeset`) */
+type PageParagraphs = (Omit<PageParagraph, 'sentences'> & {
+  sentences: (Omit<PageSentence, 'parts'> & { parts: { chunkIndex: number; text: string; display: string }[] })[];
+})[];
+
+/**
+ * Sayfanın çizilen içeriği. Sayfaya anahtarlı: paragraf yerleşimleri (satır
+ * odağı ve kelime bulma için) sayfa değişince kendiliğinden sıfırlanır.
+ */
+function PageContent({
+  paragraphs,
+  textStyle,
+  hyphenation,
+  lineHeight,
+  paragraphGap,
+  markedSentences,
+  flashSentence,
+  activeChunk,
+  syllableColor,
+  lineFocus,
+  onFocusLines,
+  onContentHeight,
+}: {
+  paragraphs: PageParagraphs;
+  textStyle: TextStyle;
+  hyphenation: object;
+  lineHeight: number;
+  paragraphGap: number;
+  markedSentences: Set<number>;
+  flashSentence: number | null;
+  activeChunk: number | null;
+  syllableColor: string | null;
+  lineFocus: { size: number; start: number; hidden: boolean } | null;
+  onFocusLines?: (count: number) => void;
+  onContentHeight: (height: number) => void;
+}) {
+  const { theme } = useSettings();
+  const [boxes, setBoxes] = useState<Record<number, ParagraphBox>>({});
+  const tops = useMemo(() => lineTops(Object.values(boxes), lineHeight), [boxes, lineHeight]);
+  const focusOn = lineFocus !== null;
+  useEffect(() => {
+    if (focusOn) onFocusLines?.(tops.length);
+  }, [focusOn, tops.length, onFocusLines]);
+  const band = lineFocus && !lineFocus.hidden ? focusBand(tops, lineFocus.start, lineFocus.size, lineHeight) : null;
+
+  const measure = (index: number) => (event: LayoutChangeEvent) => {
+    const { y, height } = event.nativeEvent.layout;
+    setBoxes((current) => {
+      const previous = current[index];
+      if (previous && Math.abs(previous.y - y) < 0.5 && Math.abs(previous.height - height) < 0.5) return current;
+      return { ...current, [index]: { y, height } };
+    });
+  };
+  // Karartma: okunan satırların dışı zemin rengiyle örtülür (dokunuşu engellemez)
+  const shade = { position: 'absolute' as const, left: 0, right: 0, backgroundColor: theme.colors.bg, opacity: 0.78 };
+
+  return (
+    <View onLayout={(event) => onContentHeight(event.nativeEvent.layout.height)}>
+      {paragraphs.map((paragraph, index) => (
+        <Text
+          key={`${paragraph.paragraphIndex}-${index}`}
+          {...hyphenation}
+          onLayout={measure(index)}
+          style={{
+            ...textStyle,
+            // Boşluk paragrafın üstünde: son paragrafın altına boşluk
+            // eklenip sayfa gereksiz yere "taşmış" görünmesin
+            marginTop: index === 0 ? 0 : paragraphGap,
+          }}
+        >
+          {paragraph.sentences.map((sentence) => (
             <Text
-              key={`${paragraph.paragraphIndex}-${index}`}
-              {...hyphenation}
-              style={{
-                ...textStyle,
-                // Boşluk paragrafın üstünde: son paragrafın altına boşluk
-                // eklenip sayfa gereksiz yere "taşmış" görünmesin
-                marginTop: index === 0 ? 0 : paragraphGap,
-              }}
+              key={sentence.sentenceIndex}
+              style={
+                sentence.sentenceIndex === flashSentence
+                  ? { backgroundColor: theme.colors.highlight }
+                  : markedSentences.has(sentence.sentenceIndex)
+                    ? { backgroundColor: theme.colors.accentSoft }
+                    : undefined
+              }
             >
-              {paragraph.sentences.map((sentence, sentenceIndex) => (
-                <Text
-                  key={sentence.sentenceIndex}
-                  style={
-                    sentence.sentenceIndex === flashSentence
-                      ? { backgroundColor: theme.colors.highlight }
-                      : markedSentences.has(sentence.sentenceIndex)
-                        ? { backgroundColor: theme.colors.accentSoft }
-                        : undefined
-                  }
-                >
-                  {sentence.parts.map((part) => (
-                    <PagePart
-                      key={part.chunkIndex}
-                      text={part.display}
-                      active={part.chunkIndex === activeChunk}
-                      color={theme.colors.highlight}
-                      syllableColor={syllableColor}
-                    />
-                  ))}
-                </Text>
+              {sentence.parts.map((part) => (
+                <PagePart
+                  key={part.chunkIndex}
+                  text={part.display}
+                  active={part.chunkIndex === activeChunk}
+                  color={theme.colors.highlight}
+                  syllableColor={syllableColor}
+                />
               ))}
             </Text>
           ))}
-          </View>
-        </Animated.View>
-      </Pressable>
+        </Text>
+      ))}
+      {band ? (
+        <>
+          <View
+            pointerEvents="none"
+            aria-hidden
+            importantForAccessibility="no-hide-descendants"
+            style={{ ...shade, top: band.top - 4000, height: 4000 }}
+          />
+          <View
+            pointerEvents="none"
+            aria-hidden
+            importantForAccessibility="no-hide-descendants"
+            style={{ ...shade, top: band.bottom, height: 4000 }}
+          />
+        </>
+      ) : null}
     </View>
   );
 }

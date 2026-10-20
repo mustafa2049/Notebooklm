@@ -7,6 +7,7 @@ import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
 import { syllableColorFor } from '@/appearance/palettes';
 import { readingLayout, stepFontScale } from '@/appearance/typography';
+import { LAST, nextLineFocus, stepFocus } from '@/core/lineFocus';
 import { pageIndexFor, pageParagraphs } from '@/core/pages';
 import { indexFromCharOffset, indexFromRatio, progressRatio, wordsUpTo } from '@/core/progress';
 import { paragraphOfChunk, scrollParagraphs } from '@/core/scroll';
@@ -277,6 +278,22 @@ function Reader({
    */
   const [pacerOn, setPacerOn] = useState(false);
   const pacing = pageMode && pacerOn && engine.playing;
+
+  /**
+   * Satır odağı: bandın ilk satırı (`LAST` = sayfanın son satırları). Sayfa
+   * değişince başa (geri çevrildiyse sona) döner; satır sayısını sayfa bildirir.
+   */
+  const focusSize = pageMode ? settings.lineFocus : 0;
+  const [focusLine, setFocusLine] = useState(0);
+  const focusLines = useRef(0);
+  const pendingFocus = useRef<number | null>(null);
+  useEffect(() => {
+    setFocusLine(pendingFocus.current ?? 0);
+    pendingFocus.current = null;
+  }, [page?.start]);
+  const onFocusLines = useCallback((count: number) => {
+    focusLines.current = count;
+  }, []);
   useEffect(() => {
     if (!pageMode) setPacerOn(false);
   }, [pageMode]);
@@ -552,10 +569,22 @@ function Reader({
       if (delta > 0 && !endReached) pageClock.markForward();
       setEndReached(false);
       setFlashSentence(null);
+      // Geri çevrilince satır odağı önceki sayfanın son satırlarında başlasın
+      pendingFocus.current = delta > 0 ? 0 : LAST;
       setTurn((current) => ({ id: current.id + 1, direction: delta }));
       jumpTo(pages[target].start);
     },
     [pages, pageIndex, settings.haptics, endReached, pageClock, jumpTo, engine, pacerOn]
+  );
+
+  /** Satır odağı bandını bir satır oynatır; sayfanın dışına çıkınca sayfa çevrilir */
+  const moveFocus = useCallback(
+    (delta: 1 | -1) => {
+      const step = stepFocus(focusLine, focusLines.current, Math.max(1, focusSize), delta);
+      if ('turn' in step) turnPage(step.turn);
+      else setFocusLine(step.start);
+    },
+    [focusLine, focusSize, turnPage]
   );
 
   const seekPage = useCallback(
@@ -841,13 +870,23 @@ function Reader({
             return;
           case ' ':
             event.preventDefault();
-            // Rehber açıkken boşluk rehberi durdurur/sürdürür
+            // Rehber açıkken boşluk rehberi durdurur/sürdürür; satır odağında bir satır iner
             if (pacerOn) togglePacer();
+            else if (focusSize > 0) moveFocus(1);
             else turnPage(1);
+            return;
+          case 'l':
+          case 'L':
+            update({ lineFocus: nextLineFocus(settings.lineFocus) });
             return;
           case 'ArrowUp':
           case 'ArrowDown':
-            if (!pacerOn) break;
+            if (!pacerOn) {
+              if (focusSize === 0) break;
+              event.preventDefault();
+              moveFocus(event.key === 'ArrowDown' ? 1 : -1);
+              return;
+            }
             event.preventDefault();
             update({ wpm: Math.max(100, Math.min(1200, settings.wpm + (event.key === 'ArrowUp' ? 25 : -25))) });
             return;
@@ -909,6 +948,9 @@ function Reader({
     settings.wpm,
     settings.fontScale,
     settings.syllableColors,
+    settings.lineFocus,
+    focusSize,
+    moveFocus,
     focusMode,
     setFocusMode,
     leave,
@@ -1015,6 +1057,10 @@ function Reader({
             flashSentence={flashSentence}
             activeChunk={pacerChunk}
             syllableColor={syllableColor}
+            // Rehber oynarken vurgu zaten yol gösteriyor: bant gizlenir
+            lineFocus={focusSize > 0 ? { size: focusSize, start: focusLine, hidden: pacing } : null}
+            onFocusLines={onFocusLines}
+            onFocusMove={moveFocus}
             onTap={() => {
               if (!pacerOn) return false;
               togglePacer();

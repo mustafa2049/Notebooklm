@@ -23,6 +23,7 @@ import {
   stepFontScale,
   WORD_SPACINGS,
 } from '@/appearance/typography';
+import { LINE_FOCUS_OPTIONS } from '@/core/lineFocus';
 import { typeset } from '@/core/typeset';
 import { MODE_CHUNK_SIZE, MODE_LABEL, READER_MODES } from '@/reader/modes';
 import { SyllableText } from '@/reader/SyllableText';
@@ -143,6 +144,20 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
         value={settings.syllableColors}
         onChange={(syllableColors) => update({ syllableColors })}
       />
+      <Txt variant="body">Satır odağı</Txt>
+      {sub(
+        'Sayfa modunda okuduğun satırların dışı karartılır. Sağa dokun: bir satır aşağı, sol kenara: yukarı; kaydırınca sayfa döner. Klavyede ↓ ↑, L.'
+      )}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
+        {LINE_FOCUS_OPTIONS.map((value) => (
+          <Chip
+            key={value}
+            label={value === 0 ? 'Kapalı' : `${value} satır`}
+            active={settings.lineFocus === value}
+            onPress={() => update({ lineFocus: value })}
+          />
+        ))}
+      </View>
 
       {section('Yazı boyutu')}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(3) }}>
