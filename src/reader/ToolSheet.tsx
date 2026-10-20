@@ -1,7 +1,14 @@
 import React, { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { askAboutText, explainWord, generateSections, generateSummary, type Section } from '@/ai/tasks';
+import {
+  askAboutText,
+  explainWord,
+  generateSections,
+  generateSummary,
+  simplifyText,
+  type Section,
+} from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { createSearchIndex, MIN_QUERY, searchText } from '@/core/search';
 import { DictOfflineError, entryNote, lookupExact, lookupWord } from '@/ingest/tdk';
@@ -12,7 +19,7 @@ import { addHighlight } from '@/storage/highlights';
 import { addVocab } from '@/storage/vocab';
 import { previewOfText } from '@/train/drills/reading';
 import { Button, Card, Chip, Divider, Field, IconButton, Txt } from '@/ui/primitives';
-import { fontStyle } from '@/ui/theme';
+import { fontStyle, readingFontStyle } from '@/ui/theme';
 import { DictCard, type DictState } from './DictCard';
 
 /**
@@ -37,7 +44,8 @@ export type AiTab =
   | 'chat'
   | 'word'
   | 'quote'
-  | 'preview';
+  | 'preview'
+  | 'simplify';
 
 /** Sekmeler bu sırayla gösterilir */
 const TAB_LABEL: Record<AiTab, string> = {
@@ -45,6 +53,7 @@ const TAB_LABEL: Record<AiTab, string> = {
   bookmarks: 'İmler',
   sections: 'Bölümler',
   preview: 'Önizle',
+  simplify: 'Sadeleştir',
   summary: 'Özet',
   chat: 'Sohbet',
   word: 'Kelime',
@@ -92,6 +101,8 @@ interface Props {
    * yerine bunlar gösteriliyor — uydurulmuş değil, dosyadan geliyorlar.
    */
   fileChapters?: Section[];
+  /** Sadeleştirilecek parça: okunan sayfa ya da paragraf (metindeki aralık) */
+  simplifyRange?: { start: number; end: number; label: string };
 }
 
 export interface SentenceChoice {
@@ -118,6 +129,7 @@ export function ToolSheet({
   positionLabel,
   docTitle,
   fileChapters,
+  simplifyRange,
 }: Props) {
   const { theme } = useSettings();
   const insets = useSafeAreaInsets();
@@ -203,6 +215,39 @@ export function ToolSheet({
     setSections(value);
     await patchAiCache(docId, { sections: { items: value, model: '', at: Date.now() } });
   };
+
+  // ---- Sadeleştirme: aralık başına bir kez üretilir, saklanır
+  const simplifyKey = simplifyRange ? `${simplifyRange.start}-${simplifyRange.end}` : null;
+  const [simple, setSimple] = useState<{ key: string; text: string } | null>(null);
+  const makeSimple = async () => {
+    if (!simplifyRange || !simplifyKey) return;
+    const key = simplifyKey;
+    const passage = text.slice(simplifyRange.start, simplifyRange.end);
+    const value = await ai.run((provider, signal) => simplifyText(provider, passage, signal));
+    if (value === null) return;
+    setSimple({ key, text: value });
+    const cache = await loadAiCache(docId);
+    // En yeni 40 parça saklanır: uzun kitapta önbellek sınırsız büyümesin
+    const entries = Object.entries({ ...cache.simplified, [key]: { text: value, at: Date.now() } })
+      .sort((a, b) => b[1].at - a[1].at)
+      .slice(0, 40);
+    await patchAiCache(docId, { simplified: Object.fromEntries(entries) });
+  };
+  useEffect(() => {
+    if (!visible || tab !== 'simplify' || !simplifyKey || !ai.configured) return;
+    let cancelled = false;
+    void loadAiCache(docId).then((cache) => {
+      if (cancelled) return;
+      const cached = cache.simplified?.[simplifyKey];
+      if (cached) setSimple({ key: simplifyKey, text: cached.text });
+      // Doğrudan "Sadeleştir" ile açıldıysa beklemeden üretilir
+      else if (initialTab === 'simplify') void makeSimple();
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, tab, simplifyKey, docId, ai.configured]);
 
   const ask = async () => {
     const asked = question.trim();
@@ -427,6 +472,39 @@ export function ToolSheet({
                 variant={summary ? 'secondary' : 'primary'}
                 disabled={ai.busy}
                 onPress={makeSummary}
+              />
+            </>
+          ) : null}
+
+          {tab === 'simplify' ? (
+            <>
+              {simple && simple.key === simplifyKey ? (
+                <>
+                  <Card>
+                    <Txt
+                      variant="body"
+                      style={{ fontSize: 17, lineHeight: 17 * 1.6, ...readingFontStyle(theme) }}
+                    >
+                      {simple.text}
+                    </Txt>
+                  </Card>
+                  <Txt variant="dim" style={{ fontSize: 12 }}>
+                    Yapay zekâ {simplifyRange?.label ?? 'bu kısmı'} sade bir dille yeniden yazdı; asıl metin
+                    değişmedi. Önemli bir ayrıntı için asıl metne de bak.
+                  </Txt>
+                </>
+              ) : (
+                <Txt variant="dim">
+                  Zor gelen yeri kısa cümlelerle, günlük kelimelerle yeniden yazar; terimleri parantez
+                  içinde açıklar. Anlam ve sıra korunur. Sadeleştirilecek: {simplifyRange?.label ?? 'okunan yer'}.
+                </Txt>
+              )}
+              <Button
+                label={simple && simple.key === simplifyKey ? 'Yeniden üret' : 'Sadeleştir'}
+                icon="sparkle"
+                variant={simple && simple.key === simplifyKey ? 'secondary' : 'primary'}
+                disabled={ai.busy || !simplifyRange}
+                onPress={makeSimple}
               />
             </>
           ) : null}

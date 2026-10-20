@@ -5,6 +5,7 @@ import {
   questionsRequest,
   recallRequest,
   sectionsRequest,
+  simplifyRequest,
   summaryRequest,
   transcribeRequest,
   wordRequest,
@@ -61,6 +62,30 @@ export async function transcribeImage(
     throw new AiError('Bu fotoğrafta okunabilir metin bulunamadı. Sayfayı daha yakından ve net çekmeyi dene.');
   }
   return { value: text, usage: response.usage, model: response.model };
+}
+
+/**
+ * Zor metni sade Türkçeyle yeniden yazdırır. Model kod bloğu ya da tırnak
+ * eklediyse temizlenir; boş yanıt ya da metni sadeleştirmek yerine
+ * şişirmesi (girdinin üç katından uzun) hata sayılır.
+ */
+export async function simplifyText(
+  provider: AiProvider,
+  text: string,
+  signal?: AbortSignal
+): Promise<AiResult<string>> {
+  const response = await provider.complete(simplifyRequest(text), signal);
+  const value = response.text
+    .replace(/^```[a-z]*\n?|\n?```$/g, '')
+    .replace(/^"{3}\n?|\n?"{3}$/g, '')
+    .trim();
+  if (!value) {
+    throw new AiError('Model boş yanıt verdi. Yeniden deneyebilirsin.', { retryable: true });
+  }
+  if (value.length > text.trim().length * 3 + 200) {
+    throw new AiError('Model metni sadeleştirmek yerine uzattı. Yeniden deneyebilirsin.', { retryable: true });
+  }
+  return { value, usage: response.usage, model: response.model };
 }
 
 export async function generateQuestions(

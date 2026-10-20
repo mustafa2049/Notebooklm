@@ -125,6 +125,37 @@ Cümle: "${sentence}"`,
   };
 }
 
+// ------------------------------------------------- zor metni sadeleştirme
+
+/** Sadeleştirmeye gönderilen en uzun parça (bir sayfa ya da paragraf) */
+export const SIMPLIFY_MAX_WORDS = 450;
+
+export function simplifyRequest(text: string): AiRequest {
+  const { text: body } = takeWords(text, SIMPLIFY_MAX_WORDS);
+  return {
+    system: `Sen bir okuma asistanısın. Okuyucunun zorlandığı metni, anlamını değiştirmeden daha kolay
+okunur hâle getiriyorsun.
+
+${COMMON_RULES}`,
+    prompt: `Aşağıdaki metni sade Türkçeyle yeniden yaz.
+
+Kurallar:
+- Cümleler kısa olsun (15 kelime civarı); uzun cümleleri böl.
+- Günlük, herkesin bildiği kelimeler kullan. Değiştiremediğin bir terim kalırsa ilk geçtiği yerde
+  parantez içinde kısaca açıkla.
+- Anlamı, fikirlerin ve olayların sırasını, önemli ayrıntıları koru. Yorum, özet ya da yeni bilgi
+  ekleme; hiçbir fikri atlama.
+- Paragraf düzenini koru.
+- Yalnızca sadeleştirilmiş metni yaz: başlık, açıklama ya da "İşte" gibi giriş cümlesi yok.
+
+Metin:
+"""
+${body}
+"""`,
+    maxTokens: 2000,
+  };
+}
+
 // ------------------------------------------------------------ sohbet
 
 export function chatRequest(

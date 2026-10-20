@@ -28,6 +28,7 @@ export function PageControls({
   onTurn,
   onSeekPage,
   pacer,
+  onSimplify,
 }: {
   pageIndex: number;
   pageCount: number;
@@ -37,6 +38,8 @@ export function PageControls({
   onSeekPage: (index: number) => void;
   /** Tempo rehberi: hedef hızda ilerleyen vurgu */
   pacer?: PacerControls;
+  /** Yapay zekâ tanımlıysa: bu sayfayı sade dille yeniden yazdır */
+  onSimplify?: () => void;
 }) {
   const { theme } = useSettings();
   const last = Math.max(0, pageCount - 1);
@@ -103,6 +106,32 @@ export function PageControls({
               </Txt>
             </Pressable>
             {pacer.on ? <SpeedButton label="+" onPress={() => pacer.onSpeed(25)} accessibilityLabel="Rehberi hızlandır" /> : null}
+            {onSimplify ? (
+              <Pressable
+                onPress={onSimplify}
+                hitSlop={6}
+                accessibilityRole="button"
+                accessibilityLabel="Bu sayfayı sadeleştir"
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 4,
+                  paddingVertical: 3,
+                  paddingHorizontal: theme.space(2),
+                  borderRadius: theme.radius.pill,
+                  borderWidth: 1,
+                  borderColor: theme.colors.border,
+                }}
+              >
+                <Icon name="sparkle" size={12} color={theme.colors.textDim} />
+                {/* Rehber açıkken yer dar: yalnız simge */}
+                {pacer.on ? null : (
+                  <Txt variant="dim" style={{ fontSize: 12 }}>
+                    Sade
+                  </Txt>
+                )}
+              </Pressable>
+            ) : null}
           </View>
         ) : null}
         <Txt
@@ -110,7 +139,9 @@ export function PageControls({
           numberOfLines={1}
           style={{ fontSize: 13, color: finished ? theme.colors.success : theme.colors.textDim }}
         >
-          {finished ? 'Metin bitti' : `~${formatShortDuration(remainingMs)} kaldı`}
+          {finished
+            ? 'Metin bitti'
+            : `~${formatShortDuration(remainingMs)}${onSimplify ? '' : ' kaldı'}`}
         </Txt>
       </View>
       {Platform.OS === 'web' ? (

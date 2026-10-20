@@ -5,6 +5,8 @@ import {
   questionsRequest,
   QUESTION_SCHEMA,
   sectionsRequest,
+  SIMPLIFY_MAX_WORDS,
+  simplifyRequest,
   summaryRequest,
   recallRequest,
   takeLastWords,
@@ -128,5 +130,20 @@ describe('recallRequest', () => {
 describe('takeLastWords', () => {
   it('sondan keser', () => {
     expect(takeLastWords('a b c d', 2)).toEqual({ text: 'c d', truncated: true });
+  });
+});
+
+describe('simplifyRequest', () => {
+  it('metni ve sadeleştirme kurallarını içerir, şema yok', () => {
+    const request = simplifyRequest('Fotosentez, klorofil aracılığıyla ışık enerjisinin kimyasal enerjiye dönüştürülmesidir.');
+    expect(request.prompt).toContain('klorofil aracılığıyla');
+    expect(request.prompt).toContain('parantez içinde');
+    expect(request.prompt).toContain('yeni bilgi');
+    expect(request.schema).toBeUndefined();
+  });
+
+  it('uzun parçayı keser', () => {
+    const long = Array.from({ length: SIMPLIFY_MAX_WORDS + 50 }, (_, i) => `k${i}`).join(' ');
+    expect(simplifyRequest(long).prompt).not.toContain(`k${SIMPLIFY_MAX_WORDS + 10}`);
   });
 });

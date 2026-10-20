@@ -23,6 +23,8 @@ import { paragraphOfChunk, scrollParagraphs } from '@/core/scroll';
 import { excerptAt } from '@/core/search';
 import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
+import { passageAround } from '@/core/passage';
+import { tokenIndexForCharOffset } from '@/core/tokenizer';
 import { sentenceOf, type SentenceInfo } from '@/core/wordHit';
 import type { ReaderMode, Token } from '@/core/types';
 import { ToolSheet, type AiTab, type JumpReason, type SentenceChoice } from '@/reader/ToolSheet';
@@ -689,6 +691,20 @@ function Reader({
         : undefined,
     [pageMode, page, engine.chunks]
   );
+
+  /** Sadeleştirilecek parça: sayfa modunda okunan sayfa, diğerlerinde okunan paragraf */
+  const simplifyRange = useMemo(() => {
+    if (!aiReady) return undefined;
+    if (pageMode && page) {
+      const first = engine.chunks[page.start];
+      const last = engine.chunks[page.end - 1];
+      return first && last ? { start: first.charStart, end: last.charEnd, label: 'bu sayfayı' } : undefined;
+    }
+    const chunk = engine.chunk;
+    if (!chunk) return undefined;
+    const range = passageAround(engine.tokens, tokenIndexForCharOffset(engine.tokens, chunk.charStart));
+    return range ? { ...range, label: 'bu paragrafı' } : undefined;
+  }, [aiReady, pageMode, page, engine.chunks, engine.chunk, engine.tokens]);
 
   // Kalan süre tahmini: son güvenilir ölçümdeki doğal hız (yoksa ortalama yetişkin)
   const [readerWpm, setReaderWpm] = useState(AVERAGE_ADULT_WPM);
@@ -1385,6 +1401,15 @@ function Reader({
                   onToggle: togglePacer,
                   onSpeed: (delta: number) => update({ wpm: Math.max(100, Math.min(1200, settings.wpm + delta)) }),
                 }}
+                onSimplify={
+                  aiReady
+                    ? () => {
+                        releaseFocus();
+                        engine.pause();
+                        setAiTab('simplify');
+                      }
+                    : undefined
+                }
               />
             ) : (
             <ReaderControls
@@ -1475,6 +1500,14 @@ function Reader({
             setWordSheet(null);
             setAiTab(pageMode ? 'quote' : 'word');
           }}
+          onSimplify={
+            simplifyRange
+              ? () => {
+                  setWordSheet(null);
+                  setAiTab('simplify');
+                }
+              : undefined
+          }
           onHighlightSaved={loadQuotes}
         />
       ) : null}
@@ -1497,6 +1530,7 @@ function Reader({
         bookmarks={bookmarks}
         onRemoveBookmark={(bookmarkId) => void removeBookmarks([bookmarkId]).then(loadBookmarks)}
         positionLabel={positionLabel}
+        simplifyRange={simplifyRange}
       />
 
       <AppearanceSheet visible={showAppearance} onClose={() => setShowAppearance(false)} />

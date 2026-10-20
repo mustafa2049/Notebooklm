@@ -6,6 +6,7 @@ import {
   generateSections,
   generateSummary,
   locateFirstWords,
+  simplifyText,
   transcribeImage,
 } from './tasks';
 import { AiError, type AiProvider, type AiRequest } from './types';
@@ -249,5 +250,21 @@ describe('evaluateRecall', () => {
     await expect(
       evaluateRecall(provider, { text, fromChar: 0, toChar: text.length, summary: 'özet' })
     ).rejects.toBeInstanceOf(AiError);
+  });
+});
+
+describe('simplifyText', () => {
+  const source = 'Fotosentez, klorofil aracılığıyla ışık enerjisinin kimyasal enerjiye dönüştürülmesidir.';
+
+  it('sadeleştirilmiş metni temizleyip döndürür', async () => {
+    const provider = fakeProvider({ text: '```\nBitkiler ışığı besine çevirir. Buna fotosentez denir.\n```' });
+    const result = await simplifyText(provider, source);
+    expect(result.value).toBe('Bitkiler ışığı besine çevirir. Buna fotosentez denir.');
+    expect(provider.seen[0].prompt).toContain('klorofil');
+  });
+
+  it('boş ya da şişirilmiş yanıt hata', async () => {
+    await expect(simplifyText(fakeProvider({ text: '  ' }), source)).rejects.toBeInstanceOf(AiError);
+    await expect(simplifyText(fakeProvider({ text: 'uzun '.repeat(300) }), source)).rejects.toBeInstanceOf(AiError);
   });
 });
