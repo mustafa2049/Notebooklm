@@ -58,6 +58,7 @@ export function PageView({
   lineFocus = null,
   onFocusLines,
   onFocusMove,
+  onCenterTap,
   onTap,
   onAreaLayout,
   onContentHeight,
@@ -98,6 +99,8 @@ export function PageView({
   onFocusLines?: (count: number) => void;
   /** Satır odağı açıkken dokunuş sayfa yerine bandı oynatır */
   onFocusMove?: (delta: 1 | -1) => void;
+  /** Verilirse sayfanın ortasına dokunmak bunu çağırır (tam ekranda menüler) */
+  onCenterTap?: () => void;
   /** Dokunma: `true` dönerse sayfa çevrilmez (ör. rehber duraklatıldı) */
   onTap?: () => boolean;
   onAreaLayout: (event: LayoutChangeEvent) => void;
@@ -188,7 +191,13 @@ export function PageView({
       return;
     }
     if (onTap?.()) return;
-    const delta = event.nativeEvent.pageX < windowWidth * PREVIOUS_ZONE ? -1 : 1;
+    const x = event.nativeEvent.pageX;
+    // Tam ekranda orta bölge menüleri açar/kapatır; kenarlar sayfa (ya da satır) çevirir
+    if (onCenterTap && x >= windowWidth * PREVIOUS_ZONE && x <= windowWidth * (1 - PREVIOUS_ZONE)) {
+      onCenterTap();
+      return;
+    }
+    const delta = x < windowWidth * PREVIOUS_ZONE ? -1 : 1;
     // Satır odağında dokunuş bandı bir satır oynatır; sayfa sonunda sayfa döner
     if (lineFocus && !lineFocus.hidden && onFocusMove) onFocusMove(delta);
     else onTurn(delta);

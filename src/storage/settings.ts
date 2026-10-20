@@ -65,6 +65,8 @@ export interface Settings {
   syllableColors: boolean;
   /** Satır odağı (Sayfa modu): bantta kaç satır açık kalır; 0 = kapalı */
   lineFocus: number;
+  /** Sade tam ekran: okurken menüler ve durum çubuğu gizli */
+  immersive: boolean;
   /** Kolay okuma önayarı açık mı (bkz. appearance/easyReading) */
   easyReading: boolean;
   /** Kolay okuma açılmadan önceki görünüm: kapatınca geri yazılır */
@@ -167,6 +169,7 @@ export const DEFAULT_SETTINGS: Settings = {
   eveningTheme: 'night',
   syllableColors: false,
   lineFocus: 0,
+  immersive: false,
   easyReading: false,
   easyBackup: null,
   hyperlegible: false,

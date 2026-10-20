@@ -1,7 +1,16 @@
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, BackHandler, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  BackHandler,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
@@ -294,6 +303,20 @@ function Reader({
   const onFocusLines = useCallback((count: number) => {
     focusLines.current = count;
   }, []);
+
+  /** Sade tam ekran: başlık ve alt çubuk metnin üstüne binen katman */
+  const immersive = settings.immersive;
+  const [chromeShown, setChromeShown] = useState(false);
+  const { width: windowWidth } = useWindowDimensions();
+  useEffect(() => setChromeShown(false), [immersive, mode]);
+  // Tam ekranda (açılışta ya da geçince) menülerin nasıl geri geleceği birkaç saniye yazsın
+  const [immersiveHint, setImmersiveHint] = useState(false);
+  useEffect(() => {
+    if (!immersive) return;
+    setImmersiveHint(true);
+    const timer = setTimeout(() => setImmersiveHint(false), 3500);
+    return () => clearTimeout(timer);
+  }, [immersive]);
   useEffect(() => {
     if (!pageMode) setPacerOn(false);
   }, [pageMode]);
@@ -571,6 +594,7 @@ function Reader({
       setFlashSentence(null);
       // Geri çevrilince satır odağı önceki sayfanın son satırlarında başlasın
       pendingFocus.current = delta > 0 ? 0 : LAST;
+      setChromeShown(false);
       setTurn((current) => ({ id: current.id + 1, direction: delta }));
       jumpTo(pages[target].start);
     },
@@ -853,6 +877,10 @@ function Reader({
         update({ syllableColors: !settings.syllableColors });
         return;
       }
+      if (event.key === 't' || event.key === 'T') {
+        update({ immersive: !settings.immersive });
+        return;
+      }
       // Yazı boyutu her modda
       if (event.key === '+' || event.key === '=') {
         update({ fontScale: stepFontScale(settings.fontScale, 1) });
@@ -948,6 +976,7 @@ function Reader({
     settings.wpm,
     settings.fontScale,
     settings.syllableColors,
+    settings.immersive,
     settings.lineFocus,
     focusSize,
     moveFocus,
@@ -972,70 +1001,90 @@ function Reader({
   // Dinlerken metin her modda akış görünümünde: göz sesi takip edebilsin
   const flowMode = listening || mode === 'bionic' || mode === 'highlight';
 
-  return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.bg, paddingTop: insetTop }}>
-      {/* Durum çubuğu okuma temasına uysun (sepya zeminde açık renk yazı kaybolur) */}
-      <StatusBar style={theme.dark ? 'light' : 'dark'} />
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: theme.space(2),
-          gap: theme.space(1),
+  // Sade tam ekran: menüler sayfa modunda orta dokunuşla, tempolu modlarda duraklayınca görünür
+  const playingNow = listening ? speech.playing : scrollMode ? scrolling : pageMode ? pacing : engine.playing;
+  const showChrome = !immersive || (pageMode ? chromeShown : !playingNow);
+
+  const headerBar = (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: theme.space(2),
+        gap: theme.space(1),
+      }}
+    >
+      <IconButton name="chevronLeft" onPress={leave} accessibilityLabel="Geri" emphasis="strong" />
+      <Txt variant="dim" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
+        {title}
+        {chapterLabel ? ` · ${chapterLabel}` : ''}
+      </Txt>
+      <Pressable
+        onPress={() => {
+          releaseFocus();
+          engine.pause();
+          setShowAppearance(true);
         }}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel="Okuma görünümü ve mod"
       >
-        <IconButton name="chevronLeft" onPress={leave} accessibilityLabel="Geri" emphasis="strong" />
-        <Txt variant="dim" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
-          {title}
-          {chapterLabel ? ` · ${chapterLabel}` : ''}
+        <Txt variant="dim" style={{ fontSize: 13, color: theme.colors.accent }}>
+          {/* Dar ekranda yalnız "Aa": başlığa yer kalsın (mod Aa sayfasında görünüyor) */}
+          {windowWidth < 400 ? 'Aa' : `Aa · ${MODE_LABEL[mode]}`}
         </Txt>
-        <Pressable
-          onPress={() => {
-            releaseFocus();
-            engine.pause();
-            setShowAppearance(true);
-          }}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel="Okuma görünümü ve mod"
-        >
-          <Txt variant="dim" style={{ fontSize: 13, color: theme.colors.accent }}>
-            Aa · {MODE_LABEL[mode]}
-          </Txt>
-        </Pressable>
-        <IconButton
-          name={bookmarksHere.length ? 'bookmarkFilled' : 'bookmark'}
-          onPress={() => {
-            releaseFocus();
-            void toggleBookmark();
-          }}
-          accessibilityLabel={bookmarksHere.length ? 'Yer imini kaldır' : 'Buraya yer imi koy'}
-          emphasis={bookmarksHere.length ? 'strong' : 'faint'}
-          size={20}
-        />
-        <IconButton
-          name={aiReady ? 'sparkle' : 'search'}
-          onPress={() => {
-            releaseFocus();
-            engine.pause();
-            setAiTab(aiReady ? 'summary' : 'search');
-          }}
-          accessibilityLabel={aiReady ? 'Araçlar ve yapay zekâ' : 'Ara, yer imleri ve araçlar'}
-          emphasis="faint"
-          size={20}
-        />
-        <IconButton
-          name="headphones"
-          onPress={() => {
-            releaseFocus();
-            if (listening) stopListening();
-            else startListening();
-          }}
-          accessibilityLabel={listening ? 'Dinlemeyi bitir' : 'Dinleyerek oku'}
-          emphasis={listening ? 'strong' : 'faint'}
-          size={20}
-        />
-      </View>
+      </Pressable>
+      <IconButton
+        name={bookmarksHere.length ? 'bookmarkFilled' : 'bookmark'}
+        onPress={() => {
+          releaseFocus();
+          void toggleBookmark();
+        }}
+        accessibilityLabel={bookmarksHere.length ? 'Yer imini kaldır' : 'Buraya yer imi koy'}
+        emphasis={bookmarksHere.length ? 'strong' : 'faint'}
+        size={20}
+      />
+      <IconButton
+        name={aiReady ? 'sparkle' : 'search'}
+        onPress={() => {
+          releaseFocus();
+          engine.pause();
+          setAiTab(aiReady ? 'summary' : 'search');
+        }}
+        accessibilityLabel={aiReady ? 'Araçlar ve yapay zekâ' : 'Ara, yer imleri ve araçlar'}
+        emphasis="faint"
+        size={20}
+      />
+      <IconButton
+        name={immersive ? 'collapse' : 'expand'}
+        onPress={() => {
+          releaseFocus();
+          update({ immersive: !immersive });
+        }}
+        accessibilityLabel={immersive ? 'Tam ekrandan çık' : 'Sade tam ekran'}
+        emphasis={immersive ? 'strong' : 'faint'}
+        size={20}
+      />
+      <IconButton
+        name="headphones"
+        onPress={() => {
+          releaseFocus();
+          if (listening) stopListening();
+          else startListening();
+        }}
+        accessibilityLabel={listening ? 'Dinlemeyi bitir' : 'Dinleyerek oku'}
+        emphasis={listening ? 'strong' : 'faint'}
+        size={20}
+      />
+    </View>
+  );
+
+  return (
+    <View style={{ flex: 1, backgroundColor: theme.colors.bg, paddingTop: immersive ? 0 : insetTop }}>
+      {/* Durum çubuğu okuma temasına uysun (sepya zeminde açık renk yazı kaybolur); tam ekranda gizli */}
+      <StatusBar style={theme.dark ? 'light' : 'dark'} hidden={immersive} />
+      {immersive ? null : headerBar}
+
 
       {/*
         Okuma alanı. Dokunma bölgeleri mutlak konumlu katman olarak duruyor:
@@ -1043,7 +1092,14 @@ function Reader({
         yarısını kullanır, satırlar gereksiz yerden kırılırdı.
       */}
       {pageMode ? (
-        <View style={{ flex: 1, paddingHorizontal: layout.marginPx, paddingTop: theme.space(3) }}>
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: layout.marginPx,
+            paddingTop: (immersive ? insetTop : 0) + theme.space(3),
+            paddingBottom: immersive ? insetBottom + theme.space(3) : 0,
+          }}
+        >
           <PageView
             chunks={engine.chunks}
             page={page}
@@ -1061,6 +1117,7 @@ function Reader({
             lineFocus={focusSize > 0 ? { size: focusSize, start: focusLine, hidden: pacing } : null}
             onFocusLines={onFocusLines}
             onFocusMove={moveFocus}
+            onCenterTap={immersive ? () => setChromeShown((shown) => !shown) : undefined}
             onTap={() => {
               if (!pacerOn) return false;
               togglePacer();
@@ -1078,7 +1135,14 @@ function Reader({
           />
         </View>
       ) : scrollMode ? (
-        <View style={{ flex: 1, paddingHorizontal: layout.marginPx }}>
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: layout.marginPx,
+            paddingTop: immersive ? insetTop : 0,
+            paddingBottom: immersive ? insetBottom : 0,
+          }}
+        >
           <ScrollFlow
             key={scrollKey}
             paragraphs={scrollParas}
@@ -1095,7 +1159,7 @@ function Reader({
           />
         </View>
       ) : (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingTop: immersive ? insetTop : 0, paddingBottom: immersive ? insetBottom : 0 }}>
         {flowMode ? (
           <View style={{ flex: 1, paddingHorizontal: layout.marginPx }}>
             <FlowView
@@ -1142,169 +1206,208 @@ function Reader({
       </View>
       )}
 
-      {listening ? (
-        <ListenStatus
-          voice={speech.voice}
-          playing={speech.playing}
-          wordTracking={speech.wordTracking}
-          sleep={sleep}
-          slept={slept}
-          onCycleSleep={cycleSleep}
-          onExit={stopListening}
-        />
-      ) : null}
-
-      {chapterOffer !== null && chapters?.[chapterOffer] ? (
-        <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
-          <Card style={{ gap: theme.space(2), borderColor: theme.colors.accent }}>
-            <Txt variant="heading">Bölüm bitti</Txt>
-            <Txt variant="dim">
-              “{chapters[chapterOffer].title}” bölümünü bitirdin. 3 soruyla ne kadar anladığını ölçmek
-              ister misin? Sorular bu bölümden yapay zekâyla üretilir.
-            </Txt>
-            <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
-              <Button
-                label="Sorulara geç"
-                icon="sparkle"
-                style={{ flex: 1 }}
-                onPress={() => {
-                  const chapter = chapterOffer;
-                  setChapterOffer(null);
-                  router.push({
-                    pathname: '/training/quiz',
-                    params: { docId, chapter: String(chapter), wpm: String(settings.wpm) },
-                  });
-                }}
-              />
-              <Button
-                label="Şimdi değil"
-                variant="secondary"
-                style={{ flex: 1 }}
-                onPress={() => {
-                  setChapterOffer(null);
-                  pageClock.resume();
-                }}
-              />
-            </View>
-          </Card>
-        </View>
-      ) : null}
-
-      {eyeBreak.active ? (
-        <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
-          <Card style={{ gap: theme.space(2), borderColor: theme.colors.accent }}>
-            <Txt variant="heading">Göz molası</Txt>
-            <Txt variant="dim">
-              {settings.eyeBreakMinutes} dakikadır okuyorsun. Ekrandan başını kaldır ve 20 saniye
-              boyunca uzaktaki bir şeye (yaklaşık 6 metre) bak.
-            </Txt>
-            <Txt variant="title" style={{ fontSize: 34, color: theme.colors.accent, textAlign: 'center' }}>
-              {eyeBreak.remaining > 0 ? eyeBreak.remaining : 'Tamam'}
-            </Txt>
-            <Button
-              label={eyeBreak.remaining > 0 ? 'Atla' : 'Okumaya devam'}
-              variant={eyeBreak.remaining > 0 ? 'ghost' : 'primary'}
-              onPress={() => {
-                const resume = eyeBreak.remaining === 0;
-                eyeBreak.finish();
-                if (pageMode) pageClock.resume();
-                else if (resume) engine.toggle();
-              }}
-            />
-          </Card>
-        </View>
-      ) : null}
-
-      {focus.active && !focus.done ? (
-        <View style={{ alignItems: 'center', paddingBottom: theme.space(1) }}>
-          <Txt variant="mono" style={{ fontSize: 13, color: theme.colors.accent }}>
-            Odak seansı · {formatClockMs(focus.remainingMs)} kaldı
-          </Txt>
-        </View>
-      ) : null}
-
-      {focus.active && focus.done ? (
-        <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
-          <Card style={{ gap: theme.space(2), borderColor: theme.colors.success }}>
-            <Txt variant="heading">Seans tamam</Txt>
-            <Txt variant="dim">
-              {Math.round(focusSeconds / 60)} dakika okudun · {focus.words} kelime. Günlük hedefine
-              sayıldı.
-            </Txt>
-            <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
-              <Button label="Bitir" style={{ flex: 1 }} onPress={leave} />
-              <Button
-                label="Okumaya devam"
-                variant="secondary"
-                style={{ flex: 1 }}
-                onPress={() => {
-                  focus.dismiss();
-                  pageClock.resume();
-                }}
-              />
-            </View>
-          </Card>
-        </View>
-      ) : null}
-
-      {(engine.finished || scrollEnded) && !pageMode ? (
-        <View style={{ alignItems: 'center', paddingBottom: theme.space(2) }}>
-          <Txt variant="dim" style={{ color: theme.colors.success }}>
-            Metin bitti · {totalWords} kelime
-          </Txt>
-        </View>
-      ) : null}
-
+      {/* Alt kısım: kartlar ve kontroller. Tam ekranda metnin üstüne biner (sayfalar yeniden kurulmasın) */}
       <View
-        style={{
-          paddingHorizontal: theme.space(4),
-          paddingBottom: insetBottom + theme.space(3),
-        }}
+        pointerEvents="box-none"
+        style={
+          immersive
+            ? { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: showChrome ? theme.colors.bg : 'transparent' }
+            : undefined
+        }
       >
-        {pageMode ? (
-          <PageControls
-            pageIndex={pageIndex}
-            pageCount={pages.length}
-            remainingMs={pageRemainingMs}
-            finished={endReached}
-            onTurn={turnPage}
-            onSeekPage={seekPage}
-            pacer={{
-              on: pacerOn,
-              playing: pacing,
-              wpm: settings.wpm,
-              onToggle: togglePacer,
-              onSpeed: (delta: number) => update({ wpm: Math.max(100, Math.min(1200, settings.wpm + delta)) }),
-            }}
+        {listening && showChrome ? (
+          <ListenStatus
+            voice={speech.voice}
+            playing={speech.playing}
+            wordTracking={speech.wordTracking}
+            sleep={sleep}
+            slept={slept}
+            onCycleSleep={cycleSleep}
+            onExit={stopListening}
           />
-        ) : (
-        <ReaderControls
-          playing={listening ? speech.playing : scrollMode ? scrolling : engine.playing}
-          ratio={listening && listenSpan ? progressRatio(engine.chunks, listenSpan.startChunk) : scrollEnded ? 1 : engine.ratio}
-          wordsRead={
-            listening && listenSpan
-              ? wordsUpTo(engine.chunks, listenSpan.startChunk)
-              : scrollEnded
-                ? totalWords
-                : engine.wordsRead
-          }
-          totalWords={totalWords}
-          remainingMs={scrollEnded ? 0 : engine.remainingMs}
-          onToggle={toggle}
-          onRestart={
-            scrollMode
-              ? () => {
-                  setScrolling(false);
-                  scrollJump(0);
-                }
-              : engine.restart
-          }
-          onPreviousSentence={previousSentence}
-          onNextSentence={nextSentence}
-          onSeek={scrollMode ? (ratio) => scrollJump(indexFromRatio(engine.chunks, ratio)) : engine.seekRatio}
-        />
-        )}
+        ) : null}
+
+        {chapterOffer !== null && chapters?.[chapterOffer] ? (
+          <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
+            <Card style={{ gap: theme.space(2), borderColor: theme.colors.accent }}>
+              <Txt variant="heading">Bölüm bitti</Txt>
+              <Txt variant="dim">
+                “{chapters[chapterOffer].title}” bölümünü bitirdin. 3 soruyla ne kadar anladığını ölçmek
+                ister misin? Sorular bu bölümden yapay zekâyla üretilir.
+              </Txt>
+              <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+                <Button
+                  label="Sorulara geç"
+                  icon="sparkle"
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    const chapter = chapterOffer;
+                    setChapterOffer(null);
+                    router.push({
+                      pathname: '/training/quiz',
+                      params: { docId, chapter: String(chapter), wpm: String(settings.wpm) },
+                    });
+                  }}
+                />
+                <Button
+                  label="Şimdi değil"
+                  variant="secondary"
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    setChapterOffer(null);
+                    pageClock.resume();
+                  }}
+                />
+              </View>
+            </Card>
+          </View>
+        ) : null}
+
+        {eyeBreak.active ? (
+          <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
+            <Card style={{ gap: theme.space(2), borderColor: theme.colors.accent }}>
+              <Txt variant="heading">Göz molası</Txt>
+              <Txt variant="dim">
+                {settings.eyeBreakMinutes} dakikadır okuyorsun. Ekrandan başını kaldır ve 20 saniye
+                boyunca uzaktaki bir şeye (yaklaşık 6 metre) bak.
+              </Txt>
+              <Txt variant="title" style={{ fontSize: 34, color: theme.colors.accent, textAlign: 'center' }}>
+                {eyeBreak.remaining > 0 ? eyeBreak.remaining : 'Tamam'}
+              </Txt>
+              <Button
+                label={eyeBreak.remaining > 0 ? 'Atla' : 'Okumaya devam'}
+                variant={eyeBreak.remaining > 0 ? 'ghost' : 'primary'}
+                onPress={() => {
+                  const resume = eyeBreak.remaining === 0;
+                  eyeBreak.finish();
+                  if (pageMode) pageClock.resume();
+                  else if (resume) engine.toggle();
+                }}
+              />
+            </Card>
+          </View>
+        ) : null}
+
+        {focus.active && !focus.done && showChrome ? (
+          <View style={{ alignItems: 'center', paddingBottom: theme.space(1) }}>
+            <Txt variant="mono" style={{ fontSize: 13, color: theme.colors.accent }}>
+              Odak seansı · {formatClockMs(focus.remainingMs)} kaldı
+            </Txt>
+          </View>
+        ) : null}
+
+        {focus.active && focus.done ? (
+          <View style={{ paddingHorizontal: theme.space(4), paddingBottom: theme.space(3) }}>
+            <Card style={{ gap: theme.space(2), borderColor: theme.colors.success }}>
+              <Txt variant="heading">Seans tamam</Txt>
+              <Txt variant="dim">
+                {Math.round(focusSeconds / 60)} dakika okudun · {focus.words} kelime. Günlük hedefine
+                sayıldı.
+              </Txt>
+              <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
+                <Button label="Bitir" style={{ flex: 1 }} onPress={leave} />
+                <Button
+                  label="Okumaya devam"
+                  variant="secondary"
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    focus.dismiss();
+                    pageClock.resume();
+                  }}
+                />
+              </View>
+            </Card>
+          </View>
+        ) : null}
+
+        {(engine.finished || scrollEnded) && !pageMode && showChrome ? (
+          <View style={{ alignItems: 'center', paddingBottom: theme.space(2) }}>
+            <Txt variant="dim" style={{ color: theme.colors.success }}>
+              Metin bitti · {totalWords} kelime
+            </Txt>
+          </View>
+        ) : null}
+
+        {showChrome ? (
+          <View
+            style={{
+              paddingHorizontal: theme.space(4),
+              paddingBottom: insetBottom + theme.space(3),
+            }}
+          >
+            {pageMode ? (
+              <PageControls
+                pageIndex={pageIndex}
+                pageCount={pages.length}
+                remainingMs={pageRemainingMs}
+                finished={endReached}
+                onTurn={turnPage}
+                onSeekPage={seekPage}
+                pacer={{
+                  on: pacerOn,
+                  playing: pacing,
+                  wpm: settings.wpm,
+                  onToggle: togglePacer,
+                  onSpeed: (delta: number) => update({ wpm: Math.max(100, Math.min(1200, settings.wpm + delta)) }),
+                }}
+              />
+            ) : (
+            <ReaderControls
+              playing={listening ? speech.playing : scrollMode ? scrolling : engine.playing}
+              ratio={listening && listenSpan ? progressRatio(engine.chunks, listenSpan.startChunk) : scrollEnded ? 1 : engine.ratio}
+              wordsRead={
+                listening && listenSpan
+                  ? wordsUpTo(engine.chunks, listenSpan.startChunk)
+                  : scrollEnded
+                    ? totalWords
+                    : engine.wordsRead
+              }
+              totalWords={totalWords}
+              remainingMs={scrollEnded ? 0 : engine.remainingMs}
+              onToggle={toggle}
+              onRestart={
+                scrollMode
+                  ? () => {
+                      setScrolling(false);
+                      scrollJump(0);
+                    }
+                  : engine.restart
+              }
+              onPreviousSentence={previousSentence}
+              onNextSentence={nextSentence}
+              onSeek={scrollMode ? (ratio) => scrollJump(indexFromRatio(engine.chunks, ratio)) : engine.seekRatio}
+            />
+            )}
+          </View>
+        ) : null}
       </View>
+
+      {immersive && immersiveHint && !showChrome ? (
+        <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: insetBottom + theme.space(6), alignItems: 'center' }}>
+          <Txt
+            variant="dim"
+            style={{
+              fontSize: 13,
+              color: theme.colors.text,
+              backgroundColor: theme.colors.surfaceAlt,
+              paddingHorizontal: theme.space(3),
+              paddingVertical: theme.space(1.5),
+              borderRadius: theme.radius.pill,
+              overflow: 'hidden',
+            }}
+          >
+            {pageMode ? 'Menüler için ekranın ortasına dokun' : 'Menüler için duraklat'}
+          </Txt>
+        </View>
+      ) : null}
+
+      {immersive && showChrome ? (
+        <View
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, paddingTop: insetTop, backgroundColor: theme.colors.bg, borderBottomWidth: 1, borderBottomColor: theme.colors.border }}
+        >
+          {headerBar}
+        </View>
+      ) : null}
 
       <RecallCard
         visible={recall !== null}

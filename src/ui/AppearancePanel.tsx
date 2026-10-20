@@ -139,6 +139,12 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
 
       {section('Okuma yardımları')}
       <Toggle
+        label="Sade tam ekran"
+        hint="Okurken menüler ve durum çubuğu gizlenir, metin bütün ekranı kaplar. Sayfa modunda ortaya dokununca menüler gelir; diğer modlarda duraklatınca. Klavyede T."
+        value={settings.immersive}
+        onChange={(immersive) => update({ immersive })}
+      />
+      <Toggle
         label="Hece renklendirme"
         hint="Kelimeler hecelerine göre iki renkle yazılır (ar·ka·daş). Sayfa ve Kaydırma modlarında. Klavyede H."
         value={settings.syllableColors}

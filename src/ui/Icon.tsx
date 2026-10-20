@@ -42,7 +42,9 @@ export type IconName =
   | 'bookmark'
   | 'bookmarkFilled'
   | 'camera'
-  | 'image';
+  | 'image'
+  | 'expand'
+  | 'collapse';
 
 interface IconProps {
   name: IconName;
@@ -226,6 +228,22 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
         <>
           <Path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" {...stroke} />
           <Circle cx={12} cy={13} r={3.5} {...stroke} />
+        </>
+      )}
+      {name === 'expand' && (
+        <>
+          <Polyline points="4,9 4,4 9,4" {...stroke} />
+          <Polyline points="15,4 20,4 20,9" {...stroke} />
+          <Polyline points="20,15 20,20 15,20" {...stroke} />
+          <Polyline points="9,20 4,20 4,15" {...stroke} />
+        </>
+      )}
+      {name === 'collapse' && (
+        <>
+          <Polyline points="4,9 9,9 9,4" {...stroke} />
+          <Polyline points="15,4 15,9 20,9" {...stroke} />
+          <Polyline points="20,15 15,15 15,20" {...stroke} />
+          <Polyline points="9,20 9,15 4,15" {...stroke} />
         </>
       )}
       {name === 'image' && (
