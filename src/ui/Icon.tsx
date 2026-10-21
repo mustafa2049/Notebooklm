@@ -44,7 +44,8 @@ export type IconName =
   | 'camera'
   | 'image'
   | 'expand'
-  | 'collapse';
+  | 'collapse'
+  | 'speaker';
 
 interface IconProps {
   name: IconName;
@@ -228,6 +229,13 @@ export function Icon({ name, size = 24, color, strokeWidth = 2 }: IconProps) {
         <>
           <Path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" {...stroke} />
           <Circle cx={12} cy={13} r={3.5} {...stroke} />
+        </>
+      )}
+      {name === 'speaker' && (
+        <>
+          <Polygon points="4,9 8,9 13,5 13,19 8,15 4,15" {...stroke} />
+          <Path d="M16.5 9a4.5 4.5 0 0 1 0 6" {...stroke} />
+          <Path d="M19 6.5a8 8 0 0 1 0 11" {...stroke} />
         </>
       )}
       {name === 'expand' && (

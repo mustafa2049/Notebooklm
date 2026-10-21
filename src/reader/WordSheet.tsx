@@ -8,8 +8,9 @@ import { DictOfflineError, entryNote, lookupExact, lookupWord } from '@/ingest/t
 import { useSettings } from '@/store/SettingsContext';
 import { addHighlight } from '@/storage/highlights';
 import { addVocab } from '@/storage/vocab';
-import { Button, Card, Chip, Txt } from '@/ui/primitives';
+import { Button, Card, Chip, IconButton, Txt } from '@/ui/primitives';
 import { DictCard, type DictState } from './DictCard';
+import { speakOnce, stopSpeaking } from './voices';
 
 /**
  * Kelimeye uzun basınca açılan sayfa: kelimenin TDK anlamı hemen gelir.
@@ -50,6 +51,18 @@ export function WordSheet({
   const [explanation, setExplanation] = useState<{ word: string; text: string } | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const [quoted, setQuoted] = useState(false);
+  /** Türkçe ses yoksa ya da hiç ses yoksa kullanıcıya bir cümle */
+  const [voiceNote, setVoiceNote] = useState<string | null>(null);
+  const listen = async (text: string) => {
+    const status = await speakOnce(text);
+    setVoiceNote(
+      status === 'none'
+        ? 'Bu cihazda seslendirme bulunamadı.'
+        : status === 'fallback'
+          ? 'Türkçe ses bulunamadı; cihazın varsayılan sesiyle okunuyor.'
+          : null
+    );
+  };
   /** Hızlı çip değiştirmede geç gelen eski yanıt yenisinin üstüne yazmasın */
   const request = useRef(0);
 
@@ -65,6 +78,9 @@ export function WordSheet({
       setDict({ word: target, status: error instanceof DictOfflineError ? 'offline' : 'error' });
     }
   }, []);
+
+  // Sayfa kapanınca süren okunuş da sussun
+  useEffect(() => () => stopSpeaking(), []);
 
   useEffect(() => {
     if (!visible) return;
@@ -126,9 +142,11 @@ export function WordSheet({
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
-          <Txt variant="title" numberOfLines={1} style={{ flex: 1, fontSize: 24 }}>
+          <Txt variant="title" numberOfLines={1} style={{ flexShrink: 1, fontSize: 24 }}>
             {selected}
           </Txt>
+          <IconButton name="speaker" size={22} onPress={() => void listen(selected)} accessibilityLabel="Kelimeyi dinle" />
+          <View style={{ flex: 1 }} />
           <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button">
             <Txt variant="dim">kapat</Txt>
           </Pressable>
@@ -198,9 +216,19 @@ export function WordSheet({
             <Button label="Bu kısmı sadeleştir" icon="sparkle" variant="secondary" onPress={onSimplify} />
           ) : null}
 
+          {voiceNote ? (
+            <Txt variant="dim" style={{ fontSize: 12, color: theme.colors.warning }}>
+              {voiceNote}
+            </Txt>
+          ) : null}
           <Txt variant="dim" style={{ fontSize: 12 }}>
             Bağlam: {sentence.text}
           </Txt>
+          <Pressable onPress={() => void listen(sentence.text)} hitSlop={8} accessibilityRole="button">
+            <Txt variant="dim" style={{ fontSize: 13, color: theme.colors.accent }}>
+              Cümleyi dinle
+            </Txt>
+          </Pressable>
         </ScrollView>
       </View>
     </Modal>

@@ -2,6 +2,7 @@ import * as Speech from 'expo-speech';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ttsRate, type SentenceSpan } from '@/core/sentences';
 import { recordSession } from '@/storage/stats';
+import { findTurkishVoice, type VoiceStatus } from './voices';
 
 /**
  * Dinleyerek okuma: metni cümle cümle seslendirir, okunan cümleyi bildirir.
@@ -13,7 +14,7 @@ import { recordSession } from '@/storage/stats';
  * dakikaya sayılır ama okuma temposu istatistiğine girmez.
  */
 
-export type VoiceStatus = 'checking' | 'turkish' | 'fallback' | 'none';
+export type { VoiceStatus };
 
 export interface SpeechControls {
   voice: VoiceStatus;
@@ -74,31 +75,11 @@ export function useSpeech({
 
   useEffect(() => {
     let cancelled = false;
-    const find = async (attempt: number) => {
-      try {
-        // Ses listesi hiç gelmeyebiliyor (tarayıcı olayı tetiklemezse): beklemeyi sınırla
-        const voices = await Promise.race([
-          Speech.getAvailableVoicesAsync(),
-          new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500)),
-        ]);
-        if (cancelled) return;
-        if (voices === null) {
-          setVoice('none');
-          return;
-        }
-        // Tarayıcılar ses listesini geç doldurabiliyor; kısa bir süre tekrar dene
-        if (voices.length === 0 && attempt < 2) {
-          setTimeout(() => void find(attempt + 1), 700);
-          return;
-        }
-        const turkish = voices.find((item) => item.language?.toLowerCase().startsWith('tr'));
-        voiceId.current = turkish?.identifier;
-        setVoice(turkish ? 'turkish' : voices.length ? 'fallback' : 'none');
-      } catch {
-        if (!cancelled) setVoice('none');
-      }
-    };
-    void find(0);
+    void findTurkishVoice().then((found) => {
+      if (cancelled) return;
+      voiceId.current = found.id;
+      setVoice(found.status);
+    });
     return () => {
       cancelled = true;
     };

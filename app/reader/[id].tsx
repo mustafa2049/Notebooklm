@@ -353,10 +353,14 @@ function Reader({
    * (tempo, kaydırma, sayfa saati) sayfa açıkken durur.
    */
   const [wordSheet, setWordSheet] = useState<{ word: string; sentence: SentenceInfo } | null>(null);
+  /** Dinleyerek okuma (aşağıda kuruluyor): kelime sayfası açılınca durdurmak için */
+  const speechRef = useRef<{ playing: boolean; stop: () => void } | null>(null);
   const openWord = useCallback(
     (token: Token) => {
       engine.pause();
       setScrolling(false);
+      // Dinlerken açıldıysa ses dursun: kelimenin okunuşu karışmasın
+      if (speechRef.current?.playing) speechRef.current.stop();
       haptics.step(settings.haptics);
       const sentence = sentenceOf(engine.tokens, token.sentenceIndex) ?? {
         text: token.text,
@@ -735,6 +739,7 @@ function Reader({
       setSlept(true);
     },
   });
+  speechRef.current = speech;
   const listenSpan = spans[Math.min(speech.current, spans.length - 1)];
   /** Ses kelime sınırı bildiriyorsa okunan kelimenin konumu (akış görünümü için) */
   const spokenOffset =
