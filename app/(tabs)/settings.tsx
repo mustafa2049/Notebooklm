@@ -13,6 +13,7 @@ import type { ThemePreference } from '@/storage/settings';
 import { AiSettings } from '@/ui/AiSettings';
 import { AppearancePanel } from '@/ui/AppearancePanel';
 import { BackupCard } from '@/ui/BackupCard';
+import { ErrorLogCard } from '@/ui/ErrorLogCard';
 import { InstallCard } from '@/ui/InstallCard';
 import { Slider } from '@/ui/Slider';
 import {
@@ -388,6 +389,9 @@ export default function SettingsScreen() {
           }}
         />
       </Card>
+
+      <SectionHeader title="Hata günlüğü" />
+      <ErrorLogCard />
     </Screen>
   );
 }
