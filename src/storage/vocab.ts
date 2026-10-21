@@ -38,8 +38,17 @@ export async function listVocab(): Promise<VocabEntry[]> {
   }
 }
 
+const listeners = new Set<() => void>();
+
+/** Defter değişince haber ver (kelime bildirimleri yeniden planlansın); bırakma işlevi döner */
+export function onVocabChanged(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
 async function write(entries: VocabEntry[]): Promise<void> {
   await AsyncStorage.setItem(KEYS.vocab, JSON.stringify(entries.slice(0, MAX_ENTRIES)));
+  for (const listener of listeners) listener();
 }
 
 export interface NewVocabEntry {
@@ -101,4 +110,5 @@ export async function removeVocab(id: string): Promise<void> {
 
 export async function clearVocab(): Promise<void> {
   await AsyncStorage.removeItem(KEYS.vocab);
+  for (const listener of listeners) listener();
 }

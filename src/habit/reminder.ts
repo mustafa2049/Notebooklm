@@ -74,6 +74,62 @@ export async function cancelReminder(): Promise<void> {
   }
 }
 
+/** Kelime tekrar bildirimlerinin kimlik öneki (günlük hatırlatıcıya dokunulmasın) */
+const VOCAB_PREFIX = 'hizliokuma-kelime-';
+
+/**
+ * Kelime tekrar bildirimlerini yeniden kurar (bkz. `vocabReminder`): eskiler
+ * silinir, plandaki her gün için tek seferlik bildirim. İzin sorulmaz — izin
+ * ayar açılırken istenir; verilmediyse hiçbir şey kurulmaz. Bildirime
+ * dokununca Kelime defteri açılır (`data.url`).
+ */
+export async function scheduleVocabReminders(plan: { at: number; body: string }[]): Promise<boolean> {
+  if (!REMINDER_SUPPORTED) return false;
+  const Notifications = load();
+  await cancelVocabReminders();
+  if (!(await Notifications.getPermissionsAsync()).granted) return false;
+  for (const [index, item] of plan.entries()) {
+    await Notifications.scheduleNotificationAsync({
+      identifier: `${VOCAB_PREFIX}${index}`,
+      content: { title: 'Kelime tekrarı', body: item.body, data: { url: '/vocab' } },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: item.at },
+    });
+  }
+  return true;
+}
+
+export async function cancelVocabReminders(): Promise<void> {
+  if (!REMINDER_SUPPORTED) return;
+  const Notifications = load();
+  try {
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    await Promise.all(
+      scheduled
+        .filter((request) => request.identifier.startsWith(VOCAB_PREFIX))
+        .map((request) => Notifications.cancelScheduledNotificationAsync(request.identifier))
+    );
+  } catch {
+    // Planlanmış bildirim okunamazsa yenileri yine kurulur
+  }
+}
+
+/** Bildirime dokunulunca uygulama içi adrese gider (`data.url`); dinlemeyi bırakan işlev döner */
+export function listenNotificationTaps(open: (url: string) => void): () => void {
+  if (!REMINDER_SUPPORTED) return () => undefined;
+  const Notifications = load();
+  const handle = (url: unknown) => {
+    if (typeof url === 'string' && url.startsWith('/')) open(url);
+  };
+  // Uygulama kapalıyken dokunulduysa açılış yanıtı
+  void Notifications.getLastNotificationResponseAsync()
+    .then((response) => handle(response?.notification.request.content.data?.url))
+    .catch(() => undefined);
+  const subscription = Notifications.addNotificationResponseReceivedListener((response) =>
+    handle(response.notification.request.content.data?.url)
+  );
+  return () => subscription.remove();
+}
+
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, Math.round(value)));
 }

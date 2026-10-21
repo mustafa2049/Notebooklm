@@ -117,6 +117,9 @@ export interface Settings {
   /** Hatırlatıcı saati (cihazın yerel saati) */
   reminderHour: number;
   reminderMinute: number;
+  /** Kelime tekrar bildirimi (telefonda): tekrar zamanı gelen kelimeler için her gün bu saatte */
+  vocabReminder: boolean;
+  vocabReminderHour: number;
 
   // ---- AI (isteğe bağlı) -------------------------------------------------
   /**
@@ -192,6 +195,8 @@ export const DEFAULT_SETTINGS: Settings = {
   reminderEnabled: false,
   reminderHour: 20,
   reminderMinute: 0,
+  vocabReminder: false,
+  vocabReminderHour: 19,
   aiProvider: 'anthropic',
   aiApiKey: '',
   aiBaseUrl: '',

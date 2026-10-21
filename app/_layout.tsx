@@ -12,6 +12,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { APP_DARK } from '@/appearance/palettes';
 import { formatErrorLog } from '@/core/errorLog';
 import { useReminder } from '@/habit/useReminder';
+import { useVocabReminder } from '@/habit/useVocabReminder';
 import { startPwa } from '@/pwa/pwa';
 import { SettingsProvider, useTheme } from '@/store/SettingsContext';
 import { deviceInfo, installErrorLog, listErrors, recordError, setErrorRoute } from '@/storage/errorLog';
@@ -96,6 +97,8 @@ function RootStack() {
 
   // Hatırlatıcı her açılışta ayarlarla eşitleniyor (bkz. useReminder)
   useReminder();
+  // Kelime tekrar bildirimleri: defter değişince de yeniden planlanır
+  useVocabReminder();
 
   // Hata günlüğünde hatanın hangi ekranda olduğu görünsün
   const pathname = usePathname();

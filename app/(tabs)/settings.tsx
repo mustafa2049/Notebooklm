@@ -6,7 +6,7 @@ import { MODE_LABEL } from '@/reader/modes';
 import { CUE_OPTIONS } from '@/habit/cue';
 import { EYE_BREAK_OPTIONS } from '@/habit/eyeBreak';
 import { formatClock } from '@/habit/goal';
-import { REMINDER_SUPPORTED } from '@/habit/reminder';
+import { REMINDER_SUPPORTED, requestReminderPermission } from '@/habit/reminder';
 import { useSettings } from '@/store/SettingsContext';
 import { KEYS } from '@/storage/keys';
 import type { ThemePreference } from '@/storage/settings';
@@ -40,6 +40,7 @@ const THEME_LABEL: Record<ThemePreference, string> = {
 export default function SettingsScreen() {
   const { theme, settings, update } = useSettings();
   const [cleared, setCleared] = useState(false);
+  const [vocabPermission, setVocabPermission] = useState<string | null>(null);
 
   return (
     <Screen>
@@ -346,10 +347,43 @@ export default function SettingsScreen() {
                 />
               </>
             ) : null}
+            <Divider />
+            <Toggle
+              label="Kelime tekrar bildirimi"
+              hint={`Kelime defterinde tekrar zamanı gelen kelimeler için her gün ${formatClock(settings.vocabReminderHour, 0)} saatinde bildirim; o gün kelime yoksa gelmez. Dokununca defter açılır.`}
+              value={settings.vocabReminder}
+              onChange={(vocabReminder) => {
+                if (!vocabReminder) {
+                  update({ vocabReminder });
+                  return;
+                }
+                // İzin verilmezse anahtar kapalı kalsın
+                void requestReminderPermission().then((granted) => {
+                  if (granted) update({ vocabReminder: true });
+                  setVocabPermission(granted ? null : 'Bildirim izni verilmedi; kelime bildirimi kapalı kaldı.');
+                });
+              }}
+            />
+            {vocabPermission ? (
+              <Txt variant="dim" style={{ fontSize: 12, color: theme.colors.warning }}>
+                {vocabPermission}
+              </Txt>
+            ) : null}
+            {settings.vocabReminder ? (
+              <Slider
+                value={settings.vocabReminderHour}
+                min={0}
+                max={23}
+                step={1}
+                onChange={(vocabReminderHour) => update({ vocabReminderHour })}
+                label="Saat"
+                format={(hour) => formatClock(hour, 0)}
+              />
+            ) : null}
           </>
         ) : (
           <Txt variant="dim" style={{ fontSize: 13 }}>
-            Hatırlatıcı yalnızca telefon uygulamasında çalışıyor. Tarayıcıda zamanlanmış
+            Hatırlatıcı ve kelime tekrar bildirimi yalnızca telefon uygulamasında çalışıyor. Tarayıcıda zamanlanmış
             bildirim için sunucu tarafı gerekiyor; bu uygulama her şeyi cihazda tuttuğu için
             web sürümünde bildirim yok.
           </Txt>
