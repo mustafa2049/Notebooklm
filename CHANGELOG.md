@@ -4,9 +4,25 @@ Her sürümün APK'sı ve web derlemesi GitHub'daki **Releases** sayfasında
 (bkz. README → CI ve dağıtım). Yeni sürüm eskisinin üstüne güncelleme olarak
 kurulur; veriler silinmez.
 
-## 1.3.0
+## 1.3.0 — 21 Ekim 2026
 
-Hazırlanıyor.
+- Yeni yazı tipleri: Lexend, Literata, Merriweather ve OpenDyslexic (Aa →
+  Yazı tipi, her biri kendi biçimiyle önizlenir).
+- Klasikler uygulamayla birlikte geliyor: 28 eser internet olmadan
+  kütüphaneye ekleniyor.
+- İnternetsiz sözlük: TDK'ya ulaşılamazsa ya da kelime orada yoksa anlam
+  uygulamanın içindeki Vikisözlük verisinden (110 bin kelime) geliyor.
+- Kelime oyunu: defterdeki kelimelerle en çok 10 soruluk tur ("Anlamı
+  hangisi?", "Boşluğa hangisi gelir?"); cevaplar tekrar sırasını
+  güncelliyor.
+- Dışa aktarma: alıntılar, özetler ve kelime defteri Markdown olarak;
+  kelimeler Anki için CSV olarak.
+- Kelime tekrar bildirimi: seçtiğin saatte, tekrar bekleyen kelime varsa
+  (Ayarlar → Alışkanlık).
+- Tablette yatay tutunca iki sayfa kitap gibi yan yana (Aa → Geniş ekranda
+  çift sayfa); uygulama tablette artık dönebiliyor, telefonda dikey kalıyor.
+- APK artık GitHub'da derleniyor; 32 bit işlemcili telefonlar da
+  destekleniyor.
 
 ## 1.2.0 — 21 Ekim 2026
 

@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { LAST } from './lineFocus';
-import { pairPages, spreadBand, spreadPages, stepSpreadFocus } from './spreads';
+import { pairPages, rotatesFreely, spreadBand, spreadPages, stepSpreadFocus } from './spreads';
+
+describe('rotatesFreely', () => {
+  it('tablette serbest, telefonda dikey (yönden bağımsız)', () => {
+    expect(rotatesFreely({ width: 412, height: 915 })).toBe(false);
+    expect(rotatesFreely({ width: 915, height: 412 })).toBe(false);
+    expect(rotatesFreely({ width: 600, height: 960 })).toBe(true);
+    expect(rotatesFreely({ width: 1280, height: 800 })).toBe(true);
+    expect(rotatesFreely({ width: 599, height: 1000 })).toBe(false);
+  });
+});
 
 describe('pairPages', () => {
   it('ikişer birleşir; tek kalan son sayfa yalnız', () => {

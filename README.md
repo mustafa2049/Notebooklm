@@ -35,6 +35,19 @@ parça" bunun hazır bir profili.
 
 ## Sayfa modu
 
+- **Çift sayfa** (Aa → "Geniş ekranda çift sayfa", varsayılan açık): ekran en az
+  900 px genişlikte ve yataysa (tablet, bilgisayar) iki sayfa kitap gibi yan
+  yana; etiket "Sayfa 3–4 / 120". Sayfalar sütun genişliğiyle ölçülür ve ikişer
+  birleştirilir; çevirme, tempo rehberi, ilerleme ve yer imi bu birleşik
+  sayfalarla çalışır (`src/core/spreads.ts`, testli). Satır odağı sol sütunun
+  sonundan sağ sütunun başına geçer, sağ sütun bitince sayfa döner; rehberin
+  bandı rehberin sütununda kalır; uzun basma iki sütunda da kelimeyi bulur.
+  Uygulama telefonda dikey kilitli kalıyor; tablette (ekranın kısa kenarı en
+  az 600 dp, Android'in "büyük ekran" sınırı) kilit açılıyor, yatay
+  tutulunca çift sayfa geliyor (`expo-screen-orientation`,
+  `src/ui/useTabletRotation.ts`). Web uygulaması olarak kurulan sürüm de
+  artık dönebiliyor (`manifest.json` → `"orientation": "any"`). Tarayıcıda
+  1280×800'de denendi; gerçek tablette denenmedi.
 - Sağa dokun ya da sola kaydır: sonraki sayfa; sol kenara dokun ya da sağa
   kaydır: önceki sayfa. Web'de ←/→, PageUp/PageDown, boşluk. Alt çubuktaki
   kaydırıcı sayfaya atlar; kalan süre son ölçümdeki doğal hızınla tahmin
@@ -78,9 +91,22 @@ parça" bunun hazır bir profili.
 
 Okuyucuda başlıktaki **Aa** (ya da Ayarlar → Okuma görünümü): mod, yazı boyutu
 (%70–200; web'de +/− tuşları), satır aralığı (sıkı/normal/geniş), yazı tipi
-(sistem, tırnaklı, disleksi dostu) ve renkler. Okuma görünümü uygulama
-temasından ayrı: arayüz koyu kalırken metin sepya zeminde okunabilir; okuyucu,
-antrenman ve ölçüm ekranları bununla çiziliyor.
+ve renkler. Okuma görünümü uygulama temasından ayrı: arayüz koyu kalırken metin
+sepya zeminde okunabilir; okuyucu, antrenman ve ölçüm ekranları bununla
+çiziliyor.
+
+- **Yazı tipleri**: Sistem, Tırnaklı, Disleksi dostu (Atkinson Hyperlegible),
+  **Lexend** (okumayı akıcılaştırmak için tasarlandı), **Literata** ve
+  **Merriweather** (ekranda uzun okuma için) ve **OpenDyslexic**. Hepsi
+  uygulamanın içinde (internet gerekmez); seçilen yazı tipi ilk kullanıldığında
+  yüklenir, o ana kadar sistem yazısı görünür ve yüklenince sayfalar yeniden
+  ölçülür (yazı tipi sayfalama anahtarına giriyor). Aa panelindeki çipler her
+  yazı tipini kendi biçimiyle gösterir. Lexend, Literata ve Merriweather
+  `@expo-google-fonts` paketlerinden (yalnız normal ve kalın); OpenDyslexic
+  Fontsource'un WOFF dosyasından kayıpsız OTF'ye çevrildi
+  (`scripts/fonts/woff-to-sfnt.mjs`, testli). Dördü de SIL Open Font
+  License 1.1 (`assets/fonts/OpenDyslexic-OFL.txt`). Tarayıcıda her yazı
+  tipinde sayfaların taşmadığı denendi; telefondaki görünümü denenmedi.
 
 - **Renk temaları**: Uygulamayla aynı, Koyu, Siyah (OLED), Gece (sıcak), Açık,
   Beyaz, Sepya, Yeşil. Testler her temada yazı/zemin kontrastının en az 7:1
@@ -273,13 +299,22 @@ katmanı değişir.
 
 ```
 src/
-  core/        tokenizer, heceleme, ORP, chunker, tempo, oynatma saati, sayfalama, cloze
-  reader/      motoru süren hook + üç çizim katmanı + kontroller
-  ingest/      metin normalleştirme, TXT/PDF/EPUB/URL çıkarımı
+  core/        tokenizer, heceleme, ORP, chunker, tempo, oynatma saati, sayfalama,
+               çift sayfa, satır odağı, kök bulma, sözlük dilimi araması
+  reader/      motoru süren hook + çizim katmanları + kontroller, kelime sayfası
+  ingest/      metin normalleştirme, TXT/PDF/EPUB/Word/URL çıkarımı, TDK ve
+               internetsiz sözlük
+  content/     gömülü metinler, klasikler listesi ve uygulamadaki dosyaları
   storage/     ayarlar, kütüphane, ilerleme, istatistikler (hepsi cihazda)
-  train/       antrenman egzersizlerinin tanımı
-  ui/          tema, ikonlar (SVG), temel bileşenler
+  train/       egzersizler, kelime tekrarı ve kelime oyunu
+  habit/       hedef, seri, rozetler, planlar, bildirimler, dışa aktarma
+  ai/          isteğe bağlı yapay zekâ sağlayıcıları
+  appearance/  okuma temaları, kolay okuma, akşam tonu
+  ui/          tema, yazı tipleri, ikonlar (SVG), temel bileşenler
 app/           expo-router ekranları
+assets/        classics/ (28 eser), dict/ (Vikisözlük dilimleri), fonts/, pdfjs/
+scripts/       klasikleri indirme, sözlüğü kurma, yazı tipi çevirme, service worker
+plugins/       Expo yapılandırma eklentisi (Android imzası)
 ```
 
 İki tasarım kararı dikkate değer:
@@ -409,6 +444,18 @@ Günlük hatırlatıcı **yalnızca telefon uygulamasında** çalışıyor
 sunucu tarafı gerektirdiği için web sürümünde bu ayar yerine bunu açıklayan bir
 not duruyor. Bildirim metni günlük hedefi içerdiği için uygulama her açılışta
 hatırlatıcıyı yeniden planlıyor.
+
+**Kelime tekrar bildirimi** (Ayarlar → Alışkanlık, varsayılan kapalı; saat
+seçilir, varsayılan 19:00): o saatte tekrar zamanı gelmiş kelime varsa
+"6 kelime tekrar bekliyor" gibi bir bildirim gelir, dokununca Kelime defteri
+açılır. Planlanmış bildirimin metni sonradan değişmediği için önümüzdeki 7
+günün her biri için o anda tekrar bekleyen kelime sayısı hesaplanıp tek
+seferlik bildirimler kuruluyor; sayı 0 olan gün atlanıyor
+(`src/habit/vocabReminder.ts`, testli). Uygulama her açıldığında ve defter
+değiştiğinde (kayıt, tekrar, oyun) yeniden planlanıyor; günlük okuma
+hatırlatıcısına dokunmuyor (ayrı kimlik öneki). Bu da yalnızca telefonda;
+bildirimlerin zamanında gelmesi ve dokununca defterin açılması cihazda
+denenmedi.
 
 ## Gerçek gelişimi ölçmek
 
@@ -543,18 +590,46 @@ girmeden önce tek tek açılıp tam metnin ve yazar adının sayfada olduğu
 doğrulandı (Vikikaynak'ın hız sınırı yüzünden istekler arası 20 sn). Sabahattin
 Ali, Halit Ziya, Hüseyin Rahmi, Recaizade, Namık Kemal, Mehmet Rauf, Nabizade
 Nazım ve Ahmet Mithat'tan denenen eserler Vikikaynak'ta bu adlarla bulunamadı;
-listede yok. İnternet gerektirir; web'de vekil sunucu üzerinden çekilir.
+listede yok.
+
+**28 eser uygulamayla birlikte geliyor; içe aktarmak internet istemiyor.**
+`scripts/fetch-classics.mjs` eserlerin Vikikaynak'taki işlenmiş sayfasını
+indirip (istekler arası 20 sn) başlık kutusu, gezinme, dipnotlar, lisans
+kutusu ve "Sayfa başı" gibi sayfa kalıntılarını ayıklıyor ve
+`assets/classics/<ad>.txt` + `src/content/classicAssets.ts`'i yazıyor (toplam
+~570 KB). İçe aktarırken dosya, çevrimiçi yolla aynı metin dönüşümünden
+geçiyor; dosya bulunamazsa eski yol (Vikikaynak'tan çekmek) kullanılıyor.
+Betik yeniden çalıştırılınca indirilmiş sayfalar yeniden temizleniyor, yeniden
+indirilmiyor. Tarayıcıda Vikikaynak engelliyken denendi (hiç ağ isteği yok).
 
 ## Kelime defteri
 
 Okurken kelimeye uzun basılınca açılan panelden kelime, **geçtiği cümleyle
 birlikte** deftere kaydediliyor (yapay zekâ gerekmiyor; açıksa açıklama da not
-olarak ekleniyor). Antrenman sekmesinden açılan defterde iki görünüm var: liste
-ve tekrar. Tekrar aralığı basit ve açıklanabilir: bilinen kelime her doğru
+olarak ekleniyor). Antrenman sekmesinden açılan defterde üç görünüm var: liste,
+tekrar ve oyun. Tekrar aralığı basit ve açıklanabilir: bilinen kelime her doğru
 tekrarda iki kat uzun aralıkla (1, 2, 4, 8… gün, en çok 30 gün), bilinmeyen
 kelime aynı gün içinde yeniden soruluyor (`src/train/review.ts`, testli).
 Kaydedilen kelimeler okurken metinde işaretli (bkz. Okumayı kolaylaştıran
 araçlar); bunun için kayda sözlüğün madde başı da yazılıyor.
+
+- **Oyun** (en az 4 kelimeyle): en çok 10 soruluk tur (kelime başına bir
+  soru; tekrar zamanı gelmiş kelimeler önce), iki soru türü — "Anlamı
+  hangisi?" (kelimenin notundaki ilk anlam: TDK, Vikisözlük ya da yapay zekâ
+  notu) ve "Boşluğa hangisi gelir?" (kelimenin kaydedildiği cümlede, çekimli
+  hâli de boşluğa çevrilir). 4 şık; çeldiriciler defterin öbür kelimelerinden.
+  Cevap anında doğru/yanlış gösterilir, sonda puan ve "Yeniden oyna". Her
+  cevap tekrar sırasını günceller: yanlış bilinen kelime erken döner
+  (`src/train/vocabGame.ts`, testli; tohumlu rastgele).
+- **Dışa aktarma**: "Notları dışa aktar (Markdown)" — kitap kitap alıntılar
+  (metindeki sırayla) ve notları, "Aklında ne kaldı" özetleri ve kelime
+  defteri; "Kelimeleri Anki'ye aktar (CSV)" — kart başına kelime → anlam +
+  cümle + kitap. CSV'nin başlık satırları (`#separator:Comma`, `#columns:`)
+  Anki'nin içe aktarma ayarlarını kendiliğinden dolduruyor; her alan tırnaklı
+  (`src/habit/exportNotes.ts`, testli). Web'de dosya iner, telefonda paylaşım
+  menüsü açılır. Düğmeler: Kelime defteri, Alıntılar ve özetler, Ayarlar →
+  Veriler.
+- **Kelime tekrar bildirimi**: bkz. "Günlük hedef ve hatırlatıcı".
 
 ### TDK sözlüğü
 
@@ -570,6 +645,28 @@ cihazda önbelleğe alınır (yedeğe girmez), daha önce bakılan kelimeler
 çok çekimli biçimler bulunamayabilir. Tarayıcıda gerçek TDK yanıtlarıyla
 denendi; telefonda istek tarayıcı kimliğiyle gidiyor (sunucu aksi hâlde boş
 yanıt veriyor) — cihazda denenmedi.
+
+**İnternetsiz sözlük (Vikisözlük).** TDK'ya ulaşılamazsa (internet yok, sunucu
+yanıt vermiyor) ya da TDK kelimeyi bulamazsa anlam uygulamanın içindeki
+Vikisözlük verisinden geliyor: 110.786 kelime, 136.805 anlam (Türkçe
+Vikisözlük'ün 1 Ekim 2026 dökümü). Arama TDK'dakiyle aynı: kelime ve aday
+kökler. Kartın altında kaynak yazıyor ("Vikisözlük (uygulamada, internetsiz) ·
+CC BY-SA 4.0"), deftere kaydedilen not "Vikisözlük — kelime" diye başlıyor.
+
+- `scripts/dict/build-dictionary.mjs <döküm.xml.bz2> --date <tarih>` dökümü
+  akış hâlinde okuyor (`bzip2 -dc`), `scripts/dict/wikitext.mjs` (saf, testli)
+  her sayfanın `==Türkçe==` bölümünden tür başlıklarını ve `#` tanım
+  satırlarını çıkarıyor (örnek ve alıntı satırları, kalıplar, bağlantı
+  biçimi temizleniyor; yalnız çekim gösteren sayfalar atlanıyor — kökleri zaten
+  kök bulucu buluyor). Çıktı harf harf 31 dilim (`assets/dict/<harf>.txt`,
+  toplam ~10 MB) ve `meta.json` (kaynak, tarih, lisans, sayılar). Döküm depoya
+  girmiyor.
+- Uygulama yalnızca aranan kelimenin harfinin dilimini yüklüyor ve bellekte
+  tutuyor (`src/ingest/offlineDict.ts`, `src/core/dictShard.ts` testli).
+- **Lisans**: Vikisözlük içeriği CC BY-SA 4.0
+  (https://creativecommons.org/licenses/by-sa/4.0/); kaynak hem uygulamada
+  hem `assets/dict/meta.json`'da belirtiliyor. Tarayıcıda TDK engelliyken ve
+  TDK "bulunamadı" dediğinde denendi.
 
 ## Paylaş → Hızlı Okuma (Android)
 
@@ -592,7 +689,10 @@ Aynı parametreler derin bağlantıyla da çalışıyor:
 
 Web sürümü ilk açılışta kendini tarayıcıya kaydediyor; sonraki açılışlarda
 **internet olmadan da** açılıyor. Kitaplar zaten cihazda (IndexedDB), önbelleğe
-alınan yalnızca uygulamanın dosyaları (~3,9 MB, PDF okuyucu dahil).
+alınan yalnızca uygulamanın dosyaları: ~18 MB — bunun 10,2 MB'ı internetsiz
+sözlük, 3,2 MB'ı yazı tipleri, 1,9 MB'ı PDF okuyucu, 0,5 MB'ı klasikler. İlk
+ziyarette arka planda bir kez iniyor; sonraki sürümlerde yalnızca değişen
+dosyalar iniyor (sözlük ve yazı tipleri değişmedikçe yeniden inmez).
 
 - `npm run build:web`, `expo export`'tan sonra `scripts/generate-sw.mjs`'i
   çalıştırıyor: derleme çıktısındaki dosyalar içerik özetleriyle listelenip
@@ -610,7 +710,8 @@ alınan yalnızca uygulamanın dosyaları (~3,9 MB, PDF okuyucu dahil).
 - `public/_headers`: `sw.js` önbelleğe alınmıyor, `/_expo/static/*` (adları
   içerik özetli) bir yıl önbellekte.
 
-İnternet isteyenler: bağlantıdan ve klasiklerden içe aktarma, yapay zekâ.
+İnternet isteyenler: bağlantıdan içe aktarma, TDK sözlüğü (yoksa uygulamadaki
+Vikisözlük verisi kullanılır), kitap kapağı arama, yapay zekâ.
 Ayarlar → **Uygulama olarak kullan** kartı önbelleğin durumunu gösteriyor ve
 Android Chrome'da "Ana ekrana ekle" düğmesi, iPhone'da Safari talimatı veriyor.
 
@@ -694,11 +795,13 @@ girmiyor.
 
 pdf.js ve jszip artık **kullanıldıklarında** yükleniyor (`await import(...)`).
 Metro bunları ayrı parçalara ayırdığı için ilk yüklemede inen paket
-3,33 MB'tan **1,43 MB**'a düştü; PDF içe aktaran kullanıcı pdf.js parçalarını o
-anda indiriyor, hiç PDF açmayan hiç indirmiyor.
+3,33 MB'tan 1,43 MB'a düşmüştü (sonraki özelliklerle bugün ~1,9 MB,
+sıkıştırılmadan); PDF içe aktaran kullanıcı pdf.js parçalarını o anda
+indiriyor, hiç PDF açmayan hiç indirmiyor. Sözlük dilimleri, klasikler ve
+yazı tipleri de ayrı dosyalar: kullanılınca yükleniyor.
 
-Disleksi dostu yazı tipinin yalnızca kullanılan iki ağırlığı (normal, kalın)
-pakete giriyor: paketin kökünden içe aktarmak 14 dosyanın hepsini (~700 KB)
+Yazı tiplerinin yalnızca kullanılan iki ağırlığı (normal, kalın) pakete
+giriyor: paketin kökünden içe aktarmak 14 dosyanın hepsini (~700 KB)
 ekliyordu.
 
 ## Hata günlüğü

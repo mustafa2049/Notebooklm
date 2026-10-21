@@ -17,6 +17,7 @@ import { startPwa } from '@/pwa/pwa';
 import { SettingsProvider, useTheme } from '@/store/SettingsContext';
 import { deviceInfo, installErrorLog, listErrors, recordError, setErrorRoute } from '@/storage/errorLog';
 import { shareText } from '@/ui/shareText';
+import { useTabletRotation } from '@/ui/useTabletRotation';
 
 // Web: çevrimdışı önbellek ve "ana ekrana ekle". Bileşen dışında, en başta:
 // tarayıcının kurulum olayı uygulama çizilmeden gelebiliyor
@@ -99,6 +100,8 @@ function RootStack() {
   useReminder();
   // Kelime tekrar bildirimleri: defter değişince de yeniden planlanır
   useVocabReminder();
+  // Tablette ekran dönebilir (çift sayfa); telefon dikey kalır
+  useTabletRotation();
 
   // Hata günlüğünde hatanın hangi ekranda olduğu görünsün
   const pathname = usePathname();

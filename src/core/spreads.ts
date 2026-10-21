@@ -18,6 +18,17 @@ export interface Spread extends Page {
 /** Bu genişlikten (ve yataydan) itibaren çift sayfa */
 export const SPREAD_MIN_WIDTH = 900;
 
+/** Android'in "büyük ekran" sınırı (sw600dp): kısa kenarı bu kadar olan ekran tablet sayılır */
+export const TABLET_MIN_SIDE = 600;
+
+/**
+ * Uygulama telefonda dikey kilitli; tablette dönmesi serbest, yatay tutulunca
+ * çift sayfa açılabilsin. Ekranın (pencerenin değil) ölçüsüyle karar verilir.
+ */
+export function rotatesFreely(screen: { width: number; height: number }): boolean {
+  return Math.min(screen.width, screen.height) >= TABLET_MIN_SIDE;
+}
+
 export function pairPages(pages: Page[]): Spread[] {
   const spreads: Spread[] = [];
   for (let i = 0; i < pages.length; i += 2) {
