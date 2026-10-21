@@ -150,9 +150,15 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
         value={settings.syllableColors}
         onChange={(syllableColors) => update({ syllableColors })}
       />
+      <Toggle
+        label="Defterdeki kelimeleri işaretle"
+        hint="Kelime defterine kaydettiğin kelimelerin altı metinde çizilir, çekimli hâlleri de (kitap → kitaplarımız). Sayfa ve Kaydırma modlarında."
+        value={settings.markVocab}
+        onChange={(markVocab) => update({ markVocab })}
+      />
       <Txt variant="body">Satır odağı</Txt>
       {sub(
-        'Sayfa modunda okuduğun satırların dışı karartılır. Sağa dokun: bir satır aşağı, sol kenara: yukarı; kaydırınca sayfa döner. Klavyede ↓ ↑, L.'
+        'Sayfa modunda okuduğun satırların dışı karartılır. Sağa dokun: bir satır aşağı, sol kenara: yukarı; kaydırınca sayfa döner. Tempo rehberi oynarken bant vurgulanan satırı izler. Klavyede ↓ ↑, L.'
       )}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
         {LINE_FOCUS_OPTIONS.map((value) => (

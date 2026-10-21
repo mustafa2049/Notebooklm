@@ -67,6 +67,8 @@ export interface Settings {
   lineFocus: number;
   /** Sade tam ekran: okurken menüler ve durum çubuğu gizli */
   immersive: boolean;
+  /** Defterdeki kelimelerin altı metinde çizili (Sayfa ve Kaydırma modları) */
+  markVocab: boolean;
   /** Kolay okuma önayarı açık mı (bkz. appearance/easyReading) */
   easyReading: boolean;
   /** Kolay okuma açılmadan önceki görünüm: kapatınca geri yazılır */
@@ -170,6 +172,7 @@ export const DEFAULT_SETTINGS: Settings = {
   syllableColors: false,
   lineFocus: 0,
   immersive: false,
+  markVocab: true,
   easyReading: false,
   easyBackup: null,
   hyperlegible: false,

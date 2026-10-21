@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -25,6 +25,7 @@ import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
 import { passageAround } from '@/core/passage';
 import { tokenIndexForCharOffset } from '@/core/tokenizer';
+import { vocabIndex } from '@/core/vocabMarks';
 import { sentenceOf, type SentenceInfo } from '@/core/wordHit';
 import type { ReaderMode, Token } from '@/core/types';
 import { ToolSheet, type AiTab, type JumpReason, type SentenceChoice } from '@/reader/ToolSheet';
@@ -70,6 +71,7 @@ import {
   type DocumentMeta,
 } from '@/storage/documents';
 import { highlightsForDoc } from '@/storage/highlights';
+import { listVocab, type VocabEntry } from '@/storage/vocab';
 import { AVERAGE_ADULT_WPM, naturalWpm } from '@/train/assessment';
 import { AppearancePanel } from '@/ui/AppearancePanel';
 import { haptics } from '@/ui/haptics';
@@ -509,6 +511,18 @@ function Reader({
     }
     return marked;
   }, [quoteOffsets, engine.chunks]);
+
+  /** Kelime defteri: kaydedilen kelimelerin (çekimleriyle) altı metinde çizilir */
+  const [vocab, setVocab] = useState<VocabEntry[]>([]);
+  const loadVocab = useCallback(() => {
+    void listVocab().then(setVocab);
+  }, []);
+  // Defter başka ekranda değişmiş olabilir: okuyucuya her dönüşte yeniden okunur
+  useFocusEffect(loadVocab);
+  const vocabMarks = useMemo(
+    () => (settings.markVocab && vocab.length ? vocabIndex(vocab) : null),
+    [settings.markVocab, vocab]
+  );
 
   // ---- Yer imleri
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
@@ -1157,6 +1171,7 @@ function Reader({
             flashSentence={flashSentence}
             activeChunk={pacerChunk}
             syllableColor={syllableColor}
+            vocab={vocabMarks}
             // Rehber oynarken bant vurgulanan satırı izler; durunca elle oradan sürer
             lineFocus={focusSize > 0 ? { size: focusSize, start: focusLine, follow: pacing } : null}
             onFocusLines={onFocusLines}
@@ -1199,6 +1214,7 @@ function Reader({
             lineHeight={pageLineHeight}
             layout={layout}
             syllableColor={syllableColor}
+            vocab={vocabMarks}
             onToggle={toggle}
             onPosition={onScrollPosition}
             onWordLongPress={openWord}
@@ -1501,6 +1517,8 @@ function Reader({
           sentence={wordSheet.sentence}
           docId={docId}
           docTitle={title}
+          vocab={vocab}
+          onVocabSaved={loadVocab}
           onClose={() => setWordSheet(null)}
           onMoreTools={() => {
             setWordSheet(null);
@@ -1532,6 +1550,7 @@ function Reader({
         sentenceOffset={context.sentenceOffset}
         sentenceChoices={pageChoices}
         onHighlightSaved={loadQuotes}
+        onVocabSaved={loadVocab}
         onJumpTo={jumpToOffset}
         bookmarks={bookmarks}
         onRemoveBookmark={(bookmarkId) => void removeBookmarks([bookmarkId]).then(loadBookmarks)}

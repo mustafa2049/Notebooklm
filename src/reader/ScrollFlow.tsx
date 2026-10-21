@@ -6,8 +6,9 @@ import { typeset } from '@/core/typeset';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
 import type { Token } from '@/core/types';
+import { coreRanges, isVocabWord, type VocabIndex } from '@/core/vocabMarks';
 import { hitFromGeometry, plainIndex, tokenAtPlainIndex, type ParagraphGeometry } from '@/core/wordHit';
-import { SyllableText } from './SyllableText';
+import { MarkedText, vocabMarkStyle } from './MarkedText';
 import { domHit, measureOrigin, textLayout } from './textHit';
 
 /** Paragraf köklerinin kimlik öneki (web'de kelime bulmak için) */
@@ -39,6 +40,7 @@ export function ScrollFlow({
   lineHeight,
   layout,
   syllableColor = null,
+  vocab = null,
   onToggle,
   onPosition,
   onEnd,
@@ -55,6 +57,8 @@ export function ScrollFlow({
   layout: ReadingLayout;
   /** Hece renklendirme açıksa ikinci hecelerin rengi */
   syllableColor?: string | null;
+  /** Defterdeki kelimeler (işaretleme kapalıysa `null`): altları çizilir */
+  vocab?: VocabIndex | null;
   onToggle: () => void;
   /** Okuma çizgisindeki chunk (seyrek bildirilir) */
   onPosition: (chunkIndex: number) => void;
@@ -156,6 +160,15 @@ export function ScrollFlow({
   }, [playing, shift]);
 
   const options = { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace };
+  // Pencerenin paragrafları çizilecek biçimleriyle ve defter işaretleriyle
+  const rendered = useMemo(() => {
+    const marked = (core: string) => (vocab ? isVocabWord(vocab, core) : false);
+    return windowParagraphs.map((paragraph) => {
+      const display = typeset(paragraph.text, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace });
+      return { paragraph, display, marks: vocab ? coreRanges(display, paragraph.tokens, marked) : undefined };
+    });
+  }, [windowParagraphs, layout.hyphenate, layout.extraWordSpace, vocab]);
+  const markStyle = useMemo(() => vocabMarkStyle(theme.colors.accent), [theme.colors.accent]);
   const textStyle = {
     fontSize,
     lineHeight,
@@ -227,7 +240,7 @@ export function ScrollFlow({
         style={{ flex: 1 }}
       >
         <Animated.View style={{ paddingTop: lead, transform: [{ translateY: shift }] }}>
-          {windowParagraphs.map((paragraph) => (
+          {rendered.map(({ paragraph, display, marks }) => (
             <View
               key={paragraph.index}
               style={{ marginBottom: gap }}
@@ -244,11 +257,7 @@ export function ScrollFlow({
                 {...hyphenation}
                 {...textLayout(geometry, String(paragraph.index))}
               >
-                {syllableColor ? (
-                  <SyllableText text={typeset(paragraph.text, options)} color={syllableColor} />
-                ) : (
-                  typeset(paragraph.text, options)
-                )}
+                <MarkedText text={display} marks={marks} markStyle={markStyle} syllableColor={syllableColor} />
               </Text>
             </View>
           ))}

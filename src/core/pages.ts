@@ -205,9 +205,10 @@ export interface PageSentence {
   words: string[];
   /**
    * Cümlenin chunk'lara göre parçaları (birleşince `text`). Tempo rehberi
-   * geçerli chunk'ı bunlarla vurgular.
+   * geçerli chunk'ı bunlarla vurgular; token'lar defterdeki kelimeleri
+   * işaretlemek için.
    */
-  parts: { chunkIndex: number; text: string }[];
+  parts: { chunkIndex: number; text: string; tokens: Token[] }[];
 }
 
 export interface PageParagraph {
@@ -241,8 +242,10 @@ export function pageParagraphs(chunks: Chunk[], page: Page): PageParagraph[] {
       }
       sentence.text = sentence.text ? `${sentence.text} ${token.text}` : token.text;
       const part = sentence.parts[sentence.parts.length - 1];
-      if (part && part.chunkIndex === i) part.text = `${part.text} ${token.text}`;
-      else sentence.parts.push({ chunkIndex: i, text: token.text });
+      if (part && part.chunkIndex === i) {
+        part.text = `${part.text} ${token.text}`;
+        part.tokens.push(token);
+      } else sentence.parts.push({ chunkIndex: i, text: token.text, tokens: [token] });
       if (token.core) sentence.words.push(token.core);
     }
   }

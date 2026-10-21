@@ -16,10 +16,11 @@ import { chunkPosition, focusBand, followStart, lineAtY, lineTops, type Paragrap
 import { pageParagraphs, SAMPLE_PARAGRAPH, type Page, type PageParagraph, type PageSentence } from '@/core/pages';
 import { typeset } from '@/core/typeset';
 import type { Chunk, Token } from '@/core/types';
+import { coreRanges, isVocabWord, type VocabIndex } from '@/core/vocabMarks';
 import { hitFromGeometry, plainIndex, tokenAtPlainIndex, type ParagraphGeometry } from '@/core/wordHit';
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
-import { SyllableText } from './SyllableText';
+import { MarkedText, vocabMarkStyle, type MarkRanges } from './MarkedText';
 import { charMiddle, domHit, measureOrigin, textLayout } from './textHit';
 
 /**
@@ -57,6 +58,7 @@ export function PageView({
   flashSentence = null,
   activeChunk = null,
   syllableColor = null,
+  vocab = null,
   lineFocus = null,
   onFocusLines,
   onFocusMove,
@@ -94,6 +96,8 @@ export function PageView({
   activeChunk?: number | null;
   /** Hece renklendirme açıksa ikinci hecelerin rengi */
   syllableColor?: string | null;
+  /** Defterdeki kelimeler (işaretleme kapalıysa `null`): altları çizilir */
+  vocab?: VocabIndex | null;
   /**
    * Satır odağı: bandın boyu (satır), ilk satırı (`LAST` = son satırlar) ve
    * rehberi izleyip izlemediği (rehber oynarken). Kapalıysa `null`.
@@ -127,19 +131,21 @@ export function PageView({
   const paragraphs = useMemo(() => {
     if (!page) return [];
     const options = { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace };
+    const marked = (core: string) => (vocab ? isVocabWord(vocab, core) : false);
     // Cümleler chunk parçalarıyla çiziliyor: tempo rehberi geçerli parçayı
     // vurgulayabilsin. Satır kırılımı aynı (parçalar satır içi)
     return pageParagraphs(chunks, page).map((paragraph) => ({
       ...paragraph,
       sentences: paragraph.sentences.map((sentence, sentenceIndex) => ({
         ...sentence,
-        parts: sentence.parts.map((part, partIndex) => ({
-          ...part,
-          display: typeset(sentenceIndex === 0 && partIndex === 0 ? part.text : ` ${part.text}`, options),
-        })),
+        parts: sentence.parts.map((part, partIndex) => {
+          const display = typeset(sentenceIndex === 0 && partIndex === 0 ? part.text : ` ${part.text}`, options);
+          return { ...part, display, marks: vocab ? coreRanges(display, part.tokens, marked) : undefined };
+        }),
       })),
     }));
-  }, [chunks, page, layout.hyphenate, layout.extraWordSpace]);
+  }, [chunks, page, layout.hyphenate, layout.extraWordSpace, vocab]);
+  const markStyle = useMemo(() => vocabMarkStyle(theme.colors.accent), [theme.colors.accent]);
   const sample = useMemo(
     () => typeset(SAMPLE_PARAGRAPH, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace }),
     [layout.hyphenate, layout.extraWordSpace]
@@ -305,6 +311,7 @@ export function PageView({
             flashSentence={flashSentence}
             activeChunk={activeChunk}
             syllableColor={syllableColor}
+            markStyle={markStyle}
             lineFocus={lineFocus}
             onFocusLines={onFocusLines}
             onFollowLine={onFollowLine}
@@ -323,7 +330,9 @@ const PARAGRAPH_ID = 'rp';
 
 /** Sayfanın paragrafları; her parça çizilecek biçimiyle (`typeset`) */
 type PageParagraphs = (Omit<PageParagraph, 'sentences'> & {
-  sentences: (Omit<PageSentence, 'parts'> & { parts: { chunkIndex: number; text: string; display: string }[] })[];
+  sentences: (Omit<PageSentence, 'parts'> & {
+    parts: (PageSentence['parts'][number] & { display: string; marks?: MarkRanges })[];
+  })[];
 })[];
 
 /**
@@ -340,6 +349,7 @@ function PageContent({
   flashSentence,
   activeChunk,
   syllableColor,
+  markStyle,
   lineFocus,
   onFocusLines,
   onFollowLine,
@@ -356,6 +366,7 @@ function PageContent({
   flashSentence: number | null;
   activeChunk: number | null;
   syllableColor: string | null;
+  markStyle: TextStyle;
   lineFocus: { size: number; start: number; follow: boolean } | null;
   onFocusLines?: (count: number) => void;
   onFollowLine?: (start: number) => void;
@@ -442,6 +453,8 @@ function PageContent({
                   active={part.chunkIndex === activeChunk}
                   color={theme.colors.highlight}
                   syllableColor={syllableColor}
+                  marks={part.marks}
+                  markStyle={markStyle}
                 />
               ))}
             </Text>
@@ -477,20 +490,36 @@ const PagePart = React.memo(function PagePart({
   active,
   color,
   syllableColor,
+  marks,
+  markStyle,
 }: {
   text: string;
   active: boolean;
   color: string;
   syllableColor: string | null;
+  marks?: MarkRanges;
+  markStyle: TextStyle;
 }) {
-  const content = (value: string) => (syllableColor ? <SyllableText text={value} color={syllableColor} /> : value);
-  if (!active) return <Text>{content(text)}</Text>;
+  if (!active) {
+    return (
+      <Text>
+        <MarkedText text={text} marks={marks} markStyle={markStyle} syllableColor={syllableColor} />
+      </Text>
+    );
+  }
   // Baştaki boşluk vurgunun dışında: yalnızca kelimeler boyansın
   const lead = /^[\s\u2009]*/.exec(text)?.[0] ?? '';
   return (
     <Text>
       {lead}
-      <Text style={{ backgroundColor: color }}>{content(text.slice(lead.length))}</Text>
+      <Text style={{ backgroundColor: color }}>
+        <MarkedText
+          text={text.slice(lead.length)}
+          marks={marks?.map(([start, end]) => [start - lead.length, end - lead.length] as const)}
+          markStyle={markStyle}
+          syllableColor={syllableColor}
+        />
+      </Text>
     </Text>
   );
 });

@@ -13,6 +13,12 @@ import { KEYS } from './keys';
 export interface VocabEntry extends ReviewItem {
   id: string;
   word: string;
+  /**
+   * Sözlükteki madde başı ("kitaplarımız" → "kitap"); kaydederken sözlük
+   * sonucu varsa yazılır. Kelimenin metindeki başka çekimleri bununla
+   * işaretlenir (bkz. `core/vocabMarks`).
+   */
+  lemma?: string;
   /** Kelimenin geçtiği cümle */
   sentence: string;
   /** AI açıklaması ya da kullanıcının notu */
@@ -38,6 +44,7 @@ async function write(entries: VocabEntry[]): Promise<void> {
 
 export interface NewVocabEntry {
   word: string;
+  lemma?: string;
   sentence: string;
   note?: string;
   docId?: string;
@@ -56,6 +63,7 @@ export async function addVocab(input: NewVocabEntry): Promise<VocabEntry> {
   if (existing) {
     const updated: VocabEntry = {
       ...existing,
+      lemma: input.lemma ?? existing.lemma,
       sentence: input.sentence || existing.sentence,
       note: input.note ?? existing.note,
       docId: input.docId ?? existing.docId,
@@ -68,6 +76,7 @@ export async function addVocab(input: NewVocabEntry): Promise<VocabEntry> {
   const entry: VocabEntry = {
     id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
     word: input.word.trim(),
+    lemma: input.lemma,
     sentence: input.sentence,
     note: input.note,
     docId: input.docId,

@@ -82,6 +82,8 @@ interface Props {
   sentenceOffset: number;
   /** Alıntı kaydedilince okuyucu işaretleri yenilesin */
   onHighlightSaved?: () => void;
+  /** Kelime deftere kaydedilince okuyucu metindeki işaretleri yenilesin */
+  onVocabSaved?: () => void;
   /**
    * Sayfa modunda sayfadaki cümleler. Verilirse Kelime ve Alıntı sekmeleri
    * önce "hangi cümle?" diye sorar — sayfada tek bir "o anki cümle" yok.
@@ -122,6 +124,7 @@ export function ToolSheet({
   sentence,
   sentenceOffset,
   onHighlightSaved,
+  onVocabSaved,
   sentenceChoices,
   onJumpTo,
   bookmarks = [],
@@ -288,19 +291,19 @@ export function ToolSheet({
   };
 
   const save = async (word: string) => {
-    const dictNote =
-      dict?.status === 'done' && dict.word === word
-        ? dict.result.entries.slice(0, 2).map(entryNote).join('\n')
-        : undefined;
+    const found = dict?.status === 'done' && dict.word === word ? dict.result : null;
     await addVocab({
       word,
+      // Madde başı: kelimenin metindeki başka çekimleri de işaretlensin
+      lemma: found?.entries[0]?.word,
       sentence: activeSentence,
       // Kelime o an açıklanmışsa açıklama (yoksa sözlük anlamı) nota geçer
-      note: wordInfo?.word === word ? wordInfo.text : dictNote,
+      note: wordInfo?.word === word ? wordInfo.text : found?.entries.slice(0, 2).map(entryNote).join('\n'),
       docId,
       docTitle,
     });
     setSaved(word);
+    onVocabSaved?.();
   };
 
   const saveQuote = async () => {

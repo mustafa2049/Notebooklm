@@ -116,7 +116,18 @@ export function lookupForm(word: string): string {
 export function stemCandidates(word: string): string[] {
   const form = lookupForm(word);
   if (form.length < 2) return form ? [form] : [];
+  const unique = allStems(form);
+  // Mastar biçimleri ve kısa kökler önce: uzun yarı-çekimli biçimler nadiren madde başı
+  unique.sort((a, b) => score(a) - score(b) || a.length - b.length || a.localeCompare(b, 'tr'));
+  return [form, ...unique.slice(0, MAX_CANDIDATES)];
+}
 
+/**
+ * Biçimin (`lookupForm` sonucu) bütün aday kökleri, sırasız ve sınırsız —
+ * kelimenin kendisi hariç. Defterdeki kelimeleri metinde bulmak için.
+ */
+export function allStems(form: string): string[] {
+  if (form.length < 2) return [];
   const found = new Map<string, boolean>(); // aday → fiil mi
   let frontier: { stem: string; verb: boolean }[] = [{ stem: form, verb: false }];
   for (let depth = 0; depth < MAX_DEPTH && frontier.length; depth++) {
@@ -150,14 +161,11 @@ export function stemCandidates(word: string): string[] {
     candidates.push(stem);
     if (verb) candidates.push(infinitive(stem));
   }
-  const unique = [...new Set(candidates)].filter((stem) => stem !== form);
-  // Mastar biçimleri ve kısa kökler önce: uzun yarı-çekimli biçimler nadiren madde başı
-  unique.sort((a, b) => score(a) - score(b) || a.length - b.length || a.localeCompare(b, 'tr'));
-  return [form, ...unique.slice(0, MAX_CANDIDATES)];
+  return [...new Set(candidates)].filter((stem) => stem !== form);
 }
 
-function score(stem: string): number {
-  // Mastarı kökün uzunluğuyla say ("gelmek" ≈ "gel")
+/** Kökün uzunluğu; mastar kökünün uzunluğuyla sayılır ("gelmek" ≈ "gel") */
+export function score(stem: string): number {
   if (stem.endsWith('mak') || stem.endsWith('mek')) return stem.length - 3;
   return stem.length;
 }

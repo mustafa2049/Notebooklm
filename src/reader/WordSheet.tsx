@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { explainWord } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
+import { findVocabEntry, vocabForm } from '@/core/vocabMarks';
 import type { SentenceInfo } from '@/core/wordHit';
 import { DictOfflineError, entryNote, lookupExact, lookupWord } from '@/ingest/tdk';
 import { useSettings } from '@/store/SettingsContext';
 import { addHighlight } from '@/storage/highlights';
-import { addVocab } from '@/storage/vocab';
+import { addVocab, type VocabEntry } from '@/storage/vocab';
 import { Button, Card, Chip, IconButton, Txt } from '@/ui/primitives';
 import { DictCard, type DictState } from './DictCard';
 import { speakOnce, stopSpeaking } from './voices';
@@ -17,8 +18,10 @@ import { speakOnce, stopSpeaking } from './voices';
  *
  * Kelime yanlış bulunduysa (telefonda satır içi konum tahmin) cümlenin
  * kelimelerinden doğrusuna tek dokunuşla geçilir. Buradan deftere kaydedilir
- * (anlam not olur), yapay zekâyla bağlamına göre açıklatılır, cümle alıntılanır
- * ya da eski araç paneline geçilir.
+ * (anlam not olur, sözlüğün madde başıyla), yapay zekâyla bağlamına göre
+ * açıklatılır, cümle alıntılanır ya da eski araç paneline geçilir. Kelime
+ * defterde varsa (başka bir çekimiyle de) kaydı ve notu gösterilir; yeniden
+ * kaydetmek o kaydı günceller.
  */
 export function WordSheet({
   visible,
@@ -26,6 +29,8 @@ export function WordSheet({
   sentence,
   docId,
   docTitle,
+  vocab,
+  onVocabSaved,
   onClose,
   onMoreTools,
   onSimplify,
@@ -36,6 +41,9 @@ export function WordSheet({
   sentence: SentenceInfo;
   docId: string;
   docTitle: string;
+  /** Kelime defteri (kelime defterde mi?) */
+  vocab: VocabEntry[];
+  onVocabSaved?: () => void;
   onClose: () => void;
   /** Araç paneli (alıntıya not, arama, AI araçları) */
   onMoreTools: () => void;
@@ -49,7 +57,8 @@ export function WordSheet({
   const [selected, setSelected] = useState(word);
   const [dict, setDict] = useState<DictState | null>(null);
   const [explanation, setExplanation] = useState<{ word: string; text: string } | null>(null);
-  const [saved, setSaved] = useState<string | null>(null);
+  const [saved, setSaved] = useState<{ word: string; updated: boolean } | null>(null);
+  const entry = useMemo(() => findVocabEntry(vocab, selected), [vocab, selected]);
   const [quoted, setQuoted] = useState(false);
   /** Türkçe ses yoksa ya da hiç ses yoksa kullanıcıya bir cümle */
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
@@ -105,20 +114,23 @@ export function WordSheet({
   };
 
   const save = async () => {
-    const dictNote =
-      dict?.status === 'done' && dict.word === selected
-        ? dict.result.entries.slice(0, 2).map(entryNote).join('\n')
-        : undefined;
+    const found = dict?.status === 'done' && dict.word === selected ? dict.result : null;
+    const dictNote = found?.entries.slice(0, 2).map(entryNote).join('\n');
+    const explained = explanation?.word === selected ? explanation.text : undefined;
     await addVocab({
-      word: selected,
+      // Defterde başka bir çekimiyle varsa o kayıt güncellenir, ikinci kayıt açılmaz
+      word: entry?.word ?? selected,
+      lemma: found?.entries[0]?.word,
       sentence: sentence.text,
-      // Açıklama varsa o (bağlama göre), yoksa sözlük anlamı not olur
-      note: explanation?.word === selected ? explanation.text : dictNote,
+      // Açıklama varsa o (bağlama göre), yoksa sözlük anlamı not olur; defterdeki not korunur
+      note: explained ?? (entry?.note ? undefined : dictNote),
       docId,
       docTitle,
     });
-    setSaved(selected);
+    setSaved({ word: selected, updated: Boolean(entry) });
+    onVocabSaved?.();
   };
+  const savedNow = saved?.word === selected;
 
   const quote = async () => {
     await addHighlight({ docId, docTitle, charOffset: sentence.offset, sentence: sentence.text });
@@ -153,6 +165,20 @@ export function WordSheet({
         </View>
 
         <ScrollView contentContainerStyle={{ gap: theme.space(3) }} keyboardShouldPersistTaps="handled">
+          {entry ? (
+            <Card style={{ gap: theme.space(1), borderColor: theme.colors.accent }}>
+              <Txt variant="label">Defterinde</Txt>
+              <Txt variant="body" style={{ fontSize: 15 }}>
+                {entry.word}
+                {entry.lemma && vocabForm(entry.lemma) !== vocabForm(entry.word) ? ` · ${entry.lemma}` : ''}
+              </Txt>
+              {entry.note ? (
+                <Txt variant="dim" numberOfLines={4} style={{ fontSize: 13 }}>
+                  {entry.note}
+                </Txt>
+              ) : null}
+            </Card>
+          ) : null}
           {dict ? <DictCard state={dict} onLookUp={(root) => void lookUp(selected, root)} /> : null}
 
           {explanation?.word === selected ? (
@@ -190,11 +216,19 @@ export function WordSheet({
 
           <View style={{ flexDirection: 'row', gap: theme.space(2) }}>
             <Button
-              label={saved === selected ? 'Deftere eklendi' : 'Deftere kaydet'}
-              icon={saved === selected ? 'check' : 'book'}
+              label={
+                savedNow
+                  ? saved.updated
+                    ? 'Defter güncellendi'
+                    : 'Deftere eklendi'
+                  : entry
+                    ? 'Defteri güncelle'
+                    : 'Deftere kaydet'
+              }
+              icon={savedNow ? 'check' : 'book'}
               variant="secondary"
               style={{ flex: 1 }}
-              disabled={saved === selected}
+              disabled={savedNow}
               onPress={() => void save()}
             />
             {ai.configured ? (
