@@ -1,0 +1,75 @@
+<div class="mw-content-ltr mw-parser-output" lang="tr" dir="ltr" data-mw-parsoid-version="0.24.0.0-alpha24" data-mw-html-version="2.8.0"><section data-mw-section-id="0" id="mwAQ">
+<div class="prp-pages-output" lang="tr" typeof="mw:Extension/pages mw:Transclusion" about="#mwt2" id="mwAg" data-mw='{"name":"pages","attrs":{"index":"İstiklâl Marşı (Cerîde-i Resmiye) matbu.png","from":"İstiklâl Marşı (Cerîde-i Resmiye) matbu.png"},"body":{"extsrc":""},"parts":[{"template":{"target":{"wt":"#tag:pages","function":"tag"},"params":{"1":{"wt":""},"2":{"wt":"index=İstiklâl Marşı (Cerîde-i Resmiye) matbu.png"},"3":{"wt":"from=İstiklâl Marşı (Cerîde-i Resmiye) matbu.png"}},"i":0}}]}'><p id="mwAw"><span id="mwBA"><span class="pagenum ws-pagenum" id="1" title="Sayfa:İstiklâl Marşı (Cerîde-i Resmiye) matbu.png"></span></span></p><center id="mwBQ"><big id="mwBg"><b id="mwBw">İSTİKLÂL MARŞI</b></big></center>
+<p id="mwCA">
+<br id="mwCQ"/></p>
+<div id="mwCg">
+<table class=" multicol" role="presentation" style="border-collapse: collapse; padding: 0; border: 0; background:transparent; width:100%;" id="mwCw">
+
+<tbody id="mwDA"><tr id="mwDQ"><td style="width:50%; text-align:left; vertical-align:top;" id="mwDg">
+<center id="mwDw"><b id="mwEA">1</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt5" id="mwEQ" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nKorkma, sönmez bu şafaklarda yüzen al sancak;\nSönmeden yurdumun üstünde tüten en son ocak.\nO benim milletimin yıldızıdır, parlayacak;\nO benimdir, o benim milletimindir ancak.\n"}}'><p id="mwEg">Korkma, sönmez bu şafaklarda yüzen al sancak;<br id="mwEw"/>
+Sönmeden yurdumun üstünde tüten en son ocak.<br id="mwFA"/>
+O benim milletimin yıldızıdır, parlayacak;<br id="mwFQ"/>
+O benimdir, o benim milletimindir ancak.</p></div>
+
+<center id="mwFg"><b id="mwFw">2</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt6" id="mwGA" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nÇatma, kurban olayım, çehreni ey nazlı hilâl\nKahraman ırkıma bir gül! Ne bu şiddet, bu celâl?\nSana olmaz dökülen kanlarımız sonra helâl..\nHakkıdır, Hakk&apos;a tapan milletimin istiklâl.\n"}}'><p id="mwGQ">Çatma, kurban olayım, çehreni ey nazlı hilâl<br id="mwGg"/>
+Kahraman ırkıma bir gül! Ne bu şiddet, bu celâl?<br id="mwGw"/>
+Sana olmaz dökülen kanlarımız sonra helâl..<br id="mwHA"/>
+Hakkıdır, Hakk'a tapan milletimin istiklâl.</p></div>
+
+<center id="mwHQ"><b id="mwHg">3</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt7" id="mwHw" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nBen ezelden beridir hür yaşadım, hür yaşarım\nHangi çılgın bana zincir uracakmış? Şaşarım!\nKükremiş sel gibiyim; bendimi çiğner aşarım;\nYırtarım dağları, enginlere sığmam, taşarım.\n"}}'><p id="mwIA">Ben ezelden beridir hür yaşadım, hür yaşarım<br id="mwIQ"/>
+Hangi çılgın bana zincir uracakmış? Şaşarım!<br id="mwIg"/>
+Kükremiş sel gibiyim; bendimi çiğner aşarım;<br id="mwIw"/>
+Yırtarım dağları, enginlere sığmam, taşarım.</p></div>
+
+<center id="mwJA"><b id="mwJQ">4</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt8" id="mwJg" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nGarbın âfâkını sarmışsa çelik zırhlı duvar,\nBenim iman dolu göğsüm gibi serhaddim var.\nUlusun, korkma! Nasıl böyle bir imanı boğar,\n\"Medeniyet\" dediğin tek dişi kalmış canavar?\n"}}'><p id="mwJw">Garbın âfâkını sarmışsa çelik zırhlı duvar,<br id="mwKA"/>
+Benim iman dolu göğsüm gibi serhaddim var.<br id="mwKQ"/>
+Ulusun, korkma! Nasıl böyle bir imanı boğar,<br id="mwKg"/>
+"Medeniyet" dediğin tek dişi kalmış canavar?</p></div>
+
+<center id="mwKw"><b id="mwLA">5</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt9" id="mwLQ" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nArkadaş yurduma alçakları uğratma, sakın\nSiper et gövdeni, dursun bu hayasızca akın.\nDoğacaktır sana vadettiği günler Hakk&apos;ın..\nKim bilir belki, yarın; belki yarından da yakın.\n"}}'><p id="mwLg">Arkadaş yurduma alçakları uğratma, sakın<br id="mwLw"/>
+Siper et gövdeni, dursun bu hayasızca akın.<br id="mwMA"/>
+Doğacaktır sana vadettiği günler Hakk'ın..<br id="mwMQ"/>
+Kim bilir belki, yarın; belki yarından da yakın.</p></div>
+
+</td><td style="width:50%; text-align:left; vertical-align:top;" id="mwMg">
+<center id="mwMw"><b id="mwNA">6</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt10" id="mwNQ" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nBastığın yerleri \"toprak?\" diyerek geçme, tanı!\nDüşün altındaki binlerce kefensiz yatanı,\nSen şehid oğlusun. İncitme, yazıktır, atanı;\nVerme dünyaları alsan da bu cennet vatanı.\n"}}'><p id="mwNg">Bastığın yerleri "toprak?" diyerek geçme, tanı!<br id="mwNw"/>
+Düşün altındaki binlerce kefensiz yatanı,<br id="mwOA"/>
+Sen şehid oğlusun. İncitme, yazıktır, atanı;<br id="mwOQ"/>
+Verme dünyaları alsan da bu cennet vatanı.</p></div>
+
+<center id="mwOg"><b id="mwOw">7</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt11" id="mwPA" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nKim bu cennet vatanın uğruna olmaz ki feda?\nŞühedâ fışkıracak toprağı sıksan şühedâ!\nCanı, cananı, bütün varımı alsın da Hudâ,\nEtmesin tek vatanımdan beni dünyada cüdâ.\n"}}'><p id="mwPQ">Kim bu cennet vatanın uğruna olmaz ki feda?<br id="mwPg"/>
+Şühedâ fışkıracak toprağı sıksan şühedâ!<br id="mwPw"/>
+Canı, cananı, bütün varımı alsın da Hudâ,<br id="mwQA"/>
+Etmesin tek vatanımdan beni dünyada cüdâ.</p></div>
+
+<center id="mwQQ"><b id="mwQg">8</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt12" id="mwQw" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nRuhumun senden, İlâhi, şudur ancak emeli:\nDeğmesin mâbedimin göğsüne nâmahrem eli.\nBu ezanlar -ki şahâdetleri dinin temeli-\nEbedî yurdumun üstünde benim inlemeli.\n"}}'><p id="mwRA">Ruhumun senden, İlâhi, şudur ancak emeli:<br id="mwRQ"/>
+Değmesin mâbedimin göğsüne nâmahrem eli.<br id="mwRg"/>
+Bu ezanlar -ki şahâdetleri dinin temeli-<br id="mwRw"/>
+Ebedî yurdumun üstünde benim inlemeli.</p></div>
+
+<center id="mwSA"><b id="mwSQ">9</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt13" id="mwSg" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nO zaman vecd ile bin secde eder -varsa- taşım,\nHer cerihamdan İlâhi, boşanıp kanlı yaşım,\nFışkırır ruh-ı mücerred gibi yerden naşım;\nO zaman yükselerek arşa değer belki başım.\n"}}'><p id="mwSw">O zaman vecd ile bin secde eder -varsa- taşım,<br id="mwTA"/>
+Her cerihamdan İlâhi, boşanıp kanlı yaşım,<br id="mwTQ"/>
+Fışkırır ruh-ı mücerred gibi yerden naşım;<br id="mwTg"/>
+O zaman yükselerek arşa değer belki başım.</p></div>
+
+<center id="mwTw"><b id="mwUA">10</b></center>
+<div class="poem" typeof="mw:Extension/poem" about="#mwt14" id="mwUQ" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nDalgalan sen de şafaklar gibi ey şanlı hilâl!\nOlsun artık dökülen kanlarımın hepsi helâl.\nEbediyyen sana yok, ırkıma yok izmihlâl:\nHakkıdır hür yaşamış bayrağımın hürriyet;\nHakkıdır Hakk&apos;a tapan milletimin istiklâl.\n"}}'><p id="mwUg">Dalgalan sen de şafaklar gibi ey şanlı hilâl!<br id="mwUw"/>
+Olsun artık dökülen kanlarımın hepsi helâl.<br id="mwVA"/>
+Ebediyyen sana yok, ırkıma yok izmihlâl:<br id="mwVQ"/>
+Hakkıdır hür yaşamış bayrağımın hürriyet;<br id="mwVg"/>
+Hakkıdır Hakk'a tapan milletimin istiklâl.</p></div>
+
+</td></tr></tbody></table></div>
+<div align="right" id="mwVw"><b id="mwWA">Mehmed Âkif</b></div></div>
+</section>
+
+</div>

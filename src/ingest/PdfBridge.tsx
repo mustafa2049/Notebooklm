@@ -1,7 +1,7 @@
-import { Asset } from 'expo-asset';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { readAssetText } from './assetText';
 import { buildBridgeHtml, type BridgeMessage } from './pdfBridgeHtml';
 import { pagesToDocument } from './pdfText';
 import type { ExtractedDocument } from './types';
@@ -96,27 +96,8 @@ export function PdfBridge({ base64, onResult, onError, onProgress }: Props) {
 
 async function buildHtml(base64: string): Promise<string> {
   const [pdfCode, workerCode] = await Promise.all([
-    readAsset(require('../../assets/pdfjs/pdf.min.txt')),
-    readAsset(require('../../assets/pdfjs/pdf.worker.min.txt')),
+    readAssetText(require('../../assets/pdfjs/pdf.min.txt')),
+    readAssetText(require('../../assets/pdfjs/pdf.worker.min.txt')),
   ]);
   return buildBridgeHtml({ pdfCode, workerCode, base64Pdf: base64 });
-}
-
-/**
- * Varlık dosyasını metin olarak okur.
- *
- * Geliştirme sunucusunda varlık `http://` adresinden, üretim derlemesinde
- * cihazdaki bir dosyadan geliyor; iki durumu ayırmak gerekiyor çünkü
- * `fetch` Android'de `file://` adreslerini okuyamıyor.
- */
-async function readAsset(module: number): Promise<string> {
-  const asset = Asset.fromModule(module);
-  await asset.downloadAsync();
-  const uri = asset.localUri ?? asset.uri;
-  if (uri.startsWith('file://')) {
-    const { File } = await import('expo-file-system');
-    return new File(uri).text();
-  }
-  const response = await fetch(uri);
-  return response.text();
 }

@@ -1,0 +1,93 @@
+<div class="mw-content-ltr mw-parser-output" lang="tr" dir="ltr" data-mw-parsoid-version="0.24.0.0-alpha24" data-mw-html-version="2.8.0"><section data-mw-section-id="0" id="mwAQ"><p class="mw-empty-elt" id="mwAg"><span typeof="mw:Nowiki mw:Transclusion" about="#mwt1" id="mwAw" data-mw='{"parts":[{"template":{"target":{"wt":"Ayın eseri/yıldız ","href":"./Şablon:Ayın_eseri/yıldız"},"params":{},"i":0}}]}'></span><meta typeof="mw:Extension/indicator" about="#mwt1" id="mwBA" data-mw='{"name":"indicator","attrs":{"name":"featured-star"},"body":{"extsrc":"[[Dosya:Citation Barnstar Hires.png|20x20px\n |link=Vikikaynak:Ayın Eseri\n |\n |Bu eser \"Ayın Eseri\" olarak Vikikaynak anasayfasında yer almıştır.]]\n"}}'/><link rel="mw:PageProp/Category" href="./Kategori:Vikikaynak_ayın_eseri" about="#mwt1" id="mwBQ"/></p>
+
+<div class="prp-pages-output" lang="tr" typeof="mw:Extension/pages" about="#mwt12" id="mwBg" data-mw='{"name":"pages","attrs":{"index":"Çanakkale Şehitlerine.pdf","from":"1","to":"2"}}'><p id="mwBw"><span id="mwCA"><span class="pagenum ws-pagenum" id="1" title="Sayfa:Çanakkale Şehitlerine.pdf/1" about="#mwt4" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":":MediaWiki:Proofreadpage_pagenum_template","href":"./MediaWiki:Proofreadpage_pagenum_template"},"params":{"page":{"wt":"Sayfa:Çanakkale Şehitlerine.pdf/1"},"num":{"wt":"1"},"formatted":{"wt":"1"},"quality":{"wt":"3"}},"i":0}}]}'></span></span></p><center about="#mwt5" typeof="mw:Transclusion" id="mwCQ" data-mw='{"parts":[{"template":{"target":{"wt":":Sayfa:Çanakkale Şehitlerine.pdf/1","href":"./Sayfa:Çanakkale_Şehitlerine.pdf/1"},"params":{},"i":0}}]}'><big id="mwCg"><b id="mwCw">«Asım»dan bir parça</b></big></center><span about="#mwt5" id="mwDA">
+</span><p about="#mwt5" id="mwDQ">
+<br id="mwDg"/></p><span about="#mwt5" id="mwDw">
+</span><center about="#mwt5" id="mwEA"><big id="mwEQ"><b id="mwEg">ÇANAKKALE ŞEHİTLERİNE</b></big></center><span about="#mwt5" id="mwEw">
+</span><div class="poem" typeof="mw:Extension/poem" about="#mwt5" id="mwFA" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nŞu Boğaz Harbi nedir? Var mı ki dünyâda eşi?\nEn kesîf orduların yükleniyor dördü beşi,\n-Tepeden yol bularak geçmek için Marmara&apos;ya\nKaç donanmayla sarılmış ufacık bir karaya.\nNe hayâsız tehaşşüd ki ufuklar kapalı!\nNerde - gösterdiği vahşetle “bu: bir Avrupalı!”\nDedirir - yırtıcı, his yoksulu sırtlan kümesi:\nVarsa gelmiş, açılıp mahbesi, yâhud kafesi!\nEski dünyâ, yeni dünyâ, bütün akvâm-ı beşer,\nKaynıyor kum gibi.. mahşer mi, hakîkat mahşer.\nYedi iklîmi cihânın duruyor karşında;\nAvustralya’yla beraber bakıyorsun: Kanada!\n"}}'><p id="mwFQ">Şu Boğaz Harbi nedir? Var mı ki dünyâda eşi?<br id="mwFg"/>
+En kesîf orduların yükleniyor dördü beşi,<br id="mwFw"/>
+-Tepeden yol bularak geçmek için Marmara'ya<br id="mwGA"/>
+Kaç donanmayla sarılmış ufacık bir karaya.<br id="mwGQ"/>
+Ne hayâsız tehaşşüd ki ufuklar kapalı!<br id="mwGg"/>
+Nerde - gösterdiği vahşetle “bu: bir Avrupalı!”<br id="mwGw"/>
+Dedirir - yırtıcı, his yoksulu sırtlan kümesi:<br id="mwHA"/>
+Varsa gelmiş, açılıp mahbesi, yâhud kafesi!<br id="mwHQ"/>
+Eski dünyâ, yeni dünyâ, bütün akvâm-ı beşer,<br id="mwHg"/>
+Kaynıyor kum gibi.. mahşer mi, hakîkat mahşer.<br id="mwHw"/>
+Yedi iklîmi cihânın duruyor karşında;<br id="mwIA"/>
+Avustralya’yla beraber bakıyorsun: Kanada!</p></div><p id="mwIQ"> <span id="mwIg"><span class="pagenum ws-pagenum" id="2" title="Sayfa:Çanakkale Şehitlerine.pdf/2" about="#mwt7" typeof="mw:Transclusion" data-mw='{"parts":[{"template":{"target":{"wt":":MediaWiki:Proofreadpage_pagenum_template","href":"./MediaWiki:Proofreadpage_pagenum_template"},"params":{"page":{"wt":"Sayfa:Çanakkale Şehitlerine.pdf/2"},"num":{"wt":"2"},"formatted":{"wt":"2"},"quality":{"wt":"3"}},"i":0}}]}'></span></span></p><div class="poem" typeof="mw:Extension/poem mw:Transclusion" about="#mwt8" id="mwIw" data-mw='{"name":"poem","attrs":{},"body":{"extsrc":"\nÇehreler başka, lisânlar, deriler rengârenk;\nSâde bir hâdise var ortada: Vahşetler denk.\nKimi Hindû, kimi yamyam, kimi bilmem ne belâ..\nHani, tâ&apos;ûna da züldür bu rezil istîlâ!\nAh o yirminci asır yok mu, o mahlûk-i asîl,\nNe kadar gözdesi mevcûd ise, hakkıyla sefîl,\nKustu Mehmedciğin aylarca durup karşısına;\nDöktü karnındaki esrârı hayâsızcasına.\nMaske yırtılmasa hâlâ bize âfetti o yüz..\nMedeniyyet denilen kahbe, hakîkat, yüzsüz.\nSonra mel&apos;ûndaki tahrîbe müvekkel esbâb,\nÖyle müdhiş ki eder her biri bir mülkü harâb.\nÖteden sâikalar parçalıyor âfâkı;\nBeriden zelzeleler kaldırıyor a&apos;mâkı.\nBomba şimşekleri beyninden inip her siperin;\nSönüyor göğsünün üstünde o arslan neferin.\nYerin altında cehennem gibi binlerce lağam,\nAtılan her lağamın yaktığı: Yüzlerce adam.\nÖlüm indirmede gökler, ölü püskürmede yer;\nO ne müdhiş tipidir: Savrulur enkâz-ı beşer..\nKafa, göz, gövde, bacak, kol, çene, parmak, el, ayak\nBoşanır sırtlara, vâdîlere sağnak sağnak.\nSaçıyor zırha bürünmüş de o nâ-merd eller,\nYıldırım yaylımı tûfânlar, alevden seller.\nVeriyor yangını durmuş da açık sînelere,\nSürü halinde gezerken sayısız tayyâre.\nTop tüfekten daha sık, gülle yağan mermiler...\nKahraman orduyu seyret ki bu tehdîde güler:\nNe çelik tabyalar ister, ne siner hasmından;\nAlınır kal&apos;a mı göğsündeki kat kat iman?\nHangi kuvvet onu, hâşâ, edecek kahrına râm?\nÇünkü tesis-i İlahi o metin istihkâm.\nSarılır, indirilir mevki-i müstahkemler,\nBeşerin azmini tevkif edemez sun&apos;-i beşer;\nBu göğüslerse Hudâ&apos;nın ebedi ser-haddi;\n\"O benim sun&apos;-i bedî&apos;im, onu çiğnetme.\" dedi.\nÂsım&apos;ın nesli... diyordum ya.. nesilmiş gerçek:\nİşte çiğnetmedi nâmûsunu, çiğnetmeyecek.\nŞühedâ göğdesi, bir baksana, dağlar, taşlar..\nO, rükû olmasa, dünyâda eğilmez başlar,\nLekesiz, tertemiz alnından urulmuş yatıyor;\nBir hilâl uğruna yâ Rab, ne güneşler batıyor!\nEy, bu topraklar için toprağa düşmüş, asker!\nGökten ecdâd inerek öpse o pâk alnı değer.\nNe büyüksün ki kanın kurtarıyor tevhîdi..\nBedr&apos;in arslanları ancak bu kadar şânlı idi.\nSana dar gelmeyecek makberi kimler kazsın?\n\"Gömelim gel seni tarihe.\" desem, sığmazsın.\nHerc ü merc ettiğin edvâra da yetmez o kitâb..\nSeni ancak ebediyyetler eder istiâb.\n\"Bu, taşındır.\" diyerek Ka&apos;be&apos;yi diksem başına;\nRûhumun vahyini duysam da geçirsem taşına;\nSonra gök kubbeyi alsam da, ridâ namıyla,\nKanayan lahdine çeksem bütün ecrâmıyla;\nEbr-i nîsânı açık türbene çatsam da tavan,\nYedi kandilli Süreyyâ&apos;yı uzatsam oradan;\nSen bu âvîzenin altında, bürünmüş kanına,\nUzanırken, gece mehtâbı getirsem yanına,\nTürbedâr gibi tâ fecre kadar bekletsem;\nGündüzün fecr ile âvîzeni leb-rîz etsem;\nTüllenen mağribi, akşamları, sarsam yarana...\nYine bir şey yapabildim diyemem hâtırana.\nSen ki son ehl-i salîbin kırarak savletini,\nŞarkın en sevgili sultânı Salâhaddîn&apos;i,\nKılıç Arslan gibi iclâline ettin hayran..\nSen ki İslâm&apos;ı kuşatmış, boğuyorken hüsrân,\nO demir çenberi göğsünde kırıp parçaladın:\nSen ki rûhunla berâber gezer ecrâmı adın;\nSen ki a&apos;sâra gömülsen taşacaksın... Heyhât,\nSana gelmez bu ufuklar, seni almaz bu cihât..\nEy şehîd oğlu şehîd, isteme benden makber;\nSana âgûşunu açmış duruyor Peygamber.\n&lt;div align=\"right\">&apos;&apos;&apos;Mehmed Âkif&apos;&apos;&apos;&lt;/div>\n"},"parts":[{"template":{"target":{"wt":":Sayfa:Çanakkale Şehitlerine.pdf/2","href":"./Sayfa:Çanakkale_Şehitlerine.pdf/2"},"params":{},"i":0}}]}'><p id="mwJA">Çehreler başka, lisânlar, deriler rengârenk;<br id="mwJQ"/>
+Sâde bir hâdise var ortada: Vahşetler denk.<br id="mwJg"/>
+Kimi Hindû, kimi yamyam, kimi bilmem ne belâ..<br id="mwJw"/>
+Hani, tâ'ûna da züldür bu rezil istîlâ!<br id="mwKA"/>
+Ah o yirminci asır yok mu, o mahlûk-i asîl,<br id="mwKQ"/>
+Ne kadar gözdesi mevcûd ise, hakkıyla sefîl,<br id="mwKg"/>
+Kustu Mehmedciğin aylarca durup karşısına;<br id="mwKw"/>
+Döktü karnındaki esrârı hayâsızcasına.<br id="mwLA"/>
+Maske yırtılmasa hâlâ bize âfetti o yüz..<br id="mwLQ"/>
+Medeniyyet denilen kahbe, hakîkat, yüzsüz.<br id="mwLg"/>
+Sonra mel'ûndaki tahrîbe müvekkel esbâb,<br id="mwLw"/>
+Öyle müdhiş ki eder her biri bir mülkü harâb.<br id="mwMA"/>
+Öteden sâikalar parçalıyor âfâkı;<br id="mwMQ"/>
+Beriden zelzeleler kaldırıyor a'mâkı.<br id="mwMg"/>
+Bomba şimşekleri beyninden inip her siperin;<br id="mwMw"/>
+Sönüyor göğsünün üstünde o arslan neferin.<br id="mwNA"/>
+Yerin altında cehennem gibi binlerce lağam,<br id="mwNQ"/>
+Atılan her lağamın yaktığı: Yüzlerce adam.<br id="mwNg"/>
+Ölüm indirmede gökler, ölü püskürmede yer;<br id="mwNw"/>
+O ne müdhiş tipidir: Savrulur enkâz-ı beşer..<br id="mwOA"/>
+Kafa, göz, gövde, bacak, kol, çene, parmak, el, ayak<br id="mwOQ"/>
+Boşanır sırtlara, vâdîlere sağnak sağnak.<br id="mwOg"/>
+Saçıyor zırha bürünmüş de o nâ-merd eller,<br id="mwOw"/>
+Yıldırım yaylımı tûfânlar, alevden seller.<br id="mwPA"/>
+Veriyor yangını durmuş da açık sînelere,<br id="mwPQ"/>
+Sürü halinde gezerken sayısız tayyâre.<br id="mwPg"/>
+Top tüfekten daha sık, gülle yağan mermiler...<br id="mwPw"/>
+Kahraman orduyu seyret ki bu tehdîde güler:<br id="mwQA"/>
+Ne çelik tabyalar ister, ne siner hasmından;<br id="mwQQ"/>
+Alınır kal'a mı göğsündeki kat kat iman?<br id="mwQg"/>
+Hangi kuvvet onu, hâşâ, edecek kahrına râm?<br id="mwQw"/>
+Çünkü tesis-i İlahi o metin istihkâm.<br id="mwRA"/>
+Sarılır, indirilir mevki-i müstahkemler,<br id="mwRQ"/>
+Beşerin azmini tevkif edemez sun'-i beşer;<br id="mwRg"/>
+Bu göğüslerse Hudâ'nın ebedi ser-haddi;<br id="mwRw"/>
+"O benim sun'-i bedî'im, onu çiğnetme." dedi.<br id="mwSA"/>
+Âsım'ın nesli... diyordum ya.. nesilmiş gerçek:<br id="mwSQ"/>
+İşte çiğnetmedi nâmûsunu, çiğnetmeyecek.<br id="mwSg"/>
+Şühedâ göğdesi, bir baksana, dağlar, taşlar..<br id="mwSw"/>
+O, rükû olmasa, dünyâda eğilmez başlar,<br id="mwTA"/>
+Lekesiz, tertemiz alnından urulmuş yatıyor;<br id="mwTQ"/>
+Bir hilâl uğruna yâ Rab, ne güneşler batıyor!<br id="mwTg"/>
+Ey, bu topraklar için toprağa düşmüş, asker!<br id="mwTw"/>
+Gökten ecdâd inerek öpse o pâk alnı değer.<br id="mwUA"/>
+Ne büyüksün ki kanın kurtarıyor tevhîdi..<br id="mwUQ"/>
+Bedr'in arslanları ancak bu kadar şânlı idi.<br id="mwUg"/>
+Sana dar gelmeyecek makberi kimler kazsın?<br id="mwUw"/>
+"Gömelim gel seni tarihe." desem, sığmazsın.<br id="mwVA"/>
+Herc ü merc ettiğin edvâra da yetmez o kitâb..<br id="mwVQ"/>
+Seni ancak ebediyyetler eder istiâb.<br id="mwVg"/>
+"Bu, taşındır." diyerek Ka'be'yi diksem başına;<br id="mwVw"/>
+Rûhumun vahyini duysam da geçirsem taşına;<br id="mwWA"/>
+Sonra gök kubbeyi alsam da, ridâ namıyla,<br id="mwWQ"/>
+Kanayan lahdine çeksem bütün ecrâmıyla;<br id="mwWg"/>
+Ebr-i nîsânı açık türbene çatsam da tavan,<br id="mwWw"/>
+Yedi kandilli Süreyyâ'yı uzatsam oradan;<br id="mwXA"/>
+Sen bu âvîzenin altında, bürünmüş kanına,<br id="mwXQ"/>
+Uzanırken, gece mehtâbı getirsem yanına,<br id="mwXg"/>
+Türbedâr gibi tâ fecre kadar bekletsem;<br id="mwXw"/>
+Gündüzün fecr ile âvîzeni leb-rîz etsem;<br id="mwYA"/>
+Tüllenen mağribi, akşamları, sarsam yarana...<br id="mwYQ"/>
+Yine bir şey yapabildim diyemem hâtırana.<br id="mwYg"/>
+Sen ki son ehl-i salîbin kırarak savletini,<br id="mwYw"/>
+Şarkın en sevgili sultânı Salâhaddîn'i,<br id="mwZA"/>
+Kılıç Arslan gibi iclâline ettin hayran..<br id="mwZQ"/>
+Sen ki İslâm'ı kuşatmış, boğuyorken hüsrân,<br id="mwZg"/>
+O demir çenberi göğsünde kırıp parçaladın:<br id="mwZw"/>
+Sen ki rûhunla berâber gezer ecrâmı adın;<br id="mwaA"/>
+Sen ki a'sâra gömülsen taşacaksın... Heyhât,<br id="mwaQ"/>
+Sana gelmez bu ufuklar, seni almaz bu cihât..<br id="mwag"/>
+Ey şehîd oğlu şehîd, isteme benden makber;<br id="mwaw"/>
+Sana âgûşunu açmış duruyor Peygamber.<br id="mwbA"/></p>
+<div align="right" id="mwbQ"><b id="mwbg">Mehmed Âkif</b></div></div></div>
+</section>
+
+</div>

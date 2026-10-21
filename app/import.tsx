@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, TextInput, View } from 'react-native';
 import { countWordsInText, joinChapters, normalizeText } from '@/ingest/normalize';
+import { classicText } from '@/content/classicText';
 import { classicsByAuthor } from '@/content/classics';
 import { extractUrl } from '@/ingest/fromUrl';
 import { PdfBridge } from '@/ingest/PdfBridge';
@@ -258,8 +259,8 @@ export default function ImportScreen() {
       {tab === 'classics' ? (
         <View style={{ gap: theme.space(3) }}>
           <Txt variant="dim" style={{ fontSize: 13 }}>
-            Telif süresi dolmuş öyküler, Vikikaynak’tan. Dokununca kütüphaneye eklenir; internet
-            bağlantısı gerekir.
+            Telif süresi dolmuş öyküler ve şiirler, Vikikaynak’tan. Uygulamayla birlikte gelir:
+            dokununca internetsiz kütüphaneye eklenir.
           </Txt>
           {classicsByAuthor().map(({ author, items }) => (
             <View key={author} style={{ gap: theme.space(2) }}>
@@ -274,10 +275,10 @@ export default function ImportScreen() {
                       ? undefined
                       : () =>
                           run(async () => {
-                            const article = await extractUrl(classic.url, settings.urlProxy);
+                            const text = await classicText(classic, settings.urlProxy);
                             await save(
                               `${classic.title} — ${classic.author}`,
-                              article.text,
+                              text,
                               'url',
                               classic.url
                             );

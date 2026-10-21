@@ -1,0 +1,343 @@
+<div class="mw-content-ltr mw-parser-output" lang="tr" dir="ltr" data-mw-parsoid-version="0.24.0.0-alpha27" data-mw-html-version="2.8.0"><section data-mw-section-id="0" id="mwAQ">
+
+<p id="mwAg">Alaca karanlık içinde sivri, siyah bir kayanın müphem hayali gibi yükselen Şalgo burcu uyanıktı. Vakit vakit inlettiği trampete, boru seslerini akşamın hafif rüzgarı, derin bir uğultu halinde, her tarafa yayıyor... Kederli bağırışmalarıyla ölümü hatırlatan küfürbaz karga sürüleri, bulutlu havanın donuk hüznünü daha beter artırıyordu. Mor dağlar gittikçe koyulaşıyordu. Yamaçlardaki dağınık gölgeler, kuşsuz ormanlar, hıçkıran dereler, kaçan yollar, ıssız korular, sanki korkunç bir fırtınanın gürlemesini bekliyorlardı.</p>
+
+<p id="mwAw">Burcun tepesinde, beyazlı siyahlı bir bayrak, can çekişen bir kartal ıstırabıyla kıvranıyordu.</p>
+
+<p id="mwBA">İkibin kişilik muhâsara ordusunun çadırları, kaleye giren geniş yolun sağındaki büyük dişbudak ağaçlarının etrafına kurulmuştu. Yerlere kazıklanmış kır atlar, yabancı korkular duyuyorlar gibi, sık sık başlarını kaldırarak kişniyorlar, tırnaklarıyla kazmaya çalıştıkları toprakların nemli çimenlerini otluyorlardı. Dallarda kırmızı çullar, sırmalı eğerler asılı duruyordu. Cemâatle kılınmış akşam namazından dağılan askerler, çadırların arasından gürültü ile geçiyorlardı. Kısa emirler, çağırılan isimler, bir kahkaha, bir söz... Başlayacak sükûnu bozuyor, atların yanında itişen birkaç gencin şen nâraları duyuluyordu. Çifte direkli yeşil çadırın kapısı önüne serilmiş büyük bir kaplan postu üzerinde kehribar çubuğunu fosur fosur çeken koca bıyıklı, iri vücutlu, ateş nazarlı şâir kumandan, gözlerini, alacağı kalenin sallanan bayrağına dikmişti. Karşısında diz çökmüş kethüdâsının anlattıklarını dinliyordu. Ordugâha yarım saat evvel dört nala gelen bu adam, yaşlı, şişman bir askerdi. İşte kaç hafta oluyor, kumandanının "Göndersdref Baronu Erasm Tofl'u beraber vurmak" teklifini hâvî mektubunu, tek başına, Hadım Ali Paşa'ya götürmüştü. Ama, paşa çok meşguldü. Vakit bulup cevap verememişti. Dregley kalesini sarıyordu. Muhâsaranın iptidâsından nihayetine kadar hazır bulunan kethüdâ, şimdi orada gördüklerini söylüyordu; bu kale gayet sarp, gayet dik, bir kayanın zirvesine yapılmıştı. Arslan Bey sordu:</p>
+<dl id="mwBQ"><dd id="mwBg"><span typeof="mw:Entity" id="mwBw">—</span> Bizim kaleden daha yüksek mi?</dd>
+<dd id="mwCA"><span typeof="mw:Entity" id="mwCQ">—</span> Daha yüksek beyim.</dd></dl>
+<p id="mwCg">Kumandanın ``bizim kale´´ dediği, henüz çırpınan bayrağına hasretle baktığı Şalgo burcu idi. Fakat o, burasını birkaç gün içinde zaptedeceğini iyice biliyordu. Daha birkaç hafta evvel Boze kulesinde hücumlarına karşı durmak isteyen Andrenaki, Mihal Terşi, Etiyen Soşay, nasıl kendisine kuleyi teslim etmişler; nasıl kahramanlığını, cesaretini alkışlayarak, lütfuna teşekkürler ederek çekilip gitmişlerdi...</p>
+<dl id="mwCw"><dd id="mwDA"><span typeof="mw:Entity" id="mwDQ">—</span> Ben, bir kalenin karşısında çok duramam dedi, hiç sabrım yoktur. Ama Ali Paşa, çok sabırlı... M<span typeof="mw:Entity" id="mwDg">â</span>şallah!</dd></dl>
+<p id="mwDw">Kethüd<span typeof="mw:Entity" id="mwEA">â</span> başını kaldırdı:</p>
+<dl id="mwEQ"><dd id="mwEg"><span typeof="mw:Entity" id="mwEw">—</span> O da sabırsız... Ama, ne yapsın? Dregley, pek yalçın, pek sarp... Borsem dağları içinde baş kale bu imiş diyorlar.</dd>
+<dd id="mwFA"><span typeof="mw:Entity" id="mwFQ">—</span> Paşa, muhafızlara evvel<span typeof="mw:Entity" id="mwFg">â</span> teslim teklif etmedi mi?</dd>
+<dd id="mwFw"><span typeof="mw:Entity" id="mwGA">—</span> Etti.</dd>
+<dd id="mwGQ"><span typeof="mw:Entity" id="mwGg">—</span> Kabul etmediler mi?</dd>
+<dd id="mwGw"><span typeof="mw:Entity" id="mwHA">—</span> Hayır, etmediler.</dd>
+<dd id="mwHQ"><span typeof="mw:Entity" id="mwHg">—</span> Kalenin kumandanı kimdi?</dd>
+<dd id="mwHw"><span typeof="mw:Entity" id="mwIA">—</span> Zondi isminde bir kahraman...</dd>
+<dd id="mwIQ"><span typeof="mw:Entity" id="mwIg">—</span> Ben onların kahramanlıklarını bilirim. Verdikleri sözü tutmazlar.. <i id="mwIw">Vire</i>yi bozarlar. Elçiye hakaret ederler.</dd>
+<dd id="mwJA"><span typeof="mw:Entity" id="mwJQ">—</span> Hayır, Arslan Bey, Zondi bildiklerinizden değil. Çok mert bir adam.</dd>
+<dd id="mwJg"><span typeof="mw:Entity" id="mwJw">—</span> Paşa, teslim teklifini kiminle gönderdi?</dd>
+<dd id="mwKA"><span typeof="mw:Entity" id="mwKQ">—</span> Papaz Marten Uruçgalo ile...</dd>
+<dd id="mwKg"><span typeof="mw:Entity" id="mwKw">—</span> Ne ise... Türk elçi gönderseydi, mutlaka kafasını keserler, bedenlerden aşağı fırlatırlardı.</dd>
+<dd id="mwLA"><span typeof="mw:Entity" id="mwLQ">—</span> Paşa, Türk elçisi gönderseydi, Zondi, bunu yapmazdı.</dd>
+<dd id="mwLg"><span typeof="mw:Entity" id="mwLw">—</span> Ne biliyorsun?</dd>
+<dd id="mwMA"><span typeof="mw:Entity" id="mwMQ">—</span> Papaz Marten'e söylediği sözlerden anladım.</dd>
+<dd id="mwMg"><span typeof="mw:Entity" id="mwMw">—</span> Ne demiş?</dd>
+<dd id="mwNA"><span typeof="mw:Entity" id="mwNQ">—</span> Demiş ki: "Git, paşaya söyle. Bana teslim teklif etmesin. Bir askere bundan büyük hakaret olamaz. O nasıl harp adamı ise, ben de harp adamıyım. Ya ölürüm, ya galip gelirim. Ama, görüyorum ki, benim işim bitti. O, durmasın, bütün kuvvetiyle hücum etsin. Ben mutlaka yıkılacak kalenin taşları altında kalmak isterim."</dd>
+<dd id="mwNg"><span typeof="mw:Entity" id="mwNw">—</span> S<span typeof="mw:Entity" id="mwOA">â</span>hi, namuslu bir askermiş...</dd></dl>
+<p id="mwOQ">Kethüd<span typeof="mw:Entity" id="mwOg">â</span>:</p>
+<dl id="mwOw"><dd id="mwPA"><span typeof="mw:Entity" id="mwPQ">—</span> Yalnız namuslu bir asker değil, Arslan Bey, dedi, hem de gayet <span typeof="mw:Entity" id="mwPg">â</span>licenap bir mert...</dd>
+<dd id="mwPw"><span typeof="mw:Entity" id="mwQA">—</span> Nasıl?</dd>
+<dd id="mwQQ"><span typeof="mw:Entity" id="mwQg">—</span> Bakın anlatayım. Papaz Marten, ordug<span typeof="mw:Entity" id="mwQw">â</span>ha red haberini getirmek için dönerken, Zondi, onu tutmuş. Evvelce esir aldığı iki Türk delikanlısını yanına getirmiş. Bunlara gayet kıymetli erguvan<span typeof="mw:Entity" id="mwRA">î</span> elbiseler giydirmiş. Ceplerini altınla doldurmuş. "Al bunları paşaya götür. Benimle beraber ölmelerini istemiyorum. Çok yiğit gençlerdir. Terbiyelerine dikkat etsin. Devletine iki büyük asker yetiştirmiş olur." demiş.</dd>
+<dd id="mwRQ"><span typeof="mw:Entity" id="mwRg">—</span> S<span typeof="mw:Entity" id="mwRw">â</span>hi, <span typeof="mw:Entity" id="mwSA">â</span>licenap bir adammış...</dd>
+<dd id="mwSQ"><span typeof="mw:Entity" id="mwSg">—</span> Sonra, elimize diri geçen esirlerden işittik; kalenin avlusuna silahlarını, gümüş takımlarını, en kıymetli eşyalarını yığarak yakmış. Ahırındaki muharebe atlarını, ağlayarak, kendi eliyle öldürmüş. Son hücumda bizim asker kalenin kapısını zorladı. Kırdı. Yeniçeriler, bir kurşunla yaralanan Zondi'yi diri diri yakalamaya çok çalıştılar. Ama mümkün olmadı. O, diz üstü sürünerek, her tarafı kılıçla, mızrakla delik deşik olup ölünceye kadar vuruştu.</dd>
+<dd id="mwSw"><span typeof="mw:Entity" id="mwTA">—</span> Demek paşa bu mert düşmanla konuşamadı.</dd>
+<dd id="mwTQ"><span typeof="mw:Entity" id="mwTg">—</span> Evet, konuşamadı. Vücuduyla kesik başını kalenin karşısına gömdürdü. Mezarının üstüne bir mızrak, bir bayrak dikilmesini emretti.</dd>
+<dd id="mwTw"><span typeof="mw:Entity" id="mwUA">—</span> Aşkolsun! Ben olsam bir türbe yaptırırım. Vall<span typeof="mw:Entity" id="mwUQ">â</span>hi...</dd></dl>
+<p id="mwUg">Arslan Bey düşmanın cesurunu, kahramanını, yılmazını severdi. Onca harp bir mertlik sanatıydı. Düşman ordusundan kaçıp kendisine iltic<span typeof="mw:Entity" id="mwUw">â</span> edenlere hiç aman vermez. "Hain her yerde haindir" diye hemen boynunu vurdururdu.
+Ortalık bütün bütün kararıyor, gece oluyordu.
+Kethüdâ, uzun uzadıya anlattığı Dregley kalesinin hikâyesini hâlâ bitiremiyordu. Yatsı namazı için abdest suyu taşıyan angaryacılar, meş'alelerle geçmeye başladılar. Arslan Bey, Şalgo'nun, ıslanmış, hasta, ateş böcekleri gibi sönük sönük parlayan ziyâlarına bakıyor, kethüdânın sözlerini işitmeyerek, kendi planını düşünüyordu. O biliyordu; düşmanların hepsi Zondi gibi, Plâs Batanyus gibi, Lozonci gibi kahraman değildi. İçlerinde tavşan kadar korkakları da vardı. Mesela; Seçeni kalesinin muhafızları, daha Ali Paşa yaklaşırken, toplarını, tüfeklerini, cephânelerini, erzaklarını, mallarını, hatta ihtiyarlarını, çocuklarını bırakıp bir kurşun atmadan kaçmışlardı. Birkaç güne kadar burası da alınınca Holloko, Boyak, Şağ, keparmat kaleleri kalıyordu. Ama Allah kerimdi.</p>
+<dl id="mwVA"><dd id="mwVQ"><span typeof="mw:Entity" id="mwVg">—</span> Hepsinin zaptı belki bir ay sürmez.</dd></dl>
+<p id="mwVw">Diye mırıldandı. Kethüdâ, kumandanın ne düşündüğünden haberi yoktu, anlamadı. Sordu:</p>
+<dl id="mwWA"><dd id="mwWQ"><span typeof="mw:Entity" id="mwWg">—</span> Bu kalenin zaptı mı beyim?</dd>
+<dd id="mwWw"><span typeof="mw:Entity" id="mwXA">—</span> Hayır, canım... Bu, birkaç günlük iş! Hele hava biraz kapansın... Fulek'e kadar dört beş kale var... Onların hepsini diyorum.</dd>
+<dd id="mwXQ"><span typeof="mw:Entity" id="mwXg">—</span> Bir ayda dört beş kale... Bu güç beyim.</dd>
+<dd id="mwXw"><span typeof="mw:Entity" id="mwYA">—</span> Niçin?</dd>
+<dd id="mwYQ"><span typeof="mw:Entity" id="mwYg">—</span> Daha bu kaleye bir tüfek atılmamış... Ben attan inerken yoldaşlar söylediler.</dd>
+<dd id="mwYw"><span typeof="mw:Entity" id="mwZA">—</span> Ben, burasını, bir kurşun atmadan alacağım.</dd>
+<dd id="mwZQ"><span typeof="mw:Entity" id="mwZg">—</span> Nasıl beyim?</dd>
+<dd id="mwZw"><span typeof="mw:Entity" id="mwaA">—</span> Senin aklın ermez. Hava biraz kapansın, görürsün...</dd>
+<dd id="mwaQ"><span typeof="mw:Entity" id="mwag">—</span> Hiç topa tutmadan hücum mu edeceğiz?</dd>
+<dd id="mwaw"><span typeof="mw:Entity" id="mwbA">—</span> Hayır.</dd>
+<dd id="mwbQ"><span typeof="mw:Entity" id="mwbg">—</span> Ya ne yapacağız?</dd>
+<dd id="mwbw"><span typeof="mw:Entity" id="mwcA">—</span> Havanın kapanmasını bekle, dedim ya... Göreceksin.</dd>
+<dd id="mwcQ"><span typeof="mw:Entity" id="mwcg">—</span><span typeof="mw:DisplaySpace" id="mwcw"> </span>!<span typeof="mw:DisplaySpace" id="mwdA"> </span>!<span typeof="mw:DisplaySpace" id="mwdQ"> </span>!</dd></dl>
+<p id="mwdg">Arslan Bey, planlarını en yakın adamlarından bile saklardı. "Yerin kulağı var." derdi. Ağzından çıkan bir sır mutlaka işitilecekti. Kethüdâ gibi bu sessiz, bu mânasız beklemeden bütün askerler sıkılıyorlar, bir şey anlamıyorlardı. Kumandanın imdat, cephâne, top beklediği söyleniyordu. İhtiyar sipâhîler: "Biz burasını imdat gelmeden alamaz mıyız? İki top yetmez mi? Ne duruyoruz?" diye çadırlarında dedikodu yapıyorlardı. Buraya gelindiği günden beri askere istirahat ettiren Arslan Bey, her sabah erkenden atına biniyor, tek başına gerilerdeki ormanların içine dalıyor, saatlerce kalıyor, gülerek dönüyor:</p>
+<dl id="mwdw"><dd id="mweA"><span typeof="mw:Entity" id="mweQ">—</span> Hava bozmayacak mı? Ah, biraz sis olsa...</dd></dl>
+<p id="mweg">Diye gözlerini gökten, kalenin sallanan bayrağından ayıramıyordu. İşte kethüdânın getirdiği mektupta Ali Paşa da, teklifini kabul ediyordu. Onunla birleşince ordusu yedibin kişi kadar olacaktı. O vakit şüphesiz Tofeli, Pallaviçini'yi diri diri esir tutabilecekti.</p>
+
+<p id="mwew">Koyu karanlık içinden, uzaktan uzağa, Şalgo burcundaki nöbetçilerin attıkları acı nâralar, acı köpek ulumaları işitiliyordu. Gökte hiç yıldız yoktu. Arslan Bey, hademesinin tuttuğu billûr bardaktaki yakut suyu içti. Yeniden doldurulan çubuğunu çekiyor, kethüdâsıyla öteden beriden konuşuyordu. Konuşurken düşündüğü hep kendi planıydı. Yine göğe dalmıştı. Birdenbire sordu:</p>
+<dl id="mwfA"><dd id="mwfQ"><span typeof="mw:Entity" id="mwfg">—</span> Hava kapanıyor gibi, değil mi?</dd>
+<dd id="mwfw"><span typeof="mw:Entity" id="mwgA">—</span> Evet...</dd>
+<dd id="mwgQ"><span typeof="mw:Entity" id="mwgg">—</span> Bakalım yarın...</dd>
+<dd id="mwgw"><span typeof="mw:Entity" id="mwhA">—</span> Hücum mu edeceğiz beyim?</dd>
+<dd id="mwhQ"><span typeof="mw:Entity" id="mwhg">—</span> Hayır canım, hava bozsun, görürsün.</dd></dl>
+<p id="mwhw">Kethüdâ yine bir şey anlamadı.</p>
+
+<center id="mwiA">🙝🙟</center>
+
+<p id="mwiQ">Bir sabah...</p>
+
+<p id="mwig">Binlerce bacadan henüz tütmüş soğuk, nemli bir duman kadar koyu bir sis her tarafı kaplamıştı. Ordugâh, sancaklar, tuğlar, çadırlar, dişbudak ağaçları, atlar, hiç, hiçbir şey görünmüyordu. Evvelâ birbirlerini çağıranların sözleri duyuluyor, sonra iki hayal, ses yordamıyla bu beyaz karanlığın içinde buluşuyordu. Arslan Bey, atını hazırlamıştı. Yine yapyalnız, her günkü gittiği yere doğru kaybolacaktı.</p>
+
+<p id="mwiw">O kadar neşeli idi ki...</p>
+
+<p id="mwjA">Bütün zâbitleri, çavuşları çağırttı. Hepsi hücum var sanıyordu. At dîvanı yapar gibi, bir ayağı yerde, bir ayağı özengide:</p>
+<dl id="mwjQ"><dd id="mwjg"><span typeof="mw:Entity" id="mwjw">—</span> Ağalar, dedi, bugün kaleyi alacağız. Ben iki saate kadar geleceğim. Şimdi hepiniz hazır olunuz.</dd></dl>
+<p id="mwkA">Nihâyetleri görünmeyen beyaz, büyük sakalının çerçevelediği yüzü sis içinde muallâkta duruyor sanılan ihtiyar topçubaşı sordu:</p>
+<dl id="mwkQ"><dd id="mwkg"><span typeof="mw:Entity" id="mwkw">—</span> Siz gelmeden ben döğmeye başlayım mı, beyim?</dd></dl>
+<p id="mwlA">Arslan Bey güldü:</p>
+<dl id="mwlQ"><dd id="mwlg"><span typeof="mw:Entity" id="mwlw">—</span> Hayır... Senin iki topunun güllelerine ihtiyacımız yok. Yalnız bize çok gürültü yap.</dd>
+<dd id="mwmA"><span typeof="mw:Entity" id="mwmQ">—</span> Nasıl gürültü beyim?</dd>
+<dd id="mwmg"><span typeof="mw:Entity" id="mwmw">—</span> Toplarını nafile yerinden kımıldatma. Topçularını kalenin bedenlerine doğru yaklaştır. Avazları çıktğı kadar ``heya, mola, yisa..´´ diye bağırt!</dd>
+<dd id="mwnA"><span typeof="mw:Entity" id="mwnQ">—</span> ......</dd>
+<dd id="mwng"><span typeof="mw:Entity" id="mwnw">—</span> Anlamıyor musun? Yalnız gürültü istiyorum.</dd>
+<dd id="mwoA"><span typeof="mw:Entity" id="mwoQ">—</span> Pekala beyim.</dd></dl>
+<p id="mwog">Sonra diğer zâbitlere döndü:</p>
+<dl id="mwow"><dd id="mwpA"><span typeof="mw:Entity" id="mwpQ">—</span> Siz de bütün askerlerinizi muharebe niz<span typeof="mw:Entity" id="mwpg">â</span>mıyla bunlara yaklaştırın. Mümkün olduğu kadar çok gürültü yaptırın. ``Heya, mola...´´ çektirin, Angarya n<span typeof="mw:Entity" id="mwpw">â</span>raları attırın. İş türküleri söylettirin.</dd></dl>
+<p id="mwqA">İhtiyar topçubaşı gibi zâbitler de, çavuşlar da bu emirden bir şey anlamadılar. Fakat onlar anlamadan yapmasını pek iyi bilirlerdi.</p>
+<dl id="mwqQ"><dd id="mwqg"><span typeof="mw:Entity" id="mwqw">—</span> Başüstüne, başüstüne....</dd>
+<dd id="mwrA"><span typeof="mw:Entity" id="mwrQ">—</span> Haydi, ama çabuk...</dd>
+<dd id="mwrg"><span typeof="mw:Entity" id="mwrw">—</span> ......</dd></dl>
+<p id="mwsA">Hepsi iki adım ayrılınca sisin içinde görünmez oldular. Arslan Bey, tepinen atına binince yuları tutan kethüdâsına:</p>
+<dl id="mwsQ"><dd id="mwsg"><span typeof="mw:Entity" id="mwsw">—</span> Sen de koş, yanına bir adam al, gerideki Değirmenli Çiftliği'nde biriktirdiğim elli mandayı hemen buraya sür. Burca giden yolun yanında hazır tut... Orada beni bekle. Haydi.</dd>
+<dd id="mwtA"><span typeof="mw:Entity" id="mwtQ">—</span> Başüstüne...</dd>
+<dd id="mwtg"><span typeof="mw:Entity" id="mwtw">—</span> Ama çabuk....</dd>
+<dd id="mwuA"><span typeof="mw:Entity" id="mwuQ">—</span> .....</dd></dl>
+<p id="mwug">Hızla mahmuzlanan azgın at şaha kalkarak sisin içine atıldı. Üzerindeki, sırmalı kaftanının etekleri altın kanatlara benzeyen Arslan Bey'le, esâtirî bir kuş gibi uçtu.</p>
+
+<p id="mwuw">Biraz sonra....</p>
+
+<p id="mwvA">Nereden geldiği belli olmayan derin bir gürültü sis içinde kaynıyor, ileri geri yaklaşıyor, uzaklaşıyor, dalgalanıyordu. Kös, kalkan, boru sesleri at kişnemelerine karışıyor, alınan emirler, verilen kumandalar yüzlerce ağız tarafından ayrı ayrı tekrarlanıyordu. Bastıkları yerleri görmeyen askerler, harp nizâmında bağırışarak, duyduklarını tekrarlayarak, dirsekleriyle, kalkanlarıyla birbirlerine dokunarak duman içinde ilerliyorlardı.</p>
+
+<p id="mwvQ">Sağ taraftan topçuların ``Heya, mola´´ları işitiliyordu. Etrafını saran gürültüden hücumun başladığını kale de anladı. Boru, trampet, hurr<span typeof="mw:Entity" id="mwvg">â</span> sesleri aksetmeye, tek tük tabanca, tüfek atılmaya başladı. Gözcüler kale bedenlerinin dibine kadar gidip geliyorlardı. Safların arasında, topçubaşının büyük bir lağım açtığı söyleniyordu.</p>
+
+<p id="mwvw">Askerler, z<span typeof="mw:Entity" id="mwwA">â</span>bitlerinin emriyle, oldukları yerlerde bağdaş kurmuş bekliyorlar, gürültü ediyorlardı.</p>
+
+<p id="mwwQ">Nihayet, Arslan Bey, terden sırılsıklam olmuş atı ile duman içinde harp sıralarının arasında, adım adım göründü. Her adımda:</p>
+<dl id="mwwg"><dd id="mwww"><span typeof="mw:Entity" id="mwxA">—</span> Yiğitlerim!... Sis açılmaya başladı mı, hemen susun. Hep birden ayağa kalkın, hücum edecek gibi durun. Ama, ileri gitmeyin. Ateş de açmayın. Ben düşmana teslim teklif edeceğim.</dd></dl>
+<p id="mwxQ">Diyordu. Topçuların, topçulara karışan angaryacıların ``Heya, mola´´ nâraları gittikçe ziyâdeleşiyor, büyüyor, tüyleri ürpertecek heyecanlı akislerle görünmeyen dağları, taşları inletiyordu.</p>
+
+<center id="mwxg">🙝🙟</center>
+
+<p id="mwxw">Öğleye doğru sis açılmaya başladı. Askerler, sallanan siyahlı beyazlı bayrağı ile Şalgo'yu bir hayal gibi gördüler. Sesler kesildi. Şimalden esen bir rüzgar dumanları dağıtıyor; gerilere, ormanlara doğru sürüyordu.</p>
+
+<p id="mwyA">Artık herkes birbirini görüyordu.</p>
+
+<p id="mwyQ">Kaleye pek yaklaşılmıştı. Askerler, gözleriyle kumandanlarını aradılar. O, burç kapısına giden yolun gediğinde, atıyla dolaşıyordu. Gediğin önünde büyük bir manda sürüsü vardı. Burcun tepesinde, siperlerin arasında, kalkanlı, tüfekli adamlar geziniyordu.</p>
+
+<p id="mwyg">Cesur Arslan Bey, kır atını ileriye sürdü. Kaleye yüz adım kadar yaklaştı. Arkasındaki kethüdâsıyla, genç tercüman koştular...</p>
+
+<p id="mwyw">Gür sesiyle haykırdı:</p>
+<dl id="mwzA"><dd id="mwzQ"><span typeof="mw:Entity" id="mwzg">—</span> Hey bre Şalgo muhafızları!... Ben, padişahımın dedesine sizin kralınızın memleketlerinden büyük yerler zaptetmiş, Bosna valisi Yahya Paşa'nın torunlarındanım. Ceddim Hamza Bali Bey, daha ondört yaşında iken sizin ordularınızı perişan etmiş, Viyana Muhasarası'nda, Viyenberg önünde şan almıştır. Ben, hangi kaleye gittimse geri dönmemişim, daha geçen gün iki küçük topla ``Boza´´ kulesini yerle bir ettim. Mihal Terşi, Etiyen Soşay, Andrenaki gibi kahramanlarınıza canlarını bağışladım. Vadiye çekildim. Geçip gitmeleri için yol verdim. Haydi gelin. Siz de teslim olun. Nafile yere kanınızı döktürmeyin...</dd></dl>
+<p id="mwzw">Kale ile beraber bütün ordunun işittiği bu teklifi, tercüman, avazı çıktığı kadar bağırarak tekrarladı.</p>
+
+<p id="mw0A">Derin bir sükut...</p>
+
+<p id="mw0Q">Arslan Bey'in atı duramıyor, şaha kalkıyor, sağa sola tepiniyor, kethüdâ dizgininden tutmaya çalışıyordu.</p>
+
+<p id="mw0g">Burcun tepesinden bir cevap verdiler. Tercüman tekrarladı:</p>
+<dl id="mw0w"><dd id="mw1A"><span typeof="mw:Entity" id="mw1Q">—</span> "Ne gibi şartlarla?"diyorlar, beyim.</dd></dl>
+<p id="mw1g">Arslan Bey, deminkinden daha sert bir sesle haykırdı:</p>
+<dl id="mw1w"><dd id="mw2A"><span typeof="mw:Entity" id="mw2Q">—</span> Şartım filan yok. Biz teslim olanın canına kıymayız. Teslim olmazsanız, beş dakika sonra kalenin içinde bir canlı adam kalmaz. Karşınızdaki yolun gediği üzerinde gördüğünüz nedir? Anlamıyor musunuz? Babalarınızdan işitmediniz mi? Elli manda ile buraya getirdiğim bu topun iki güllesiyle binlerce Şalgo kuvvetinde olan İstanbul kaleleri tuzla buz oldu. İşte İstanbul'u alan bu top... Bir kere ateş edeceğim. İkinci atıma hacet yok. Ne kaleniz kalacak, ne de kendiniz. Acıyorum size...</dd></dl>
+<p id="mw2g">Genç tercüman, bu sözleri, yine avazı çıktığı kadar tekrarlarken, bütün askerler, gözlerini yolun gediğine çevirdiler. Mandaların yanında, uzun, büyük, gayet büyük, gayet kalın, gayet siyah, gayet müthiş bir topun korkunç bir ejderha gibi uzandığını gördüler. Safların arasında sevinç sadâları yükseldi. Herkes Arslan Bey'in bir haftadır ne beklediğini şimdi anlıyordu. Demek bu top geliyormuş...</p>
+
+<center id="mw2w">🙝🙟</center>
+
+<p id="mw3A">Biraz sonra...</p>
+
+<p id="mw3Q">Şalgo'nun tepesinde, şan, namus kefeni olan meş'um beyaz bayrak dalgalanıyordu. Demir kapılar açılmıştı. Korkudan sapsarı kesilen tuğlu kumandan, altın kılıçlı asilzâdeler, zırhlı şövalyeler, Arslan Bey'in önünde dize gelmişlerdi. Silahları alınan düşman ikişer ikişer bağlanıyor, takım takım ordugâhın arkasına götürülüyordu. Kalenin içindeki kıymetli şeylerden bir dağ ortada kabarıyor; al yeşil bayraklarla kalenin tepesine dolan askerler bağırışıyorlar, aralarındaki dervişler, bedenlerden sarkarak ezan okuyorlar, tekbir çekiyorlardı.</p>
+
+<p id="mw3g">Teslim olan kumandanla erkânına Arslan Bey:</p>
+<dl id="mw3w"><dd id="mw4A"><span typeof="mw:Entity" id="mw4Q">—</span> Korkmayınız. Hayatınız bağışlanmıştır. Biz <i id="mw4g">Vire</i>yi bozmayız. Gelin, size elli manda ile buraya getirdiğim topu seyrettireyim, dedi.</dd></dl>
+
+<p id="mw4w">Tercüman bunu tekrarlayınca, hepsi birbirlerine bakıştılar. Bu müthiş, bu korkunç, aleti yakından görmeyi hem merak ediyorlar, hem çekiniyorlardı. Arslan Bey'in arkasına takıldılar. Büyük topa doğru yürüdüler. Yaklaşınca Arslan Bey:</p>
+<dl id="mw5A"><dd id="mw5Q"><span typeof="mw:Entity" id="mw5g">—</span> İşte, dedi, sizin böyle topunuz var mı?</dd></dl>
+<p id="mw5w">Düşman kumandanı tercümanla cevap verdi:</p>
+<dl id="mw6A"><dd id="mw6Q"><span typeof="mw:Entity" id="mw6g">—</span> Hayır.</dd>
+<dd id="mw6w"><span typeof="mw:Entity" id="mw7A">—</span> Niçin yapmıyorsunuz?</dd>
+<dd id="mw7Q"><span typeof="mw:Entity" id="mw7g">—</span> Bilmiyoruz.</dd></dl>
+<p id="mw7w">Genç irisi bir şövalye tercümana bir şey sordu. Arslan Bey:</p>
+<dl id="mw8A"><dd id="mw8Q"><span typeof="mw:Entity" id="mw8g">—</span> Ne diyor?</dd></dl>
+<p id="mw8w">Dedi.</p>
+<dl id="mw9A"><dd id="mw9Q"><span typeof="mw:Entity" id="mw9g">—</span> "Bey bu topu kaç günde İstanbul'dan buraya getirmiştir?" diyor.</dd>
+<dd id="mw9w"><span typeof="mw:Entity" id="mw-A">—</span> Sen de ki: "İstanbul'dan getirmemiş. Burada bir hafta içinde kendisi yapmış."</dd></dl>
+<p id="mw-Q">Tercüman bu sözleri söyleyince esirler afallaştılar. Arslan Bey, daha ziyâde yaklaşıp elleriyle yoklamalarına, daha yakından görmelerine müsaade ettiğini söyledi. Mağrur kumandan, kahraman asilzâdeler, cesur şövalyeler, büyük topun etrafına toplandılar. Bir elini hançerinin elmas sapına dayayan Arslan Bey, öteki eliyle, gülümseyerek palabıyıklarını büküyor, arkasındaki kethüdâ, başını kaşıyarak gülmekten katılıyor, tercüman aptallaşıyordu. Yirmi adım uzakta duran mızraklı nöbetçiler de gülüşüyorlardı. Esirler topa ellerini sürdüler. Deliğini aradılar. Bulamayınca sarardılar. Sonra kızardılar. Birbirlerine bakıştılar. Öyle kaldılar. Kollarını çaprazlayarak yere bakan kale kumandanı titreyerek mırıldandı. Arslan Bey, tercümana baktı:</p>
+<dl id="mw-g"><dd id="mw-w"><span typeof="mw:Entity" id="mw_A">—</span> Ne diyor?</dd>
+<dd id="mw_Q"><span typeof="mw:Entity" id="mw_g">—</span> "Bu mertlik değil..." diyor.</dd>
+<dd id="mw_w"><span typeof="mw:Entity" id="mwAQA">—</span> Ona sor ki: "Henüz bir kere patlamayan bir toptan korkarak hemen teslim oluvermek mi mertlik?"</dd></dl>
+<p id="mwAQE">Tercüman sordu.</p>
+<dl id="mwAQI"><dd id="mwAQM"><span typeof="mw:Entity" id="mwAQQ">—</span> .....</dd>
+<dd id="mwAQU"><span typeof="mw:Entity" id="mwAQY">—</span> .....</dd></dl>
+<p id="mwAQc">Kale kumandanı, gözlerini yerden kaldırıp cevap veremedi. Asilzâdeler, şövalyeler birbirlerinin yüzlerine bakmaya cesaret edemediler; âni bir ölüm darbesiyle vurulmuş gibi oldukları yerde donup kaldılar.</p>
+
+<p id="mwAQg">Bir güllesiyle kaleyi yıkacak olan bu korkunç top, siyaha boyanmış, kocaman bir kütükten başka bir şey değildi!...
+Gelişmiş
+Özel karakterler
+Yardım
+Başlık
+Biçim
+Ekle</p>
+
+<p id="mwAQo">Alaca karanlık içinde sivri, siyah bir kayanın müphem hayali gibi yükselen Şalgo burcu uyanıktı. Vakit vakit inlettiği trampete, boru seslerini akşamın hafif rüzgarı, derin bir uğultu halinde, her tarafa yayıyor... Kederli bağırışmalarıyla ölümü hatırlatan küfürbaz karga sürüleri, bulutlu havanın donuk hüznünü daha beter artırıyordu. Mor dağlar gittikçe koyulaşıyordu. Yamaçlardaki dağınık gölgeler, kuşsuz ormanlar, hıçkıran dereler, kaçan yollar, ıssız korular, sanki korkunç bir fırtınanın gürlemesini bekliyorlardı.</p>
+
+<p id="mwAQs">Burcun tepesinde, beyazlı siyahlı bir bayrak, can çekişen bir kartal ıstırabıyla kıvranıyordu.</p>
+
+<p id="mwAQw">İkibin kişilik muhâsara ordusunun çadırları, kaleye giren geniş yolun sağındaki büyük dişbudak ağaçlarının etrafına kurulmuştu. Yerlere kazıklanmış kır atlar, yabancı korkular duyuyorlar gibi, sık sık başlarını kaldırarak kişniyorlar, tırnaklarıyla kazmaya çalıştıkları toprakların nemli çimenlerini otluyorlardı. Dallarda kırmızı çullar, sırmalı eğerler asılı duruyordu. Cemâatle kılınmış akşam namazından dağılan askerler, çadırların arasından gürültü ile geçiyorlardı. Kısa emirler, çağırılan isimler, bir kahkaha, bir söz... Başlayacak sükûnu bozuyor, atların yanında itişen birkaç gencin şen nâraları duyuluyordu. Çifte direkli yeşil çadırın kapısı önüne serilmiş büyük bir kaplan postu üzerinde kehribar çubuğunu fosur fosur çeken koca bıyıklı, iri vücutlu, ateş nazarlı şâir kumandan, gözlerini, alacağı kalenin sallanan bayrağına dikmişti. Karşısında diz çökmüş kethüdâsının anlattıklarını dinliyordu. Ordugâha yarım saat evvel dört nala gelen bu adam, yaşlı, şişman bir askerdi. İşte kaç hafta oluyor, kumandanının "Göndersdref Baronu Erasm Tofl'u beraber vurmak" teklifini hâvî mektubunu, tek başına, Hadım Ali Paşa'ya götürmüştü. Ama, paşa çok meşguldü. Vakit bulup cevap verememişti. Dregley kalesini sarıyordu. Muhâsaranın iptidâsından nihayetine kadar hazır bulunan kethüdâ, şimdi orada gördüklerini söylüyordu; bu kale gayet sarp, gayet dik, bir kayanın zirvesine yapılmıştı. Arslan Bey sordu:</p>
+<dl id="mwAQ0"><dd id="mwAQ4"><span typeof="mw:Entity" id="mwAQ8">—</span> Bizim kaleden daha yüksek mi?</dd>
+<dd id="mwARA"><span typeof="mw:Entity" id="mwARE">—</span> Daha yüksek beyim.</dd></dl>
+<p id="mwARI">Kumandanın ``bizim kale´´ dediği, henüz çırpınan bayrağına hasretle baktığı Şalgo burcu idi. Fakat o, burasını birkaç gün içinde zaptedeceğini iyice biliyordu. Daha birkaç hafta evvel Boze kulesinde hücumlarına karşı durmak isteyen Andrenaki, Mihal Terşi, Etiyen Soşay, nasıl kendisine kuleyi teslim etmişler; nasıl kahramanlığını, cesaretini alkışlayarak, lütfuna teşekkürler ederek çekilip gitmişlerdi...</p>
+<dl id="mwARM"><dd id="mwARQ"><span typeof="mw:Entity" id="mwARU">—</span> Ben, bir kalenin karşısında çok duramam dedi, hiç sabrım yoktur. Ama Ali Paşa, çok sabırlı... M<span typeof="mw:Entity" id="mwARY">â</span>şallah!</dd></dl>
+<p id="mwARc">Kethüd<span typeof="mw:Entity" id="mwARg">â</span> başını kaldırdı:</p>
+<dl id="mwARk"><dd id="mwARo"><span typeof="mw:Entity" id="mwARs">—</span> O da sabırsız... Ama, ne yapsın? Dregley, pek yalçın, pek sarp... Borsem dağları içinde baş kale bu imiş diyorlar.</dd>
+<dd id="mwARw"><span typeof="mw:Entity" id="mwAR0">—</span> Paşa, muhafızlara evvel<span typeof="mw:Entity" id="mwAR4">â</span> teslim teklif etmedi mi?</dd>
+<dd id="mwAR8"><span typeof="mw:Entity" id="mwASA">—</span> Etti.</dd>
+<dd id="mwASE"><span typeof="mw:Entity" id="mwASI">—</span> Kabul etmediler mi?</dd>
+<dd id="mwASM"><span typeof="mw:Entity" id="mwASQ">—</span> Hayır, etmediler.</dd>
+<dd id="mwASU"><span typeof="mw:Entity" id="mwASY">—</span> Kalenin kumandanı kimdi?</dd>
+<dd id="mwASc"><span typeof="mw:Entity" id="mwASg">—</span> Zondi isminde bir kahraman...</dd>
+<dd id="mwASk"><span typeof="mw:Entity" id="mwASo">—</span> Ben onların kahramanlıklarını bilirim. Verdikleri sözü tutmazlar.. <i id="mwASs">Vire</i>yi bozarlar. Elçiye hakaret ederler.</dd>
+<dd id="mwASw"><span typeof="mw:Entity" id="mwAS0">—</span> Hayır, Arslan Bey, Zondi bildiklerinizden değil. Çok mert bir adam.</dd>
+<dd id="mwAS4"><span typeof="mw:Entity" id="mwAS8">—</span> Paşa, teslim teklifini kiminle gönderdi?</dd>
+<dd id="mwATA"><span typeof="mw:Entity" id="mwATE">—</span> Papaz Marten Uruçgalo ile...</dd>
+<dd id="mwATI"><span typeof="mw:Entity" id="mwATM">—</span> Ne ise... Türk elçi gönderseydi, mutlaka kafasını keserler, bedenlerden aşağı fırlatırlardı.</dd>
+<dd id="mwATQ"><span typeof="mw:Entity" id="mwATU">—</span> Paşa, Türk elçisi gönderseydi, Zondi, bunu yapmazdı.</dd>
+<dd id="mwATY"><span typeof="mw:Entity" id="mwATc">—</span> Ne biliyorsun?</dd>
+<dd id="mwATg"><span typeof="mw:Entity" id="mwATk">—</span> Papaz Marten'e söylediği sözlerden anladım.</dd>
+<dd id="mwATo"><span typeof="mw:Entity" id="mwATs">—</span> Ne demiş?</dd>
+<dd id="mwATw"><span typeof="mw:Entity" id="mwAT0">—</span> Demiş ki: "Git, paşaya söyle. Bana teslim teklif etmesin. Bir askere bundan büyük hakaret olamaz. O nasıl harp adamı ise, ben de harp adamıyım. Ya ölürüm, ya galip gelirim. Ama, görüyorum ki, benim işim bitti. O, durmasın, bütün kuvvetiyle hücum etsin. Ben mutlaka yıkılacak kalenin taşları altında kalmak isterim."</dd>
+<dd id="mwAT4"><span typeof="mw:Entity" id="mwAT8">—</span> S<span typeof="mw:Entity" id="mwAUA">â</span>hi, namuslu bir askermiş...</dd></dl>
+<p id="mwAUE">Kethüd<span typeof="mw:Entity" id="mwAUI">â</span>:</p>
+<dl id="mwAUM"><dd id="mwAUQ"><span typeof="mw:Entity" id="mwAUU">—</span> Yalnız namuslu bir asker değil, Arslan Bey, dedi, hem de gayet <span typeof="mw:Entity" id="mwAUY">â</span>licenap bir mert...</dd>
+<dd id="mwAUc"><span typeof="mw:Entity" id="mwAUg">—</span> Nasıl?</dd>
+<dd id="mwAUk"><span typeof="mw:Entity" id="mwAUo">—</span> Bakın anlatayım. Papaz Marten, ordug<span typeof="mw:Entity" id="mwAUs">â</span>ha red haberini getirmek için dönerken, Zondi, onu tutmuş. Evvelce esir aldığı iki Türk delikanlısını yanına getirmiş. Bunlara gayet kıymetli erguvan<span typeof="mw:Entity" id="mwAUw">î</span> elbiseler giydirmiş. Ceplerini altınla doldurmuş. "Al bunları paşaya götür. Benimle beraber ölmelerini istemiyorum. Çok yiğit gençlerdir. Terbiyelerine dikkat etsin. Devletine iki büyük asker yetiştirmiş olur." demiş.</dd>
+<dd id="mwAU0"><span typeof="mw:Entity" id="mwAU4">—</span> S<span typeof="mw:Entity" id="mwAU8">â</span>hi, <span typeof="mw:Entity" id="mwAVA">â</span>licenap bir adammış...</dd>
+<dd id="mwAVE"><span typeof="mw:Entity" id="mwAVI">—</span> Sonra, elimize diri geçen esirlerden işittik; kalenin avlusuna silahlarını, gümüş takımlarını, en kıymetli eşyalarını yığarak yakmış. Ahırındaki muharebe atlarını, ağlayarak, kendi eliyle öldürmüş. Son hücumda bizim asker kalenin kapısını zorladı. Kırdı. Yeniçeriler, bir kurşunla yaralanan Zondi'yi diri diri yakalamaya çok çalıştılar. Ama mümkün olmadı. O, diz üstü sürünerek, her tarafı kılıçla, mızrakla delik deşik olup ölünceye kadar vuruştu.</dd>
+<dd id="mwAVM"><span typeof="mw:Entity" id="mwAVQ">—</span> Demek paşa bu mert düşmanla konuşamadı.</dd>
+<dd id="mwAVU"><span typeof="mw:Entity" id="mwAVY">—</span> Evet, konuşamadı. Vücuduyla kesik başını kalenin karşısına gömdürdü. Mezarının üstüne bir mızrak, bir bayrak dikilmesini emretti.</dd>
+<dd id="mwAVc"><span typeof="mw:Entity" id="mwAVg">—</span> Aşkolsun! Ben olsam bir türbe yaptırırım. Vall<span typeof="mw:Entity" id="mwAVk">â</span>hi...</dd></dl>
+<p id="mwAVo">Arslan Bey düşmanın cesurunu, kahramanını, yılmazını severdi. Onca harp bir mertlik sanatıydı. Düşman ordusundan kaçıp kendisine iltic<span typeof="mw:Entity" id="mwAVs">â</span> edenlere hiç aman vermez. "Hain her yerde haindir" diye hemen boynunu vurdururdu.
+Ortalık bütün bütün kararıyor, gece oluyordu.
+Kethüdâ, uzun uzadıya anlattığı Dregley kalesinin hikâyesini hâlâ bitiremiyordu. Yatsı namazı için abdest suyu taşıyan angaryacılar, meş'alelerle geçmeye başladılar. Arslan Bey, Şalgo'nun, ıslanmış, hasta, ateş böcekleri gibi sönük sönük parlayan ziyâlarına bakıyor, kethüdânın sözlerini işitmeyerek, kendi planını düşünüyordu. O biliyordu; düşmanların hepsi Zondi gibi, Plâs Batanyus gibi, Lozonci gibi kahraman değildi. İçlerinde tavşan kadar korkakları da vardı. Mesela; Seçeni kalesinin muhafızları, daha Ali Paşa yaklaşırken, toplarını, tüfeklerini, cephânelerini, erzaklarını, mallarını, hatta ihtiyarlarını, çocuklarını bırakıp bir kurşun atmadan kaçmışlardı. Birkaç güne kadar burası da alınınca Holloko, Boyak, Şağ, keparmat kaleleri kalıyordu. Ama Allah kerimdi.</p>
+<dl id="mwAVw"><dd id="mwAV0"><span typeof="mw:Entity" id="mwAV4">—</span> Hepsinin zaptı belki bir ay sürmez.</dd></dl>
+<p id="mwAV8">Diye mırıldandı. Kethüdâ, kumandanın ne düşündüğünden haberi yoktu, anlamadı. Sordu:</p>
+<dl id="mwAWA"><dd id="mwAWE"><span typeof="mw:Entity" id="mwAWI">—</span> Bu kalenin zaptı mı beyim?</dd>
+<dd id="mwAWM"><span typeof="mw:Entity" id="mwAWQ">—</span> Hayır, canım... Bu, birkaç günlük iş! Hele hava biraz kapansın... Fulek'e kadar dört beş kale var... Onların hepsini diyorum.</dd>
+<dd id="mwAWU"><span typeof="mw:Entity" id="mwAWY">—</span> Bir ayda dört beş kale... Bu güç beyim.</dd>
+<dd id="mwAWc"><span typeof="mw:Entity" id="mwAWg">—</span> Niçin?</dd>
+<dd id="mwAWk"><span typeof="mw:Entity" id="mwAWo">—</span> Daha bu kaleye bir tüfek atılmamış... Ben attan inerken yoldaşlar söylediler.</dd>
+<dd id="mwAWs"><span typeof="mw:Entity" id="mwAWw">—</span> Ben, burasını, bir kurşun atmadan alacağım.</dd>
+<dd id="mwAW0"><span typeof="mw:Entity" id="mwAW4">—</span> Nasıl beyim?</dd>
+<dd id="mwAW8"><span typeof="mw:Entity" id="mwAXA">—</span> Senin aklın ermez. Hava biraz kapansın, görürsün...</dd>
+<dd id="mwAXE"><span typeof="mw:Entity" id="mwAXI">—</span> Hiç topa tutmadan hücum mu edeceğiz?</dd>
+<dd id="mwAXM"><span typeof="mw:Entity" id="mwAXQ">—</span> Hayır.</dd>
+<dd id="mwAXU"><span typeof="mw:Entity" id="mwAXY">—</span> Ya ne yapacağız?</dd>
+<dd id="mwAXc"><span typeof="mw:Entity" id="mwAXg">—</span> Havanın kapanmasını bekle, dedim ya... Göreceksin.</dd>
+<dd id="mwAXk"><span typeof="mw:Entity" id="mwAXo">—</span><span typeof="mw:DisplaySpace" id="mwAXs"> </span>!<span typeof="mw:DisplaySpace" id="mwAXw"> </span>!<span typeof="mw:DisplaySpace" id="mwAX0"> </span>!</dd></dl>
+<p id="mwAX4">Arslan Bey, planlarını en yakın adamlarından bile saklardı. "Yerin kulağı var." derdi. Ağzından çıkan bir sır mutlaka işitilecekti. Kethüdâ gibi bu sessiz, bu mânasız beklemeden bütün askerler sıkılıyorlar, bir şey anlamıyorlardı. Kumandanın imdat, cephâne, top beklediği söyleniyordu. İhtiyar sipâhîler: "Biz burasını imdat gelmeden alamaz mıyız? İki top yetmez mi? Ne duruyoruz?" diye çadırlarında dedikodu yapıyorlardı. Buraya gelindiği günden beri askere istirahat ettiren Arslan Bey, her sabah erkenden atına biniyor, tek başına gerilerdeki ormanların içine dalıyor, saatlerce kalıyor, gülerek dönüyor:</p>
+<dl id="mwAX8"><dd id="mwAYA"><span typeof="mw:Entity" id="mwAYE">—</span> Hava bozmayacak mı? Ah, biraz sis olsa...</dd></dl>
+<p id="mwAYI">Diye gözlerini gökten, kalenin sallanan bayrağından ayıramıyordu. İşte kethüdânın getirdiği mektupta Ali Paşa da, teklifini kabul ediyordu. Onunla birleşince ordusu yedibin kişi kadar olacaktı. O vakit şüphesiz Tofeli, Pallaviçini'yi diri diri esir tutabilecekti.</p>
+
+<p id="mwAYM">Koyu karanlık içinden, uzaktan uzağa, Şalgo burcundaki nöbetçilerin attıkları acı nâralar, acı köpek ulumaları işitiliyordu. Gökte hiç yıldız yoktu. Arslan Bey, hademesinin tuttuğu billûr bardaktaki yakut suyu içti. Yeniden doldurulan çubuğunu çekiyor, kethüdâsıyla öteden beriden konuşuyordu. Konuşurken düşündüğü hep kendi planıydı. Yine göğe dalmıştı. Birdenbire sordu:</p>
+<dl id="mwAYQ"><dd id="mwAYU"><span typeof="mw:Entity" id="mwAYY">—</span> Hava kapanıyor gibi, değil mi?</dd>
+<dd id="mwAYc"><span typeof="mw:Entity" id="mwAYg">—</span> Evet...</dd>
+<dd id="mwAYk"><span typeof="mw:Entity" id="mwAYo">—</span> Bakalım yarın...</dd>
+<dd id="mwAYs"><span typeof="mw:Entity" id="mwAYw">—</span> Hücum mu edeceğiz beyim?</dd>
+<dd id="mwAY0"><span typeof="mw:Entity" id="mwAY4">—</span> Hayır canım, hava bozsun, görürsün.</dd></dl>
+<p id="mwAY8">Kethüdâ yine bir şey anlamadı.</p>
+
+<center id="mwAZA">🙝🙟</center>
+
+<p id="mwAZE">Bir sabah...</p>
+
+<p id="mwAZI">Binlerce bacadan henüz tütmüş soğuk, nemli bir duman kadar koyu bir sis her tarafı kaplamıştı. Ordugâh, sancaklar, tuğlar, çadırlar, dişbudak ağaçları, atlar, hiç, hiçbir şey görünmüyordu. Evvelâ birbirlerini çağıranların sözleri duyuluyor, sonra iki hayal, ses yordamıyla bu beyaz karanlığın içinde buluşuyordu. Arslan Bey, atını hazırlamıştı. Yine yapyalnız, her günkü gittiği yere doğru kaybolacaktı.</p>
+
+<p id="mwAZM">O kadar neşeli idi ki...</p>
+
+<p id="mwAZQ">Bütün zâbitleri, çavuşları çağırttı. Hepsi hücum var sanıyordu. At dîvanı yapar gibi, bir ayağı yerde, bir ayağı özengide:</p>
+<dl id="mwAZU"><dd id="mwAZY"><span typeof="mw:Entity" id="mwAZc">—</span> Ağalar, dedi, bugün kaleyi alacağız. Ben iki saate kadar geleceğim. Şimdi hepiniz hazır olunuz.</dd></dl>
+<p id="mwAZg">Nihâyetleri görünmeyen beyaz, büyük sakalının çerçevelediği yüzü sis içinde muallâkta duruyor sanılan ihtiyar topçubaşı sordu:</p>
+<dl id="mwAZk"><dd id="mwAZo"><span typeof="mw:Entity" id="mwAZs">—</span> Siz gelmeden ben döğmeye başlayım mı, beyim?</dd></dl>
+<p id="mwAZw">Arslan Bey güldü:</p>
+<dl id="mwAZ0"><dd id="mwAZ4"><span typeof="mw:Entity" id="mwAZ8">—</span> Hayır... Senin iki topunun güllelerine ihtiyacımız yok. Yalnız bize çok gürültü yap.</dd>
+<dd id="mwAaA"><span typeof="mw:Entity" id="mwAaE">—</span> Nasıl gürültü beyim?</dd>
+<dd id="mwAaI"><span typeof="mw:Entity" id="mwAaM">—</span> Toplarını nafile yerinden kımıldatma. Topçularını kalenin bedenlerine doğru yaklaştır. Avazları çıktğı kadar ``heya, mola, yisa..´´ diye bağırt!</dd>
+<dd id="mwAaQ"><span typeof="mw:Entity" id="mwAaU">—</span> ......</dd>
+<dd id="mwAaY"><span typeof="mw:Entity" id="mwAac">—</span> Anlamıyor musun? Yalnız gürültü istiyorum.</dd>
+<dd id="mwAag"><span typeof="mw:Entity" id="mwAak">—</span> Pekala beyim.</dd></dl>
+<p id="mwAao">Sonra diğer zâbitlere döndü:</p>
+<dl id="mwAas"><dd id="mwAaw"><span typeof="mw:Entity" id="mwAa0">—</span> Siz de bütün askerlerinizi muharebe niz<span typeof="mw:Entity" id="mwAa4">â</span>mıyla bunlara yaklaştırın. Mümkün olduğu kadar çok gürültü yaptırın. ``Heya, mola...´´ çektirin, Angarya n<span typeof="mw:Entity" id="mwAa8">â</span>raları attırın. İş türküleri söylettirin.</dd></dl>
+<p id="mwAbA">İhtiyar topçubaşı gibi zâbitler de, çavuşlar da bu emirden bir şey anlamadılar. Fakat onlar anlamadan yapmasını pek iyi bilirlerdi.</p>
+<dl id="mwAbE"><dd id="mwAbI"><span typeof="mw:Entity" id="mwAbM">—</span> Başüstüne, başüstüne....</dd>
+<dd id="mwAbQ"><span typeof="mw:Entity" id="mwAbU">—</span> Haydi, ama çabuk...</dd>
+<dd id="mwAbY"><span typeof="mw:Entity" id="mwAbc">—</span> ......</dd></dl>
+<p id="mwAbg">Hepsi iki adım ayrılınca sisin içinde görünmez oldular. Arslan Bey, tepinen atına binince yuları tutan kethüdâsına:</p>
+<dl id="mwAbk"><dd id="mwAbo"><span typeof="mw:Entity" id="mwAbs">—</span> Sen de koş, yanına bir adam al, gerideki Değirmenli Çiftliği'nde biriktirdiğim elli mandayı hemen buraya sür. Burca giden yolun yanında hazır tut... Orada beni bekle. Haydi.</dd>
+<dd id="mwAbw"><span typeof="mw:Entity" id="mwAb0">—</span> Başüstüne...</dd>
+<dd id="mwAb4"><span typeof="mw:Entity" id="mwAb8">—</span> Ama çabuk....</dd>
+<dd id="mwAcA"><span typeof="mw:Entity" id="mwAcE">—</span> .....</dd></dl>
+<p id="mwAcI">Hızla mahmuzlanan azgın at şaha kalkarak sisin içine atıldı. Üzerindeki, sırmalı kaftanının etekleri altın kanatlara benzeyen Arslan Bey'le, esâtirî bir kuş gibi uçtu.</p>
+
+<p id="mwAcM">Biraz sonra....</p>
+
+<p id="mwAcQ">Nereden geldiği belli olmayan derin bir gürültü sis içinde kaynıyor, ileri geri yaklaşıyor, uzaklaşıyor, dalgalanıyordu. Kös, kalkan, boru sesleri at kişnemelerine karışıyor, alınan emirler, verilen kumandalar yüzlerce ağız tarafından ayrı ayrı tekrarlanıyordu. Bastıkları yerleri görmeyen askerler, harp nizâmında bağırışarak, duyduklarını tekrarlayarak, dirsekleriyle, kalkanlarıyla birbirlerine dokunarak duman içinde ilerliyorlardı.</p>
+
+<p id="mwAcU">Sağ taraftan topçuların ``Heya, mola´´ları işitiliyordu. Etrafını saran gürültüden hücumun başladığını kale de anladı. Boru, trampet, hurr<span typeof="mw:Entity" id="mwAcY">â</span> sesleri aksetmeye, tek tük tabanca, tüfek atılmaya başladı. Gözcüler kale bedenlerinin dibine kadar gidip geliyorlardı. Safların arasında, topçubaşının büyük bir lağım açtığı söyleniyordu.</p>
+
+<p id="mwAcc">Askerler, z<span typeof="mw:Entity" id="mwAcg">â</span>bitlerinin emriyle, oldukları yerlerde bağdaş kurmuş bekliyorlar, gürültü ediyorlardı.</p>
+
+<p id="mwAck">Nihayet, Arslan Bey, terden sırılsıklam olmuş atı ile duman içinde harp sıralarının arasında, adım adım göründü. Her adımda:</p>
+<dl id="mwAco"><dd id="mwAcs"><span typeof="mw:Entity" id="mwAcw">—</span> Yiğitlerim!... Sis açılmaya başladı mı, hemen susun. Hep birden ayağa kalkın, hücum edecek gibi durun. Ama, ileri gitmeyin. Ateş de açmayın. Ben düşmana teslim teklif edeceğim.</dd></dl>
+<p id="mwAc0">Diyordu. Topçuların, topçulara karışan angaryacıların ``Heya, mola´´ nâraları gittikçe ziyâdeleşiyor, büyüyor, tüyleri ürpertecek heyecanlı akislerle görünmeyen dağları, taşları inletiyordu.</p>
+
+<center id="mwAc4">🙝🙟</center>
+
+<p id="mwAc8">Öğleye doğru sis açılmaya başladı. Askerler, sallanan siyahlı beyazlı bayrağı ile Şalgo'yu bir hayal gibi gördüler. Sesler kesildi. Şimalden esen bir rüzgar dumanları dağıtıyor; gerilere, ormanlara doğru sürüyordu.</p>
+
+<p id="mwAdA">Artık herkes birbirini görüyordu.</p>
+
+<p id="mwAdE">Kaleye pek yaklaşılmıştı. Askerler, gözleriyle kumandanlarını aradılar. O, burç kapısına giden yolun gediğinde, atıyla dolaşıyordu. Gediğin önünde büyük bir manda sürüsü vardı. Burcun tepesinde, siperlerin arasında, kalkanlı, tüfekli adamlar geziniyordu.</p>
+
+<p id="mwAdI">Cesur Arslan Bey, kır atını ileriye sürdü. Kaleye yüz adım kadar yaklaştı. Arkasındaki kethüdâsıyla, genç tercüman koştular...</p>
+
+<p id="mwAdM">Gür sesiyle haykırdı:</p>
+<dl id="mwAdQ"><dd id="mwAdU"><span typeof="mw:Entity" id="mwAdY">—</span> Hey bre Şalgo muhafızları!... Ben, padişahımın dedesine sizin kralınızın memleketlerinden büyük yerler zaptetmiş, Bosna valisi Yahya Paşa'nın torunlarındanım. Ceddim Hamza Bali Bey, daha ondört yaşında iken sizin ordularınızı perişan etmiş, Viyana Muhasarası'nda, Viyenberg önünde şan almıştır. Ben, hangi kaleye gittimse geri dönmemişim, daha geçen gün iki küçük topla ``Boza´´ kulesini yerle bir ettim. Mihal Terşi, Etiyen Soşay, Andrenaki gibi kahramanlarınıza canlarını bağışladım. Vadiye çekildim. Geçip gitmeleri için yol verdim. Haydi gelin. Siz de teslim olun. Nafile yere kanınızı döktürmeyin...</dd></dl>
+<p id="mwAdc">Kale ile beraber bütün ordunun işittiği bu teklifi, tercüman, avazı çıktığı kadar bağırarak tekrarladı.</p>
+
+<p id="mwAdg">Derin bir sükut...</p>
+
+<p id="mwAdk">Arslan Bey'in atı duramıyor, şaha kalkıyor, sağa sola tepiniyor, kethüdâ dizgininden tutmaya çalışıyordu.</p>
+
+<p id="mwAdo">Burcun tepesinden bir cevap verdiler. Tercüman tekrarladı:</p>
+<dl id="mwAds"><dd id="mwAdw"><span typeof="mw:Entity" id="mwAd0">—</span> "Ne gibi şartlarla?"diyorlar, beyim.</dd></dl>
+<p id="mwAd4">Arslan Bey, deminkinden daha sert bir sesle haykırdı:</p>
+<dl id="mwAd8"><dd id="mwAeA"><span typeof="mw:Entity" id="mwAeE">—</span> Şartım filan yok. Biz teslim olanın canına kıymayız. Teslim olmazsanız, beş dakika sonra kalenin içinde bir canlı adam kalmaz. Karşınızdaki yolun gediği üzerinde gördüğünüz nedir? Anlamıyor musunuz? Babalarınızdan işitmediniz mi? Elli manda ile buraya getirdiğim bu topun iki güllesiyle binlerce Şalgo kuvvetinde olan İstanbul kaleleri tuzla buz oldu. İşte İstanbul'u alan bu top... Bir kere ateş edeceğim. İkinci atıma hacet yok. Ne kaleniz kalacak, ne de kendiniz. Acıyorum size...</dd></dl>
+<p id="mwAeI">Genç tercüman, bu sözleri, yine avazı çıktığı kadar tekrarlarken, bütün askerler, gözlerini yolun gediğine çevirdiler. Mandaların yanında, uzun, büyük, gayet büyük, gayet kalın, gayet siyah, gayet müthiş bir topun korkunç bir ejderha gibi uzandığını gördüler. Safların arasında sevinç sadâları yükseldi. Herkes Arslan Bey'in bir haftadır ne beklediğini şimdi anlıyordu. Demek bu top geliyormuş...</p>
+
+<center id="mwAeM">🙝🙟</center>
+
+<p id="mwAeQ">Biraz sonra...</p>
+
+<p id="mwAeU">Şalgo'nun tepesinde, şan, namus kefeni olan meş'um beyaz bayrak dalgalanıyordu. Demir kapılar açılmıştı. Korkudan sapsarı kesilen tuğlu kumandan, altın kılıçlı asilzâdeler, zırhlı şövalyeler, Arslan Bey'in önünde dize gelmişlerdi. Silahları alınan düşman ikişer ikişer bağlanıyor, takım takım ordugâhın arkasına götürülüyordu. Kalenin içindeki kıymetli şeylerden bir dağ ortada kabarıyor; al yeşil bayraklarla kalenin tepesine dolan askerler bağırışıyorlar, aralarındaki dervişler, bedenlerden sarkarak ezan okuyorlar, tekbir çekiyorlardı.</p>
+
+<p id="mwAeY">Teslim olan kumandanla erkânına Arslan Bey:</p>
+<dl id="mwAec"><dd id="mwAeg"><span typeof="mw:Entity" id="mwAek">—</span> Korkmayınız. Hayatınız bağışlanmıştır. Biz <i id="mwAeo">Vire</i>yi bozmayız. Gelin, size elli manda ile buraya getirdiğim topu seyrettireyim, dedi.</dd></dl>
+
+<p id="mwAes">Tercüman bunu tekrarlayınca, hepsi birbirlerine bakıştılar. Bu müthiş, bu korkunç, aleti yakından görmeyi hem merak ediyorlar, hem çekiniyorlardı. Arslan Bey'in arkasına takıldılar. Büyük topa doğru yürüdüler. Yaklaşınca Arslan Bey:</p>
+<dl id="mwAew"><dd id="mwAe0"><span typeof="mw:Entity" id="mwAe4">—</span> İşte, dedi, sizin böyle topunuz var mı?</dd></dl>
+<p id="mwAe8">Düşman kumandanı tercümanla cevap verdi:</p>
+<dl id="mwAfA"><dd id="mwAfE"><span typeof="mw:Entity" id="mwAfI">—</span> Hayır.</dd>
+<dd id="mwAfM"><span typeof="mw:Entity" id="mwAfQ">—</span> Niçin yapmıyorsunuz?</dd>
+<dd id="mwAfU"><span typeof="mw:Entity" id="mwAfY">—</span> Bilmiyoruz.</dd></dl>
+<p id="mwAfc">Genç irisi bir şövalye tercümana bir şey sordu. Arslan Bey:</p>
+<dl id="mwAfg"><dd id="mwAfk"><span typeof="mw:Entity" id="mwAfo">—</span> Ne diyor?</dd></dl>
+<p id="mwAfs">Dedi.</p>
+<dl id="mwAfw"><dd id="mwAf0"><span typeof="mw:Entity" id="mwAf4">—</span> "Bey bu topu kaç günde İstanbul'dan buraya getirmiştir?" diyor.</dd>
+<dd id="mwAf8"><span typeof="mw:Entity" id="mwAgA">—</span> Sen de ki: "İstanbul'dan getirmemiş. Burada bir hafta içinde kendisi yapmış."</dd></dl>
+<p id="mwAgE">Tercüman bu sözleri söyleyince esirler afallaştılar. Arslan Bey, daha ziyâde yaklaşıp elleriyle yoklamalarına, daha yakından görmelerine müsaade ettiğini söyledi. Mağrur kumandan, kahraman asilzâdeler, cesur şövalyeler, büyük topun etrafına toplandılar. Bir elini hançerinin elmas sapına dayayan Arslan Bey, öteki eliyle, gülümseyerek palabıyıklarını büküyor, arkasındaki kethüdâ, başını kaşıyarak gülmekten katılıyor, tercüman aptallaşıyordu. Yirmi adım uzakta duran mızraklı nöbetçiler de gülüşüyorlardı. Esirler topa ellerini sürdüler. Deliğini aradılar. Bulamayınca sarardılar. Sonra kızardılar. Birbirlerine bakıştılar. Öyle kaldılar. Kollarını çaprazlayarak yere bakan kale kumandanı titreyerek mırıldandı. Arslan Bey, tercümana baktı:</p>
+<dl id="mwAgI"><dd id="mwAgM"><span typeof="mw:Entity" id="mwAgQ">—</span> Ne diyor?</dd>
+<dd id="mwAgU"><span typeof="mw:Entity" id="mwAgY">—</span> "Bu mertlik değil..." diyor.</dd>
+<dd id="mwAgc"><span typeof="mw:Entity" id="mwAgg">—</span> Ona sor ki: "Henüz bir kere patlamayan bir toptan korkarak hemen teslim oluvermek mi mertlik?"</dd></dl>
+<p id="mwAgk">Tercüman sordu.</p>
+<dl id="mwAgo"><dd id="mwAgs"><span typeof="mw:Entity" id="mwAgw">—</span> .....</dd>
+<dd id="mwAg0"><span typeof="mw:Entity" id="mwAg4">—</span> .....</dd></dl>
+<p id="mwAg8">Kale kumandanı, gözlerini yerden kaldırıp cevap veremedi. Asilzâdeler, şövalyeler birbirlerinin yüzlerine bakmaya cesaret edemediler; âni bir ölüm darbesiyle vurulmuş gibi oldukları yerde donup kaldılar.</p>
+
+<p id="mwAhA">Bir güllesiyle kaleyi yıkacak olan bu korkunç top, siyaha boyanmış, kocaman bir kütükten başka bir şey değildi!...</p>
+
+<link rel="mw:PageProp/Category" href="./Kategori:Ömer_Seyfettin_hikayeleri" id="mwAhE"/></section>
+
+</div>
