@@ -49,7 +49,8 @@
           "cameraPermission": "Kitap sayfalarını çekip metne çevirmek için kamerayı kullanır.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "./plugins/withAndroidSigning"
     ]
   }
 }

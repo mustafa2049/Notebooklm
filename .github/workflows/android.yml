@@ -1,0 +1,147 @@
+name: Android APK
+
+# APK'yı GitHub'da derler. Yeni bir sürüm numarası (app.json) geldiğinde ve
+# imza anahtarı tanımlıysa GitHub Releases'a yayınlar: telefondan oradan
+# indirilip kurulur. Bkz. README → CI ve dağıtım.
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'app.json'
+      - 'CHANGELOG.md'
+      - 'plugins/**'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  # Telefondaki uygulamayı imzalayan sertifikanın SHA-256 özeti. Başka bir
+  # anahtarla imzalanan APK güncelleme olarak kurulamaz; yayınlanmasın.
+  EXPECTED_CERT_SHA256: 059c50dc78e9c49b6df348c6c20da120abf1948de9b714f95d723dec190bea0a
+
+jobs:
+  apk:
+    name: APK derle ve yayınla
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Sürüm ve imza durumu
+        id: info
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          VERSION=$(node -p "require('./app.json').expo.version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Sürüm $VERSION"
+
+      - name: Bağımlılıklar
+        run: npm ci
+
+      - name: Sürüm notları
+        run: node scripts/release-notes.mjs "${{ steps.info.outputs.version }}" > release-notes.md
+
+      - name: Android projesi
+        run: npx expo prebuild -p android --no-install
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: İmza anahtarı
+        if: steps.info.outputs.signed == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "HO_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+          echo "::add-mask::$KEYSTORE_PASSWORD"
+          echo "HO_KEY_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+
+      - name: APK (bütün işlemci mimarileri)
+        working-directory: android
+        env:
+          NODE_ENV: production
+        run: ./gradlew assembleRelease --no-daemon --console=plain
+
+      - name: Web derlemesi
+        run: |
+          npm run build:web
+          (cd dist && zip -qr "../hizli-okuma-web-${{ steps.info.outputs.version }}.zip" .)
+
+      - name: Dosyalar ve imza kontrolü
+        id: files
+        run: |
+          APK="hizli-okuma-${{ steps.info.outputs.version }}.apk"
+          cp android/app/build/outputs/apk/release/app-release.apk "$APK"
+          TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          CERT=$("$TOOLS/apksigner" verify --print-certs "$APK" | sed -n 's/.*certificate SHA-256 digest: //p' | head -1)
+          echo "İmza sertifikası: $CERT"
+          ls -l "$APK" "hizli-okuma-web-${{ steps.info.outputs.version }}.zip"
+          if [ "$CERT" = "$EXPECTED_CERT_SHA256" ]; then
+            echo "same_key=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "same_key=false" >> "$GITHUB_OUTPUT"
+            if [ "${{ steps.info.outputs.signed }}" = "true" ]; then
+              echo "::error::APK beklenen anahtarla imzalanmadı ($CERT). ANDROID_KEYSTORE_BASE64 gizli değerini kontrol et."
+              exit 1
+            fi
+          fi
+
+      - name: GitHub Releases'a yayınla
+        if: steps.info.outputs.signed == 'true' && steps.info.outputs.released == 'false' && steps.files.outputs.same_key == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.info.outputs.version }}"
+          gh release create "v$VERSION" \
+            "hizli-okuma-$VERSION.apk" "hizli-okuma-web-$VERSION.zip" \
+            --target "$GITHUB_SHA" \
+            --title "Hızlı Okuma $VERSION" \
+            --notes-file release-notes.md
+
+      # Yayınlanmayan derleme (imza yok ya da bu sürüm zaten yayında) yalnızca
+      # koşunun eki olarak kalır
+      - name: Derleme eki
+        if: steps.info.outputs.signed != 'true' || steps.info.outputs.released == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hizli-okuma-${{ steps.info.outputs.version }}-${{ steps.info.outputs.signed == 'true' && 'imzali' || 'imzasiz-deneme' }}
+          path: |
+            hizli-okuma-*.apk
+            hizli-okuma-web-*.zip
+          retention-days: 14
+
+      - name: İmza anahtarı yoksa açıklama
+        if: steps.info.outputs.signed != 'true'
+        run: |
+          echo "::warning::İmza anahtarı tanımlı değil: APK debug anahtarıyla imzalandı ve yayınlanmadı. Telefondaki uygulamanın üstüne kurulamaz."
+          echo "Depo ayarları → Secrets and variables → Actions bölümüne ANDROID_KEYSTORE_BASE64 ve ANDROID_KEYSTORE_PASSWORD eklenince bir sonraki sürüm yayınlanır."

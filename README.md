@@ -629,25 +629,44 @@ sessizce atlanıyor (CI kırmızıya düşmüyor) ve günlükte nedenini yazıyo
 Alternatif olarak Netlify'a depo doğrudan bağlanabilir; `netlify.toml` bunun için
 hazır duruyor.
 
+### APK: GitHub Releases
+
+`.github/workflows/android.yml` Android APK'sını GitHub'da derliyor (bütün
+işlemci mimarileri, boyut sınırı yok). `app.json`, `CHANGELOG.md`,
+`plugins/` ya da iş akışı değişince koşuyor; elle de başlatılabiliyor.
+
+- İki gizli değer tanımlıysa (**Settings → Secrets and variables → Actions**):
+  `ANDROID_KEYSTORE_BASE64` (imza anahtarının `.jks` dosyası, base64) ve
+  `ANDROID_KEYSTORE_PASSWORD`, APK bu anahtarla imzalanıyor ve sürüm
+  (`v<app.json sürümü>`) henüz yoksa **Releases**'a yayınlanıyor: APK, web
+  derlemesinin zip'i ve `CHANGELOG.md`'deki notlar. Telefondan Releases
+  sayfasını açıp APK'yı indirmek yeterli.
+- İmza sertifikasının özeti iş akışında yazılı; başka bir anahtarla imzalanan
+  APK yayınlanmıyor (telefondaki uygulamanın üstüne kurulamazdı).
+- Gizli değerler yoksa APK debug anahtarıyla imzalanıp yalnızca koşunun eki
+  olarak kalıyor (yalnızca deneme: telefondaki uygulamanın üstüne kurulamaz).
+
 ## Android APK'yı yerelde derlemek
 
 Paket adı `com.hizliokuma.app` (`app.json`). `android/` klasörü depoda yok;
-her derlemede `expo prebuild` ile üretiliyor.
+her derlemede `expo prebuild` ile üretiliyor. İmza ve Gradle belleği
+ayarlarını `plugins/withAndroidSigning.js` her `prebuild`'de kendisi yazıyor
+(elle düzenleme gerekmiyor).
 
 1. Android SDK: `platforms;android-36`, `build-tools;36.0.0`,
-   `ndk;27.1.12297006`, `cmake;3.30.5` (`sdkmanager` ile), `ANDROID_HOME` ayarlı.
+   `ndk;27.1.12297006`, `cmake;3.30.5` (`sdkmanager` ile), `ANDROID_HOME`
+   ayarlı; JDK 17 ya da 21.
 2. `npx expo prebuild -p android --no-install`
-3. İmza: kendi anahtarınla `android/app/build.gradle` içine `release`
-   imza ayarı ekle (anahtar dosyası `*.jks` git dışında). **Güncellemeler aynı
-   anahtarla imzalanmalı**, yoksa telefon eski sürümün üstüne kurmaz.
-4. `android/gradle.properties`: `reactNativeArchitectures=arm64-v8a`
-   (2017 sonrası telefonların hemen hepsi; eski 32-bit telefonlar için
-   `armeabi-v7a` eklenir) ve `expo.useLegacyPackaging=true` (yerel
-   kütüphaneler sıkıştırılır). Böyle APK ~29 MB; iki mimariyle ve
-   sıkıştırmasız ~59 MB. R8 küçültmesi (`android.enableMinifyInReleaseBuilds`)
-   20 MB'a indiriyor ama telefonda denenmediği için kapalı bırakıldı.
-5. `cd android && ./gradlew assembleRelease` →
-   `android/app/build/outputs/apk/release/app-release.apk`
+3. İmza anahtarı ortam değişkenlerinden: `HO_KEYSTORE_PATH` (anahtar
+   dosyası, `*.jks` git dışında), `HO_KEY_PASSWORD`, isteğe bağlı
+   `HO_KEY_ALIAS` (varsayılan `hizliokuma`). Yoksa debug anahtarı.
+   **Güncellemeler aynı anahtarla imzalanmalı**, yoksa telefon eski sürümün
+   üstüne kurmaz.
+4. `cd android && ./gradlew assembleRelease` →
+   `android/app/build/outputs/apk/release/app-release.apk`. Yalnızca 64-bit
+   telefonlar için daha küçük APK: `-PreactNativeArchitectures=arm64-v8a
+   -Pexpo.useLegacyPackaging=true` (~30 MB; dört mimariyle ve sıkıştırmasız
+   çok daha büyük).
 
 Telefona kurmak için APK'yı telefona at, açınca "bilinmeyen kaynaklardan
 yükleme" iznini ver.

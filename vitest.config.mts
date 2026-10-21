@@ -21,8 +21,9 @@ export default defineConfig({
       'src/content/**/*.test.ts',
       'src/backup/**/*.test.ts',
       'src/appearance/**/*.test.ts',
-      // Derleme betikleri (service worker listesi)
+      // Derleme betikleri (service worker listesi, sürüm notları, sözlük) ve Expo eklentileri
       'scripts/**/*.test.mjs',
+      'plugins/**/*.test.mjs',
     ],
     environment: 'node',
   },
