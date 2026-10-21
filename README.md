@@ -129,15 +129,19 @@ Hepsi okuyucudaki **Aa** sayfasında ve Ayarlar → Okuma görünümünde.
 - **Satır odağı** (Sayfa modu, web'de L; ↓/boşluk ve ↑): okunan 1 ya da 3
   satırın dışı karartılır. Sağa dokununca bant bir satır iner, sol kenara
   dokununca çıkar; sayfa bitince sayfa döner, geri çevrilince önceki sayfanın
-  son satırlarından başlar. Kaydırma yine sayfa çevirir; tempo rehberi
-  oynarken bant gizlenir. Satırlar paragrafların ölçülen yüksekliğinden
-  bulunuyor (`src/core/lineFocus.ts`).
+  son satırlarından başlar. Kaydırma yine sayfa çevirir. Tempo rehberi
+  oynarken bant vurgulanan parçanın satırını izler (1 satırlık bantta o satır,
+  3 satırlıkta ortada); rehber durunca bant olduğu yerde kalır. Satırlar
+  paragrafların ölçülen yüksekliğinden, rehberin satırı web'de karakter
+  kutusundan, telefonda `onTextLayout` satırlarından bulunuyor
+  (`src/core/lineFocus.ts`, testli).
 - **Sade tam ekran** (başlıktaki köşe simgesi, web'de T): menüler ve durum
-  çubuğu gizlenir. Sayfa modunda ekranın ortasına dokununca menüler gelir,
-  kenarlar sayfa (satır odağı açıksa satır) çevirir; diğer modlarda okuma
-  duraklayınca görünür. Menüler metnin üstüne bindiği için açıp kapatmak
-  sayfaları yeniden kurmaz. Android'de gezinme çubuğu gizlenmez (ek yerel paket
-  gerektirir).
+  çubuğu gizlenir; Android'de alttaki gezinme çubuğu da (`expo-navigation-bar`)
+  — ekranın kenarından kaydırınca kısa süre görünür, okuyucudan çıkınca geri
+  gelir. Sayfa modunda ekranın ortasına dokununca menüler gelir, kenarlar
+  sayfa (satır odağı açıksa satır) çevirir; diğer modlarda okuma duraklayınca
+  görünür. Menüler metnin üstüne bindiği için açıp kapatmak sayfaları yeniden
+  kurmaz.
 - **Kelimeye bas, anlamı gör**: kelimeye uzun basınca TDK anlamı doğrudan
   açılır (eskiden cümle ve kelime seçmek gerekiyordu). Cümlenin kelimeleri
   çip olarak gelir — başka bir kelimeye tek dokunuşla geçilir. Buradan
@@ -147,6 +151,23 @@ Hepsi okuyucudaki **Aa** sayfasında ve Ayarlar → Okuma görünümünde.
   satır ölçülerinden (`onTextLayout`) ve harf genişliği tahmininden
   (`src/core/wordHit.ts`, testli). Diğer modlarda ekrandaki kelime açılır.
   Boşluğa basınca eski araç paneli açılır.
+- **Kelimenin okunuşunu dinle**: kelime sayfasında kelimenin yanındaki
+  hoparlör kelimeyi, "Cümleyi dinle" geçtiği cümleyi cihazın Türkçe sesiyle
+  biraz yavaş okur. Türkçe ses yoksa varsayılan sesle okunduğu, hiç ses
+  yoksa bulunamadığı yazılır; dinleyerek okuma sürüyorsa önce o durur
+  (`src/reader/voices.ts`).
+- **Defterdeki kelimeleri işaretle** (varsayılan açık; Sayfa ve Kaydırma
+  modları): kelime defterindeki kelimelerin altı metinde vurgu renginde
+  noktalı çizgiyle çizilir, çekimli hâlleri de — "kitabı" kaydedildiyse
+  "kitaplarımızda" da. Kaydederken sözlüğün madde başı saklanır; metindeki
+  kelimenin ekleri soyularak bulunan köklerinden biri defterdeyse işaretlenir
+  (`src/core/vocabMarks.ts`, testli). Kısa köklerde yanlış eşleşme çok olduğu
+  için ("yöntemdir" de "yön"e iner) kökten eşleştirme en az dört harflik
+  adlarla ve kökü en az üç harflik mastarlarla yapılır; daha kısa kelimeler
+  yalnızca aynen geçtiğinde işaretlenir. İşaretli kelimeye uzun basınca kelime
+  sayfası defterdeki kaydı ve notu gösterir, yeniden kaydetmek o kaydı
+  günceller. Android çizginin rengini ve biçimini desteklemediği için orada
+  yazı renginde düz çizgi olur.
 - **Zor sayfayı sadeleştir** (yapay zekâ tanımlıysa; Sayfa modunda alt
   çubukta "Sade"): okunan sayfa (diğer modlarda okunan paragraf, uzunsa
   çevresindeki cümleler) kısa cümlelerle, günlük kelimelerle yeniden yazılır;
@@ -154,8 +175,9 @@ Hepsi okuyucudaki **Aa** sayfasında ve Ayarlar → Okuma görünümünde.
   saklanır, aynı yer için ikinci kez ödeme yapılmaz.
 
 Doğrulama: hepsi tarayıcıda (360 px) denendi; sadeleştirme sahte bir yapay
-zekâ sunucusuyla. Telefonda kelime bulmanın isabeti, durum çubuğunun
-gizlenmesi ve genel görünüm cihazda denenmedi.
+zekâ sunucusuyla, dinleme tarayıcının konuşma arayüzü taklit edilerek.
+Telefonda kelime bulmanın isabeti, rehberin satırı, durum ve gezinme
+çubuğunun gizlenmesi, seslendirme ve genel görünüm cihazda denenmedi.
 
 ## Arama ve yer imleri
 
@@ -531,6 +553,8 @@ olarak ekleniyor). Antrenman sekmesinden açılan defterde iki görünüm var: l
 ve tekrar. Tekrar aralığı basit ve açıklanabilir: bilinen kelime her doğru
 tekrarda iki kat uzun aralıkla (1, 2, 4, 8… gün, en çok 30 gün), bilinmeyen
 kelime aynı gün içinde yeniden soruluyor (`src/train/review.ts`, testli).
+Kaydedilen kelimeler okurken metinde işaretli (bkz. Okumayı kolaylaştıran
+araçlar); bunun için kayda sözlüğün madde başı da yazılıyor.
 
 ### TDK sözlüğü
 
@@ -657,6 +681,19 @@ anda indiriyor, hiç PDF açmayan hiç indirmiyor.
 Disleksi dostu yazı tipinin yalnızca kullanılan iki ağırlığı (normal, kalın)
 pakete giriyor: paketin kökünden içe aktarmak 14 dosyanın hepsini (~700 KB)
 ekliyordu.
+
+## Hata günlüğü
+
+Ayarlar → Hata günlüğü: uygulamada yakalanmamış hatalar (telefonda genel hata
+yakalayıcı, web'de `error` ve `unhandledrejection`) ve ekran çizim hataları
+cihazda saklanır — en çok 50 kayıt, aynı hata 2 saniye içinde tekrar
+yazılmaz, yedeğe girmez. "Paylaş" uygulama sürümü, platform ve her hatanın
+zamanı, ekranı, iletisi ve yığınıyla düz metin hazırlar (telefonda paylaşım
+menüsü, web'de panoya kopyalanır); okunan metinler gitmez
+(`src/core/errorLog.ts`, testli). Bir ekran çizilirken patlarsa beyaz ekran
+yerine "Bir şeyler ters gitti" ekranı çıkar: Tekrar dene, Ana ekrana dön,
+Günlüğü paylaş. Tarayıcıda denendi; telefondaki genel hata yakalayıcı cihazda
+denenmedi.
 
 ## Veri
 
