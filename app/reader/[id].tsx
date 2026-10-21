@@ -1,3 +1,4 @@
+import { NavigationBar } from 'expo-navigation-bar';
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -1141,6 +1142,8 @@ function Reader({
     <View style={{ flex: 1, backgroundColor: theme.colors.bg, paddingTop: immersive ? 0 : insetTop }}>
       {/* Durum çubuğu okuma temasına uysun (sepya zeminde açık renk yazı kaybolur); tam ekranda gizli */}
       <StatusBar style={theme.dark ? 'light' : 'dark'} hidden={immersive} />
+      {/* Android'de tam ekranda alttaki gezinme çubuğu da gizli; kenardan kaydırınca kısa süre görünür */}
+      <NavigationBar hidden={immersive} />
       {immersive ? null : headerBar}
 
 

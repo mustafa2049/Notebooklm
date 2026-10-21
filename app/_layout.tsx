@@ -3,6 +3,7 @@
 import { AtkinsonHyperlegibleNext_400Regular } from '@expo-google-fonts/atkinson-hyperlegible-next/400Regular';
 import { AtkinsonHyperlegibleNext_700Bold } from '@expo-google-fonts/atkinson-hyperlegible-next/700Bold';
 import { useFonts } from 'expo-font';
+import { NavigationBar } from 'expo-navigation-bar';
 import { Stack, usePathname, useRouter, type ErrorBoundaryProps } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
@@ -103,6 +104,10 @@ function RootStack() {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.bg }}>
       <StatusBar style={theme.dark ? 'light' : 'dark'} />
+      {/* Android gezinme çubuğu varsayılanda görünür. Okuyucu tam ekranda gizler;
+          bu taban kayıt olmasa okuyucudan çıkınca gizli kalıyordu (paket, yığın
+          boşalınca son değeri yeniden uyguluyor). Web ve iOS'ta bileşen boş. */}
+      <NavigationBar hidden={false} />
       <Stack
         screenOptions={{
           headerShown: false,
