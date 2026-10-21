@@ -5,6 +5,7 @@ import { useSettings } from '@/store/SettingsContext';
 import { listVocab, removeVocab, updateVocab, type VocabEntry } from '@/storage/vocab';
 import { applyReview, dueCount, sortForReview } from '@/train/review';
 import { Button, Card, Chip, Divider, IconButton, Screen, Txt } from '@/ui/primitives';
+import { ExportButtons } from '@/ui/ExportButtons';
 import { VocabGame } from '@/ui/VocabGame';
 
 /**
@@ -96,6 +97,12 @@ export default function VocabScreen() {
             />
             <Chip label="Oyun" active={mode === 'game'} onPress={() => setMode('game')} />
           </View>
+
+          {mode === 'list' ? (
+            <View style={{ marginBottom: theme.space(4) }}>
+              <ExportButtons kinds={['anki', 'notlar']} />
+            </View>
+          ) : null}
 
           {mode === 'list'
             ? entries.map((entry) => (

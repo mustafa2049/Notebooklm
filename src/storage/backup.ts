@@ -12,6 +12,7 @@ import {
 } from '@/backup/format';
 import { readText, writeText } from './blobStore';
 import { listDocuments } from './documents';
+import { shareFile } from '@/ui/shareFile';
 
 /**
  * Yedeği depodan toplama, dosyaya yazma ve geri yükleme. Biçim ve birleştirme
@@ -43,38 +44,12 @@ export async function buildBackup(now = Date.now()): Promise<Backup> {
  */
 export async function exportBackup(): Promise<{ fileName: string; bytes: number }> {
   const now = Date.now();
-  const json = JSON.stringify(await buildBackup(now));
-  const fileName = backupFileName(now);
-
-  if (Platform.OS === 'web') {
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    return { fileName, bytes: blob.size };
-  }
-
-  const [{ File, Paths }, Sharing] = await Promise.all([
-    import('expo-file-system'),
-    import('expo-sharing'),
-  ]);
-  const file = new File(Paths.cache, fileName);
-  if (file.exists) file.delete();
-  file.create();
-  file.write(json);
-  if (!(await Sharing.isAvailableAsync())) {
-    throw new Error('Bu cihazda paylaşım kullanılamıyor.');
-  }
-  await Sharing.shareAsync(file.uri, {
+  return shareFile({
+    fileName: backupFileName(now),
+    content: JSON.stringify(await buildBackup(now)),
     mimeType: 'application/json',
     dialogTitle: 'Yedeği kaydet',
   });
-  return { fileName, bytes: json.length };
 }
 
 /** Dosya seçtirir ve yedek olarak doğrular. Vazgeçilirse `null`. */

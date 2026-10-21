@@ -5,6 +5,7 @@ import { useSettings } from '@/store/SettingsContext';
 import { listDocuments } from '@/storage/documents';
 import { deleteHighlight, listHighlights, type Highlight } from '@/storage/highlights';
 import { deleteRecall, listRecalls, type Recall } from '@/storage/recalls';
+import { ExportButtons } from '@/ui/ExportButtons';
 import { Button, Card, IconButton, Screen, Txt } from '@/ui/primitives';
 import { shareQuoteCard } from '@/ui/shareReport';
 
@@ -126,9 +127,13 @@ export default function HighlightsScreen() {
         </Card>
       ) : (
         <View style={{ gap: theme.space(5) }}>
-          <Txt variant="dim">
-            {items.length} alıntı{recalls.length ? ` · ${recalls.length} özet` : ''} · {groups.length} metin
-          </Txt>
+          <View style={{ gap: theme.space(2) }}>
+            <Txt variant="dim">
+              {items.length} alıntı{recalls.length ? ` · ${recalls.length} özet` : ''} · {groups.length} metin
+            </Txt>
+            {/* Alıntılar, notlar, özetler ve kelime defteri tek Markdown dosyasında */}
+            <ExportButtons kinds={['notlar']} />
+          </View>
           {groups.map((group) => (
             <View key={group.docId} style={{ gap: theme.space(2) }}>
               <Txt variant="heading" numberOfLines={2}>

@@ -14,6 +14,7 @@ import { AiSettings } from '@/ui/AiSettings';
 import { AppearancePanel } from '@/ui/AppearancePanel';
 import { BackupCard } from '@/ui/BackupCard';
 import { ErrorLogCard } from '@/ui/ErrorLogCard';
+import { ExportButtons } from '@/ui/ExportButtons';
 import { InstallCard } from '@/ui/InstallCard';
 import { Slider } from '@/ui/Slider';
 import {
@@ -378,6 +379,12 @@ export default function SettingsScreen() {
           sunucuya gönderilmez.
         </Txt>
         <BackupCard />
+        <Divider />
+        <Txt variant="dim">
+          Alıntılarını, notlarını, özetlerini ve kelime defterini okunabilir bir dosya olarak al;
+          kelimeleri Anki'ye aktarıp orada da çalışabilirsin.
+        </Txt>
+        <ExportButtons kinds={['notlar', 'anki']} />
         <Divider />
         <Button
           label={cleared ? 'İstatistikler silindi' : 'İstatistikleri sıfırla'}
