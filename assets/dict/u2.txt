@@ -1,0 +1,409 @@
+üce	isim	Yüce
+ücra	sıfat	çok Uçta, kenarda veya kıyıda köşede olan
+ücret	isim	[ekonomi] iş gücünün karşılığı olan ve çalışanlara yaptıkları işin bedeli olarak ödenen para veya mal, emeğin bedelikiralanan veya satın alınan bir şey için ödenen para, ödeyiş
+ücretlendirme	isim	Ücretlendirmek işiPosta işlemlerinde taşıma ücretlerinin önceden ödenmesi
+ücretlendirmek	fiil	Bir malın, bir işin ücretini belirlemek rayicini tayin etmek
+ücretli	isim	ücretle çalıştırılan kişi
+ücretli	sıfat	ücret karşılığı yapılan
+ücretlilik	isim	ücretlinin yaşama biçimiiş gücünün veya emeğin ücretle karşılanması
+ücretsiz	sıfat	bir karşılık ödemeden alınan
+ücretsiz	zarf	[para] parasız olarak
+üfelemek	fiil	[halk ağzı] ufalamak.[Giresun ağzı] ovmak.[Sivas ağzı] üflemek.[Gaziantep ağzı] azarlamak.
+üfleme	isim	Üflemek işi
+üflemek	fiil	[fizyoloji] Dudakları büzerek soluğu bir şey üzerine hızla vermek.Yanmakta olan bir şeyi söndürmek veya canlandırmak için soluk vermek.[müzik] Nefesli çalgıları çalmak.[argo, cinsel ilişki] sikmek.[argo] esrar tüketmek.
+üflemeli	sıfat	[müzik aletleri] Üflenerek çalınan çalgı.
+üflenme	isim	Üflenmek işi
+üflenmek	fiil	Üflemek işi yapılmak
+üfleyici	isim	Üfleyen kimse
+üfleç	isim	kaynak yapımında, metalleri kesme ve eritme işlemlerinde kullanılan, alev püskürten araç, hamlaçlaboratuvarlarda yüksek sıcaklık elde edilen araç, hamlaç
+üful	isim	(yıldız için) BatmaÖlme
+üfunetli	sıfat	Içinde irin, cerahat olan
+üfunetsiz	sıfat	Içinde irin, cerahat olmayan
+üfürme	isim	Üfürmek işi
+üfürmek	fiil	ÜflemekÜfleyerek bulunduğu yerden uzaklaştırmakEsmekÜfleyerek çalmak
+üfürük	isim	üfürülerek verilen soluküfürükçülerin hastaların üstüne okuyarak üfürdükleri soluk
+üfürükçü	isim	okuyup üfleyerek hastalıkları iyileştirdiğine inanılan kimse
+üfürükçülük	isim	üfürükçünün işi
+üfürülmek	fiil	şişmek, kabarmak
+üfürüm	isim	[tıp, kardiyoloji] Kalpte gürültülü veya türbülanslı kan akımına bağlı olarak çıkan normal dışı ses.
+ülek	isim	[halk ağzı, Kırşehir ağzı] testi
+ülek	sıfat	[halk ağzı, Elazığ ağzı] geniş
+ülen	isim	ulan
+üleş	isim	pay[halk ağzı, Andırın ağzı, Düziçi ağzı] ölmüş hayvan leşi
+üleşme	isim	üleşmek işi
+üleşmek	fiil	bölüşmek, paylaşmak
+üleştirilme	isim	Üleştirilmek işi
+üleştirilmek	fiil	Pay edilmek, üleşilmek
+üleştirim	isim	Üleştirme
+üleştirimli	sıfat	Üleştirime ilişkin
+üleştirme	isim	üleştirmek işi, bölüştürme, dağıtma, tevzi
+üleştirmek	fiil	pay ederek dağıtmak, bölüştürmekherkesin payını kendisine vermek, bölüp dağıtmak, tevzi etmek
+ülfet	isim	alışmatanışma, görüşmedostluk, ahbaplık
+ülger	isim	[bitki anatomisi] şeftali vb.nin üzerinde bulunan ince tüyhav[edebiyat] özdeyiş
+ülgüç	isim	[halk ağzı] ustura
+ülke	isim	bir özelliği ön plâna çıkarılarak düşünülen bölge[coğrafya] devletin hakimiyeti altında bulunan toprakların tamamı, diyar[hukuk, toplum] devlet
+ülkesel	sıfat	Ülkeye ilişkin
+ülkesellik	isim	Ülkeye ilişkin olma durumu
+ülkü	isim	amaç edinilen, ulaşılmak istenen şey, idealinsanı duyular dünyasının üstüne yükselten ve hiçbir zaman tam olarak gerçekleştirilemeyecek olan, yalnızca erişilmesi istenen amaç olarak kalan kılavuz ilke, örnek yargı ölçüsü, mefkûre, ideal[felsefe] gerçekte olmayıp, yalnız düşüncede tasarım biçiminde var olan, yalnızca düşünce ile kavranabilen şey, ideal
+ülkücü	sıfat	bir ülküye çıkar gütmeden bağlı olan, idealistMilliyetçi Hareket Partisi yanlısı ve Ülkü Ocakları'na bağlı kimse
+ülkücülük	isim	[felsefe] bilgide temel olarak düşünceyi alan ve varlığı insan düşüncesinin kurduğunu kabul eden öğretilerin genel adı
+ülküdaş	isim	Aynı ülküye bağlı olanlardan her biri.
+ülküdaşlık	isim	Ülküdaş olma durumu
+ülkülem	isim	düşünbilimsel, toplumsal ya da yönetkisel bir öğreti oluşturan, ülkü olarak da benimsenebilen, kişi ve kurumların davranışlarına yön veren düşünceler bütünü.
+ülkülük	isim	Tutulan bir yola, benimsenen bir dâvaya,arkasından koşulan bir maksada işaret olan bir iki kelimelik söz. ölmek var dönmek yok gibi.
+ülküt	isim	Roman, öykü ve oyunlarda benzer özelliklerle sınıflanabilen kişilerin, bu ortak özelliklerini en belirgin biçimde kendinde toplayan kişi.
+ülser	isim	[tıp] Sindirim organlarında ve özellikle mide ile onikiparmak bağırsağında görülen yara, karha
+ültimatom	isim	[politika] bir devletin başka bir devlete verdiği ve hiçbir tartışma veya karşı koymaya yer bırakmaksızın, tanıdığı sürede isteklerinin yerine getirilmesini istediği notauyulması gereken kuralları kesin dille anlatma
+ültimatomsu	sıfat	Ültimatom tarzında ültimatoma benzer
+ültra-	ek	=-in üstünde (Lat. koşaç)=-soğukluk çok (Lat. koşaç)
+ültramodern	isim	çağüstü
+ültrason	isim	İnsan kulağının alamayacağı nitelikte olan yüksek frekanslı ses titreşimi
+ültraviyole	isim	morötesi
+üluhiyet	isim	Tanrısallık.
+ülûhiyet	isim	Tanrılık vasfı, tanrısallık
+ülük	isim	[halk ağzı] emzik.[halk ağzı] Çeşme musluğu.
+ülüş	isim	[toplum bilimi] kesilen hayvanın etinden alınan pay
+ümera	isim	buyurucular, beyler, amirlerÜstsubaylar.
+ümit	isim	ümit etmekten doğan emniyet hissibu hissi veren şahıs veya şeyolması beklenilen veya olacağı düşünülen şey
+ümitlendirme	isim	Ümitlendirmek işi, umutlandırma
+ümitlendirmek	fiil	umutlandırmak
+ümitleniş	isim	Ümitlenmek işi veya biçimi
+ümitlenme	isim	Ümitlenmek durumu, umutlanma
+ümitlenmek	fiil	umutlanmak
+ümitli	sıfat	ümit besleyen, ümidi olanverim beklenen
+ümitsiz	sıfat	ümidi olmayan, ümit beslemeyen kişi
+ümitsizlik	isim	ümitsiz olma hâli
+ümitvar	sıfat	umutlu
+ümmet	isim	[İslâm] Bir peygambere inanıp yaptıklarını ve söylediklerini uygulayarak çevresinde toplananların tümü
+ümmetçe	zarf	Ümmet olarak.
+ümmetçi	isim	[İslâm] Ümmetçilik yanlısı olan kimse
+ümmetçi	sıfat	[İslâm] Ümmetçilik yanlısı olan (kimse, görüş v.s.)
+ümmetçilik	isim	[İslâm] İslâm cemiyeti olarak kalmak amacını güdenlerin görüşü
+ümmi	isim	okumamış
+ümmilik	isim	Ümmi olma durumu
+ümran	isim	bayındırlık
+ümranlı	sıfat	Bayındır, gelişmiş
+ümük	isim	[halk ağzı, anatomi] boğaz[halk ağzı, anatomi] gırtlak
+ün	isim	[akustik] sesherkesçe bilinme, tanınma durumu, san, şöhret, şan
+ünalgı	isim	Radyo.
+ündeş	isim	Benzer sesle biten söz veya cümlelerin her biri.
+ündeşlik	isim	Ses benzerliği veya birliği
+üniforma	isim	Aynı işi yapanların giydikleri, tüzükle belirtilmiş, bir örnek giysiSilâhlı kuvvetlerin resmî giysisi
+üniformalı	sıfat	Üniforması olan, üniforma giymiş olan (kimse)
+üniformasız	sıfat	Üniforması olmayan.
+üniformitaryanizm	isim	birörnekçilik[jeoloji] değişimin sürekli ve üniform bir biçimde etkileyen güçlerin ve süreçlerin sonucu olduğunu iddia eden teori
+ünik	sıfat	tek, eşi ve benzeri olmayan, benzersiz, eşsiz
+ünite	isim	birlik, birleşmiş olma durumubir kümenin her elemanı veya bir çokluğu oluşturan varlıkların her biri, birimdersin bölümlerinden her biri[dil bilimi] birim, tekil[askeriye] bir görevi, işi sürekli olarak yapmak üzere oluşturulmuş birlik
+üniversal	sıfat	Evrensel
+üniversalizm	isim	Evrenselcilik
+üniversel	sıfat	evrensel
+üniversite	isim	[binalar, eğitim] Bilimsel özerkliğe ve kamu tüzel kişiliğine sahip, yüksek düzeyde eğitim, öğretim, bilimsel araştırma ve yayın yapan fakülte, enstitü, yüksekokul vb. kuruluş ve birimlerden oluşan öğretim kurumu; darülfünun
+üniversiteli	isim	[kişiler, eğitim] üniversite öğrencisi
+ünlem	isim	[dil bilimi] türlü duyguları anlatan veya bir tabiat sesini yansıtan kelime, nida
+ünleme	isim	ünlemek işi
+ünlemek	fiil	yüksek sesle çağırmakyüksek sesle bildirmek
+ünlemi	isim	ünlem adının belirtme hâli, üçüncü tekil şahıs belirtme hâli
+ünlen	isim	[halk ağzı, Bulgaristan ağzı] Müezzin
+ünlenme	isim	Ünlenmek işi veya durumu
+ünlenmek	fiil	çağrılmak, yüksek sesle bildirilmekün sahibi olmak, ün kazanmak, meşhur olmak
+ünletme	isim	Ünletmek işi veya durumu
+ünletmek	fiil	Bağırtmak, çağırtmak
+ünlü	isim	[ses bilgisi] ses yolunda bir engele çarpmadan çıkan ses, sesli, sesli harf, vokal
+ünlü	sıfat	ün salmış olan, tanınmış, şöhretli, meşhur, şanlı, namlı, namdar, anlı şanlı
+ünlüleşme	isim	Bir ünsüzün, yanındaki ünlülerin etkisiyle, ünlü niteliği alması
+ünsiyet	isim	alışkanlık
+ünsüz	isim	[ses bilgisi] ses yolunda bir engele çarparak çıkan ses, sessiz, sessiz harf, konson, konsonant, abanık, samit
+ünsüz	sıfat	gösterişsiz, şöhretsiz, ünü olmayan
+ünvan	isim	[toplum bilimi] kişinin memuriyetindeki rütbesini, makamını veya mevkisini gösteren ad, san, titr
+ünvanlı	sıfat	Ünvanı olan
+ünü	isim	öcü, umacı
+ürat	isim	[kimya] Sidik asidi tuzu
+ürbanizm	isim	Şehircilik
+üre	isim	[organik kimya] Azotlu gıdaların vücutta yanmasıyla oluşan, erimiş bir durumda idrarla dışarı atılan azotlu maddeYapay reçine verniği ve tutkalı üretiminde kullanılan temel gereçlerden beyaz, billûrsu toz
+ürem	isim	[ekonomi] faiz, getiri
+üreme	isim	[biyoloji, cinsiyet] üremek durumu, üremek işi[biyoloji, cinsiyet] canlıların cinsel hücrelerinin birleşmesinden ortaya çıkan tohumla veya doğrudan doğruya oluşturdukları sporlarla çoğalmaları, tenasül
+üremek	fiil	canlılar için, doğup çoğalmakyetişmekçoğalmak, artmak
+üremi	isim	[patoloji] ürenin idrarla çıkmayıp kanda birikmesi sonucu ortaya çıkan hastalık
+üremik	sıfat	Üremiyle ilgili olan
+üremsel	sıfat	Üremeye ilişkinÇoğalma, üreme, nesil yetiştirme ile ilgili
+üretebilme	isim	üretebilmek işi
+üretebilmek	fiil	üretme ihtimali veya imkânı bulunmaküretmeyi becermek
+üreter	isim	[anatomi] idrar borusu
+üreterik	isim	Üreter ile ilgili olan.
+üreteroenterostomi	isim	Üreterin cerrahi yol ile ince bağırsağa ağızlandırılması.
+üreterolitiyaz	isim	Üreter içinde taş bulunması.
+üreteropiyeloliz	isim	Üreterin çevre dokulara yapışıklığını ayırmak için gerçekleştirilen cerrahi girişim.
+üreteroçekostomi	isim	Çekum içine üreterin cerrahi yol ile bağlanması.tifloüreterostomi (Eş. a.).
+üreteç	isim	[fizik, elektrik] Mekanik, kimyasal enerjileri elektrik enerjisine dönüştüren düzenek veya cihaz, jeneratör
+üretici	isim	[ticaret, meslekler] üretimle uğraşan kimse, yetiştirici, müstahsil, prodüktör, tüketici karşıtı
+üretici	sıfat	üretim sağlayan
+üreticilik	isim	Üreticinin işiÜretici olma durumu
+üretim	isim	[ekonomi] belirli faaliyet ve işlemler sonucu yeni bir mal veya hizmet meydana getirme, istihsal, tüketim karşıtıçıkarma, elde etme, ürünün tüketiciye aktarılan kısmı, istihsal
+üretimevi	isim	[işletmeler, yapılar] fabrika.
+üretimlik	isim	[işletmeler, yapılar] fabrika.
+üretimsel	sıfat	Üretimle ilgili
+üretiş	isim	Üretmek eylemi ya da biçimi.
+üretişim	isim	[bilişim] Wikipedia, flickr gibi özgür medyaların, linux gibi özgür yazılımların üretim biçimi.[bilişim] Akranlarla gönüllü olarak birarada yapılan üretim.
+üretke	isim	kapital, sermaye
+üretken	sıfat	üretme gücü olan, çok üretendoğurucu
+üretkenlik	isim	Üretken olma durumu
+üretme	isim	üretmek işi
+üretmek	fiil	aynı türden canlıları çoğaltmakekonomik bir etkinlik sonucu ürün elde etmekoluşturmak, yaratmak, meydana getirmek
+üretmen	isim	[meslekler, eğitim, Edirne ağzı] öğretmen
+üretra	isim	[anatomi] idrar kesesinden başlayarak dışarıya kadar uzanan idrar yolunun son bölümü, idrar kesesini vücut dışına bağlayan kanal.
+ürettirmek	fiil	üretme işini yaptırmak
+üreyebilmek	fiil	üreme ihtimali veya imkânı bulunmaküreme gücü bulunmak
+üreyiş	isim	Üremek işi veya biçimi
+ürinasyon	isim	işeme, idrar çıkarma
+ürkek	sıfat	Çok ürken, korkuya çabuk kapılan.
+ürkekleşme	isim	Ürkekleşmek durumu
+ürkekleşmek	fiil	Ürkek duruma gelmek
+ürkeklik	isim	Ürkek olma durumu veya ürkekçe davranış[hayvan bilimi, kuşlar] Sülüngiller familyasından bir kuş türü
+ürkekçe	sıfat	Ürkek
+ürkme	isim	ürkmek durumu, tevahhuş
+ürkmek	fiil	bir şeyden korkup sıçramak, tevahhuş etmekşaşkınlık ve korku duymakağaç meyve vermemek[mecaz] çekinmek
+ürkü	isim	Topluluğu saran ortak korku, panik.
+ürkülü	sıfat	Ürkü veren
+ürküntü	isim	ürkme duygusu, tevahhuş
+ürküntülü	sıfat	Ürküntü veren
+ürküntüsüz	sıfat	Ürküntü vermeyen
+ürkünç	sıfat	Ürkme, çekinme duygusu veren
+ürküsüz	sıfat	Ürkü vermeyen
+ürkütme	isim	Ürkütmek işi
+ürkütmek	fiil	Ürküntü vermekKorkutup kaçırmakHerhangi bir etkiyle bitkinin gelişmesini engellemekKorkutmak
+ürkütücü	isim	Ürkme, çekinme duygusu veren, ürküten
+ürkütücülük	isim	Ürkütücü olma durumu
+ürkütülüş	isim	Ürkütülme işi
+ürküş	isim	Bilinmeyen bilinmezlik bilinmeyen
+ürofobi	isim	[fobiler] sidikten korkma
+ürokültür	isim	İdrardan alınan bir örnekle yapılan bakteri kültürü
+ürolog	isim	İdrar yolu hastalıkları hekimi, bevliyeci
+üroloji	isim	[tıp] Tıbbın; böbrek ve idrar yolu ve erkek üreme sistemine dair hastalıklarını inceleyen dalı; bevliye
+ürolojik	sıfat	[tıp] Üroloji ile ilgili
+ürperiş	isim	Ürpermek işi veya biçimi
+ürperme	isim	Ürpermek durumu
+ürpermek	fiil	Korku, tiksinti, üşüme vb. yüzünden tüylerin dikilip derinin nokta nokta kabarmasıyla görülen ani titreme.
+ürperti	isim	Ürperme duygusu veya durumu, ürperme hali, ürperme hissi
+ürpertici	sıfat	Ürperme duygusu veren
+ürpertili	sıfat	Titreşimli
+ürpertme	isim	Ürpertmek işi veya durumu
+ürpertmek	fiil	Ürperti vermek
+ürtiker	isim	[tıp] Kurdeşen
+üryan	sıfat	çıplak
+üryani	isim	Ince kabuklu bir tür erik
+ürüme	isim	Ürümek işi
+ürümek	fiil	havlamak.
+ürün	isim	doğadan elde edilen, üretilen yararlı şey, mahsultürlü endüstri alanlarında ham maddelerin işlenmesiyle elde edilen şeyesertutum veya davranışın ortaya çıkardığı şey
+ürünlü	sıfat	ürünü olan
+ürünsüz	sıfat	Ürünü olmayanEseri olmayan, esersiz
+ürünsüzlük	isim	Ürünsüz olma durumu
+ürüşme	isim	Ürüşmek işi veya durumu
+ürüşmek	fiil	Hep birden ürümek
+üs	isim	[matematik] bir kuvvete yükseltilmiş bir sayının üzerine yazılan ve kaçıncı kuvvete yükseltildiğini gösteren sayı
+üs	isim	esasbazı görevleri yürütebilmek amacıyla kurulan, özel yapıları, donatımları, atölyeleri, onarım yerleri, servis alanları olan, sürekli veya geçici olarak konaklanılan yer[eskimiş, askeriye] Bir askerî harekâtta birliklerin gereksinim duyduğu her türlü gerecin toplandığı, dağıtıldığı bölge.
+üsera	isim	Esirler, köleler
+üsküf	isim	[tarih, giyim] Yüksek aşamadaki yeniçeri subaylarının giydikleri, yarısı arkaya sarkan uzun bir börk.
+üsküre	isim	[halk ağzı] Ayran için kullanılan tas
+üslenme	isim	Üslenmek işi
+üslenmek	fiil	Bir yeri kendine üs seçerek orada yerleşmek
+üslup	isim	tarz[edebiyat] Sanatçının görüş, duyuş ve anlayışındaki kendine özgü anlatış biçimi; biçem, hava, stil.[edebiyat] t Bir türün, bir çağın kendine özgü anlatış biçimi; biçem, tarz, stil.
+üsluplaştırma	isim	Üsluplaştırmak işiNesnlerin karakterini kaybettirmeden basitleştirerek tezyini ve şematik biçimlere dönüştürmek
+üslupsuzluk	isim	Üslupsuz olma durumu
+üslupçu	isim	Üslubu beğenilen yazar
+üslûp	isim	Oluş, deyiş veya yapış biçimi, tarzBir sanatçıya, bir çağa veya bir ülkeye özgü teknik, renk, biçimlendirme ve söyleyiş özelliği, biçemSanatçının görüş, duyuş, anlayış ve anlatıştaki özelliği veya bir türün, bir çağın kendine özgü anlatış biçimi, biçem, tarz, stil
+üslûplaştırma	isim	Üslûplaştırmak işi
+üslûplaştırmak	fiil	Doğal biçimlerin görünüş özelliklerini yitirmeden yalınlaştırılması ile motif oluşturmak
+üslûplu	sıfat	Üslûbu olan
+üslûpsuz	sıfat	Üslûbu olmayan
+üslûpsuzluk	isim	Üslûpsuz olma durumu
+üslûpçu	sıfat	Üslûbu beğenilen (yazar)
+üslûpçuluk	isim	Üslûba gösterilen aşırı özen
+üssel	sıfat	[matematik] üstel
+üst	isim	Bir şeyin yukarı, göğe doğru olan yanı.Bir şeyin görülen yanı, yüzü.Bir şeyin dış yüzü.[giyim] giysi.Birine göre yüksek aşamada olan kimse; mafevk:[anatomi] Vücudun beden bölümü:Artan, geriye kalan bölüm:
+üst	sıfat	Birkaç şeyden birbirine göre yukarıda olanSınıflamalarda temel olarak alınan bir tipe göre ileri derecede olan.
+üstadane	zarf	Üstatça
+üstat	isim	[bilim, din, sanat] Bilim veya sanat alanında üstün bilgisi ve yeteneği olan kimseGenellikle erkekler arasında senli benli konuşmada kullanılan bir seslenme sözü
+üstatlık	isim	Üstat olma durumu
+üstbiliş	isim	Kişinin kendi düşünme süreçlerinin farkında olması ve bu süreçleri kontrol edebilmesi.
+üstbirlik	isim	Birden fazla ülkenin genellikle dış işleri ve savunma alanlarında federasyona göre biraz daha ılımlı bir bağımlılık içinde ortak politika ve yönetim izleyip diğer alanlarda ise bölgesel yönetimlerinde serbest bulundukları devletler topluluğu. 2. Çeşitli ortaklıkların, daha çok sendikaların kümeleşmesi.
+üstdamaksıl	isim	Dilin ucunu yukarı ve geriye kıvırarak söyleme.
+üstdilsel	isim	[dil bilimi] tüm bilim dallarının dilbilimsel açıdan ele alınması, metalinguistik
+üste	zarf	fazladan, ayrıca
+üstecilik	isim	[halk ağzı] Üstelik
+üstel	isim	(Halk dili) Masa.
+üstel	sıfat	[matematik] üstü (I) olan
+üsteleme	isim	üstelemek işi, tekit
+üstelemek	fiil	düşünce veya istek üzerinde durmak, direnmek, ısrar etmek, tekit etmekhastalık yeniden ortaya çıkmak, depreşmek, nüks etmeki isteği, buyruğu tekrarlamak, tekit etmeke bir şeyin üstüne eklenmek, katılmak, inzimam etmek
+üstelenme	isim	Üstelenmek işi
+üstelenmek	fiil	Üstelemek işine konu olmak
+üstelik	zarf	üste verilen şeyayrıca, bir de, bundan başkagüçlü, kuvvetli, sağlam
+üstenci	isim	[meslekler] yüklenici
+üstencilik	isim	Yüklenicilik, müteahhitlik
+üstenme	isim	Üstenmek işi, taahhüt, angajman
+üstenmek	fiil	Bir iş yapmayı üstüne almak, taahhüt etmek
+üsterme	isim	İş, mal vb.ni birçok istekli arasından en uygun şartlarla kabul edene verme, eksiltme veya artırma.
+üsteğmen	isim	[askeriye] Orduda rütbesi teğmen ile yüzbaşı arasında olan subay.
+üsteğmenlik	isim	Üsteğmen olma durumu, üsteğmenin görevi veya makamı
+üstlenilmek	fiil	Bir işi, sorumluluğu sahiplenmek
+üstlenim	isim	Üstlenme işi
+üstlenme	isim	üstlenmek işi, deruhte
+üstlenmek	fiil	üstüne almak, yüklenmek, deruhte etmek, taahhüt etmek
+üstlük	isim	üst olma durumu[giyim] en üste giyilen uzunca elbise
+üstsubay	isim	Binbaşı, yarbay ve albay rütbesindeki subaylara verilen genel ad
+üstten	zarf	üstünkörü.[mecaz] Tepeden, yüksekten.
+üstveri	isim	Bir veri ile ilgili bilgi veren etiket niteliğindeki veri.
+üstyapısal	sıfat	Üstyapı ile ilgili
+üstçavuş	isim	Orduda astsubaylığın ikinci aşaması olan, çavuşla başçavuş arasındaki görevli
+üstçavuşluk	isim	Üstçavuş olma durumu veya üstçavuşun rütbesi
+üstün	isim	[dil bilimi] Arap alfabesinde üzerine geldiği ünlünün -e ya da -a ile birlikte okunmasını sağlayan işaret, fetha
+üstün	sıfat	benzerlerine göre daha yüksek seviyede olan, onları geride bırakanbirine veya bir şeye göre vasıf bakımından daha yüksek, daha elverişli olan, faik
+üstünde	zarf	Hakkında, dair, üstüne.den çok, –den fazla.
+üstünden	fiil	Aradan herhangi bir zaman geçmek
+üstüne	sıfat	ilişkin, dair
+üstüne	zarf	üzerinehesabınae göre, uygun olarakden sonrakendinden önce gelen sözün ikileme biçiminde anlamını pekiştirmek ve sıklığını ifade etmek için kullanılan bir söz
+üstünkörü	sıfat	İnceliklerine inmeden, özen göstermeden; gelişigüzel, baştan savma, yalan yanlış.
+üstünkörü	zarf	İnceliklerine inmeden, özen göstermeden; gelişigüzel, şöyle bir, baştan savma, eğreti, öylesine, üstten, yalandan, yalap şalap, yalapşap, yarım yamalak.
+üstünleşme	isim	Üstünleşmek durumu
+üstünleşmek	fiil	Üstün duruma gelmek
+üstünlük	isim	üstün olma durumu, faikiyet, rüçhan, avantaj
+üstünseme	isim	Üstünsemek işi veya durumu
+üstünsemek	fiil	Üstün, iyi, yeğlenir olduğuna inanmak
+üstünü	fiil	(kadın) gebeyken aybaşı olmak
+üstüpü	isim	[denizcilik, hijyen, otomotiv] Gemi kalafatında, işliklerde, buharlı makinelerde, temizlik işlerinde, otomobilcilikte kullanılan didilmiş kendir
+üstüpüleme	isim	Üstüpülemek işi
+üstüpülemek	fiil	Üstüpü ile silmek veya temizlemek
+üstüvan	isim	Sağlam
+üstüvane	isim	Silindir.Sütun.
+üstüvani	sıfat	Silindir biçiminde olan
+üsüm	isim	[halk ağzı, İstanbul ağzı] Şubat
+ütek	sıfat	korkak
+ütilize	sıfat	Bütün potansiyeli ile kullanılmış, en iyi şekilde değerlendirilmiş.
+ütme	isim	[halk ağzı] Sapıyla beraber yakılan buğday
+ütmek	fiil	[halk ağzı] Bir şeyi, tüylerini yakmak için alevden geçirmek.[halk ağzı] Taze buğday veya mısırı ateşe tutup alazlamak.[halk ağzı, oyun] Oyunda yenerek bir şey kazanmak; utmak, yutmak.
+ütopi	isim	gerçekleşme imkânı olmayan fikir ya da tasarı
+ütopik	sıfat	Ütopyaya dayanan, ütopya ile ilgili.
+ütopist	isim	Ütopyacı
+ütopizm	isim	ülkücülük
+ütopya	isim	Gerçekleştirilmesi imkânsız tasarı veya düşünce.[edebiyat] Olması gereken yaşam biçimini anlatan edebî tür.
+ütopyacı	sıfat	Ütopyalara kapılan, inanan (kimse), ütopist
+ütopyacılık	isim	Ütopyacı olma durumu
+ütü	isim	giysilerin buruşukluklarını gidermek için bunların üzerinden geçirilen kızgın metal araçbu araçla yapılan iş
+ütücü	isim	[meslekler] İşi kumaş, giysi, çamaşır vb. ütülemek olan kimse.
+ütücülük	isim	Ütücü olma durumu
+ütüleme	isim	Ütülemek işi
+ütülemek	fiil	ütü ile buruşukluklarını gidermekAlevde tüylerini veya kabuğunu yakıp gidermek
+ütülenme	isim	Ütülemek işi
+ütülenmek	fiil	ütülemek işine konu olmak
+ütülme	isim	Yenilme, kaybetme
+ütülmek	fiil	Oyunda, yenilmek, kaybetmek
+ütülü	isim	ütülenmiş, ütü ile kırışıkları giderilmiş
+ütüsüz	sıfat	ütülenmemiş veya ütüsü bozulmuş
+üvendire	isim	Çift öküzlerini yürütmek için kullanılan, ucuna nodul çakılmış uzun değnek.
+üvermek	fiil	[halk ağzı] yanıt vermek[halk ağzı] yoğurmak
+üvey	sıfat	yalnız yasaca akraba sayılan, aralarında kan bağı bulunmayan, öz olmayankendisine kötü davranılan
+üveyik	isim	[güvercingiller] Güvercinlerden, korularda yaşayan, eti için avlanan, boz renkli bir kuş, (Streptopelia turtur).
+üveylik	isim	Üvey olma durumu.
+üveyme	isim	Üveymek işi veya durumu
+üveymek	fiil	(Güvercin, kumru gibi kuşlar için) Göğsünden ötmek.
+üvez	isim	Gülgillerden, muşmulaya benzeyen meyvesi olan orta boylu ağaç
+üye	isim	[toplum bilimi] herhangi bir topluluğu oluşturan bireylerden her biri, aza[anatomi] omurgalılarda, kol ve bacaklar, uzuv
+üyelik	isim	üye olma durumu
+üzek	isim	Öküz arabası oku
+üzengi	isim	[aletler] eyerin iki yanında asılı bulunan ve hayvana binildiğinde ayakların basılmasına yarayan, altı düz demir halka
+üzengileme	isim	Üzengilemek işi
+üzengilemek	fiil	(koşturmak için hayvana) Üzengi ile vurmak
+üzengilenme	isim	Üzengilenmek durumu
+üzengilenmek	fiil	(hayvana) Üzengi ile vurulmak
+üzengisiz	sıfat	Üzengisi bulunmayan, üzengi olmaksızın
+üzenti	isim	Manevi hazdan yoksunluk
+üzer	isim	kaymak, süt, yoğurt yüzüürem, faizdeğiş tokuş sırasında üste alınan paracan sıkıcı
+üzere	zarf	amacıylaşartıylaneredeyse
+üzeri	isim	bir şeyin yukarı, göğe doğru olan yanı[matematik] bir şeyin dış yüzü, yüzey[anatomi] vücut, bedenartan, geriye kalan bölümbazı tamlamalarda zaman bildiren bir söz
+üzerinde	zarf	üstündeile ilgili, üzerine
+üzerine	edat	den dolayıden sonraden daha üstün
+üzerine	zarf	üstünehakkında
+üzerlik	isim	[sedef otugiller] Sedef otugillerden, yaprakları almaşık, çiçekleri beyaz renkte, susama benzeyen tohumları acı olan, halk hekimliğinde tedavi amaçlı, tütsü olarak kullanılan bir bitki (Peganum harmala)Bu bitkinin tohumlarından yapılan nazarlık veya süs olarak kullanılan eşya
+üzeyn	isim	Küçük kulak
+üzgeç	isim	Yukarıya çıkıldıktan sonra çekilip alınabilen ip merdiven.
+üzgü	isim	yersiz ve gereksiz olarak çektirilen sıkıntı, eziyet, eza, cefa
+üzgülü	sıfat	Üzgü veren, eziyetli
+üzgün	sıfat	üzülmüş, üzüntü duymuş, mahzun, melul, mükedder
+üzgünlük	isim	Üzgün olma durumu, neşesizlik
+üzgüsüz	sıfat	Üzgü vermeyen, eziyetsiz
+üzlük	isim	Topraktan yapılmış, kulpsuz, küçük çömlek
+üzme	isim	üzmek işi
+üzmek	fiil	üzüntü vermekbir şeyi gerip çekerek gevşetmek, sürterek aşındırmakkoparmak, ayırmak
+üznükmek	fiil	[halk ağzı, İçel ağzı] üzülmek[halk ağzı, İçel ağzı] İyileşmeye başlamışken, yeniden hastalanmak.
+üzücü	sıfat	üzüntü veren, acıklı
+üzüklemek	fiil	[halk ağzı, Ordu ağzı] Tarladaki başakları toplamak.
+üzüklük	isim	[halk ağzı, Niğde ağzı] kopukluk, yırtıklık.
+üzülme	isim	üzüntü duyma, teessür.
+üzülmek	fiil	Üzme işine konu olmak[duygular] Üzüntü duymak; eseflenmek, yerinmek
+üzüm	isim	[asmagiller, meyveler] asmagiller (Vitaceae) familyasının Vitis cinsinden sarılyan bitki ve yeryüzünde kültürü yapılan en eski meyve türlerine verilen ad[meyveler] bir üzümsü meyve türü
+üzümcü	isim	[meslekler] üzüm yetiştiren veya satan kimse
+üzümcülük	isim	Üzüm yetiştirme ve satma işi
+üzümlü	sıfat	İçinde üzüm olan.
+üzümsü	sıfat	üzümü andıran, üzüme benzeyen, üzüm gibi
+üzümsüz	sıfat	İçinde üzüm olmayan
+üzüntü	isim	[ruh bilimi] olması istenilmeyen olaylardan doğan ruh tedirginliği, teessür, meyusiyet
+üzüntülü	sıfat	üzüntüsü olan, acılı, müteessirüzüntü veren
+üzüntülü	zarf	üzüntülü bir biçimde, üzüntülü olarak
+üzüntüsüz	sıfat	Üzüntüsü olmayan, sıkıntısız, acısız
+üzünç	isim	Üzüntü
+üzünçlü	sıfat	Üzüntülü
+üç	isim	İkiden sonra gelen sayının adı.Bu sayıyı gösteren 3 ve III rakamlarının adı.
+üç	sıfat	[matematik] ikiden büyük ve bir küçüğü arasında bir sayma sayısı bulunmayan tek asal sayı[sayılar] ikiden sonra dörtten önce gelen sayma sayısı
+üç	sıfat	İkiden bir artık.
+üçayak	isim	fotoğraf makinesi, televizyon kameraları vb. aletlerin üzerine oturduğu üç ayaklı düzen; tripodsacayağıBir halay çeşidiüç ayaklı tabure
+üçer	sıfat	Üç sayısının üleştirme biçimi, her birine üç, her defasında üçü bir arada olan
+üçerli	sıfat	Üçer üçer birimden oluşan
+üçetek	isim	[halk ağzı, giyim] Eskiden erkeklerin, şimdi kimi köylerde kadınların giydiği bir çeşit giysi.
+üçgen	isim	[geometri] üç kenarı olan geometrik şekil
+üçgen	sıfat	üçgen şeklinde olan
+üçgül	isim	[baklagiller] bir tür yonca
+üçkâğıt	isim	düzen, dolap, hile[oyun] oynatıcının el çabukluğuyla yer değiştirip kapalı olarak bıraktığı, ikisi aynı, biri değişik üç iskambil kâğıdından değişik olanını bulmaya dayanan hileli oyun
+üçkâğıtçı	isim	dolandırıcı, hilekâr, sahtekâr kimse[oyun] Üçkâğıt oyunu oynatan kimse
+üçkâğıtçı	sıfat	dolandırıcı, hilekâr, sahtekâr[oyun] Üçkâğıt oyunu oynatan
+üçkâğıtçılık	isim	düzenbazlık, dolandırıcılık, oportünizm, sahtekârlıkÜçkâğıtçının işi
+üçleme	isim	[edebiyat] Bentleri üçer dizeli olan türkü.[kitap] Bir yazarın, konu ve fikrî yapı olarak birbirini izleyen üç eseri.[Hristiyanlık] teslis.[spor] Bir oyuncunun aynı karşılaşmada üç sayı yapması durumu.[futbol] Bir maçta aynı oyuncunun üç gol atması.
+üçleme	sıfat	Üçü bir arada bükülmüş.
+üçlemek	fiil	Üçe çıkarmakÜrünün üçte birine karşılık, toprağını kiraya vermekTarlayı üç kez sürmek
+üçler	isim	[tasavvuf] Üç kişilik bir evliya topluluğuna verilen ad
+üçleşme	isim	Üçleşmek işi veya durumu
+üçleşmek	fiil	Sayısı üçe çıkmak
+üçlü	isim	[iskambil] İskambil, domino vb. oyunlarda üzerinde üç işareti veya noktası bulunan kâğıt veya pul.[müzik] Üç ses veya çalgı için düzenlenmiş müzik parçası.[müzik] Bu parçayı çalan üç kişilik müzik topluluğu.
+üçlü	sıfat	Üç parçadan oluşan, kendinde herhangi bir şeyden üç tane bulunan.[mecaz] Üç kişiden oluşmuş.
+üçlük	isim	Üç tanesi bir arada bulunan, üç tane alabilen, üç taneden oluşmuş[spor, basketbol] Basketbolda ceza alanı dışından atılan topun potaya geçirilmesi sonucu kazanılan üç puan değerindeki atış
+üçtaş	isim	Üç taşla oynanan bir tür çocuk oyunu
+üçteker	isim	Ikisi arkada, biri önde üç tekerleği olan, çocukların düşmeden binmesi için yapılmış araçTriportör
+üçtelli	isim	[müzik] üç teli olan saz
+üçüncül	sıfat	Organik bir birleşiğin formülünde öbür üç karbon atomuna bağlı olan (karbon atomu), sülâsî, tersiyerBir hastalığın belirli iki devresinden sonra oluşan (belirtiler)
+üçüncülük	isim	Üçüncü olma durumu
+üçüz	sıfat	Üçü birlikte doğmuş olan (kardeş)Üçlü, üç yanlı, üç kollu, üç parçalı
+üçüzleme	isim	Bir dizenin hem ritmik hem anlam olarak üç ayrı öbek oluşturması
+üçüzlü	sıfat	Üçüzleri olan (ana)
+üğrüm	isim	Yer'in dönme ekseninin, yaptığı koni hareketi boyunca dalgalanması, nütasyon
+üğürlenmek	fiil	[halk ağzı, Sivas ağzı] Kendi kendine söylenerek nazla sallanmak
+üğürtmeç	isim	[halk ağzı, Avşar ağzı] çıtlık (menengiç) çiçeklerin açtığı zaman
+üşek	isim	[fizik] Bir gözeye akımın girdiği ya da çıktığı iletken uç.[halk ağzı] Vaşak, kır kedisi.
+üşengen	sıfat	tembel
+üşengenlik	isim	Üşengen olma durumu
+üşengeç	sıfat	iş görmeyi, çalışmayı sevmeyen, çaba göstermekten, sıkıntıdan kaçan, tembel
+üşengeçlik	isim	Üşengeç olma durumu, tekâsül
+üşenme	isim	Üşenmek işi
+üşenmek	fiil	kendinde bir gevşeklik duyarak bir işi yapmaya isteği olmamak, erinmek
+üşenç	isim	Üşenme, üşengeçlik
+üşme	isim	Üşmek işi veya durumu
+üşmek	fiil	Çokça gelip toplanmak, üşüşmek
+üşniye	isim	Su yosunları
+üşüme	isim	Üşümek iş
+üşümek	fiil	[fizyoloji] ısı yokluğundan, azlığından veya ısı kaybından etkilenmek, soğuğun etkisini duymak
+üşüntü	isim	Toplanma, üşüşme, üşüşüp bir araya gelme.
+üşürme	isim	Üşürmek işi veya durumu
+üşürmek	fiil	Üşmek işini yaptırmak, saldırtmak
+üşütme	isim	Üşütmek durumu
+üşütmek	fiil	üşümesine sebep olmaküşüyüp hasta olmak, soğuk almak.delirmek, saçmalamak
+üşütücü	isim	Üşümeye yol açan
+üşütük	isim	aklını kaybetmiş, deli, saçmalayan kimse
+üşüşme	isim	üşüşmek işi
+üşüşmek	fiil	her yandan bir araya gelmek, toplanmak, birikmek

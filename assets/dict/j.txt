@@ -1,0 +1,196 @@
+jad	isim	kalça çıkığını iyileştiren taş
+jaguar	isim	[kedigiller, memeliler] Kedigillerden, parsa benzeyen, Orta ve Güney Amerika'da yaşayan, postu iri benekli memeli türü. (Panthera onca veya Felis onca)
+jakar	isim	[dokuma] Her çözgü ipliğinin başlı başına hareket ettiği mekanik dokuma tezgâhıBu tezgâhta dokunmuş karmaşık desenli kumaş
+jakarlı	sıfat	Jakarla yapılan.
+jaketatay	isim	[giyim] Erkeklerin resmi davet ve ziyafetlerde giydikleri, arkası uzun ve yırtmaçlı ceket
+jaketataylı	sıfat	Jaketatayı olan
+jakoben	isim	Fransa'da Aziz Dominicus tarikatına bağlı rahip ve rahibelere verilen adTepeden inmeci
+jakobenizm	isim	Tepeden inmecilik
+jakuzi	isim	[hijyen, su, eğlence] sıcak suyla doldurulmuş, hidroterapi ve eğlence amacıyla kullanılan küçük havuz
+jakuzili	sıfat	Jakuzisi olan.
+jakuzisiz	sıfat	Jakuzisi olmayan.
+jale	isim	[meteoroloji] çiy
+jaluzi	isim	şerit perde
+jaluzili	sıfat	Jaluzisi olan.
+jaluzisiz	sıfat	Jaluzisi olmayan.
+jalûzi	isim	Içeriden görülmeksizin dışarıyı görmeyi sağlayan, şerit biçiminde metal veya plâstik levhalardan yapılmış bir tür pencere kapama düzeni, şerit perde
+jambon	isim	[yiyecekler] tuzlanıp ise tutularak hazırlanmış domuz budu veya kolu
+jambonluk	isim	Jambon yapmaya elverişli domuz eti
+jandarma	isim	[askeriye] Yurt içinde genel güvenliği ve kamu düzenini korumakla görevli, kanun ve nizamların koyduğu hükümlerin yürütülmesini ve bunlara dayanan hükûmet emirlerinin yerine getirilmesini sağlayan silahlı askerî kuvvet[askeriye] Bu kuvvette vazifeli kimse
+jandarma	sıfat	açıkgöz
+jandarmalık	isim	Jandarmanın göreviAçıkgözlülükJandarmanın vazifesi.
+janjan	sıfat	[halk ağzı] Yanardöner
+janjanlı	sıfat	Yanardöner olan
+janr	isim	tarz[biyoloji] tür
+jant	isim	[otomotiv] Taşıtlarda, lastiklerin takıldığı tekerleğin çember biçimindeki bölümü; ispit
+japone	sıfat	Uzun kollu kadın giysisi için omuz kesimi olmayan, bol ve geniş(kadın giysisi için) Kolsuz
+jargon	isim	[argo] belli bir zümreye ya da meslek grubuna özgü günlük konuşmada kullanılan kelimeler bütünü, özgüdil, argoiletişim ve halkla ilişkilerde, alıcıya sunulacak mesajda kullanılması tavsiye edilmeyen dildar bir çevreye özgü dil
+jarse	isim	Esnek olarak dokunmuş ipekli ve yünlü bir çeşit kumaş
+jarse	sıfat	Jarseden yapılmış olan
+jartiyer	isim	[iç giyim] Çorapları dizin altında veya üstünde tutmaya yarayan lastikli bağ
+jasana	isim	[hayvan bilimi, kuşlar] Jasanagiller familyasını oluşturan kuş türlerinin ortak adı
+jasanagiller	isim	[hayvan bilimi, kuşlar] Yağmur kuşları takımının bir familyası
+je	isim	[yazı] Türk alfabesinin on üçüncü harfinin adı [j, J]
+jekobenizm	isim	Siyasi görüşlere ve toplum projelerini tepeden inme ve zor kullanerak gerçekleştirme akımı,müfrit cumhuriyetçilik
+jel	isim	[kimya] tedavi amacıyla kullanılan jöle yapısında bir krem türü
+jelada	isim	gélada
+jelatin	isim	[biyokimya, yiyecekler] genellikle hekimlik ve fotoğrafçılıkta kullanılan, hayvanların kemik, kıkırdak vb. dokularından veya bitkisel yosunlardan elde edilen saydam, renksiz, kokusuz bir madde ve ambalaj için kullanılan ince, parlak bir madde
+jelatinleme	isim	jelatinlemek işi
+jelatinlemek	fiil	bir yeri veya şeyi jelatin ile kaplamak
+jelatinli	sıfat	Jelatinden yapılmış veya jelatinle kaplanmış.
+jelatinsiz	sıfat	Jelatinle kaplanmamış.
+jelibon	isim	Yumuşak, lastik kıvamında bir tatlı.
+jeloz	isim	Agaragar
+jelâtin	isim	Daha çok hekimlik ve fotoğrafçılıkta kullanılan, hayvanların kemik ve kıkırdak gibi dokularından veya bitkisel yosunlardan elde edilen saydam, renksiz, kokusuz bir madde
+jelâtinleme	isim	Jelâtinlemek işi
+jelâtinli	sıfat	Jelâtinden yapılmış veya jelâtinle kaplanmış
+jen	isim	[biyoloji] Gen
+jenealoji	isim	[genetik] soy bilimi
+jenerasyon	isim	[kalıtım bilimi] kuşak, nesil
+jeneratör	isim	[elektrik, fizik] Üreteç.
+jenerik	isim	Tanıtma yazısı, tanıtımlık.Belirli bir grubun genel özelliklerini taşıyan, spesifik olmayanMarkasız, telif yasaları ile korunmayan
+jenetik	isim	Genetik
+jenital	sıfat	üremsel
+jenosit	isim	Soykırım, katliam
+jenotip	isim	soyyapıbkz. genotip
+jeobotanik	isim	Bitkilerin yeryüzünde dağılışını inceleyen bilim dalı
+jeodezi	isim	[yer bilimleri, haritacılık] Yeryuvarının modellenmesiyle, yeryuvarında ve dış alanında 4 boyutlu presizyonlu koordinat sistemlerini tanımlayan, referans ağlarını oluşturan, mekansal bilgileri bu ağ ve sistemlerle ilişkilendiren ve zamanı bağlı değişimlerini izleyen bilimdir, yer ölçümü
+jeodinamik	isim	Yer kabuğunda meydana gelen şekil değişmelerini ve bu değişmelere yol açan iç ve dış tesirleri inceleyen ilim kolu.
+jeofizik	isim	[yer bilimleri] yer yuvarlağını ve atmosferi etkileyen doğal fiziksel olayların incelenmesi, yer fiziği
+jeofizikçi	isim	[meslekler, fizik, jeoloji] Yerküre'nin fiziksel yapısını, bileşimini ve yer yüzeyinin hareketi ve dalgalanmaları konularında yer alan etkin güçleri saptamak amacıyla sismoloji, yer çekimi, elektrik, ısı, manyetik alan olaylarını inceleyen kişi
+jeoit	isim	Yer yuvarlağının hendesi(Geometrik)bakımdan düzgün olmayan şekli.
+jeokimya	isim	Yer kabuğunu oluşturan kimyasal ögelerin tümü
+jeole	isim	Sİ birim sistemde enerji birimi
+jeolog	isim	Yer kabuğunun yapısını, bünyesini ve tarihini inceleyen, kaya tabakalarının oluşumu ve dağıtılması konularında araştırmalar yapan kişi; yer bilimci.
+jeoloji	isim	Yer yuvarlağının birleşimini, evrimini, yapısını inceleyen bilim
+jeolojik	sıfat	Yer bilimsel
+jeomorfolog	isim	[jeoloji, meslekler] yüzey bilimci
+jeomorfoloji	isim	[yer bilimleri] yüzey bilimi
+jeomorfolojik	sıfat	Jeomorfoloji ile ilgili
+jeopolitik	isim	Coğrafya, ekonomi, nüfus vb.nin bir devletin politikası üzerindeki etkisiBir devlette bir bölgede uygulanan politikayla o yerin coğrafyası arasındaki ilişkiBir devletin saldırgan nitelikteki genişlemesini, ekonomik ve siyasi coğrafya açısından haklı kılmaya yönelik siyasi öğreti
+jeosantrik	sıfat	Yer özekçil
+jeosantrizm	isim	[gök bilimi] geosantrizm
+jeosenklinal	isim	[coğrafya, jeoloji] Yer kabuğunun uzun bir süre çöken, buna bağlı olarak kat kat kalın tortullarla dolmuş bulunan bölümü
+jeosismik	sıfat	[jeoloji] Bir patlama sonucu, derinlemesine yayılan dalgaların incelenmesi yoluyla yeryüzü katmanlarındaki madenleri araştırma yöntemi
+jeotermi	isim	Yerkürede oluşan ısı olaylarının incelenmesiYerküreyle ilgili ısı şartlarını (sıcaklıkların dağılımı, ısı alış verişi vb.) inceleyen jeofizik dalı
+jeotermik	sıfat	Jeotermi ile ilgili
+jeotropizma	isim	[bitki bilimi] Yere yönelim
+jersey	isim	Sarı ve kahverenginden esmere kadar değişen renkte et tutmayan, kemikleri belirgin, sakin bakışlı bir kültür ırkı sığırı
+jest	isim	herhangi bir şeyi açıklamak için genellikle el, kol ve baş ile yapılan içgüdüsel veya iradeli hareketbeklenmedik iyi davranış
+jet	isim	[hava taşıtı] Tepkili motorlarla çalışan, özel cihazların çıkardığı gazla basınç sağlanan, hızı çok olan uçak; tepkili uçak
+jeton	isim	[telefonculuk] Gişelerde, telefon ve türlü oyunlarda para yerine kullanılan küçük, metal veya plastik nesne.[bilişim] Bir programın derleyici için anlamlı en küçük parça
+jetoncu	isim	Jeton satan kimse
+jetonculuk	isim	Jetoncu olma durumu
+jiant	isim	Normal ölçülerden çok daha büyük olan.
+jig	isim	İngiliz kaynaklı, hızlı ve canlı bir dansİrlanda’da yaygın olan ve genellikle tek başına yapılan halk dansıBir Orta Çağ çalgısı
+jigantizm	isim	Ergenlik döneminde aşırı büyüme şeklinde görülen hastalık.(eş a. Dev adam hastalığı)
+jigantoblast	isim	10 mm'nin üstündeki büyüklükte eritroblast.
+jigantomasti	isim	İri meme, memede yaygın hipertrofi.
+jigolo	isim	[erkek] Geçimi yaşlı ve zengin bir kadın tarafından sağlanan genç, erkek sevgili; tokmakçı.[fahişelik] Bir ka­dınla parası için düşüp kalkan, cinsel iliş­kiye giren erkek; jikola
+jigololuk	isim	Jigolo olma durumu
+jikle	isim	Motorlu taşıtların yüksek devirde çalışması için fazla benzin akışını sağlayan alet
+jikola	isim	[fahişelik] jigolo
+jile	isim	Kadınların genellikle bluz üzerine giydikleri yelek biçimindeki giysi
+jilet	isim	Tıraşta kullanılan, ince çelikten yapılmış, iki yanı keskin bıçak.
+jiletçi	isim	[argo] hırsız.[argo] yankesici
+jimnastik	isim	[spor] vücudu çevikleştirmek ve güçlendirmek için yapılan alıştırmaların tümü, idman, kültürfizikerkeklerde, yer alıştırmaları, barparalel, barfiks, halkalar ve kulplu beygir; kadınlarda yer alıştırmaları, eşit olmayan çubuklar, barfiks, denge kalası alıştırmalarını içeren yarışma disiplini
+jimnastikhane	isim	[spor] Jimnastik yapılan salon.
+jimnastikçi	isim	Jimnastik yapan sporcu
+jinefobi	isim	[fobiler] kadınlardan korkma
+jinekografi	isim	Kontrast madde verildikten sonra uterus radyografisinin çekilmesi.(eş a. Histerosalpingografi)
+jinekolog	isim	[jinekoloji, meslekler] kadın hastalıkları hekimi, nisaiyeci
+jinekoloji	isim	kadın organizmasını ve cinsel organlarını fizyolojik, morfolojik ve patolojik bakımdan inceleyen bilim, kadın hastalıkları, nisaiye
+jinekolojik	sıfat	[tıp] Jinekoloji ile ilgili
+jips	isim	[mineraloji] alçı taşı
+jiroskop	isim	[fizik] Yön ölçümü veya ayarlamasında kullanılan, açısal dengenin korunması ilkesiyle çalışan bir alet
+jiujitsu	isim	[sanat, savaş, spor] Güçten çok yönteme dayanan, çıplak elle savunma tekniği
+jiujitsucu	isim	Jiujitsu yapan sporcu
+jive	isim	cıva.
+jogging	isim	Kırda, ormanda vb yerlerde yapılan koşu sporu
+joker	isim	Bazı kâğıt veya taş oyunlarında istenen kartın veya taşın yerine konabilen kartHer işe yarayan (kimse)Her yerde kullanılabilen
+jokey	isim	[spor, meslekler] cokey
+jokeylik	isim	Jokey olma durumu
+jonglör	isim	Genellikle sirklerde elinde topları ve başka cisimleri sallayan, çeviren kişi, cambazHokkabaz
+jorjet	isim	Bürümcük görünüşlü, daha çok pamuk ipliğinden dokunan bir kumaş
+joule	isim	[ölçü birimleri] Uluslararası Birim Sistemi'nde enerji, iş veya ısı miktarından türetilmiş birim
+judo	isim	[spor] jiujitsudan gelişmiş, silahsız olarak, tutmalara, fırlatmalara, hareketsiz bırakmalara dayanan Japon kökenli dövüş sporu
+judocu	isim	Judo yapan kimse
+jul	isim	[ölçü birimleri] bir cisim üzerine uygulanan bir nevtonluk kuvvetin uygulama noktasını, kendi doğrultusunda bir metre değiştiren iş birimi
+jupon	isim	içetek
+jurnal	isim	bire ilgili olarak yetkiliere verilen kötüleme, ihbar yazııgünlük
+jurnalci	isim	jurnal ederek yetkililere, yöneticilere yaranmaya çalışan kimse
+jurnalcilik	isim	Biriyle ilgili olarak yetkililere ihbar yazısı göndermek ve kötülemek.Jurnalcinin yaptığı iş.
+jurnalcı	isim	giziletimci
+jurnalcılık	isim	giziletimcilik
+jurnalleme	isim	Jurnallemek işi.
+jurnallemek	fiil	Şikâyet etmek, ispiyonlamak
+juvenil	isim	[biyoloji] Gençlikte olan, gençliğe ait olan.[biyoloji] Temel olarak ergin bireylere benzeyen fakat henüz eşeysel olgunluğa erişmemiş olan genç bireyler.
+jöle	isim	[kozmetik] saçın düzgün bir şekilde uzun süre kalmasını sağlayan yağlı, parlak ve yapışkan madde[yiyecekler] et suyunun soğuduktan sonra gevşek, esnek bir kıvam almış hâli[yiyecekler] meyve suyunun şekerle kaynatılmasıyla istenilen yoğunlukta elde edilen şekerleme
+jöleledi	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 3. teklik şahıs olumlu çekimi
+jöleledik	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 1. çokluk şahıs olumlu çekimi
+jölelediler	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 3. çokluk şahıs olumlu çekimi
+jöleledim	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 1. teklik şahıs olumlu çekimi
+jöleledin	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 2. teklik şahıs olumlu çekimi
+jölelediniz	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 2. çokluk şahıs olumlu çekimi
+jölelemedi	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 3. teklik şahıs olumsuz çekimi
+jölelemedik	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 1. çokluk şahıs olumsuz çekimi
+jölelemediler	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 3. çokluk şahıs olumsuz çekimi
+jölelemedim	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 1. teklik şahıs olumsuz çekimi
+jölelemedin	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 2. teklik şahıs olumsuz çekimi
+jölelemediniz	fiil	jölelemek eyleminin bildirme kipi görülen geçmiş zaman 2. çokluk şahıs olumsuz çekimi
+jölelemem	fiil	jölelemek eyleminin bildirme kipi geniş zaman 1. teklik şahıs olumsuz çekimi
+jölelememiş	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 3. teklik şahıs olumsuz çekimi
+jölelememişim	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 1. teklik şahıs olumsuz çekimi
+jölelememişiz	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 1. çokluk şahıs olumsuz çekimi
+jölelememişler	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 3. çokluk şahıs olumsuz çekimi
+jölelememişsiniz	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 2. çokluk şahıs olumsuz çekimi
+jölelemeyecek	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 3. teklik şahıs olumsuz çekimi
+jölelemeyecekler	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 3. çokluk şahıs olumsuz çekimi
+jölelemeyeceksin	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 2. teklik şahıs olumsuz çekimi
+jölelemeyeceksiniz	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 2. çokluk şahıs olumsuz çekimi
+jölelemeyeceğim	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 1. teklik şahıs olumsuz çekimi
+jölelemeyeceğiz	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 1. çokluk şahıs olumsuz çekimi
+jölelemeyiz	fiil	jölelemek eyleminin bildirme kipi geniş zaman 1. çokluk şahıs olumsuz çekimi
+jölelemez	fiil	jölelemek fiilinin bildirme kipi geniş zaman 3. tekil şahıs olumsuz çekimi
+jölelemezler	fiil	jölelemek eyleminin bildirme kipi geniş zaman 3. çokluk şahıs olumsuz çekimi
+jölelemezsin	fiil	jölelemek eyleminin bildirme kipi geniş zaman 2. teklik şahıs olumsuz çekimi
+jölelemezsiniz	fiil	jölelemek eyleminin bildirme kipi geniş zaman 2. çokluk şahıs olumsuz çekimi
+jölelemiyor	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 3. teklik şahıs olumsuz çekimi
+jölelemiyorlar	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 3. çokluk şahıs olumsuz çekimi
+jölelemiyorsun	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 2. teklik şahıs olumsuz çekimi
+jölelemiyorsunuz	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 2. çokluk şahıs olumsuz çekimi
+jölelemiyorum	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 1. teklik şahıs olumsuz çekimi
+jölelemiyoruz	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 1. çokluk şahıs olumsuz çekimi
+jölelemiş	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 3. teklik şahıs olumlu çekimi
+jölelemişim	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 1. teklik şahıs olumlu çekimi
+jölelemişiz	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 1. çokluk şahıs olumlu çekimi
+jölelemişler	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 3. çokluk şahıs olumlu çekimi
+jölelemişsin	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 2. teklik şahıs olumlu çekimi
+jölelemişsiniz	fiil	jölelemek eyleminin bildirme kipi öğrenilen geçmiş zaman 2. çokluk şahıs olumlu çekimi
+jöleler	fiil	jölelemek fiilinin bildirme kipi geniş zaman 3. tekil şahıs olumlu çekimi
+jölelerim	fiil	jölelemek eyleminin bildirme kipi geniş zaman 1. teklik şahıs olumlu çekimi
+jöleleriz	fiil	jölelemek eyleminin bildirme kipi geniş zaman 1. çokluk şahıs olumlu çekimi
+jölelerler	fiil	jölelemek eyleminin bildirme kipi geniş zaman 3. çokluk şahıs olumlu çekimi
+jölelersin	fiil	jölelemek eyleminin bildirme kipi geniş zaman 2. teklik şahıs olumlu çekimi
+jölelersiniz	fiil	jölelemek eyleminin bildirme kipi geniş zaman 2. çokluk şahıs olumlu çekimi
+jöleleyecek	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 3. teklik şahıs olumlu çekimi
+jöleleyecekler	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 3. çokluk şahıs olumlu çekimi
+jöleleyeceksin	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 2. teklik şahıs olumlu çekimi
+jöleleyeceksiniz	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 2. çokluk şahıs olumlu çekimi
+jöleleyeceğim	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 1. teklik şahıs olumlu çekimi
+jöleleyeceğiz	fiil	jölelemek eyleminin bildirme kipi gelecek zaman 1. çokluk şahıs olumlu çekimi
+jöleliyor	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 3. teklik şahıs olumlu çekimi
+jöleliyorlar	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 3. çokluk şahıs olumlu çekimi
+jöleliyorsun	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 2. teklik şahıs olumlu çekimi
+jöleliyorsunuz	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 2. çokluk şahıs olumlu çekimi
+jöleliyorum	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 1. teklik şahıs olumlu çekimi
+jöleliyoruz	fiil	jölelemek eyleminin bildirme kipi şimdiki zaman 1. çokluk şahıs olumlu çekimi
+jön	isim	Önemli rollerde oynayan genç erkek oyuncu, jönprömiye
+jönprömiye	isim	[sinema, televizyon] jön
+jübile	isim	evliliğin ellinci yılında düzenlenen kutlama şenliğibir sanat veya spor dalında uzun süre çalışanların onuruna düzenlenen kutlama töreni[din] Tevrat'a göre, Yahudilerde, elli yılda bir Tanrı'ya ve dinlenmeye ayrılan yıl[din] Katoliklerde, Roma'ya hacca gidenlerin, kilisece günahlarının tam olarak bağışlandığı yıl
+jül	isim	[fizik] bkz. jul
+jülide	sıfat	dağınık, karışık, taranmamış
+jüpon	isim	[iç giyim] Giysi altına giyilen etek; iç etek
+jüri	isim	Seçiciler kuruluHerhangi bir mesele için hüküm vermek üzere toplanan yetkili kurul
+jüt	isim	[ağaçlar] Ihlamurgillerden, Hindistan ve Bangladeş'te yetişen, ip ve çuval yapımında kullanılan, liflerinden yararlanılan bir bitki (Corchorus capsularis).[dokuma] Bu bitkinin liflerinden yapılan dokuma.
+jüvenil	sıfat	[tıp] Gençliğe dair, gençlikle ilgili

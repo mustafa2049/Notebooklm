@@ -11,7 +11,8 @@ import {
 } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { createSearchIndex, MIN_QUERY, searchText } from '@/core/search';
-import { DictOfflineError, entryNote, lookupExact, lookupWord } from '@/ingest/tdk';
+import { lookUpMeaning } from '@/ingest/dictionary';
+import { DictOfflineError, entryNote } from '@/ingest/tdk';
 import { useSettings } from '@/store/SettingsContext';
 import { loadAiCache, patchAiCache, type AiChatTurn } from '@/storage/ai';
 import type { Bookmark } from '@/storage/bookmarks';
@@ -283,7 +284,7 @@ export function ToolSheet({
   const lookUp = async (word: string, exact?: string) => {
     setDict({ word, status: 'loading' });
     try {
-      const result = exact ? await lookupExact(exact) : await lookupWord(word);
+      const result = await lookUpMeaning(word, exact);
       setDict(result ? { word, status: 'done', result } : { word, status: 'none' });
     } catch (error) {
       setDict({ word, status: error instanceof DictOfflineError ? 'offline' : 'error' });
@@ -298,7 +299,7 @@ export function ToolSheet({
       lemma: found?.entries[0]?.word,
       sentence: activeSentence,
       // Kelime o an açıklanmışsa açıklama (yoksa sözlük anlamı) nota geçer
-      note: wordInfo?.word === word ? wordInfo.text : found?.entries.slice(0, 2).map(entryNote).join('\n'),
+      note: wordInfo?.word === word ? wordInfo.text : found?.entries.slice(0, 2).map((entry) => entryNote(entry, found.source)).join('\n'),
       docId,
       docTitle,
     });

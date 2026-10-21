@@ -1,0 +1,784 @@
+ö	isim	bıkma veya tiksinme anlatan ses
+ö-	ek	gerçek (Yun. önek)iyi (Yun. önek)
+öbek	isim	[fizik, kimya] çarpım işlemi altında kapalı kalıp her öğesinin evriğini içeren, birim işlerli öğeler kümesi[bilişim] uygulamanın belli bir işi yerine getiren parçasıküme[dibilimi] özne, yüklem veya çeşitli tümleçlerle birlikte kullanılan sözcüklerin tümü[gök bilimi] genel olarak yaş, yapı, uzay dağılımları ve hızları bakımından benzer özellik gösteren dizgelere ilişkin yıldızlar kümesi
+öbeklenme	isim	Öbeklenmek durumu veya biçimi
+öbeklenmek	fiil	Öbek durumuna gelmek, öbek öbek olmak
+öbekleşme	isim	Öbekleşmek durumu
+öbekleşmek	fiil	Bir grup oluşturmak, öbek durumunu almak
+öbeksi	isim	Üzerinde bir ikili işlem bulunan küme. Simgesi: E kümesi üzerindeki ikili işlem T ile gösteriliyorsa, (E, T) sıralı ikilisi.
+öbür	sıfat	diğer, öteki
+öbürkü	zamir	[halk ağzı] öbürü
+öbürü	isim	öteki, öbür kişi veya şey
+öbüründe	isim	öbürü kelimesinin bulunma hâli
+öbüründen	isim	öbürü kelimesinin çıkma hâli
+öbürüne	isim	öbürü kelimesinin yönelme hâli
+öbürünü	isim	öbürü kelimesinin belirtme hâli
+öbürünün	isim	öbürü kelimesinin tamlayanı
+öc	isim	öç
+öcbelemek	fiil	[halk ağzı, Sivas ağzı] Israr etmek, üstüne düşmek
+öcü	isim	küçük çocukları korkutmak için uydurulmuş hayalî yaratık, umacı
+öd	isim	[fizyoloji] safra[dulaptal otugiller, ağaçlar] öd ağacı ve bu ağacın kıyılmış parçalarından yapılan tütsü[halk ağzı, Balıkesir ağzı] zaman
+ödek	sıfat	[halk ağzı, Afyonkarahisar ağzı, Kütahya ağzı, Havza ağzı] ödlek, korkak
+ödem	isim	[patoloji] dokularda genellikle yüzde, ellerde, ayaklarda ve bazı iç organlarda aşırı miktarda sıvı birikmesi
+ödematöz	isim	Ödemden ileri gelen.Ödem ile belirgin olan.
+ödeme	isim	[ekonomi] ödemek işi, tediye
+ödemek	fiil	[ekonomi] alış veriş ilişkisinde, borcu alacaklıya vermek, tediye etmekbir alış verişte alınan şeyin karşılığını alacaklıya vermekbedelini vererek zararı karşılamak, tazmin etmekbir iş, kuruluş harcanan, yatırılan parayı çıkartmak, itfa etmekbir işin, görevin karşılığını vermekbir şey karşısında fedakârlık etmek, bir şey elde etmek için özveride bulunmak
+ödemli	sıfat	Ödemi olan
+ödence	isim	zarar karşılığı ödenen para
+ödenek	isim	[ekonomi, politika] bir iş için ayrılan belli para, tahsisatparlamento üyelerine, görevleri sebebiyle verilen, yolluk dışında kalan para[hukuk] devlet harcamalarının yapılabilmesi için her yılın bütçesiyle yürütme organına verilen harcama izni
+ödeneksizlik	isim	Ödeneksiz olma durumu
+ödeniş	isim	Ödenmek eylemi ya da biçimi.
+ödenme	isim	ödenmek işi
+ödenmek	fiil	Ödemek eylemine konu olmak.
+ödenmez	sıfat	Ödenemeyecek kadar, ödenmeyecek biçimde
+ödenti	isim	[ekonomi] aidat
+ödetme	isim	Ödetmek işi
+ödettirmek	fiil	ödeme işini yaptırmak
+ödev	isim	yapılması, yerine getirilmesi, insanlık duygusu, töre ve yasa bakımından gerekli olan iş veya davranış, vazife, vecibe[eğitim] öğretmenin öğrencilere okul dışında yapmaları için verdiği çalışma
+ödevlendirilme	isim	Ödevlendirilmek işi veya durumu
+ödevlendirilmek	fiil	Ödevlendirmek işine konu olmak
+ödevlendirme	isim	Ödevlendirmek işi veya durumu
+ödevlendirmek	fiil	Birine ödev vermek
+ödevli	sıfat	ödev yüklenmiş olan, vazifeli
+ödeyiş	isim	[ekonomi] ödeme işi
+ödeşme	isim	Ödeşmek işi
+ödikotlar	isim	[bitki bilimi] iki çenekliler
+ödkesesi	isim	[anatomi] Karaciğere yapışık, armut biçiminde, öd salgılayan küçük organ.
+ödlek	sıfat	korkak, tabansız, yüreksiz
+ödyometre	isim	Kimyasal tepkimelerde gazların oylum değişmelerini ölçmeye yarayan aygıt
+ödül	isim	[ekonomi] iyiliğe karşılık olarak verilen armağan, mükâfatbaşarı karşılığında verilen armağan, mükâfat
+ödüllendirilmek	fiil	Ödüllendirme işine konu olmak.
+ödüllendirme	isim	Ödüllendirmek işi.
+ödüllendirmek	fiil	Bir başarıyı ya da bir iyiliği ödülle değerlendirmek, mükâfatlandırmak.
+ödülsüz	sıfat	ödül alamamış olanödül içermeyen
+ödün	isim	uzlaşmaya varabilmek için hak, istek veya savların bir bölümünden, karşı taraf yararına vazgeçme
+ödüncü	isim	Ödün veren, tavizci
+ödünleme	isim	Ödünlemek işi, taviz
+ödünsüzlük	isim	Ödünsüz olma durumu
+ödünç	isim	[ekonomi] ileride geri verilmek veya alınmak şartıyla alınan veya verilen şey
+ödünçleme	isim	Ödünçlemek işi; ariyet, istiare.[dil bilimi] Bir dilin başka bir dilden ödünç olarak kelime, ek veya ses alması.
+ödünçlemek	fiil	ödünç olarak almak[dil bilimi] başka bir dilden söz almak, bütünüyle özümsemek
+ödünçleşme	isim	Ödünç olarak alınmış ariyetBaşka bir dilden alınmış ve bütünüyle özümsenmemiş (söz)
+öf	ünlem	usanç, bezginlik, tiksinti vb. duygular anlatan bir söz:
+öfelemek	fiil	[halk ağzı] Bir şeyi avuç içinde ezerek ufalamak.[halk ağzı] Ovalamak.[halk ağzı] Hamuru yoğurup yuvarlamak
+öfke	isim	engelleme, incinme veya gözdağı karşısında gösterilen saldırganlık tepkisi, hışım, hiddet, kızgınlık
+öfkelenme	isim	Öfkelenmek işi
+öfkelenmek	fiil	[duygular] öfkeli duruma düşmek; kızmak, cinlenmek, hiddetlenmek.
+öfkeli	sıfat	[duygular] Öfkelenmiş olan; cinli, hiddetli, pürhiddet.
+öfkeli	zarf	[psikoloji] Öfkelenmiş, kızgın, hiddetli bir biçimde; pürhiddet
+öfkesiz	sıfat	çabuk öfkenmeyenkızgın olmayan
+öfkesizlik	isim	Öfkesiz olma durumu
+öfori	isim	[tıp] İçki, uyuşturucu, sigara gibi özdeklerin içinde bulunan kimyasalların neden olduğu coşkuya verilen ad.coşku
+öforizan	isim	Öfori yaratan madde.
+öge	isim	bir bütünü oluşturan, bütünden ayrıştırıldığında da kendi başına anlam taşıyan parça, unsur, uzuvbaşka şeylerin kendisinden türediği ilk madde, ilke, unsur, uzuvgerekçe, araç[kimya] birleşik bir şeyi oluşturan basit şeylerden her biri, unsur, eleman[dil bilimi] bir cümleyi oluşturan özne, yüklem, tümleç vb. birimlerden her biri[toplum bilimi, mantık] bir sınıf veya bir topluluğun bireylerinden her biri
+öglena	isim	[algler, biyoloji] tatlı sularda yaşayan, kamçı biçimindeki uzantısı ile hareket eden mekik biçimindeki bir hücreli
+öglenagiller	isim	Örnek hayvanı öglena olan kamçılı bir hücreliler sınıfı
+ögonik	isim	Bazı bakteri kültürlerinin hızla çoğalması.
+öhö	ünlem	bir kişinin kendi varlığını belli etmek, söylenen bir şey üzerine dikkati çekmek, birine takılmak veya biriyle eğlenmek gibi amaçlarla, öksürür gibi yaparak çıkardığı ses
+öjenik	isim	İnsan türünün soyaçekim yoluyla ıslahına çalışma
+ök	isim	Güvenceli bağ, yaşamsal güvence ( kaynağı ), yaşama dayanağı, yaşamsal destek.gök, tanrıTanrı, tanrısal olan, kutsal olan, evrensel olan.geyikkeçiboğatanrının görüntüsü (temsilcisi) kağananne
+ökaryot	isim	[biyoloji, taksonomi] hücrelerinde bir çekirdek ve başka organeller içeren bir canlılar grubu olup bilimsel sınıflandırmada arkeler ve bakterilerle beraber tüm canlıları kapsayan üç ana gruptan bir organizma
+ökaryotlar	isim	[taksonomi] hücrelerinin yapısından dolayı bir arada gruplandırılmış bir canlılar grubu
+öke	isim	[zekâ] dâhi.[aile, Afyonkarahisar ağzı] abla.[öfke, Aydın ağzı] öfke.
+ökelik	isim	Öke olma durumudeha
+ökem	isim	muhakemehikmet
+ökenme	isim	[halk ağzı, Düziçi ağzı] Öykünme
+ökenmeg	fiil	öykünmek, bir kişinin konuşmasını taklit etmek
+ökenmek	fiil	[halk ağzı, Adana ağzı] Birinin yaptıklarını, söylediklerini yineleyerek alay etmek, yansılamak, öykünmek.
+öklem	isim	kavram, mefhum
+ökleme	isim	Küçük işletmelerde, hayvanların yere çakılan bir kazığa uzun bir iple bağlanarak belirli bir daire içerisinde otlamalarına izin verilen ve bu alandaki yem tamamen otlandıktan sonra kazığın yeri değiştirilmek suretiyle devam edilen bir otlatma sistemi
+öklemek	fiil	[hayvancılık, halk ağzı] Hayvanı kaçmaması için bir yere bağlamak.[yapılar, Samsun ağzı] Küçük samanlık
+ökmen	sıfat	bilge, hakim
+ökse	isim	ökse otu saplarından veya çobanpüskülü kabuklarından çıkarılan yapışkan macun.[avcılık] Bu macunla bulanarak kuş tutmakta kullanılan değnek.[mecaz, kadın] Erkekleri kendine bağlamasını bilen alımlı kadın.
+ökseleme	isim	Ökselemek işi veya durumu
+ökselemek	fiil	Ökse ile yakalamak
+ökseme	isim	Özlemek, göreceği gelmek, istemek
+öksemek	fiil	[halk ağzı] Özlemek[halk ağzı] Göreceği gelmek[halk ağzı] İstemek
+öksü	isim	Yarı yanmış odun.
+öksürme	isim	Öksürmek işi
+öksürmek	fiil	[fizyoloji] solunum yolları zarlarının rahatsızlığı sebebiyle akciğerlerdeki havayı birdenbire ve gürültülü bir sesle dışarı vermek.[hastalık] Öksürtücü bir hastalığa tutulmuş olmak.[argo] Konuşmak, itiraf etmek.
+öksürtme	isim	Öksürtmek işi
+öksürtücü	sıfat	Öksürten, öksürüğe yol açan
+öksürük	isim	[tıp, fizyoloji] ciğerlerdeki havanın, solunum organlarının kasılması ve zorlanmasıylı ağızdan gürültü ile çıkması[hastalık] üşütme gibi bir sebeple ortaya çıkan göğüs hastalığı
+öksürüklü	sıfat	öksürüğü olan, sürekli öksürenyaşlı ve hasta
+öksürüş	isim	Öksürmek eylemi ya da biçimi.
+öksüz	isim	anası veya hem anası hem babası ölmüş olan, yetim çocukkimsesiz kişi
+öksüz	sıfat	anası veya hem anası hem babası ölmüş olan (çocuk), yetimkimsesiz
+öksüzdoyuran	sıfat	Çok büyük bardak, çanak ve bunların içindeki yiyecek ve içecek
+öksüzlük	isim	Öksüz olma durumu[mecaz] kimsesizlik
+öksüzsevindiren	sıfat	Değeri az, cicili bicili şeyler için söylenir
+ökçe	isim	[ayak giyimi] ayakkabı altının topuğa rastlayan yüksek bölümü, topuk[anatomi] topuğun arka bölümüsaban demirinin geçtiği ağaç parçası
+ökçeci	isim	Ayakkabılar için ökçe yapan veya satan kimse
+ökçeli	sıfat	[ayak giyimi] Ökçesi olan veya ökçesi yüksek olan; topuklu.
+ökçesiz	sıfat	Ökçesi olmayan (ayakkabı)
+ökçeçene	isim	Boru anahtarının kola bağlı olan, setleri dışa dönük, hareketsiz çenesi.
+ökümen	isim	[coğrafya] Yeryüzünde insanlar tarafından yerleşilmiş veya yerleşilmeye müsait, insan yaşamının devam edebileceği alanlar.
+öküz	isim	[boynuzlugiller] Çift sürmekte, kağnı çekmekte kullanılan, etinden yararlanılan, iğdiş edilmiş erkek sığır.[argo] Söz ve davranışlarında incelikten yoksun olan kimse[argo] Cıvalı zar.
+öküzburnu	isim	[hayvan bilimi] Serçegillerden, gagası uzun ve çok kalın, eti yenir bir kuş
+öküzdili	isim	[bitki bilimi] Sığırdili
+öküzgözü	isim	[papatyagiller, çiçekler] papatyagiller, sarı renkte, papatyayı andırır bir çiçek ve onun bitkisi, sığırgözü, mastı çiçeği, arnika[meyveler] kaliteli, kendine özgü kokusu olan şarap üretilen, orta kalın kabuklu, siyah renkli bir tür üzüm
+öküzkakan	isim	[hayvan bilimi, kuşlar] Afrika öküzlerinin üzerinde görülen bir tür kuş.
+öküzlük	isim	Budalalık, sersemlik
+öl	isim	[halk ağzı] höl, nem, yaşlık
+öldüresiye	zarf	Öldürürcesine
+öldürmek	fiil	aşırı yormakbitkinin solarak kurumasına sebep olmakboşuna geçmekçok üzmekölmesine yol açmaksağlığını bozmak, rahatsızlık vermek[fizyoloji, kriminoloji] bir canlının hayatına son vermek[mecaz] azalmasına, ortadan kalkmasına, yok olmasına yol açmak
+öldürmeme	isim	öldürmemek işi.
+öldürtme	isim	Öldürmek işi
+öldürtmek	fiil	Öldürmek işini yaptırmak
+öldürücü	sıfat	Öldüren, ölüme sebep olan, ölüme yol açanBayıltıcı, bunaltıcı, sıkıcı, yorucu
+öldürücülük	isim	Öldürücü olma durumu
+öldürülmek	fiil	Öldürmek işine konu olmak
+öldürüş	isim	Öldürmek işi veya biçimi
+ölen	sıfat	ölmek üzere olan
+ölesiye	zarf	Ölecek kadar
+ölet	isim	[halk ağzı] kıran
+öleyazma	isim	Öleyazmak işi veya durumu.
+öleyazmak	fiil	[ölüm] Az kalsın ölmek, ölme tehlikesi atlatmak.
+ölez	isim	fani
+ölez	sıfat	ölümlü
+öleşmek	fiil	[halk ağzı] paylaşmak
+ölger	isim	özdeyiş, vecize
+ölgün	sıfat	Dirliği, canlılığı, tazeliği kalmamış, pörsümüş, solmuşGücü azalmış, zayıflamış
+ölgünlük	isim	Ölgün olma durumu
+ölme	isim	ölmek hâli
+ölmek	fiil	[fizyoloji] Yaşamsal fonksiyonların durması, hayatın bitmesi.[mecaz] geçerliğini, gücünü, kıymetini kaybetmek[botanik] solmak[mecaz] bazı sebeplerle çok sıkıntı veya acı çekmek
+ölmeyen	sıfat	ölmek üzere olmayan
+ölmez	sıfat	kalıcı olan, ölümsüz
+ölmezleştirme	isim	Ölmezleştirmek işi
+ölmezleştirmek	fiil	Ölümsüzleştirmek
+ölmezlik	isim	Ölmez olma durumu, ölümsüzlük
+ölmezoğlu	isim	[halk ağzı] Çok dayanıklı şey
+ölmüş	sıfat	[fizyoloji] ölen, ölü olan
+ölmüşlük	isim	Ölmüş olma durumu
+ölçek	isim	birim kabul edilen herhangi bir şeyin alabildiği kadar ölçütahıl ölçmeye yarar kap, kile[coğrafya] bir harita veya resimde görülen uzaklıklarla bunların işaret ettiği, karşılandığı gerçek uzunluklar arasındaki oran[fizik] bir ölçü aletinin üzerinde çizgilerle ayrılmış bölüm, kadrandört okkaya eşit ağırlık ölçüsü
+ölçek	sıfat	bu ölçü miktarında olan
+ölçekleme	isim	Ölçeklemek işi.
+ölçekli	sıfat	ölçek farkıyla aynen bütünü veren geometrik şekil veya eleman, mikyaslı
+ölçeksiz	sıfat	Ölçeği olmayan
+ölçeksizlik	isim	Ölçeksiz olma durumu
+ölçer	isim	[ölçü aletleri] tutum, yeti, yetenek ve becerileri ölçmek üzere başvurulan ve ölçünlenmiş edimli ya da sözlü sınarlardan oluşan ölçme aracı[halk ağzı] ateşi karıştıracak demir kol
+ölçerme	isim	Ölçermek işi veya durumu
+ölçermek	fiil	Sönmekte olan ateşi, lambayı canlandırmak
+ölçme	isim	[metroloji, tabii bilimler] ölçmek işi
+ölçmek	fiil	en, boy, oylum, süre gibi nicelikleri kendi cinslerinden seçilmiş bir birimle karşılaştırıp kaç birim geldiklerini belirtmek[mecaz] aşırı olmamasına dikkat etmek, kontrol etmek
+ölçtürme	isim	Ölçtürmek işi.
+ölçtürmek	fiil	Ölçmek işini yaptırmak
+ölçü	isim	Bir niceliği, o nicelik için kabul edilmiş birimlerden birine göre oranlayarak değerlendirme; endaze, mizanBu değerlendirmede kullanılan birim, ölçme birimi; mezür.Ölçme sonucu bulunan rakam.Belirlenmiş boyut; numaraölçütitibar[mecaz] Aşırı olmama, ılımlı, uygun olma durumu.[şiir sanatı] Bir şiirdeki dizelerin hece ve durak bakımından denk oluşu; vezin
+ölçücü	isim	Ölçme işini yapan kimse
+ölçücülük	isim	Ölçücü olma durumu
+ölçülebilir	sıfat	ölçme işine konu olabilir fiziksel büyüklük
+ölçülebilmek	fiil	ölçülme ihtimali veya imkânı bulunmak
+ölçülendirme	isim	Ölçülendirmek işi
+ölçülendirmek	fiil	Ölçme işlemlerini bir düzlem üzerine aktarmak
+ölçülme	isim	ölçülmek işi
+ölçülmek	fiil	ölçmek işine konu olmak
+ölçülü	sıfat	ölçüsü alınmış, ölçülmüşbelirli bir ölçüde olandar[mecaz] ılımlı[edebiyat] belli bir ölçüye göre düzenlenmiş olan, vezinli, mevzun
+ölçülü	zarf	dikkatli, düşünerek
+ölçülülük	isim	ölçülü, dengeli olma durumu, ılım
+ölçüm	isim	ölçmek işiölçülerek elde edilen sonuçölçümleme sonucu, takdir
+ölçümleme	isim	Değerlendirme, değer biçmeBilimsel aletlerde mutlak ölçüden en küçük sapmaları tayin etme işlemi
+ölçümlü	isim	Metrik
+ölçün	sıfat	standart
+ölçünleşme	isim	standartlaşma
+ölçünlü	sıfat	Standart
+ölçünme	isim	Ölçünmek işi veya durumu
+ölçünmek	fiil	Bir şeyi uzun uzun düşünüp hesaplamak, teemmül etmek
+ölçüsüz	sıfat	Ölçülmemiş, ölçüsü alınmamış olan.t Belirli bir ölçüde olmayan.Tutum ve davranışları uyumsuz, dengeli olmayan.pek çok.hesapsız.[şiir sanatı] Ölçüsü olmayan.
+ölçüsüz	zarf	yerli yersiz.
+ölçüsüzlük	isim	Ölçüsüz olma durumu
+ölçüt	isim	bir yargıya varmak veya değer vermek için başvurulan ilke, kıstas, mısdak, kriter
+ölçütsüzlük	isim	Ölçütsüz olma durumu
+ölçüş	isim	Ölçmek işi veya biçimi
+ölçüşme	isim	Ölçüşmek işi
+ölçüşmek	fiil	(biriyle) Yan yana gelerek boy bakımından ölçülmekYarışmak, müsabaka yapmakKarşılaştırmak, mukayese etmek
+ölçüştürme	isim	Ölçüştürmek işi veya durumu
+ölçüştürmek	fiil	Ölçüşmek işini yaptırmakAradaki farkı bulmak için iki şeyi yan yana getirmek, karşılaştırmak, mukayese etmek
+ölü	isim	[ölüm] ölmüş insan; cenaze, müteveffa, mevta, meyithayvan leşi
+ölü	sıfat	[ölüm] hayatı sona ermiş olan, artık yaşamıyor olan, diri karşıtıgücü az, zayıfçok durgun, hareketsizetkileme gücü olmayan, canlılığı olmayan
+ölücü	isim	[mecaz] Bir malı ederinden ucuza, yok pahasına almak isteyen kişi.[halk ağzı] Ölü gömen kişi.
+ölücü	sıfat	Ölülere cinsel istek duyan.[mecaz] Ölmek üzere olan.
+ölüdoğa	isim	[resim] Konusu, cansız varlıklar veya nesneler olup doğal kavramlar üzerine çizilen resim, natürmort
+ölühane	isim	Hastanelerde meyitlerin saklandığı yer, bina; morg.
+ölük	sıfat	[halk ağzı] canlılığı azalmış, hâlsiz
+ölükuyruğu	isim	akrep
+ölülük	isim	Cansız kalma durumu, cansızlık
+ölüm	isim	Bir insan hayatının tam ve kesin olarak sona ermesi; ahiret yolculuğu, son, ebedî uyku, son yolculuk, emrihak, irtihal, memat,mevt, vefat.[bitkiler] Bir hayvanda veya bitkide hayatın tam ve kesin olarak sona ermesi.Ölme biçimi:[idam] İdam cezası[mecaz] Sona erme, yok olma, ortadan kalkma:
+ölüm	ünlem	ölmesi istenen canlı için kullanılan söz
+ölümcül	sıfat	ölümle sona erme ihtimali olan veya ölümle sona erencan çekişen
+ölümeri	isim	Bir ülkü uğruna tehlikeli işlere girişerek canını esirgemeyen kimse
+ölümlü	isim	[felsefe] insan
+ölümlü	sıfat	[fizyoloji] gelip geçici, kalımsız, fâni
+ölümlük	isim	Bazı kimselerin, öldüklerinde cenazelerinin kaldırılmasına harcanmak için biriktirdikleri para
+ölümlülük	isim	ölümlü olma durumu, kalımsızlık, fânilik, fena, ölüm oranı
+ölümsek	sıfat	[halk ağzı] Ölümcül
+ölümsü	isim	Ölümü andıran, ölüm durumuna yakışan.
+ölümsüz	sıfat	[fizyoloji] hiçbir zaman ölmeyecek olan, ebedî, layemuthiç unutulmayacak, daima anılacak olan, ebedî
+ölümsüzleşme	isim	ölümsüzleşmek işi
+ölümsüzleşmek	fiil	ölümsüz olmak, ölümsüz duruma gelmek, bengileşmek, ebedîleşmek
+ölümsüzleştirme	isim	Ölümsüzleştirmek işi
+ölümsüzleştirmek	fiil	ölümsüz duruma getirmek, ölmezleştirmek, ebedîleştirmek
+ölümsüzlük	isim	Ölümsüz olma durumu, ölmezlikKalıcılık, ebedîlik
+ölünme	isim	Ölünmek işi veya durumu
+ölünmek	fiil	Herhangi biri ölmek
+ölüzge	isim	[halk ağzı] Rüzgar
+ölüş	isim	Ölme durumu.
+ömrübillah	zarf	Şimdiye değin, hiçbir vakit.
+ömrühayat	isim	Geçirilen, yaşanılan bütün ömür boyu
+ömrünce	zarf	Ömrü boyunca, yaşadığı süre içinde
+ömür	isim	[fizyoloji] yaşam[mecaz] çok hoşa giden şey.
+ömürlü	sıfat	ömrü uzun olan
+ömürsüz	sıfat	Ömrü kısa olan
+ön	isim	Bir şeyin esas tutulan yüzü.karşıBir kimsenin ilerisi.[zaman] Yakın gelecek zaman.[giyim] Giyeceklerin genellikle göğsü örten bölümü.Bir kimse veya yerin yüzünün baktığı tarafta olan yer.
+ön	sıfat	Önce olan..Benzerler arasında ilk sırada olan.
+önalan	isim	[bilişim] Kullanıcının gerçek zamanlı etkileştiği uygulama; öteki bütün pencerelerin önünde bulunan uygulama penceresi.
+önayak	sıfat	Bir işte öncü, işi yürüten (kimse)
+önbellek	isim	Merkez birimin gereksinimi olabilecek düşük kapasiteli bellek.[bilişim] Bir sonraki erişimi hızlandırmak amacıyla yeni ulaşılmış veriyi tutan küçük ve hızlı bellek.
+önbilicilik	isim	Bir olayın gerçekleşeceğini önceden bilme, kehanet, kahinlik.
+önbilim	isim	[felsefe] bir fenomenin bilim sayılabilmesi için bilimsel yöntemler geliştirilmeden önceki felsefi disiplinleri ifade etmekte kullanı
+önce	zarf	ilk olarak, başlangıçta, sonra karşıtı
+öncecilik	isim	Bir şeyi başkalarından önce yapma işi, inisiyatif.Önde gelme işi.
+önceden	zarf	başlarken, başlangıçta, daha önce, evvelce
+öncek	isim	iş önlüğübebek önlüğüpeştamal
+önceki	sıfat	önce olan, evvelki, mukaddem, sabık
+öncel	isim	Bir görevde, meslekte kendinden önce yerini tutmuş olan kimse(çokluk olarak) Bizden önce yaşamış olanlarSonucun çıkarıldığı önerme veya önermeler
+önceleme	isim	öncelemek işi, lanse
+öncelemek	fiil	Bir şeyi önceden yapmak, geri bırakmamak, öne almak, takdim etmek
+önceleri	zarf	Önceki zamanda, başlangıçta
+öncelik	isim	bir şeyin öbüründen önce olması durumu, takaddüm
+öncelikle	zarf	Öne alınarak, daha önce olarak
+öncelikli	sıfat	Önceliği olan
+öncesiz	sıfat	zamanda başlangıcı olmayan, ezeli
+öncesizlik	isim	öncesi olmama durumuezel
+öncü	isim	önde gidip haber ulaştıran kimsebir sanat ve düşünce akımını, çağına göre yeni bir görüşü başlatan kimse veya eser, müjdeci, avangart[askeriye] yürüyüşte kolun ilerisinden giden kıta, pişdar, artçı karşıtıönder, kılavuz
+öncü	sıfat	önden gelen, önde olan, artçı karşıtı
+öncül	isim	bir bilimsel çalışmada işe koyulurken, araştırmaya konu edilmeksizin doğru sayılan önerme[mantık] bir tasımda sonucu hazırlayan ilk iki önermeden her biri, mukaddem[mantık] bir çıkarımın öncüller kümesini oluşturan önermelerden herhangi biri, mukaddemkılavuz, öncü
+öncül	sıfat	önde giden, önde olan, artçıl karşıtı
+öncülük	isim	öncü olma durumu[hükûmet] önderlik
+öndelik	isim	ticari bir işlemde taraflar arasında yapılan sözleşmeden doğan borcun bir kısmının, alacaklıya çeşitli sebeplerle kararlaştırılan ödeme tarihinden önce ödenmesi, avans
+önder	isim	gücü, ünü ve toplumsal yeri dolayısıyla belli zaman ve durumlar içinde ilişkili bulunduğu küme veya toplumun tutum, davranış ve etkinliklerini değiştirip yönetme yeteneğini gösteren kimse.önde gelenliderşefrehberkılavuzbaşat
+önderlik	isim	[hükûmet] önder olma durumu veya öndere yakışır davranış, öncülük, liderlik
+öndeyi	isim	tahmin, önsezi
+öndeç	isim	[meslekler, Afyonkarahisar ağzı] mübaşir.
+öndüç	sıfat	[halk ağzı, Sivas ağzı] Ödünç
+öne	zarf	önce, ilkönceöyle
+önek	isim	doğrusu: ön ek
+önel	isim	Bir işin tamamlanması için tanınan ek süreİş sözleşmesine göre işçinin işten çıkarılması durumunda tanınan süre.
+önem	isim	bir şeyin nitelik veya nicelik bakımından değeri olma durumu, ehemmiyet
+önemli	sıfat	önemi olan, mühim, ehemmiyetli[askeriye, ekonomi, politika, psikoloji] askerî, ekonomik, politik ve psikolojik açıdan önemi olan, stratejik
+önemlice	sıfat	Önemli sayılabilecek kadar
+önemlileştirme	isim	önemlileştirmek işi
+önemlileştirtmek	fiil	önemlileştirme işini yaptırmak
+önemlilik	isim	[obstetrik] önemli durumu, ehemmiyetlilik, mühimlik
+önemseme	isim	önemsemek işi
+önemsemek	fiil	önemli saymak, önem vermek, mühimsemek
+önemseniş	isim	Önemsenmek işi veya biçimi
+önemsenme	isim	Önemsenmek işi
+önemsenmek	fiil	Önem verilmek, üzerinde durulmak
+önemseyiş	isim	Önemsemek işi veya biçimi
+önemsiz	sıfat	önemi olmayan
+önemsizce	sıfat	Önemli sayılmayacak kadar
+önemsizleştirme	isim	önemsizleştirmek işi
+önemsizleştirmek	fiil	önemsizleştirme işini yapmak
+önemsizleştirtmek	fiil	önemsizleştirme işini yaptırmak
+önemsizlik	isim	önemsiz olma durumu, ehemmiyetsizlik
+önen	isim	[halk ağzı, Afyon, hukuk] adalet, hak
+önerge	isim	Meclis, kongre vb. resmî bir toplantıda, herhangi bir konu veya sorunla ilgili olarak bir öneride bulunmak için üyelerden biri veya birçoğu tarafından başkanlığa verilen, oya konularak karar verilmesi istenen yazılı kâğıt
+öneri	isim	Bir sorunu çözmek üzere öne sürülen görüş, düşünce; teklifİncelenmek için ileri sürülen şey; teklif
+önerilme	isim	önerilmek işi
+önerilmek	fiil	önerilme işine olmak
+öneriş	isim	önermek işi
+önerme	isim	önermek işikabul edilmesi için öne sürülen düşünce, teklif[mantık] savı öne süren veya durumu dile getiren cümle, belli bir yorumda belli bir doğruluk değeri kazanan düzgün deyim, kaziye[matematik] ifade
+önermek	fiil	tavsiye etmekbir sorunu çözmek üzere bir şey öne sürmek, teklif etmek
+önerti	isim	Koşullu bir önermenin koşulu anlatan ön bölümü, önbileşen.
+öneylem	isim	tercihproverb
+öneze	isim	Avcının av beklemek için taş yığınlarından yaptığı pusu, evsin.Sürek avında pusuda av bekleyen avcı.
+önge	isim	engel, mâni
+öngörme	isim	Öngörmek işi
+öngörmek	fiil	Ilerisi için kararlaştırmak, göz önünde tutmak, derpiş etmek
+öngörü	isim	Bir işin ilerisini kestirme veya bir işin nasıl bir yol alacağını önceden anlayabilme ve ona göre davranma
+öngörülme	isim	Öngörülmek işi veya durumu
+öngörülmek	fiil	İlerisi için kararlaştırılmak, göz önünde tutulmak
+öngörülü	sıfat	Bir işin ileride nasıl olacağını kestirerek ona göre davranan, öngörüsü olan.
+öngü	isim	inat
+öngün	isim	Bir önceki gün
+önkol	isim	[anatomi] kolun dirsekle bilek arasındaki bölümü
+önlem	isim	kötü veya yanlış bir şeyi önleyecek yol, tedbir
+önleme	isim	Önlemek işi
+önlemek	fiil	bir şeyin olmasına veya yapılmasına engel olmaki rtaya çıkan veya çıkacağı düşünülen bir tehlikeyi durdurmak, önüne geçmek
+önleniş	isim	Önlenmek işi veya biçimi
+önlenme	isim	Önlenmek işi
+önlenmek	fiil	önleme işi yapılmak.
+önleyici	sıfat	önlemek veya engel olmak amacıyla yapılmışyenimli ortamlarda ve temizleme işlemlerinde kullanılan çözeltilerin bileşimindeki asitlerin, metal yüzey üzerindeki etkilerini azaltmak ve yavaşlatmak için kullanılan özdek
+önleyicilik	isim	Önleyici olma durumu
+önleyiş	isim	Önlemek işi veya biçimi
+önleç	isim	Araçların bir yerden bir yere geçmesini önlemek için konulan parmaklık biçimindeki engel
+önlük	isim	[giyim] herhangi bir iş genellikle de yemek yaparken giysi kirlenmesin diye giyilen, boyundan askılı ve bele bağlanan örtü, iş önlüğü[giyim] laboratuvar, tezgâh vb. yerlerde çalışırken giysinin kirlenmemesi için giyilen, gömlek tarzında olup etek boyu uzun olan, genellikle beyaz renkte giysi[giyim] ilköğretim öğrencilerinin giydiği bir örnek giysiküçük çocuklara yemek yedirirken üstlerini korumak için boyunlarına bağlanan örtü
+önlüklü	sıfat	Önlük giymiş olan
+önlüklük	sıfat	Önlük yapmaya elverişi (kumaş)
+önmaymun	isim	Lemurları, lorisleri, galagoları ve tarsiyerleri kapsayan, çoğunluğu noktürnal ilkel primat grubunun üyelerinden her biri.
+önoloji	isim	Şaraplarla ilgilenen bilim dalı
+önsel	sıfat	[felsefe] Hiçbir denemeye dayanmayan ve akıl yordamıyla bulunup ortaya konan.
+önsellik	isim	[dil bilimi] önsel olma durumu
+önsezi	isim	hiçbir belirti yokken bir şeyin olacağını sezme, içe doğma, hissikablelvuku, altıncı duygu, altıncı his[felsefe] temellendirilmeyen duygu, verilmemiş olanın, bilinmeyenin, özellikle gelecekle ilgili olanın önceden duyulması
+önsuçlu	sıfat	Geçmişte işlenmiş, mahkemece ispatlanıp cezalandırılmış olan suça sahip olan
+önsüz	sıfat	Önü, başlangıcı olmayan.
+öntest	isim	Denenmesi istenen şeyin önceden değerlendirilmesi, ölçülmesi
+önyargı	isim	[toplum bilimi] Bir birey ya da grup hakkındaki önceden edinilen, yeni bilginin ortaya çıkması halinde bile değişmeye direnç gösteren düşüncelerin benimsenmesi.
+önyükleyici	isim	[bilişim] Bilgisayar açıldığında, işletim sisteminin açılma işlemini başlatan küçük yazılım.
+önörgü	isim	sanatçının, gereken şekil ve süslerle doldurarak eseri meydana getirmek üzere saptadığı çatı.
+önü	isim	çocukları korkutmak amacıyla söylenen hayali yaratık, umacı, cin, peri
+önünden	zarf	den biraz önce
+önürdeş	isim	rakip
+önürdeşme	isim	rekabet
+önüt	isim	üstat
+öpme	isim	öpmek işi
+öpmek	fiil	sevgi saygı bağlılık teşekkür belirtmek ereğiyle dudakları bir kimseye ya da şeye değdirmek
+öpmeme	isim	öpmemek işi
+öptürme	isim	Öptürmek işi
+öptürmek	fiil	Öpmek işini yaptırmak veya öpmesine izin vermek
+öpücük	isim	öpme, öpüş
+öpülme	isim	Öpülmek işi
+öpülmek	fiil	Öpmek işine konu olmak
+öpüş	isim	öpmek işi veya biçimi
+öpüşme	isim	Öpüşmek işi
+öpüşmek	fiil	Birbirini öpmek(nesnelerin parçaları) Birbiriyle tam olarak yanyana bulunmak, teması olmak
+örcin	isim	İp merdiven
+ördek	isim	[ördekgiller] Perde ayaklılardan, evcil ve yabani türleri bulunan su kuşu, (Anas)[kaplar] Yataktan kalkamayacak durumdaki erkek hastaların içine idrarlarını yaptıkları kap.[argo] Otobüs ve minibüs sürücülerinin yollardan aldıkları biletsiz yolcular için kullandıkları bir söz.[argo] Hile ile para sızdırılacak kimse.
+ördekbaşı	isim	[renkler, 008080] Yeşille lacivert arası renk.
+ördekbaşı	sıfat	Bu renkte olan.
+ördekgagası	isim	[renkler, FF9900] Açık turuncu renk.
+ördekgagası	sıfat	Bu renkte olan.
+ördekgiller	isim	[hayvan bilimi, kuşlar] kazsılar takımından, sulak alanlarda yaşayan kuşları içeren bir kuş familyası
+örek	isim	[halk ağzı] DuvarYapıların özellik ya da biçemi.
+öreke	isim	Yün, pamuk, keten eğirirken kullanılan bir ucu çatal değnek.Doğumlarda kullanılan ahşap iskemle
+örelemek	fiil	Dolambaçlı, anlamsız ve yersiz konuşmak
+ören	isim	[arkeoloji, tarih] Ait olduğu eski uygarlık hakkında fikir edinmemizi sağlayan kültür ve tabiat kalıntılarından oluşan alan.
+örf	isim	[sosyoloji] anane, gelenek[sosyoloji] töreyi oluşturan sözlü kurallar.
+örfi	sıfat	Örfle ilgili
+örge	isim	motif
+örgensel	isim	organik.
+örgü	isim	Örme işi veya biçimi.Tığ, şiş veya özel makineyle ilmiklerin yan yana getirilmesiyle örülerek yapılmış şey.[dokumacılık] Dokumacılıkta atkı ve çözgü ipliklerinin, dokumayı oluşturacak biçimde belli bir desene göre kesişmesi.belik.ağ.yapı.Her türlü eylem ve olaydan oluşan akış:[anatomi] Bazı sinir veya damarların birbirine geçip dolaşmasından ortaya çıkan oluşum.
+örgü	sıfat	Örülerek yapılan; örme
+örgücü	isim	[meslekler] Örgü örüp satan kimse.
+örgülemek	fiil	örgü durumuna getirmek[mecaz] düzenlemek
+örgülü	sıfat	Örgüsü olan, örgü biçiminde bulunan
+örgün	sıfat	Bir işi gerçekleştirmek amacıyla türlü ve düzenli görevler yapan organlardan oluşan.
+örgüsüz	sıfat	Örgüsü olmayan
+örgüt	isim	Ortak bir amaç veya işi gerçekleştirmek için bir araya gelmiş kurumların veya kişilerin oluşturduğu birlik; teşekkül, teşkilatbir kuruluşa bağlı alt bölümlerin bütünüÖrgü örmeye yarayan şiş mil gibi cisimler
+örgütleme	isim	Kişileri bir araya getirerek bir amaç için çalışmasını sağlamak.
+örgütlemek	fiil	Belli bir işin gereği gibi görülebilmesi için örgüt kurmak, teşkilâtlandırmak
+örgütlendirilmek	fiil	Örgütlendirmek işi yapılmak, teşkilâtlandırılmak
+örgütlenme	isim	Örgütlenmek işi, teşkilatlanma
+örgütlenmek	fiil	Örgütlemek işine konu olmak, teşkilâtlanmakÖrgüt durumuna girmek
+örgütlü	sıfat	Örgütlenmiş olan, teşkilatlı
+örgütsel	sıfat	Örgütle ilgili
+örgütsüz	sıfat	Örgütlenmiş olmayan, teşkilatsız
+örgütsüzlük	isim	Herhangi bir örgütlenmenin bulunmaması durumu
+örgütçülük	isim	Örgüt kurma işi, teşkilâtçılık
+örk	isim	[halk ağzı] hayvanları bağlamaya yarayan kalın ip, örük
+örkleme	isim	Örklemek işi veya durumu
+örkünmek	fiil	Taklit etmek
+örme	isim	[dokuma] örmek işi
+örme	sıfat	örülerek yapılan
+örmek	fiil	[dokuma] iplik, yün, tel, saz v.s.'ni birbirine dolayarak veya geçirerek işlemek veya tezgâhta dokumak[dokuma] kumaşlardaki delikleri elde iplikle besleyerek kapatmaksaç, yele v.s. şeylerin tellerini birkaç bölüme ayırıp birbirine geçirmek yolu ile dağınıklıktan kurtarmak[mühendislik] duvar yapmak veya onarmakestetik kaygıyla, duygulu biçimde bir güzelliği ortaya koymakmüzik, edebiyat v.s.'nde bir özelliği oluşturmak, ortaya koymak
+örnek	isim	İncelemek veya denemek üzere insan ve hayvan vücudunun, bitkinin veya nesnenin herhangi bir yerinden alınan doku parçası.Bir şeyin benzeri, tıpkısı, kopyası.Bir düşünceyi, kuralı, gözlemi veya savı desteklemek ve açıklamak amacıyla ileri sürülen söz, yapılan davranış.Durum ve niteliği benimsenmeye değer kimse veya şey.
+örnek	sıfat	En iyi biçimde olan.
+örneklem	isim	[toplum bilimi] bir araştırmada bütünü anlamak için bütünden seçilen araştırma tekniklerinin uygulanacağı grup
+örnekleme	isim	örneklemek işi[istatistik] istatistikte belirli bir yığından alınan kümeyi ifade eder, bir özdekten sayıtımsal anlamı olacak biçimde parça alma işlemi
+örneklemek	fiil	Örnek vermek
+örneklendirme	isim	Örneklendirmek işi veya durumu
+örneklendirmek	fiil	Örneklerle göstermek, örneklerle açıklamak
+örneklenme	isim	Örneklenmek işi veya durumu
+örneklenmek	fiil	Örnek verilmek
+örnekli	sıfat	örnek olduğu hâlde
+örneklik	sıfat	örnek olarak ayrılmış bulunan, numunelik
+örnekseme	isim	örneksemek işi[dil bilimi] bir kelime veya ek örnek tutularak başka kelime ve eklerin yaratılması, kıyas, analoji
+örneksemek	fiil	örnek olarak almak
+örneksiz	sıfat	örnek olmadığı hâlde
+örnekçeleme	isim	Bir olgu ya da bir süreci ayırıcı özelliklerine dayanarak soyut bir kalıp içinde biçimlendirme.
+örneğin	edat	mesela, söz gelişi
+örs	isim	[aletler, mühendislik] biçimleri yapılacak işe göre değişen, üzerinde maden dövülen, çelik yüzeyli, demir araçüzerine çivi çakılacak ayakkabı geçirilen kunduracı gereci
+örseleme	isim	Örselemek işi
+örselemek	fiil	Yıpratmak, eskitmek, hırpalamak, zedelemekGücünü azaltmak, canlılığını gidermek, sarsmak
+örseleniş	isim	Örselenmek işi veya biçimi
+örselenme	isim	Örselenmek işi
+örselenmek	fiil	örseleme işine konu olmak
+örseleteceksiniz	fiil	örseletmek fiilinin bildirme kipi gelecek zaman 2. çokluk şahıs olumlu çekimi
+örseletmek	fiil	örseleme işini yaptırmak
+örseleyeceksiniz	fiil	örselemek fiilinin bildirme kipi gelecek zaman 2. çokluk şahıs olumlu çekimi
+örseleyiş	isim	Örselemek işi veya biçimi
+örsçü	isim	Örs yapan veya satan kimse
+örsün	isim	[halk ağzı, Havza ağzı] Hamur tahtasını kazımaya yarayan araç.
+örtbas	isim	"Bir durumun, bir olayın duyulmamasını, yayılmamasını sağlayan önlemler almak" anlamındaki örtbas etmek ve "bir durum, bir olay duyulmamak, yayılmamak" anlamındaki örtbas olmak deyimlerinde geçer
+örtenek	isim	Hayvanların vücudunu örten deri, kıl, tüy, pul vb. dokuların bütünü.[anatomi] Bazı organları örten zarlar.
+örtlek	isim	[halk ağzı] Korkak (Dodurga *Bozüyük -Bilecik, Sarıkavak -Eskişehir, *Çarşamba -Samsun, *Fatsa, *Ünye, Kuz *Akkuş, Bayadı -Ordu, *Görele, Küçüklü *Bulancak -Giresun, Çanıllı *Ayaş -Ankara *Mut köyleri -İçel)[halk ağzı] Sönmüş yanardağ (Höketçe *Saimbeyli -Adana)[halk ağzı] Ormanı, fundalığı yakarak açılan tarla (*Gemerek, *Şarkışla -Sivas,Çandırlar *Feke, Burhanlı *Ceyhan -Adana)[halk ağzı] Bozkır ortasında sürekli olarak yeşil kalan düzlük. (Çepni *Gemerek -Sivas)
+örtme	isim	[halk ağzı, giyim] başörtüsü[halk ağzı, yerler] Üstü kapalı, önü açık yer.
+örtmece	isim	[edebiyat] söylenmesi kaba, çirkin veya sakıncalı görülen nesnelerin, kavramların, başka kelimelerle daha uygun ve edepli bir biçimde anlatılması, edebikelamkandırma, gizleme
+örtmek	fiil	korumak, görünmez duruma getirmek veya gizlemek için üstüne bir şey koymakkapamakkaplamakkötü bir durumu belli etmemek, gizlemek, saklamak
+örtmeme	isim	örtmemek işi[fizik, kimya] elektron bulutlarının protonun artı yükünü dışardan daha azmış gibi göstermemesi
+örttürmek	fiil	Örtmek işini yaptırmak
+örtü	isim	Örtmek için kullanılan şey; destar, kuvertür, vualet[mimarlık] Çatı, dam[jeoloji] Büyük boyutlu bir kayaç kütlesinin, yatık kıvrılma ya da bindirme ile başka kayaçların üzerine sürülmesi.[matematik] X kümesinin bir A altkümesi için, bileşimi A yı örten kümeler takımı.[halk ağzı] Hamudun üzerindeki deri
+örtük	sıfat	Örtülü, kapalı
+örtülme	isim	örtülmek işibir gök cisminin yer'deki gözlemciye göre, başka bir gök cisminin arkasından geçmesi
+örtülmek	fiil	Örtme işine konu olmak
+örtülü	sıfat	örtülmüş olanörtülmüş, bir şey ile kaplanmışgizli, saklı
+örtülü	zarf	açıklama yapmadan, belli belirsiz bir biçimde, müphem
+örtünme	isim	örtünmek işi
+örtünmek	fiil	Kendi üzerine bir şey örtmek:[din, kadın] Kadının dinî açıdan görünmesi sakıncalı olan yerlerini örtmesi.
+örtünmeme	isim	örtünmemek işi
+örtünç	sıfat	müphem
+örtüsüz	sıfat	örtüsü olmayan;örtülmemiş olan
+örtüş	isim	Örtmek işi veya biçimi
+örtüşme	isim	Örtüşmek durumu veya biçimi
+örtüşmek	fiil	Aynı noktalarda ve düzlemlerde kesişmek
+örtüşüm	isim	[fizik] Dalga işlevlerinin birer kesimleri ile birbirlerini örtecek biçimde üst üste gelmesi.
+örü	isim	Örme işi.Yama olarak yapılan örgü.Tarlalarda sele karşı taştan yapılmış set.Dokunan halının çözülmemesi için atkıya atılan düğüm.Otlak.Avlanılacak yer, avlak.Başıboş gezen hayvan sürüsü (at, eşek vb.).Sürünün arkasınca götürülen yatacak ve azık.
+örücü	isim	Örme işi yapan kimseKumaş veya örgülerdeki yırtıkları, delikleri onaran kimse veya bu işlerin yapıldığı yerDuvar yapan veya onaran kimse, yapı ustası[halk ağzı] Mimar[halk ağzı] Yapı ustası
+örücülük	isim	Örücünün yaptığı iş
+örük	isim	örülmüş olan yersaç örgüsü[halk ağzı] örk
+örükleme	isim	Örüklemek işi veya durumu
+örüklemek	fiil	Örklemek
+örüklü	isim	örüklenmiş bulunan
+örülme	isim	Örülmek işi
+örülmek	fiil	örme işi yapılmak
+örülü	sıfat	örülmüş olan
+örülüş	isim	örülmek fiili veya tarzı
+örüm	isim	Sürünün gece veya sabaha karşı otlaması
+örümce	isim	[halk ağzı] örümcekYeşil renkli tırtılları, incirde yaprak ve ham meyve kemiren kelebek
+örümcek	isim	[örümceğimsiler, eklem bacaklılar] Örümcekler takımından, ince bir ağ örerek küçük böcekleri avlayan eklemli bir hayvan; örümce (Araneae)Bu hayvanın ördüğü ağ.yürüteç.
+örümceklenme	isim	Örümceklenmek işi
+örümceklenmek	fiil	(bir yer) Örümcek ağlarıyla dolmakBakımsız ve terk edilmiş bulunmakAteşli hastalıklarda göz, ağız gibi yerler kurumuş salgılarla perdelenir gibi olmak
+örümcekler	isim	[örümceğimsiler] Örümceklerle akrepleri içine alan bir eklem bacaklılar takımı
+örümcekli	isim	Bakımsız
+örümceksi	sıfat	Örümcek ağı gibi ince ve seyrek dokulu olan
+örümceğimsiler	isim	[eklem bacaklılar] Karada yaşayan akrepler, örümcekler, keneler ve uyuz böceklerini içine alan, dört çift ayaklı eklem bacaklılar sınıfı
+örün	isim	[hayvancılık, Samsun ağzı] Sürünün gece otlaması.[mandıracılık, yiyecekler, Bolu ağzı] Yağ, yoğurt, süt vb. yiyecekler.[halk ağzı] örüm
+örüntü	isim	Olay veya nesnelerin düzenli bir biçimde birbirini takip ederek gelişmesi.
+örüt	isim	[hayvancılık, Kayseri ağzı] Sürünün gece otlaması.[fizyoloji, İstanbul ağzı] Zayıf, cılız insan veya hayvan.kristal.
+örüş	isim	Örmek işi veya biçimi[halk ağzı, Bayburt ağzı] otlak.
+östaki	isim	[anatomi] östaki borusu.
+östrojen	isim	[biyoloji] Omurgalılarda östrus oluşturan bir grup steroit hormon
+ötanazi	isim	ölme hakkı
+öte	isim	Konuşanın temel olarak aldığı bir şeyden daha uzak olan yer veya şey.Bir şeyin arkadan gelen bölümü.dış.
+öte	sıfat	Bulunulan yere göre karşı yanda olan.Daha fazla, çok.
+öteberi	isim	önemsiz, ufak tefek şeyler[halk ağzı, Düziçi ağzı] eşya
+öteki	sıfat	sözü edilen veya benzer iki nesneden önem ve konum bakımından uzakta olanöbür, diğer[toplum bilimi] mevcut kültürün içinde dışlanmış olan
+öteki	zamir	diğeri, öbürü
+ötekileşmek	fiil	ötekileşme işini yapmak
+ötekileştirmek	fiil	ötekileştirme işini yapmak
+ötekisi	zamir	Ötede bulunan, diğeri, başkası
+öteleme	isim	Ötelemek] işi.[fizik] Bir cismin, bütün noktalarının eşit, paralel ve yöndeş yollar çizmesiyle beliren hareketi.
+ötelemek	fiil	Bir cismi kendi yerinden başka bir yöne sürüklememek.
+ötelenme	isim	Ötelenmek işi.
+ötepü	isim	meme
+ötleğen	isim	[ötleğengiller, kuşlar] ötleğengillerden, kızıla çalan sarı, boz renkli ötücü kuş, akgerdanlı ötleğen
+ötleğengiller	isim	[kuşlar, ötücü kuşlar] ötücü kuşlar takımının bir familyası
+ötleği	isim	[halk ağzı] Bir cins kartal
+ötmek	fiil	[ses] kuş veya böceklerin değişik tonda ses çıkarmaları, sır etmekherhangi bir cismin sürekli ses çıkarması[müzik] üflemeli çalgıların sesinin çıkması[argo, konuşma] anlamsız, boş konuşmakSarhoşun kusması[argo] gizli bir şeyi söylemek
+ötre	isim	Arap alfabesinde üzerine geldiği ünlünün -ü ya da -u ile birlikte okunmasını sağlayan işaret. &#x064F
+ötrofikasyon	isim	[biyoloji] Bir su kaynağında bitki besin tuzlarının artışına bağlı olarak sucul bitkilerin aşırı çoğalmasıyla şekillenen kirlilik.
+öttürmek	fiil	Ötmesini sağlamak veya ses çıkartmak
+ötücü	sıfat	güzel öten, ötüşü güzel olan
+ötücülük	isim	Ötücü olma durumu
+ötümlü	sıfat	[ses bilgisi] tonlu.
+ötümlüleşme	isim	ötümlüleşmek işi[ses bilgisi] yumuşama
+ötümlülük	isim	Ötümlü olma durumu
+ötümsüz	isim	[ses bilgisi] tonsuz.
+ötümsüzleşme	isim	Ötümsüzleşmek işi veya durumu
+ötümsüzleşmek	fiil	Ötümsüz duruma gelmek
+ötümsüzlük	isim	Ötümsüz olma durumu
+ötürme	isim	Ötürmek işi veya durumu
+ötürmek	fiil	[hastalık] ishal olmak.
+ötürü	isim	Bir şeyden dolayı, bir şey yüzünden.
+ötürük	isim	[halk ağzı, fizyoloji] ishal
+ötürüklü	sıfat	Ishalli, amel olmuş (insan veya hayvan)
+ötüş	isim	Ötme işi.
+ötüşme	isim	Ötüşmek işi
+ötüşmek	fiil	Birlikte veya karşılıklı ötmek
+öveyana	isim	ısırdığı zaman çok acıtan, ince, karıncaya benzeyen bir böcek
+öveç	isim	İki üç yaşındaki erkek koyun.
+övgü	isim	birini, bir şeyi övmek için söylenen söz veya yazılan yazı, methiye
+övgücü	isim	birini veya bir şeyi öven kimse, övücübirini gereği yokken veya aşırı olarak öven kimse
+övgücülük	isim	Övgücü olma durumu
+övgülü	isim	Övgü niteliği taşıyan.
+övme	isim	Övmek eylemi
+övmek	fiil	birinin veya bir şeyin iyiliklerini, üstünlüklerini söyleyerek değerini yüceltmek, methetmek, sena etmek, yermek karşıtı
+övret	isim	Kadın,eş
+övücü	isim	birini veya bir şeyi öven kimse, övgücü
+övücü	sıfat	övgücü
+övücülük	isim	Övücü olma durumu
+övülme	isim	Övülmek işi
+övülmek	fiil	Övmek işine konu olmak
+övülüş	isim	Övülmek işi veya biçimi
+övünce	isim	övünç kaynağı.
+övündürücü	isim	Övünmeye sebep olan, övünmeyi sağlayan
+övündürücülük	isim	Övündürücü olma durumu
+övünek	isim	Övünülecek şey, övünç kaynağı veya sebebi
+övüngen	sıfat	çok övünen, farfara
+övüngenlik	isim	Çok övünme durumu
+övünme	isim	övünmek eylemi, kıvanç
+övünmek	fiil	bir niteliği sebebiyle kendini yücelmiş sayarak bundan abartmalı bir biçimde söz etmek, iftihar etmek
+övüntü	isim	Övünülecek tutum veya davranış
+övünç	isim	övünme, kıvanç, iftihar
+övünür	sıfat	övünmek eylemin durum ortacı
+övüş	isim	Övmek eylemi ya da biçimi.
+öykü	isim	Ayrıntılarıyla anlatılan olay.[edebiyat] hikâye.
+öykücü	isim	hikâyeci
+öykücük	isim	[edebiyat] eğitimsel ve öğretimsel amaçlarla, ilginç tarihsel kişi, olay ve çağlardan söz eden küçük öykü türü, hikâyecik
+öykücülük	isim	[edebiyat] hikâyecilik
+öyküleme	isim	Tahkiye
+öykülemek	fiil	Tahkiye etmek
+öyküleştirmek	fiil	Öykü durumuna getirmek
+öykünce	isim	[edebiyat] fabl
+öykünme	isim	Öykünmek işi, taklit
+öykünmeci	isim	Öykünen, benzemeye çalışan, taklitçi kimse
+öykünmecilik	isim	Öykünmeci olma durumu
+öykünmek	fiil	birinin yaptığı gibi yapmak, birine veya bir şeye benzemeye çalışmak, taklit etmek
+öyküntü	isim	Sanatta başka bir sanatçının üslubunun veya yöntemlerinin kullanılması, pastiş, benzekİmitasyonTercüme yaparken, orijinal metindeki terimin taklit yoluyla birebir çevirilerek yeni bir sözcük yaratılması, calque. Örnek: Nietzsche'nin Übermensch teriminin Türkçesi olarak üstinsan
+öykünücü	isim	[bilişim] Birinin yaptığı gibi yapan, birine ya da bir şeye benzemeye çalışan.
+öykünücülük	isim	öykünücü olma durumu, özenticilik, taklitçilik
+öykünüm	isim	[bilişim] Belli bir bilgisayar için yazılmış izlencelerle başka bir bilgisayarı kullanma olanağı sağlayan teknik. Bir bilgisayar dizgesinin, sanki başka bir bilgisayar dizgesine öykünerek, onun için hazırlanmış veri ve izlencelerle, değişik sürede de olsa, özdeş sonuçlar vermesini sağlayan teknik
+öyle	sıfat	onun gibi olan, ona benzer
+öyle	zarf	o yolda, o biçimde, o tarzdao denli, o kadar, o derece
+öyle	ünlem	içinde ne, nasıl gibi sorular bulunan cümlelerin sonuna geldiğinde, o cümlede anlatılan şeyin hoş karşılanmadığını veya ona şaşıldığını anlatır
+öylece	zarf	O biçimde, tam öyleÖylelikle
+öylelikle	zarf	O yoldan, o biçimde, sonunda, öylece
+öylemesine	zarf	Öylesine
+öylesi	sıfat	Ona benzer, onun gibisi
+öylesine	zarf	[ölçü birimleri] Aşırı bir biçimde, fazla, o kadar çok, o derece; öylemesine, usulden.üstünkörü
+öyleyse	zarf	o hâlde
+öz	isim	[felsefe] Bir kimsenin benliği, kendi manevi varlığı."Kendine, kendi kendini" anlamlarında birleşik kelimeler türeten bir söz.Bir şeyin en kuvvetli veya kıvamlı bölümü.[patoloji] Çıbanların içinde ölmüş dokudan oluşan irinle birlikte çıkan parça.[mecaz] Bir şeyin iç yapısını ve ayırt edici özelliğini meydana getiren şey.[bitki anatomisi] Bitkilerin kök, gövde ve dallarının boydan boya ortasında bulunan, hafif, gevrek ve çoğu yumuşak bölüm.
+öz	sıfat	[aile] Kan bağı ile bağlı olan.sıfat.
+özalıntı	isim	Bir kimsenin kendi yapıtlarından, söyleminden yaptığı alıntı.
+özarınma	isim	Sularda organik kirlenmenin mineralleşmesiyle sonuçlanan biyolojik arınma.
+özağırlık	isim	[fizik] özgül ağırlık
+özaşı	isim	[tıp] Gelişmekte olan enfeksiyonu yaratan mikrobun kültüründen elde edilen aşı.
+özbeslenen	sıfat	besinini bağımsız olarak sağlayan, inorganik azot, azotlu madde ve CO2'den protein ve karbonhidratların sentezini yapabilen (bitki), kendi beslek, ototrof
+özbeöz	sıfat	gerçek, öz
+özcesi	zarf	Sözün özü, özet olarak, kısacası, sözün kısası.
+özdek	isim	[fizik] duyularla algılanabilen, bölünebilen, ağırlığı olan nesne, maddekullanılmaya, harcamaya uygun, taşınması kolay eşya, ayniyatiş yerlerinde eşya ve malzeme işleriyle ilgilenen bölüm, ayniyat[felsefe] insanın çalışmasıyla bir amaç uğruna biçim verdiği ya da yararlandığı doğal cisimler, nesneler
+özdeksel	sıfat	özdekle ilgili, tinsel karşıtı, maddi
+özdekçi	sıfat	materyalist, maddeci
+özdekçilik	isim	[felsefe] her şeyin maddeden oluştuğunu ve bilinç de dahil olmak üzere bütün görüngülerin maddi etkileşimler sonucu oluştuğunu öne süren, a priori olan hiçbir metafiziksel kavramı kabul etmeyen felsefe kuramı materyalizm
+özden	isim	[fizyoloji] Timüs
+özden	sıfat	Özle, öz varlıkla, gerçekle ilgili.İçten, candan, samimi
+özdenlik	isim	Özden olma durumu
+özdevinim	isim	otomasyon[gök bilimi] bir yıldızın bir yılda yaptığı açısal yer değiştirme
+özdeyiş	isim	[edebiyat] Bir düşünceyi, bir duyguyu, bir ilkeyi kısa ve kesin bir biçimde anlatan, genellikle kim tarafından söylendiği bilinen özlü söz; vecize, ülger, kelamıkibar, aforizm, aforizma
+özdeş	sıfat	Her türlü nitelik bakımından eşit olan, ayırt edilmeyecek kadar benzer olan, aynı.[felsefe] Bir ve aynı olan, bir ve aynı anlama gelen.[matematik] Kendinde özdeşlik bulunan, identik.
+özdeşleme	isim	Özdeşlemek işi
+özdeşlemek	fiil	Özdeş duruma getirmek.
+özdeşleşme	isim	Özdeşleşmek işi.
+özdeşleşmek	fiil	Özdeş duruma gelmek
+özdeşleştirme	isim	Özdeşleştirmek işi.
+özdeşleştirmek	fiil	Özdeş duruma getirmek
+özdeşlik	isim	aynılık.[felsefe] Değişen durumlarda aynı kalma, aynı olma.[matematik] İki yanı birbirinin aynı olan veya harflerle verilen sayısal değerler ne olursa olsun iki yanı da sayıca eşit değerler alan eşitlik.
+özdeştirme	isim	Özdeştirmek işi veya durumu
+özdeştirmek	fiil	Başka birinin ve bir grubun ölçülerini, beklentilerini benimsemek
+özdirenç	isim	[fizik] bir özdeğin birim niceliğinde görülen direnç
+öze	isim	Bir türde ya da bireyde bulunan, aynı cinsten başka hiçbir türde ya da bireyde rastlanılmayan
+özek	isim	[halk ağzı] bir şeyin çevreden aynı uzaklıkta olan yeri, özekArabalarda ön ve arka dingili birbirine bağlayan uzun ağaç direk.okla boyunduruğu birbirine bağlayan demir.merkez
+özel	sıfat	Yalnız bir kişiye, bir şeye ait veya ilişkin olan.Benzerlerinden ayrılmasını sağlayan bir özelliği olan.Bir kişiyi ilgilendirenDevlete değil, kişiye ait olan.Dikkate değer.Ayırt edici bir niteliği olan.Her zaman görülenden, olağandan farklı.
+özeladbilim	isim	[dil bilimi] özel adları, özellikle kişi adlarını konu edinen bilim, onomastik
+özelemek	fiil	[halk ağzı, Sivas ağzı] Yoğurdu karıştırarak ezmek
+özelik	isim	[felsefe] herhangi bir durumu gösterebilme yeteneği
+özelleşme	isim	Özelleşmek işi
+özelleşmek	fiil	Özel bir duruma gelmek
+özelleştirilmek	fiil	bir şeyi kendine has hale getirmek
+özelleştirme	isim	özelleştirmek işidevlete ait taşınır, taşınmaz malların teklif alma veya ihale yoluyla satışını yapma
+özelleştirmek	fiil	bir şeyi özel duruma getirmek veya özel olarak kullanmaki kamu malını satarak özel duruma getirmek
+özellik	isim	Bir şeyin benzerlerinden veya başka şeylerden ayrılmasını sağlayan nitelik; hususiyet, hasiyet, hassa, mahsusluk, özgülük, spesiyalite
+özellikle	zarf	Özel olarak, her şeyden önce.
+özellikli	sıfat	bir türün, bir olayın karakteristik yönünü veren, spesifik
+özeme	isim	Özemek işi veya durumu
+özemek	fiil	Yoğurt, pekmez gibi koyu şeyleri suyla inceltmek, sulandırmak
+özen	isim	işin elden geldiğince iyi olmasına çabalama, özenme, itina, ihtimam
+özendirme	isim	Özendirmek durumu, işi, teşvikPromosyon
+özendirmek	fiil	özenmesini sağlamak, teşvik etmek
+özengen	sıfat	amatör
+özengenlik	isim	özengen olma durumu, amatörlük
+özeni	isim	Özenme işi
+özenilmek	fiil	Bir şeye özenti duyulmak.
+özeniş	isim	Özenmek eylemi ya da biçimi.
+özenle	zarf	titizlik göstererekdeğer ve önem vererek
+özenli	sıfat	özen gösterilerek yapılan, itinalıözenle çalışan
+özenmek	fiil	Beğendiği şeye benzemeye çalışmak, o şeyi yapmak için çaba göstermekBir şeyi yaparken elden geldiğince iyi yapmaya çabalamak, bir şeye büyük dikkat ve ilgi göstermek; itina etmekBirini veya bir şeyi taklit etmeye çalışmak.Sıvamak, bezemek
+özensiz	sıfat	özen gösterilmeyen, itinasızözenmeden, isteksizce iş yapan (kişi)
+özensizlik	isim	Özensiz olma durumu, itinasızlık
+özenti	isim	Benzemeye çalışmakTaklitçi
+özentici	isim	Birine veya bir şeye benzemeye çalışan
+özenticilik	isim	Özentici olma durumu
+özentili	sıfat	Özenti ile yapılan
+özentisiz	sıfat	Özenti olmadan yapılan, özenti gösterilmeden yapılan, özenmeden yapılan
+özenç	isim	[halk ağzı] İstek
+özerk	sıfat	Ayrı bir yasaya bağlı olarak kendi kendini yönetme yetkisi olan (kuruluş)
+özerkleşme	isim	Özerkleşmek işi veya durumu
+özerkleşmek	fiil	Özerk duruma gelmek
+özerkleştirme	isim	Özerkleştirmek işi veya durumu
+özerkleştirmek	fiil	Özerk duruma getirmek, özerklik vermek
+özerklik	isim	[politika] bir topluluğun, bir kuruluşun ayrı bir yasaya bağlı olarak kendi kendini yönetme, hakkı muhtariyet, muhtariyet, otonomi[felsefe] bir kişinin, bir topluluğun kendi uyacağı yasayı kendisinin koyması, otonomi, muhtariyet
+özet	isim	bir yazı veya sözün anlamını daha kısa ve özlü biçimde veren yazı veya söz, hülasa, fezleke, ekspoze.[akademik] öz, abstract.[sinema] filmin konusunu en kısa biçimde anlatan, bir senaryo çalışmasının ilk aşaması olan metin
+özetleme	isim	Özetlemek işi
+özetlemek	fiil	yazı veya sözü daha az sözle, daha kısa bir biçimde anlatmak, özünü vermek, kısaltmak, hulâsa etmek
+özetlenme	isim	Özetlenmek işi
+özetlenmek	fiil	Özet durumuna getirilmek, hulâsa edilmek
+özezer	isim	Aşağılanmaktan, kendisine eziyet edilmesinden, ruhsal ya da fiziksel acı verilmesinden hoşlanan.
+özezerlik	isim	[ruh bilimi] Fiziksel acı veya aşağılatıcı davranışlarla doyuma ulaşma biçiminde beliren cinsel sapkınlık.
+özeğitim	isim	bir kişinin belli bir alanda kendini yetiştirmesi.
+özge	sıfat	başka
+özgeci	isim	Kişisel yarar gözetmeksizin başkasına yararlı olmaya çalışan (kimse)
+özgecil	sıfat	Özgeci tutumu olanbaşkalarını düşünen
+özgecilik	isim	Özgeci olma durumu
+özgeçmiş	isim	bir kişinin kendisinin anlattığı yaşamı
+özgörev	isim	Bir kimseye verilen görev
+özgü	sıfat	Birine, bir şeye ait olan.Belli bir kimsede, şeyde veya türde bulunan.Aynı cinsten başka hiçbir türde veya bireyde rastlanılmayan.
+özgüdüm	isim	Devinebilen bir aracın, bir sürücü işe karışmadan verilen komuta bağlı kalarak kendi kendini yönetmesi.
+özgüdümlü	sıfat	Kendi kendine devinebilen ve kendi kendini yöneten
+özgül	sıfat	bir türle ilgili, bir türe ilişkin
+özgüleme	isim	Özgülemek işi
+özgülemek	fiil	bir şey veya bir yeri birine, bir şeye ayırmak, vermek, hasretmek, tahsis etmek
+özgüleyiş	isim	bir nesneyi başka bir nesneye özgü kılmakasır
+özgüllük	isim	Özgül olma durumu.
+özgülük	isim	özgü olma durumu, özellik
+özgün	sıfat	Bir buluş sonucu olan, nitelikleri bakımından benzerlerinden ayrı ve üstün olan.Tercüme edilmemiş olanYalnız kendine özgü bir nitelik taşıyan
+özgünleşme	isim	Özgünleşmek işi
+özgünleşmek	fiil	Özgün duruma gelmek
+özgünleştirme	isim	Özgünleştirmek işi
+özgünleştirmek	fiil	Özgün duruma getirmek.
+özgünlük	isim	Özgün olma durumu
+özgür	sıfat	Herhangi bir kısıtlamaya, zorlamaya, şarta bağlı olmayan.Kendi istediği gibi hareket etme, davranma, karar verme gücü olan.serbest.Başkasının kölesi olmayan.Siyasi bir güç tarafından denetlenmeyen, engellenmeyen.
+özgürce	zarf	özgür bir biçimde.
+özgürcesine	zarf	özgürce
+özgürleşmek	fiil	Özgür duruma gelmek
+özgürleştirmek	fiil	Özgür duruma getirmek, özgür hâle gelmesini sağlamak
+özgürlük	isim	[felsefe] herhangi bir kısıtlamaya, zorlamaya bağlı olmaksızın düşünme veya davranma, herhangi bir şarta bağlı olmama durumu, serbestlikher türlü dış etkiden bağımsız olarak insanın kendi iradesine, kendi düşüncesine dayanarak karar vermesi durumu, hürriyet
+özgürlükçü	isim	Özgürlük yanlısı
+özgürlükçülük	isim	Özgürlükçü olma durumu
+özgüç	isim	bilinen koşullara göre gerçekleşen ya da gizli kalan üretim ve satış gücü
+özkütle	isim	[fizik] yoğunluk
+özkıyım	isim	Bir kimsenin toplumsal ve ruhsal nedenlerin etkisi ile kendi yaşamına son vermesi, intihar
+özlem	isim	[ruh bilimi] bir kişiyi veya bir şeyi görme, kavuşma isteği, özlenti, hasret, tahassür
+özleme	isim	Özlemek işi, iştiyak
+özlemek	fiil	[duygular] Bir kimseyi, bir yeri veya bir şeyi görmeyi, ona kavuşmayı istemek, göreceği gelmek; göreslemek.
+özlemli	sıfat	Özlemi olan, özleyen, hasretli
+özlenme	isim	Özlenmek işi
+özlenmek	fiil	Özlemek işine konu olmak
+özlenti	isim	özlem
+özlentili	sıfat	Özlem taşıyan, özlem dolu
+özletme	isim	Özletmek işi
+özletmek	fiil	Özlemesine yol açmak
+özleyiş	isim	Özlemek işi veya biçimi
+özleşme	isim	Özleşmek işi, arılaşma
+özleşmek	fiil	Öz durumuna veya özlü bir duruma gelmek, arılaşmak(tahıl için) Olgunlaşmak
+özleştirme	isim	Özleştirmek işi, arılaştırma
+özleştirmeci	isim	Özleştirmeden yana olan kimse, pürist.
+özleştirmecilik	isim	Bir dili yabancı ögelerden arıtarak arı, katışıksız bir duruma getirme ve kendi imkânlarıyla geliştirmeyi amaçlayan çalışma
+özleştirmek	fiil	Öz durumuna getirmek, özlü durum kazandırmak, arılaştırmak
+özlü	sıfat	Özü olan, öz bölümü çokça olan
+özlük	isim	bir şeyin hâli, mahiyeti[sosyoloji] kişi, zat
+özne	isim	[dil bilimi] cümlede bildirilen işi yapan, yüklemin bildirdiği durumu üzerine alan kimse veya şey, fail, süje[felsefe] felsefe bilinci, sezgisi, düş gücü olan, bazı filozoflara göre de dış dünyaya karşıt olan birey
+öznel	sıfat	[felsefe] özneye ilişkin olan, öznede oluşan, nesnelerin gerçeğine değil, ferdin düşünce ve duygularına dayanan, sübjektifenfüsi
+öznelci	isim	Öznelcilik yanlısı, öznelciliği benimseyen ve savunan (kimse), sübjektivist
+öznelcilik	isim	[felsefe] Bütün bilgilerin özneye ilişkin ve değer yargılarının bireysel, öznel olduğunu ileri süren öğreti.
+öznellik	isim	[felsefe] bir yargının kişiye bağlı olarak değer biçilmesi için söylenmekte
+özsel	sıfat	Öz ile ilgili
+özsen	isim	Uygun, yerinde, yakışık alan.
+özsever	sıfat	[felsefe] Kendi benliğine bağlanan, hayran olan (kimse), narsist
+özseverlik	isim	Kişinin kendi bedensel ve ruhsal benliğine karşı duyduğu hayranlık ve bağlılık, narsisizm
+özsüz	sıfat	Özü olmayan, öz bölümü çokça olmayan
+özveren	sıfat	Özverili.
+özveri	isim	bir amaç uğruna ya da gerçekleştirilmesi istenen herhangi bir şey için kendi yararlarından vazgeçme, fedakârlık
+özverili	sıfat	Özveri ile davranan, özverisi olan.
+özverililik	isim	Özverili olma durumu.
+özyineleme	isim	[bilişim] Bir yordamın kendini çağırabilme özelliği.
+özçekim	isim	Genellikle cep telefonu kamerası ile kişinin çektiği kendi fotoğrafı.
+özümleme	isim	[biyoloji] özümlemek işi, yapım, temessül, temsil, asimilasyon, anabolizma, yadımlama karşıtıedinilmiş bilgileri kendi öz malı durumuna getirme, özümseme
+özümlemek	fiil	[biyoloji] canlı varlıklar, dışarıdan aldıkları besinleri, değişikliğe uğratarak yeni bir birleşimle, organizmanın gereksinme duyduğu maddeler durumuna getirmek; temsil etmekEdinilmiş bilgileri bireyin öz malı durumuna getirmek; özümsemek
+özümlenme	isim	(besin için) Özümlemek işiEdinilmiş olan bilgiler bireyin öz malı durumuna gelme
+özümlenmek	fiil	Özümlemek işine konu olmak
+özümsemek	fiil	özümlemek
+özümsenme	isim	Özümsenmek işi veya durumu
+özümsenmek	fiil	Özümlenmek
+özün	isim	düzenoyun
+özünlü	sıfat	[felsefe] bir şeyin aslında ya da gerçeğinde olan, ilinekle ilgili olmayıp özde bulunan, deruni, zatî
+özür	isim	bir kusurun hoş görülmesini gerektiren sebep, bir suçun elde olmadan yapıldığını ileri sürme, mazeretsakatlık, bozukluk, eksiklik veya elverişsizlikkusur, defo
+özürlü	sıfat	Özrü olanEksiklik, sakat veya kusuru olan, defolu
+özürsüz	zarf	Özrü olmayanÖzrü olmaksızın
+özüt	isim	Herhangi bir maddenin, alkol, eter gibi bir eriticiyle ayrılmış ya da başka bir yolla elde edilmiş özü, hulasaArapça şeytan; Türkçe Yek, İçgek
+özütleme	isim	katı veya sıvı halde bulunan bir bileşenin uygun bir çözücü kullanılarak karışmış olduğu diğer katı veya sıvı bileşenlerden ayrılma işlemi
+özütsel	sıfat	Özütleme yoluyla elde edilmiş
+öç	isim	kötü davranış veya sözü cezalandırmak için kötülükle karşılık verme isteği ve işi, intikam, öc
+öçbe	sıfat	Geveze, çok konuşanUkalâ, bilgiç geçinen
+öçlenme	isim	Öçlenmek işi veya durumu
+öçlenmek	fiil	Öç beslemek, öç ile dolu duruma gelmek, hınç beslemek, kin duymak
+öçlü	sıfat	kin ve intikam dolu, öç alma isteğinde olan
+öçürmek	fiil	söndürmeksilmek
+öğe	isim	[kimya] kimyasal çözümlerle ayrıştırılamayan ya da bireşim yoluyla elde edilemeyen özdek
+öğeç	isim	İki yaşına girmiş koyun.
+öğle	isim	[zaman] Güneşin gökyüzünde en yüksek noktada bulunduğu sabahla ikindi arasındaki zaman dilimi; gün ortası, öğlen, öğle vakti, nısfınnehar, zeval.öğle ezanıöğle namazı
+öğlen	isim	[halk ağzı] öğle[halk ağzı, gök bilimi] meridyen düzlemi, nısfınnehar
+öğlenci	isim	ikili öğretim yapan okullarda öğleden sonra ders gören öğrenci, sabahçı karşıtı
+öğlende	zarf	Öğle vakti
+öğleyin	zarf	[zaman] öğle vakti
+öğleüstü	zarf	Öğleye yakın bir zamanda
+öğleüzeri	zarf	öğleüstü
+öğre	isim	[halk ağzı, Balıkesir ağzı] Eğitim
+öğrek	isim	[halk ağzı] Bir aygırın koruması altındaki kısrak sürüsü.Birlikte yetişen, birlikte hareket eden topluluk, grup.Bir şeye ilgi duyan, yakınlık hisseden, merak duyan.
+öğrence	isim	öğrenmek amacıyla benzerini yapma, simülasyon
+öğrencelik	isim	Öğrenme amacıyla ilk yapılan iş
+öğrenci	isim	[eğitim] Öğrenim görmek amacıyla ders alan kimse.Bir bilim veya sanat yetkilisinin gözetimi ve yol göstericiliği altında belli bir konuda çalışan kimse.Özel ders alan kimse.
+öğrencilik	isim	[eğitim] öğrenci olma durumu, talebelik
+öğreneceksiniz	fiil	öğrenmek fiilinin bildirme kipi gelecek zaman 2. çokluk şahıs olumlu çekimi
+öğrenik	fiil	[halk ağzı] öğrenmiş
+öğrenilen	sıfat	birileri tarafından öğrenilmiş olan
+öğrenilme	isim	öğrenilmek işi
+öğrenilmek	fiil	öğrenmek işi yapılmak
+öğrenilmeyen	sıfat	birileri tarafından öğrenilmiş olmayan
+öğrenim	isim	[eğitim] herhangi bir meslek, sanat veya iş için gerekli bilgi, beceri ve alışkanlıkların elde edilmesi amacıyla yapılan çalışma, tahsil, eğitimherhangi bir iş, sanat ya da meslek için gerekli bilgi, beceri ve alışkanlıkların elde edilmesi amacıyla yapılan çalışma
+öğrenimli	sıfat	Öğrenim görmüş, okumuş, tahsilli
+öğreniş	isim	Öğrenmek işi veya biçimi
+öğrenme	isim	[eğitim bilimi] öğrenmek işi
+öğrenmek	fiil	[eğitim] bilgi edinmek, bellemekbellemekyetenek, beceri kazanmakhaber almak
+öğrenmelik	isim	Bir öğrenciye öğrenimini yapması veya bir kimsenin bilgi ve görgüsünü artırması için bir kuruluşça verilen para, burs
+öğrenmiş	fiil	Öğrenmek fiilinin bildirme kipi öğrenilen geçmiş zaman 3. tekil şahıs olumlu çekimi.
+öğreteceksiniz	fiil	öğretmek fiilinin bildirme kipi gelecek zaman 2. çokluk şahıs olumlu çekimi
+öğreti	isim	[felsefe] bilimde, felsefede bir görüşü bir sistem içinde belli bir anlayışa, düşünceye dayalı olarak oluşturan ilke ve dogmalar bütünütoplumda herhangi bir alanda çığır açan bir düşünce adamının ortaya koyduğu görüşler, ilkeler bütünü, doktrinbirbirine bağlı bilimsel veya felsefî düşünceler birliğibelli bir görüşe dayalı çalışma anlayışının bütünü
+öğretici	sıfat	[eğitim] Öğretme, yetiştirme ve açıklama niteliğinde olan.
+öğreticilik	isim	[eğitim] öğretici olma durumu
+öğretilme	isim	öğretilmek işi
+öğretilmek	fiil	Öğretmek işi yapılmak
+öğretim	isim	[eğitim] belli bir amaca göre gereken bilgileri verme işi, tedris, tedrisat, talimöğrenmeyi kolaylaştıracak etkinlikleri düzenleme, gereçleri sağlama vekılavuzluk etme işi
+öğretiş	isim	Öğretmek işi veya biçimi
+öğretme	isim	[eğitim] öğretmek işi, tedris
+öğretmek	fiil	[eğitim] bir kişiye bir konuda bilgi ve beceri kazandırmakyetenek kazandırmakbilinmeyen bir konuda bilgi sahibi olmasını sağlamak
+öğretmen	isim	[eğitim, meslekler] mesleği bilgi öğretmek olan kişi.
+öğretmenevi	isim	[binalar] Öğretmenlerin barınma, yemek, eğlence vb. gereksinimlerini karşılamak üzere yapılmış bina.
+öğretmenlik	isim	öğretmenin görevi
+öğün	isim	kere, kez, defa[zaman] yemek vakti, yemek zamanı[yiyecekler] bir vakitte yenilen yemek
+öğür	isim	[toplum bilimi] akrantakım
+öğür	sıfat	öğrenmiş, alışmışalışılmış, yadırganmaz olmuş, menus
+öğürleşme	isim	Öğürleşmek işi
+öğürleşmek	fiil	Öğür olmak, birbirine alışmak, istinas etmek
+öğürlük	isim	Öğür olma durumu, istinas
+öğürmek	fiil	Kusarken veya kusacak gibi olurken öğürtü sesi çıkarmakBöğürmek
+öğürtleme	isim	Öğürtlemek işi veya durumu
+öğürtlemek	fiil	Ayırmak, ayıklamak, seçmek, temizlemek
+öğürtme	isim	Öğürtmek işi veya biçimi
+öğürtü	isim	Öğürmek işiÖğürürken çıkan ses
+öğürtücü	sıfat	Öğürten
+öğürüş	isim	Öğürmek işi veya biçimi
+öğüt	isim	bir kişiye yapması veya yapmaması gereken şeyler için söylenen söz, nasihat, akıl
+öğütleme	isim	öğütlemek işi, nasihat
+öğütlemek	fiil	birine bir şeyi yapmasını ya da yapmamasını salık vermek, tavsiye etmek
+öğütlük	isim	Kendisinden bir ahlâk dersi çıkarılan kısa hikâye.
+öğütme	isim	öğütmek işi
+öğütmek	fiil	tane durumundaki nesneleri bir araçla ezerek un durumuna getirmekezmek, çiğnemekmide yiyecekleri sindirmek
+öğütçü	isim	Öğüt veren kimse, nasihatçiVaiz
+öğütçülük	isim	Öğütçü olma durumu
+öğütücü	sıfat	Öğütme özelliği olan
+öğütülme	isim	öğütülmek işi
+öğütülmek	fiil	öğütme işine konu olmak
+öğütülüş	isim	Öğütülme işi.
+öğütüş	isim	Öğütmek işi veya biçimi
+öşür	isim	[tarih] Ondalık[tarih] Osmanlı'da tarım ürünlerinden 10'da 1 oranında tahsil edilen vergi.
+öşürcü	isim	Öşür alan, toplayan görevli

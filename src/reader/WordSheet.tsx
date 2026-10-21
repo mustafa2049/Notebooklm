@@ -5,7 +5,8 @@ import { explainWord } from '@/ai/tasks';
 import { useAi } from '@/ai/useAi';
 import { findVocabEntry, vocabForm } from '@/core/vocabMarks';
 import type { SentenceInfo } from '@/core/wordHit';
-import { DictOfflineError, entryNote, lookupExact, lookupWord } from '@/ingest/tdk';
+import { lookUpMeaning } from '@/ingest/dictionary';
+import { DictOfflineError, entryNote } from '@/ingest/tdk';
 import { useSettings } from '@/store/SettingsContext';
 import { addHighlight } from '@/storage/highlights';
 import { addVocab, type VocabEntry } from '@/storage/vocab';
@@ -79,7 +80,7 @@ export function WordSheet({
     const id = ++request.current;
     setDict({ word: target, status: 'loading' });
     try {
-      const result = exact ? await lookupExact(exact) : await lookupWord(target);
+      const result = await lookUpMeaning(target, exact);
       if (id !== request.current) return;
       setDict(result ? { word: target, status: 'done', result } : { word: target, status: 'none' });
     } catch (error) {
@@ -115,7 +116,7 @@ export function WordSheet({
 
   const save = async () => {
     const found = dict?.status === 'done' && dict.word === selected ? dict.result : null;
-    const dictNote = found?.entries.slice(0, 2).map(entryNote).join('\n');
+    const dictNote = found?.entries.slice(0, 2).map((entry) => entryNote(entry, found.source)).join('\n');
     const explained = explanation?.word === selected ? explanation.text : undefined;
     await addVocab({
       // Defterde başka bir çekimiyle varsa o kayıt güncellenir, ikinci kayıt açılmaz

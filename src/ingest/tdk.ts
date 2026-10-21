@@ -45,6 +45,10 @@ export interface DictResult {
   entries: DictEntry[];
   /** Başka bulunan kökler ("yazmak" yanında "yaz") */
   alternatives: string[];
+  /** Sonucun kaynağı: TDK (internet) ya da uygulamayla gelen Vikisözlük (varsayılan TDK) */
+  source?: 'tdk' | 'wiktionary';
+  /** Vikisözlük'e TDK'ya ulaşılamadığı için bakıldı */
+  tdkUnreachable?: boolean;
 }
 
 export class DictOfflineError extends Error {
@@ -93,12 +97,12 @@ export function parseTdk(body: unknown): DictEntry[] {
 }
 
 /** Deftere not olarak: "isim · Yazma, çizme… ; Resmî kuruluşlarda…" */
-export function entryNote(entry: DictEntry): string {
+export function entryNote(entry: DictEntry, source: DictResult['source'] = 'tdk'): string {
   const lines = entry.meanings.map((meaning, index) => {
     const tags = meaning.tags.length ? `(${meaning.tags.join(', ')}) ` : '';
     return `${index + 1}. ${tags}${meaning.text}`;
   });
-  return [`TDK — ${entry.word}`, ...lines].join('\n');
+  return [`${source === 'wiktionary' ? 'Vikisözlük' : 'TDK'} — ${entry.word}`, ...lines].join('\n');
 }
 
 type Cache = Record<string, { entries: DictEntry[]; at: number }>;

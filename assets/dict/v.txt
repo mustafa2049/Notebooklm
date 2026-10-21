@@ -1,0 +1,744 @@
+vaat	isim	Bir işi yerine getirmek için verilen söz.
+vaaz	isim	Bir kimsenin kalbini yumuşatacak şekilde söz söyleme.[din] dinî konuşma.
+vabeste	sıfat	bağlı
+vacip	isim	yapılması gerekli olan iş[İslam] İslâm dinine göre yapılması gerekli olan iş
+vacip	sıfat	yapılması gerekli olan[İslam] İslâm dinine göre yapılması gerekli olan
+vade	isim	işin yapılması veya borcun ödenmesi için tanınan süre, mühlet, mehil
+vadeli	sıfat	vadesi olansüresi sınırlanmış
+vadesiz	sıfat	Vadesi olmayan.Süresi sınırlandırılmamış.
+vadetme	isim	söz verme
+vadetmek	fiil	Bir işi yerine getireceğine söz vermekDavranışıyla, tutumuyla bir işi yapacağı duygusunu uyandırmak
+vadetmeme	isim	söz vermeme
+vadi	isim	[coğrafya, haritacılık] iki dağ arasındaki geçit[mecaz] alan, yol, tarz
+vaftiz	isim	[din] Hristiyan dininde, bir kimseyi ilk günahı silmek ve Hıristiyanlaştırmak suya daldırma ya da üzerine su serpme biçiminde yapılan kutsal tören
+vaftizhane	isim	Vaftiz yapılan yer
+vagit	isim	[zaman] vakit
+vagon	isim	[demiryolu taşıtları] Yük ve yolcu taşımakta kullanılan, lokomotifin çektiği demir yolu aracı.
+vagonet	isim	Yana veya arkaya doğru devrilebilen ve bazı toprak düzleme işlerinde kullanılan küçük vagon
+vagotoni	isim	Sinirsel bir tür rahatsızlık
+vah	isim	beddua
+vah	ünlem	acımayı belirten kelime
+vaha	isim	çöllerde çoğu kez yüze çıkan yer altı sularının yarattığı ve önemi suyun niceliğine bağlı olarak değişen tarım veya yerleşme bölgesi
+vahamet	isim	Güçlük, korkulacak tehlikeli durum.
+vahametli	sıfat	Vahim
+vahdaniyet	isim	[din] Tanrı'nın birliği, bir olması
+vahdet	isim	[din] bir olma, tek olma, birlik, teklik[din] Allah’ın tekliğini kabul etme
+vahdetivücut	isim	[felsefe] varlık birliği, panteizm
+vahi	sıfat	Boş, saçma
+vahim	sıfat	ağır, korkulu, çok tehlikeli, vahametli
+vahit	sıfat	[eskimiş] tek[eskimiş] birim.
+vahiy	isim	[İbrahimî dinler] Bir kanun veya fikrin Tanrı tarafından bir melek vasıtasıyla peygamberlere bildirilmesi[İbrahimî dinler] Bu şekilde bildirilen kanun
+vahvahlanma	isim	Vahvahlanmak işi veya durumu
+vahvahlanmak	fiil	Acınmak, yakınmak
+vahyolunma	isim	Vahyolunmak işi veya durumu
+vahyolunmak	fiil	Vahiy gelmek
+vahşet	isim	korku, ürküntüyabani, vahşi olma durumu
+vahşi	sıfat	yabani, barbar, yırtıcıMedenileşmemişİnsandan kaçanİnsan eli değmemiş.Ehli olmayan
+vahşice	sıfat	Vahşî bir biçimde
+vahşileşme	isim	Vahşîleşmek durumu
+vahşileşmek	fiil	Yabanîleşmek, vahşî duruma gelmek
+vahşilik	isim	Yabanî olma durumu, yabanîlik
+vahşiyane	zarf	Vahşice
+vaiz	isim	[meslekler, din] İbadet yerlerinde öğüt niteliğinde dinî konuşmalar yapan kimse; öğütçü.
+vaizlik	isim	Vaizin yaptığı iş
+vajen	isim	[anatomi, jinekoloji] vajina
+vajina	isim	[üreme organları, jinekoloji] dişilik organı.
+vajinal	sıfat	[anatomi] vajinale ilgili
+vajinismus	isim	[hastalık] Cinsel ilişki sırasında kadının vajen kaslarını istemsiz bir biçimde kasması sonucunda cinsel birleşmenin hiç olamaması ya da çok zor gerçekleşmesi durumu.
+vajinismuslar	isim	Vajinismusların çoğulu
+vaka	isim	[felsefe] olguhadise, olay
+vakad	isim	alevlenen ateş
+vakanüvis	isim	[tarih] Osmanlı Devleti'nde zamanın olaylarını tespit etmek ve yazmakla görevli devlet tarihçisi
+vakar	isim	ağırbaşlılık
+vakarlı	sıfat	Ağırbaşlı
+vakarsız	sıfat	Ağırbaşlı olmayan, onursuz
+vaketa	isim	(inek derisi) Bir tür ince meşin.
+vakfe	isim	durma[din] haccın arife günü öğle ve ikindi namazından sonra Arafat’ta bir süre durma biçiminde yerine getirilen farzlarından biri
+vakfetme	isim	Vakfetmek işi
+vakfetmek	fiil	Vakıf durumuna getirmekAdamak, bir şeyin bütününü bir işe vermek
+vakfiye	isim	[eskimiş, hukuk] vakıfname
+vaki	sıfat	Olan, olmuş
+vakit	isim	bir işe ayrılmış veya bir iş için alışılmış saatlerbelirlenmiş olan zamanzaman anlatan kelimelere belirtilen hâl geldiğinde "iken" anlamı veren bir söz[astronomi] çağ, devir[mecaz] geçim, para bakımından elverişli durum[zaman] zaman
+vakitli	sıfat	Zamanında yapılan, zamanında olan
+vakitsiz	sıfat	Uygun bir zamanda olmayan
+vakitsizlik	isim	Vakitsizlik olma durumu
+vakitçe	zarf	Vakit bakımından, vakte göre
+vaklama	isim	Vaklamak işi veya durumu
+vaks	isim	bal mumunun sanayide mat yüzeyleri parlak ve kaygan duruma getiren türü
+vaktinde	zarf	önceden belirlenen, düşünülen vakitte
+vaktiyle	zarf	zamanında, uygun zamandabir zamanlaroldukça eski bir zamanda
+vaktizamanında	zarf	[zaman] bir zamanlar
+vakuf	isim	Bir şeyi bilme. Öğrenmiş olma.
+vakum	isim	[fizik] Havası alınmış boşluk
+vakumlama	isim	Vakumlamak işi veya durumu
+vakumlamak	fiil	Vakumla temizlemek
+vakur	sıfat	[ruh bilimi] ağırbaşlı
+vakvak	isim	[çocuk dili] ÖrdekÖrdeğin çıkardığı ses, yansıma sözcük.
+vakvaklamak	fiil	Ördek vak vak diye ses çıkararak bağırmak
+vakıa	isim	olgu
+vakıf	isim	bir hizmetin gelecekte de yapılması için belli şartlarla ve resmî bir yolla ayrılarak bir topluluk veya bir kişi tarafından bırakılan mülk, paratopluluk veya kişi tarafından bırakılan mülk ve paranın idare edildiği yerbirçok kişi tarafından kurulan ve toplum yararına çalışmayı ilke edinen kuruluş[hukuk, toplum] kişiler veya kurumlarca kurulmuş, yasayla görev ve yetkileri belirlenen tüzel kişilik
+vakıfname	isim	[eskimiş, hukuk] Bir vakfın şartlarını bildiren belge.
+valan	isim	birinci anlam lan ulan yerine kullanılan bir sıfatkullanıldığı yer gümüşhane kelkit dolayları
+vale	isim	[meslekler] Otel, restoran, alışveriş merkezi, düğün salonu vb. yerlerde gelen müşteri ve misafirlerin araçlarını otoparka park etmekle görevli kimse.[meslekler] oda hizmetçisi.[iskambil] bacak
+valf	isim	[mühendislik, aletler] vana
+vali	isim	[meslekler] bir ili ya da federal devletlerde bir eyaleti devlet tüzel kişisini temsilen yöneten en üst düzey idari amir, ilbay[tarih, meslekler] satrap
+valide	isim	[aile] anneOnaylanmış, doğrulanmış
+validelik	isim	[toplum bilimi] valide olma durumu, annelik
+valih	isim	[halk ağzı, Manisa ağzı] çok beğenme
+valilik	isim	Vali olma durumu.Valinin görevi.Valinin makamı ve bu makama bağlı resmî dairelerin tümü.İl, vilayet.
+valiz	isim	Genellikle yolculukta içine çamaşır vb. eşya konulan küçük el bavulu
+vallahi	ünlem	"Tanrı şahidim olsun ki" ya da "Tanrı hakkı için." anlamında kullanılan bir yemin sözü, billahi, tallahi.
+vals	isim	salon danslarından biri ve onun müziği[müzik] sadece çalmak için hazırlanmış beste türü
+valör	isim	[felsefe] anlam[bankacılık] bankaya yatırılan paraya uygulanacak olan faizin başlama tarihideğer, kıymet, geçerlikaynı rengin en koyusundan en açığına kadar dereceleri
+vamp	isim	[kadın] Erkekleri peşinde koşturan, aşırı tavır, kıyafet veya makyajıyla bakışları üzerinde toplayan, baştan çıkarıcı kadın.
+vampir	isim	Varlığını devam ettirebilmek için yaşayanların kanını içtiğine inanılan efsanevi yaratık
+vana	isim	[mühendislik, aletler] boru içindeki bir akışkanın akışını durdurmaya veya serbest bırakmaya yarayan alet, valf
+vanadyum	isim	[kimya, elementler, metaller, geçiş metalleri] Atom numarası 23 olan bir kimyasal element
+vandalizm	isim	Vandal olma yanlısı, vandallık
+vandallık	isim	Eski kültür ve sanat anıtlarını yakıp yıkma düşünce ve davranışı
+vandöz	isim	Satıcı.
+vanilya	isim	[baharatlar] Salepgillerden, çiçekleri beyaz, kokulu, tırmanıcı küçük bir bitki ve bu bitkinin tatlılara güzel koku vermek için kullanılan meyvesi
+vantilatör	isim	[aletler] sıcak ve durgun havayı dalgalandırarak esinti sağlayan veya böyle bir ortama temiz hava üfleyen alet, yelvuranbazı tarım alet veya makinelerinde tohumları savurmak, temizlemek için içeriye hava çeken aletmotorlu taşıtların iç havasını değiştirmeye yarayan düzenmekanik veya elektronik bir aletin soğutma düzeneği
+vantrilok	isim	karnından konuşan kişi, abab
+vantrolog	isim	Karnından konuşan, vantrilok
+vantuz	isim	[tıp, kaplar] Deri üzerine yapıştırılarak çekip emmeye yarayan şişe vb. alet; çekmen.[anatomi] Çeşitli hayvanlarda yer değiştirmeye, kendini bir yere bağlamaya veya yutmaya yarayan organ; çekmen.
+vapur	isim	[deniz taşıtları] Su buharı gücüyle çalışan gemi:
+vapurculuk	isim	Vapur işletme işi
+vapurdumanı	isim	[renkler, A9B2BC] Koyu gri renk.
+vapurdumanı	sıfat	Bu renkte olan
+var	isim	Elde bulunan her şey.
+var	sıfat	Mevcut, evrende veya düşüncede yer alan, yok karşıtı.
+varabilmek	fiil	varma ihtimali veya imkânı bulunmakvarmaya gücü yetmek
+varagele	isim	[denizcilik] Bir şeyi, bir yerden bir yere çekerek götürüp getirmeye yarayan araç.[mecaz] belirsizlik
+varak	isim	Yaprak yaldız
+varaka	isim	Kâğıt, yazılı kâğıt
+varaklama	isim	Varaklamak işi veya durumu
+varaklamak	fiil	Varak yapıştırarak süslemek
+varaklanma	isim	Varaklanmak durumu
+varaklanmak	fiil	Varaklamak işine konu olmak
+varaklı	sıfat	Varağı olan, varaklanmış
+varakpare	isim	Kâğıt parçası
+varakçı	isim	Varakla süs yapan zanaatkâr
+varan	isim	[ticaret] olayın tek kalmayıp arkadan daha başkalarının gelebileceğini anlatmak için birden başlayarak sıra ile sayıların başına getirilen bir söz
+varda	ünlem	Dikkat et, savul, destur
+vardabandıra	isim	[denizcilik] Özellikle savaş gemilerinde işaret alıp vermekte usta er
+vardacı	isim	Varda işini sesle veya araçla yapan kimse
+vardakosta	isim	[denizcilik] Kıyıları koruyan gemi
+vardavela	isim	[denizcilik] Küpeştedeki yatay çubuklara veya güvenlik amacıyla yatay olarak çekilen demir, ağaç, zincir veya halat korkuluklar
+vardela	isim	Yaklaşık 3 santimetre genişliğinde yumuşak kösele şerit
+vardiya	isim	Yirmi dört saatlik çalışma gününün, çalışma bölümlerinden her biri; posta.[denizcilik] Gemilerde beklenen nöbet.[denizcilik] Gemilerde nöbet yeri.
+vardiyacı	isim	Vardiya ile çalışan kimse
+vardırma	isim	Vardırmak işi veya durumu
+vardırmak	fiil	varmasına yol açmak, götürmek
+vareste	sıfat	Kurtulmuş
+varfarin	isim	[kimya] Pıhtılaşma faktörlerinin salgılanmasını baskılayan kumarinden elde edilen kristal özellikte kimyasal madde. Tromboembolizmin tedavisi amacıyla geliştirilmiş olsa da yüksek dozlarda fare zehri olarak kullanılır. K vitamini için özel panzehirdir.
+vargel	isim	Herhangi bir makinenin bir doğrultuda gidip gelerek iş gören parçası
+vargı	isim	[mantık] Verilen bir önermeden çıkarsama yoluyla varılan sonuç.
+varidat	isim	[ekonomi] gelirler[bankacılık] Devlet ve kamu tüzel kişileri tarafından toplanan kamusal gelirler
+varidatçı	isim	Devletin gelir işlerini yürüten görevli
+varide	isim	[eskimiş] Gelen şey.[eskimiş] Gelen evrak.
+varil	isim	[kaplar] çoğunlukla sıvı maddeleri koymak için kullanılan, metalden yapılmış, silindir biçiminde, üstü kapalı kap[ölçü birimleri] bir varilin içine aldığı madde miktarı, petrol ölçü birimi (158,8 litre)
+varis	isim	[hastalık] Toplardamarların fonksiyonel bozuklukları sonucu ya da kan akımının önündeki bir engel nedeniyle genişleyerek kıvrımlı bir hâl alması; ordubozan
+varisella	isim	[tıp] suçiçeği
+varisli	isim	Varis rahatsızlığı olan kimse.
+varissiz	sıfat	Varisi olmayan
+varit	sıfat	olabileceği akla gelen
+variyet	isim	[halk ağzı] varlık, zenginlik
+variyetli	sıfat	zengin, mal mülk sahibi
+variyetsiz	sıfat	yoksul
+varlı	sıfat	zengin
+varlık	isim	[mantık] Var olma durumu, yokluğun karşıtı; mevcudiyetVar olan her şey.Paranın, mal mülkün tamamı.Önemli, yararlı, değerli şey.Bir kimsenin iç dünyasının derinlikleri, kişinin manevi dünyası.Canlı varlıkların sayısal yoğunluğu veya dağılımı; popülasyon.[felsefe] Kalıcı olan, gelip geçici olmayan şey.
+varlıklı	sıfat	zengin
+varlıklılık	isim	varlıklı olma durumu
+varlıksız	sıfat	yoksul
+varma	isim	varmak işi
+varmak	fiil	erişilmek istenen yere ayak basmak, ulaşmak, vasıl olmakbelli bir duruma veya düzeye gelmekhoş olmayan bir sona ermekbir şeyi iyice anlamak veya duymakacımadan, çekinmeden yapmak[aile] kadının evlennmesibir durumdan başka duruma geçmek
+varoluş	isim	[mantık] var olma, var olma olgusu, mevcudiyet
+varoluşçu	isim	[felsefe] varoluşçuluk yanlısı, egzistansiyalist
+varoluşçuluk	isim	[felsefe, edebiyat] varoluşun özden önce geldiğini ve özü sürekli olarak yarattığını ileri süren öğreti, egzistansiyalizm
+varoş	isim	Şehrin merkezinden uzak ve çoğu eğitim düzeyi düşük yoksul halkın oturduğu semt, kenar mahalle.
+varsanı	isim	[ruh bilimi] sanrı
+varsayma	isim	Varsaymak işi.
+varsaymak	fiil	bir olgunun sonuçlarından yararlanabilmek, bu sonuçlar üzerine düşünce üretebilmek için onu olmuş veya olacak saymak, farz etmek
+varsayılma	isim	Varsayılmak işi.
+varsayılmak	fiil	bir şeyin var olduğu kabul edilmek, farz olunmak
+varsayım	isim	Deneylerle henüz yeter derecede doğrulanmamış ancak doğrulanacağı umulan teorik düşünce.
+varsayımlı	sıfat	Varsayıma dayanan
+varsayımsal	sıfat	Bir varsayıma dayanan.
+varsağı	isim	[edebiyat] Güney Anadolu'da "Varsak" boyu halkınca özel bir ezgi ile söylenen nazım türlerinden biri
+varsıl	sıfat	parası, malı çok olan, zengin, yoksul karşıtı
+varsıllaşma	isim	varsıllaşmak durumu
+varsıllaşmak	fiil	Zengin duruma gelmek
+varsıllık	isim	zengin olma durumu, zenginlik
+varsın	fiil	var olmak fiilinin bildirme kipi 1. tekil şahıs olumlu çekimivarmak fiilinin bildirme kipi 3. tekil şahıs olumlu çekimi
+varta	isim	Tehlikeli durum
+varyant	isim	[yollar] Bir yol şebekesi üzerinde, belli bir noktadan ayrılarak başka bir noktadan aynı yolla birleşen ikinci derecedeki yol.[edebiyat] Masal, efsane, bilmece, oyun, gelenek vb. bir metnin, bir eserin, bir olayın aslından az çok ayrılan değişik biçimli olanı; değişke.[dil bilimi] değişke.
+varyasyon	isim	Değişik biçim, varyeteÇeşitleme
+varyemez	sıfat	cimri
+varyemezlik	isim	Varyemez olma durumu
+varyete	isim	Şarkı, dans, hokkabazlık, temsil gibi aralarında ilişki bulunmayan farklı oyunlardan oluşan gösteri
+varyeteci	isim	Varyete yapan kimse
+varyetecilik	isim	Varyetecinin yaptığı iş
+varyos	isim	Balyoz
+varyoz	isim	[halk ağzı] balyoz
+varılma	isim	varılmak işi
+varılmak	fiil	[ulaşım] Herhangi bir yere ulaşılmak.
+varım	fiil	var olmak fiilinin bildirme kipi 1. tekil şahıs olumlu çekimi
+varış	isim	varma işi[spor] bir yarışın son bulduğu yer, finiş
+varışlı	sıfat	Her şeyi çabuk ve iyi anlayan, sezişi güçlü, zeki, arif
+varışlılık	isim	Varışlı olma durumu, irfan
+vasabi	isim	[turpgiller, baharatlar] turpgiller familyasına üye bitki
+vasat	isim	[ruh bilimi] ortam
+vasat	sıfat	orta
+vasati	sıfat	Orta, ortalama
+vasektomi	isim	Kısırlaştırma
+vasi	isim	[hukuk] ölen bir kimsenin vasiyetini yerine getirmekle yükümlü olan kimse[hukuk] reşit olmayan bir yetimin veya akılca zayıf, hasta birinin malını yöneten kimse
+vasil	isim	Birinden aslâ ayrılmaz kimse.
+vasilik	isim	Vasi olma durumu, vasinin yaptığı iş, vesayet
+vasistas	isim	[mimarlık] Pencere veya kapının üst yanında bulunan ve oda havasının değiştirilmesine yarayan, açılır kapanır bölüm.
+vasiyet	isim	Bir kimsenin ölümünden sonra yapılmasını istediği şey.
+vasiyetname	isim	Bir kimsenin vasiyetini yazmış olduğu belge.
+vaskülarizasyon	isim	kenarlardaki damarların prolifere olarak damarsız dokulara ilerlemesi
+vaskülit	isim	[tıp] kan damarlarının iltihabı
+vassal	isim	[tarih] Soyluluk ve bağlılığa dayalı feodal yasalar gereği toprağı elinde bulunduran kişi.Başka bir ülkeye bağlı ülke.
+vasıf	isim	nitelik
+vasıflandırma	isim	Nitelendirme, tavsif
+vasıflandırmak	fiil	nitelendirmek
+vasıflanma	isim	Nitelenme
+vasıflanmak	fiil	nitelenmek
+vasıflı	sıfat	nitelikli
+vasıflılık	isim	Vasıflı olma durumu
+vasıfsız	sıfat	niteliği olmayan, niteliksiz
+vasıfsızlık	isim	Niteliksiz olma durumu
+vasıl	sıfat	ulaşan, varan
+vasıta	isim	[aletler] araç[meslekler] aracıaracılık[taşıtlar] taşıt
+vasıtalı	sıfat	Araçlı
+vasıtalık	isim	Vasıta olma durumu, aracılık
+vasıtasıyla	zarf	aracılığıylaBana, basın kartım vasıtasıyla birinci mevki bir bilet alındı. - N. F. Kısakürek
+vasıtasız	sıfat	Araçsız
+vasıtasızlık	isim	Vasıtasız olma durumu
+vat	isim	Saniyede bir julluk iş yapan bir sistemin güç birimi
+vatan	isim	[iskân] yurt, dar
+vatancılık	isim	Vatancı olma durumu
+vatandaş	isim	[sosyoloji] bir ülke olan politik kurumların bir parçası olan kişi
+vatandaşlık	isim	[hukuk, sosyoloji] bir ülkeye ait olan politik kurumların bir parçası olma hâli
+vatani	sıfat	yurtsal
+vatanlaştırma	isim	Vatanlaştırmak işi
+vatanlaştırmak	fiil	Vatan durumuna getirmek
+vatanperver	sıfat	Yurtsever
+vatanperverlik	isim	Yurtseverlik
+vatansever	sıfat	Yurtsever
+vatanseverlik	isim	Vatansever olma durumu
+vatansız	sıfat	[hukuk] vatanı olmayan
+vatansızlık	isim	Vatansız olma durumu
+vatka	isim	Giysilerde, omuzların dik durmasını sağlamak amacıyla içine konulan parça
+vatlık	sıfat	Herhangi bir vat gücünde olan
+vatman	isim	Tramvay sürücüsü
+vatoz	isim	[balıklar] Köpek balıklarından, sırtında büyük dikenleri olan, kuma gömülü olarak yaşayan bir balık, (Raja clavata).
+vatvat	isim	Dağ kırlangıcı
+vaveyla	isim	Çığlık
+vavitsa	isim	[halk ağzı, Kıbrıs ağzı] yılanyastığının (avroşilla / avroşillo) kurumuş çiçeği
+vay	ünlem	Şaşma anlatan bir söz.Ağrı, acı vb. duyguları anlatan bir söz.Yönelme durumu eki almış bir kelime ile kullanıldığında bir şeyin veya bir kimsenin kötü bir sonuca uğrayacağını anlatan bir söz.
+vaybabamcı	isim	Yaygaracı
+vaybabamcılık	isim	Vaybabamcı olma durumu
+vayvaycı	isim	Yaygaracı, mızmız
+vayvaycılık	isim	Yaygaracılık
+vaz	isim	Konma, konulma
+vazedilme	isim	Vazedilmek durumu
+vazedilmek	fiil	Ortaya konulmak
+vazelin	isim	[petrol ürünleri, kozmetik] ham petrolden çıkarılan, merhem ve kremlerde kullanılan ve 31°C de eriyen bir tür mineral yağ
+vazelinleme	isim	Vazelinlemek işi veya durumu
+vazelinlemek	fiil	Vazelin sürmek
+vazelinli	sıfat	İçinde vazelin olan
+vazelinsiz	sıfat	İçinde vazelin bulunmayan
+vazetme	isim	Vazetmek işi
+vazetmek	fiil	Koymak, konulmak
+vazgelme	isim	Vazgeçme
+vazgelmek	fiil	Vazgeçmek
+vazgeçilme	isim	Vazgeçilmek işi veya durumu
+vazgeçilmek	fiil	Vazgeçmek işi yapılmak, feragat edilmek
+vazgeçirme	isim	Vazgeçirmek işi veya durumu
+vazgeçirmek	fiil	Vazgeçmek işini yaptırmak
+vazgeçme	isim	vazgeçmek durumu
+vazgeçmek	fiil	kendi hakkı saydığı bir şeyi artık istemez olmakden eskiden beri yapmakta olduğu bir şeyi artık yapmaz olmakden niyetten veya karardan dönmek, caymak
+vazife	isim	görevgünlük ücret, yevmiyeödev
+vazifelendirilme	isim	Vazifelendirilmek işi
+vazifelendirilmek	fiil	Vazife verilmek, görevlendirilmek, ödevlendirilmek
+vazifelendirmek	fiil	birine vazife vermek
+vazifeli	sıfat	görevliödevli
+vazifeperver	sıfat	Görevsever, görevine düşkün, vazifeşinas.
+vazifesizlik	isim	Vazifesiz olma durumu
+vazifeşinas	sıfat	Ödevine, işine bağlı
+vaziyet	isim	durum, tavır, hâlkonumel koyma
+vazo	isim	[kaplar] çiçeklik
+vazolunma	isim	Vazolunmak işi veya durumu
+vazolunmak	fiil	Konulmak
+vazopressin	isim	[hormonlar, tıp] antidiüretik hormon
+vazotosin	isim	[biyoloji] Kuşlar, sürüngenler ve iki yaşamlılarda, hipofizin posteriyor lobundan salgılanan, memelilerdeki vazopressinin yapı ve işlevine sahip, on amino asitten oluşmuş, halkasal bir peptit hormon
+vazı	isim	Konma, konulmaBirine ayırma, ona ait olma
+vazıh	sıfat	Açık, aydın, belli
+vazıhamil	isim	Doğurma
+vazıyet	isim	El koyma
+vazııkanun	sıfat	[hukuk] yasa koyucu
+vaşak	isim	[kedigiller] kedigillerden, kulakları sivri, dişleri ve tırnakları keskin, kürkünden yararlanılan çok yırtıcı hayvan
+ve	bağlaç	İki kelime ya da iki cümle arasına girerek aralarında ön ve arkadaki cümlenin şart olduğunu anlatan söz
+veba	isim	[patoloji] hasta sıçanlardan insana geçen bir mikrobun oluşturduğu bulaşıcı, öldürücü hastalık
+vebal	isim	[din] günah
+vebalı	sıfat	vebaya yakalanmış olan
+veca	isim	[fizyoloji] ağrı
+vecibe	isim	ödev, boyun borcu
+vecih	isim	[anatomi] yüz
+vecit	isim	Sevgi ya da heyecandan doğan coşkunluk, kendinden geçme, esrime.
+veciz	sıfat	[iletişim] Kısa ve etkili ifade veya söz; lakonik.
+vecize	isim	[edebiyat] özdeyişDaima birtakım vecizeler zikreden eniştemiz yemeğe dair de böyle şeyler söyler. - A. Ş. Hisar
+veda	isim	ayrılırken birbirine esenlik dileme
+vedalaşma	isim	vedalaşmak işi
+vedalaşmak	fiil	Birbirine esenlik dileyerek ayrılmak, esenleşmek
+vedia	isim	Saklanılması, korunması için birine ya da bir yere bırakılan eşya, inam.Kendine korunması, saklanması için eşya verilen kimsenin durumunu gösteren sözleşme
+vefa	isim	sevgiyi sürdürme, sevgi bağlılığı
+vefakâr	sıfat	vefası olan, sevgisi geçici olmayan, hakikatli, vefalı
+vefakârlık	isim	Vefalı olma durumu
+vefalı	sıfat	vefakâr
+vefalılık	isim	vefalı olma durumu.
+vefasız	sıfat	vefası olmayan, sevgisi çabuk geçen, hakikatsiz
+vefasızlık	isim	vefasız olma durumu, hakikatsizlik
+vefat	isim	[fizyoloji] ölüm
+vefiyat	isim	Ölümler.
+vegan	isim	her türlü hayvansal ürünü tüketmeyi reddeden genellikle sebze ve meyve ile beslenen
+veganlık	isim	1944'te Londra'da hâlen işlek durumda olan, Vegan Society'yi oluşturan yedi vejetaryen tarafından türetilen her türlü hayvansal ürünü tüketmeyi reddeden vejetaryenlik.
+vehim	isim	kuruntu
+vehimli	sıfat	Vehim içinde olan, vehme kapılan
+vehleten	zarf	İlk anda
+vehm	isim	kuruntu
+vehmetme	isim	Vehmetmek işi
+vehmetmek	fiil	evhamlanmak
+vejanizm	isim	Et, süt, yumurta, bal gibi tüm hayvansal kökenli gıdaların; deri, yün, tüy, inci, mercan ve sünger gibi her türlü hayvan maddesinin ve hatta hayvanlar üzerinde denemeler yapılarak üretilmiş tüm ürünlerin tüketimine ve kullanımına karşı olan görüş, katı vejetaryenizm
+vejetalin	isim	[yağlar] Bazı bitkilerden çıkarılan ve sadeyağ yerine kullanılan katı yağ.
+vejetalizm	isim	Yalnız bitkisel gıda maddelerine yer veren beslenme rejimi
+vejetarizm	isim	Sağlığı koruma veya tedavi amacıyla hayvansal gıda maddelerine yer vermeyen beslenme rejimi. Vejetalizmden farklı olarak vejetarizmde süt, tereyağı, yumurta, bal gibi hayvansal gıda maddeleri yer alır.
+vejetaryen	isim	EtyemezEtik sebeplerden ötürü et tüketmeyen kimse
+vejetaryenlik	isim	[diyet] Etyemezlik
+vejetasyon	isim	[tıp] ur[bitki bilimi] bitki örtüsü, bitey, flora
+vekalet	isim	doğrusu: vekâlet
+vekaletname	isim	doğrusu: vekâletname
+vekil	isim	bir görevde, asıl görevlinin yerine bakan kimsebirinin, işini görmesi için kendi yerine bıraktığı veya yetki verdiği kimseMahkemede tarafların ivazında işi yürüten şahıs, hukukçu, avukat, aklavcı.[politika] bakan
+vekilharç	isim	Bir konağın alışverişini yapmakla görevli kimse
+vekilharçlık	isim	Vekilharç olma durumu
+vekillik	isim	birinin yerine iş görme yetkisi, naiplikbakanlık
+veksilloloji	isim	bayrak bilimi
+vektör	isim	[fizik] büyüklüğü ile yönü olan nicelik[matematik] doğrultusu, yönü, uzunluğu belirli olan ve bir ok işaretiyle gösterilen doğru çizgi[tıp] enfeksiyon etkenini bir konaktan diğerine aktaran genellikle eklem bacaklı, omurgalı veya omurgasız taşıyıcı canlı
+vekâlet	isim	vekil olma, başkasının yerine bir işe bakma
+vekâleten	isim	yetkideş olarak
+vekâletname	isim	[hukuk] Bir kişiye başka bir gerçek ya da tüzel kişi adına hareket etme yetkisi veren, noter tarafından düzenlenmiş belge
+veladet	isim	[fizyoloji] doğumdoğmadoğuş
+velakin	bağlaç	ama
+velayet	isim	velilikotoriteyetke
+velayetname	isim	Divan Edebiyatı'nda evliyaların hayatını anlatan nesir.Tarikat ileri gelenlerinin hayatlarını ve menkıbelerini anlatan kitap.
+veledizina	isim	[kaba konuşma] Piç
+velense	isim	Yüzü uzun tüylü, kalın ve ağır battaniye
+velesbik	isim	[halk ağzı] Bisiklet
+velespit	isim	[kara taşıtları] bisiklet
+velet	isim	Oğul, çocuk
+velev	bağlaç	Hatta bile, farz edelim ki, olsa da.
+velhasıl	zarf	Kısacası
+velhasılıkelam	zarf	Kısacası
+veli	isim	[din] aziz, eren, ermiş, evliya[hukuk] öğrencinin ebeveyni veya yasal sorumluluğunu üstlenen kişi
+veliaht	isim	[isim] Bir hükümdarın ölümünden veya tahttan çekilmesinden sonra tahta geçmeye aday olan kimse.[isim, mecaz] Herhangi bir göreve veya makama geleceği beklenilen kimse.
+veliahtlık	isim	Veliaht olma durumu
+velilik	isim	veli olma durumu, velinin görev ve ödevi, velayet
+velinimet	isim	Birine, etkisi yaşadıkça sürecek bir iyilik ve bağışta bulunan kimse
+veliyullah	isim	Veli
+velur	isim	[dokuma] kadife
+velut	sıfat	doğurgançok eser ortaya koyan, verimli
+velvele	isim	bağrışmagürültü
+velveleci	isim	gürültücü
+vena	isim	[anatomi] toplardamar
+venereofobi	isim	[fobiler] zührevi hastalıklardan korkma
+ventilatör	isim	[tıp, aletler] solunum cihazı
+venüstrafobi	isim	[fobiler] güzel kadınlardan korkma
+venüsçarığı	isim	[bitki bilimi] Salepgillerden, esmer kırmızımtırak renkte olan, çiçekleri çarığa benzeyen, güzel bir süs bitkisi.
+veranda	isim	[mimarlık] binanın giriş katı ön cephesine yapılmış, zeminden birazcık yüksek; üstü kapalı, yanları açık balkonumsu ev bölümü
+veraset	isim	kalıtımsoya çekim
+verdane	isim	hafif yük taşıyıcı konveryön ve benzerinin rulo veya makaraları
+verdi	isim	Bir borudan bir saniyede geçen suyun veya bir iletken telden bir saniyede geçen elektriğin miktarı
+verdirme	isim	Verdirmek işi
+verdirmek	fiil	vermek işini yaptırmak, vermesini sağlamak
+vere	isim	[tarih] Bir kale veya korunaklı bir yerin teslimi
+verebilmek	fiil	verme ihtimali veya imkânı bulunmakverme gücü bulunmak
+verecek	isim	[ekonomi, hukuk] birine verilmesi gereken para, borç, alacak karşıtı
+verecekli	sıfat	Birine vereceği olan, borçlu, alacaklı karşıtıBirinden para yönünden veya iyilik vb. yardımlar görerek borçlanan (kimse), medyun
+verem	isim	[patoloji] Herhangi bir organa ve en çok akciğerlere yerleşen Koch basilinin yol açtığı ateşli ve bulaşıcı bir hastalık; ince ağrı, ince hastalık, tüberküloz.
+verem	sıfat	bu hastalığa tutulmuş, veremli
+veremli	sıfat	[tıp] Vereme tutulmuş; müteverrim.
+veren	fiil	vermek fiilinin ikinci tekil şahıs olumlu istek kipi
+veresiye	zarf	[https://web.archive.org/web/20171211063835/http://www.veresiyetakip.com/ Veresiye Takip], Tamamen Ücretsiz ve tam sürümkarşılığı sonra ödenmek üzere, peşin karşıtıözensiz, gönülsüz, önem vermeden[https://web.archive.org/web/20171211063835/http://www.veresiyetakip.com/ Veresiye Takip], Bu adresten indirip hemen kullanabilirsiniz
+veresiyeci	sıfat	Veresiye iş gören
+veresiyecilik	isim	Veresiye iş görme
+verev	isim	[Ankara ağzı] Bayır, yokuş, yamaç.[Denizli ağzı] Çürük, yıkılmış, çökmüş yapı vb. için.[hastalık, Isparta ağzı] verem.
+verev	sıfat	Bir köşeden karşı köşeye doğru kesilmiş, katlanmış veya konulmuş olan.[Afyonkarahisar ağzı] Düşünmeden konuşan.
+verevine	zarf	Verev biçimi verilerek
+vergi	isim	[ekonomi] kamu hizmetlerine harcanmak için hükûmetin, yerel yönetimlerin yasalara göre doğrudan doğruya veya bazı malların fiyatlarının üstüne koyarak dolaylı yoldan herkesten topladığı para[mecaz] bir kişinin doğuştan sahip olduğu iyi vasıf
+vergici	isim	[halk ağzı, meslekler] tahsildar
+vergicilik	isim	Vergi tahsil etme işi
+vergileme	isim	Vergilemek işi
+vergilemek	fiil	Vergi koymak
+vergilendirilme	isim	Vergilendirilmek işi
+vergilendirilmek	fiil	Vergiye bağlanmak
+vergilendirme	isim	Vergilendirmek işi
+vergilendirmek	fiil	Bir kimseyi veya bir şeyi vergiye bağlamak
+vergili	sıfat	Vergisi olan, vergi ödenen.verimli.verici.hayırsever.
+vergin	isim	ücret
+vergisiz	sıfat	Vergisi olmayan, vergi ödenmeyen
+veri	isim	bilgi, databir araştırmanın, bir tartışmanın, bir muhakemenin temeli olan ana unsurbir sanat eserine veya bir edebî esere temel olan ana esaslar[bilim] gözlem ve deneye dayalı araştırmanın sonuçları[bilişim] kavram, komut veya olguların iletişim, işlem ve yorum için elverişli şeklî gösterimi[matematik] bir problemde bilinen, belirtilmiş anlatımlardan bilinmeyeni bulmaya yarayan şey
+verici	isim	Veren, verme yanlısı olan kimse.[kişilik] Çıkar gözetmeksizin her türlü yardımı yapan, esirgemeyen kimse; vergili.[radyo, televizyon, telefonculuk, mühendislik] Elektromanyetik dalgalar yardımıyla işaret, ses ve görüntü iletmeye yarayan cihazların genel adı.[tıp] Başkasına aktarılmak üzere kan, doku veya organ veren kimse; donör.
+vericilik	isim	Verici olma durumu
+verile	ünlem	verilsindevlet dairelerinde, ödemenin yapılabilmesi için yetkilinin verdiği yazı
+verilebilmek	fiil	verilme ihtimali veya imkânı bulunmak
+verilen	isim	birşey teslim edilen kimse
+verilen	sıfat	birşey teslim edilen
+veriliş	isim	Vermek işi veya biçimi
+verilme	isim	Verilmek işi
+verilmek	fiil	verme işine konu olmak
+verilmeyen	isim	birşey teslim edilmeyen kimse
+verilmeyen	sıfat	birşey teslim edilmeyen
+verim	isim	çalıştırılan, işletilen, bakılan bir şeyin verdiği sonuç veya bu sonucun niceliği, mahsul, randımanortaya çıkan, istenilen, beklenilen sonuç, semereelde edilen ürün, hizmet vb. yle onu elde etmek için harcanan iş arasındaki oran
+verimkâr	isim	[halk ağzı] verimli
+verimli	sıfat	Verimi iyi ve bol olan.kendisinden beklenen sonucu veren.[edebiyat, sanat] Çok eser ortaya koyan.
+verimlilik	isim	Verimli olma durumu[ekonomi] Yatırılmış sermayenin, bir kuruluşun veya bir yatırımın gelir sağlayabilme imkânı
+verimsiz	sıfat	verimi olmayan veya az olan, yetersiz
+verimsizleşme	isim	Verimsizleşmek işi veya durumu
+verimsizleşmek	fiil	Verimsiz duruma gelmek
+verimsizlik	isim	verimsiz olma durumu, fakirlik, yoksulluk, akamet
+verit	isim	[anatomi] toplardamar
+veriş	isim	[ekonomi] verme işi
+veriştirme	isim	Veriştirmek işi.
+veriştirmek	fiil	Çok fazla söylemekİyice çıkışmak, ağzına geleni söylemek
+verkaç	isim	(futbol ve basketbolda) Topu takım arkadaşına aktaran bir oyuncunun karşı takım kalesine veya uygun bir yöne koşarak yeniden topa sahip olması
+verme	isim	vermek işi
+vermek	fiil	Üzerinde, elinde veya yakınında olan bir şeyi birisine eriştirmek, iletmek; lütfetmek, lütfeylemek.Bırakmak veya bağışlamak.atfetmek, ondan bilmek.Düşünce veya bilgi anlatan şeyleri başkalarına bildirmekDöndürmek, çevirmek, yöneltmek:Bir şeyi satmak:[evlilik, kadın] Kızı, kadını biriyle evlendirmek:yaymak
+vermeme	isim	vermemek işi
+vermeyen	fiil	vermek fiilinin ikinci tekil şahıs olumsuz istek kipi
+vermifobi	isim	[fobiler] solucanlardan korkma
+vermut	isim	Birçok bitki eklenerek özel koku verilmiş, tatlı, bir tür şarap
+vernik	isim	[kimya] Sürüldüğü yüzeyde parlak, kaygan ve koruyucu bir tabaka meydana getiren, suya dayanıklı bir tür cila maddesi.
+vernikleme	isim	Verniklemek işi
+verniklemek	fiil	[geçişli] Vernik sürmek, vernik ile kaplamak.
+verniklenme	isim	Verniklenmek işi
+verniklenmek	fiil	Verniklemek işi yapılmak, vernik sürülmek
+verniye	isim	Doğrusal veya dairesel boyutların ölçülmesinde, ölçme duyarlığını artıran, çok küçük boyutların ölçülebilmesini sağlayan düzen
+veronika	isim	Yavşan otu
+versiyon	isim	Yorum[ticaret] Sürüm[tıp] Yavrunun doğum için uygun gelişe çevrilmesi işlemi, çevirme
+vesair	sıfat	Diğer
+vesaire	isim	ve başkalarıve benzerleri
+vesait	isim	vasıtalar
+vesak	isim	bağ, rabıta, yeminleşerek anlaşmak
+vesayet	isim	Vasilik
+vesika	isim	[kâğıt] belge
+vesikacı	isim	Vesika işleriyle uğraşan kimse.
+vesikacılık	isim	Vesikacının yaptığı iş
+vesikalı	sıfat	Belgesi olan.[fahişelik, kadın] hayat kadını.
+vesikalık	isim	[fotoğrafçılık] vesikalık fotoğraf.
+vesikasız	sıfat	Vesikası olmayan
+vesile	isim	sebep, bahaneelverişli durum, fırsat
+vesmek	fiil	yaşlı kadınlara saygılı bir seslenme sözü
+vesmek	isim	[aile] anne
+vesselam	ünlem	"İşte o kadar", "son söz şudur" anlamlarında kullanılan bir söz.
+vestiyer	isim	[yerler] Otel, lokanta vb. yerlerde veya evlerde şapka, palto, pardösü gibi eşyayı bırakmak ve korumak için ayrılmış yer.
+vestiyerci	isim	Vestiyerde çalışan kimse
+vestiyercilik	isim	Vestiyerci olma durumu
+veston	isim	Erkek ceketi
+vesvese	isim	kuruntu
+vesveseli	isim	kuruntulu kimse
+vesveseli	sıfat	kuruntulu
+vesveselilik	isim	işkillilik, kuruntululuk, kuşkululuk, şüphelilik
+vesvesesiz	isim	kuruntusuz kimse
+vesvesesiz	sıfat	kuruntusuz
+vesvesesizlik	isim	işkilsizlik, kuruntusuzluk, kuşkusuzluk, şüphesizlik
+veteriner	isim	[meslekler, veteriner hekimliği] baytar, veteriner hekim
+veterinerlik	isim	Veteriner olma durumu veya veterinerin işi
+vetire	isim	süreçüslup, tarzburun deliklerini ayıran zar
+veto	isim	Bir yetkinin, bir yasanın, bir kararın yürürlüğe girmesine karşı çıkma hakkı
+veya	bağlaç	Ayrı olmakla birlikte aynı değerde tutulan iki şeyi anlatan kelimelerden ikincisinin önüne getirilen söz; yahut, veyahutCümlede bildirilen konunun birden fazla şey için aynı zamanda söz konusu olduğu durumlarda kullanılan bir söz:
+veyahut	bağlaç	Yahut
+vezaret	isim	Vezirlik
+vezikül	isim	İçi su dolu kabarcık
+vezin	isim	tartı[edebiyat] ölçü
+vezinli	sıfat	[edebiyat] Ölçülü
+vezinsiz	sıfat	TartısızÖlçüsü olmayan
+vezir	isim	[tarih] Osmanlıda bakanlık ve valilik gibi önemli görevleri yerine getiren ve paşa ünvanlı olan kişi[oyun] Satrançta bir taş
+veziriazam	isim	Vezir-i Azam, padişahın mutlak vekilidir. Başlangıçta bir vezir vardı, devletin genişlemesiyle beraber vezir sayısı artırıldı. Bu nedenle 1. vezire Vezir-i Azam denildi. 19. yüzyıldan itibaren sadrazam denilmiştir.
+vezirlik	isim	Vezir olma durumu, vezir derecesi, vezaret
+vezirparmağı	isim	[tatlılar] Bir tür hamur tatlısı.
+vezne	isim	[bankacılık] banka vb. kurum ve kuruluşlarda para alınıp verilen yer[ölçü aletleri] terazi
+vezneci	isim	[meslekler] Banka vb. kurum ve kuruluşlarda para alıp veren görevli; kasacı, veznedar.[meslekler] Terazi yapan veya satan kimse.
+veznecilik	isim	Veznecinin yaptığı iş
+veznedar	isim	[meslekler] Banka veya bir kuruluşta para alan, ilgili ödemeleri yapan ve işlemlerin kaydını tutan kişi; vezneci
+veznedarlık	isim	Veznedarın görevi.Banka, büro vb. kuruluşlarda veznenin bulunduğu yer.
+veçhe	isim	yön, doğrultu, istikamet
+veçhile	isim	nedenle
+veçhişebeh	isim	[edebiyat] Benzetme yönü.
+vibrasyon	isim	Titreşim
+vibratör	isim	Titreşim yaratan araç
+vibriyo	isim	[biyoloji] Virgül biçimindeki bakteri
+vibriyon	isim	Virgül biçimindeki bakteri
+vicahen	zarf	karşı karşıya, yüz yüze
+vicahi	sıfat	Yüz yüze olan veya yapılan, yüzüne karşı olan, yüzlemece
+vicdan	isim	[din, etik, ruh bilimi] kişiyi kendi davranışları hakkında bir yargıda bulunmaya iten, kişinin kendi ahlak değerleri üzerine dolaysız ve kendiliğinden yargılama yapmasını sağlayan güç
+vicdanen	zarf	Vicdan bakımından
+vicdani	sıfat	Vicdanla ilgili olan, vicdana dayanan
+vicdanlı	isim	vicdanı olan, insaflı kimse
+vicdansız	isim	vicdanı olmayan, insafsız kimse
+vicdansızca	zarf	Vicdansız bir biçimde
+vicdansızlık	isim	Vicdansız olma durumu
+vida	isim	[mühendislik, aletler] Döndürülerek bir yere sokulan burmalı çivi.
+vidala	isim	Çanta ve ayakkabı yapılan tabaklanmış dana derisi
+vidalama	isim	Vidalamak işi
+vidalamak	fiil	Vida ile tutturmak
+vidalanma	isim	Vidalanmak işi
+vidalanmak	fiil	Vidalamak işine konu olmak
+vidalı	sıfat	Vidası olanVida ile tutturulmuş
+vidanjör	isim	[kara taşıtları] boşaltıcı
+vidasız	sıfat	Vidası olmayan
+video	isim	Manyetik bantlar üzerinde yer alan veya sayısal olarak derlenmiş hareketli resimler dizisi.Videoteyp.
+videobant	isim	[televizyon] Televizyon yayınlarının kaydedildiği, bir kasete sarılı şerit.
+videocu	isim	Video alıp satan veya tamirini yapan kimse
+videoculuk	isim	Videocunun işi
+videoiletim	isim	[teknoloji] Ses ve görüntünün telekomünikasyon ya da hertzci teleyayım ağları ve uydular aracılığla iletilmesi.
+videokaset	isim	Bir video içini ekrana yansıtabilecek bir kayıt içeren kaset
+videoteyp	isim	Üzerinde görüntü ve ses kaydı bulunan manyetik kasetleri okumaya yarayan cihaz, video
+vido	isim	Oyun, oyunda kazanılacak sayıyı veya parayı iki katına çıkarma
+vidolu	sıfat	Vido ile oynanan
+vidosuz	sıfat	Vido ile oynanmayan
+vigla	isim	[denizcilik] Savaş ve ticaret gemilerinin direklerine ve dalyanlarda dikine gömülmüş gönderler üzerine gözcülerin nöbet tutmaları için yapılmış yer
+viglâ	isim	Savaş ve ticaret gemilerinin direklerine ve dalyanlarda dikine gömülmüş gönderler üzerine gözcülerin nöbet tutmaları için yapılmış yer
+vikaye	isim	koruma
+viki	isim	Kullanıcıların üzerinde değişiklik yapma yetkisine sahip olduğu açık ağ sayfalarıdır. Geliştirilen özel bir yazılım sayesinde (MediaWiki) her kullanıcı istediği sayfada değişiklik yapabilir ve değiştirilen sayfa anında bütün kullanıcılar tarafından görülür.
+vikipedist	isim	[Vikipedi] Vikipedi'de yazı yazan kişi
+vikont	isim	Batı ülkelerinde baron ile kont arasında bir soyluluk sanı
+vikontes	isim	Kadın vikont veya vikont karısı
+viks	isim	mentollü merhem
+vilayet	isim	[kamu yönetimi] il[eskimiş] valilik
+villa	isim	[mimarlık] yazlıkta veya şehir dışında, bahçeli, müstakil ev, köşk
+villus	isim	[anatomi] Sarkan saç veya püskül, kıl demeti, kılsı çıkıntı, parmak biçimindeki küçük çıkıntılar.
+villâ	isim	Yazlıkta veya şehir dışında, bahçeli ve güzel, müstakil ev
+vilâdi	sıfat	Doğuştan (olan)
+vinter	isim	[denizcilik] ağaç çemberler üzerine örülmüş torba biçimindeki balık ağı
+vinterizasyon	isim	Kademeli olarak soğutulan ve düşük sıcaklıklarda yavaşça karıştırılıp bekletilerek elde edilen donmuş asitlerin süzülerek yağdan uzaklaştırılması
+vinterize	isim	Vinterizasyon işleminden geçirmek anlamındaki "vinterize etmek" birleşik fiilinde geçen bir söz
+vinyet	isim	[kitap] Bir kitabın sayfalarını süsleyen başlık, süslü harf gibi motif.
+vinç	isim	[denizcilik, mühendislik] gemiye yük alıp vermede kullanılan, ambar ağızlarına yakın olarak konmuş hidrolik - elektrik veya istimle açılan makineler
+vira	isim	Durmadan, aralıksız
+viraj	isim	[kara ulaşımı] dönemeç
+virajlı	sıfat	Virajı olan
+virajsız	sıfat	Virajı olmayan, düz
+viral	sıfat	[tıp] virüslerle ilgili
+viran	sıfat	Yıkık, harap
+virane	isim	[yapılar] Harap olmuş yapı; yıkıntıHarap olmuş yapılardan geriye kalan kısım; yıkıntı:
+viranelik	isim	Ev yıkıntıları bulunan yer
+viranlaşma	isim	Viranlaşmak işi veya durumu
+viranlaşmak	fiil	Viran duruma gelmek
+viranlık	isim	Viran yer
+virdizeban	isim	Dile dolama, dilden düşürmeme
+vire	isim	Durmadan, habirevere
+virgül	isim	Yazılı cümlelerde birbiri ardınca sıralanan eş görevli sözcük ve sözcük grupları arasına konulan, kısa bir durmayı göstermek için kullanılan noktalama işaretinin adı (,)
+virman	isim	[ticaret] Para aktarımı
+virolog	isim	[tıp] Viroloji uzmanı
+viroloji	isim	Virüsleri inceleyen bilim dalı
+virolojik	sıfat	[tıp] Viroloji ile ilgili
+virt	isim	[İslam] Dinî bir sözü sürekli tekrarlamaÇok tekrarlama, diline dolama
+virtüoz	isim	Herhangi bir müzik aracını büyük ustalıkla çalabilen sanatçı
+virtüozluk	isim	Virtüoz olma durumu
+virtüöz	isim	[müzik] Herhangi bir müzik aracını büyük ustalıkla çalabilen sanatçıHerhangi bir işte usta olan kimse
+virtüözlük	isim	Virtüöz olma durumu
+virülans	isim	[patoloji] bir mikrobun patojenliği, yani onun hastalığa neden olma yeteneği
+virüs	isim	[viroloji] Hastalık yapıcı, bakterilerden daha küçük, yaşamak için bir başka hücrenin içine girmek zorunda olan ve ancak elektron mikroskobunda görülebilen parazit.[bilişim] Değişik şekillerde bilgisayarlara yüklenen, programların bozulmasına, veri kaybına veya bilgisayarın olağan dışı çalışmasına neden olan program.
+virüsit	isim	[mikrobiyoloji, tıp] Virüs üzerinde öldürücü etki yapan madde, etmen ve kimyasallar
+vis-	ek	yerine (Lat. önek)
+visal	isim	ulaşma kavuşma
+visamiral	isim	Amiralden bir rütbe küçük deniz subayı
+viski	isim	[alkollü içecekler] Tahıllar malt yapılarak şekerlendirildikten ve gereği kadar mayalandıktan sonra damıtılarak elde edilen alkollü içki
+viskon	isim	Yapay ipek
+viskonsül	isim	Yardımcı konsolos
+viskoz	isim	Selüloz türevlerinin üretiminde kullanılan koloidal selüloz çözeltisi
+viskoz	sıfat	[fizik] Akışkanlığı az olan, akışa direnç gösteren[veterinerlik] kalın, koyu, pıhtılaşmış, yapışkan
+viskozite	isim	[fizik] ağdalı, koyu kıvamlı bir maddenin özelliği
+vitamin	isim	besinlerde bulunan, vücutta genellikle yapılmayan, yağda veya suda çözünebilme özelliği olan, eksikliği veya fazlalığı çeşitli hastalıklara yol açan maddelere verilen genel ad
+vitaminli	sıfat	Vitamini olan
+vitaminsiz	sıfat	Vitamini olmayan
+vitaminsizlik	isim	Vitamin eksikliğinden veya yetersizliğinden doğan patolojik olayların hepsi
+vitellüs	isim	Yumurtada, kabuk ve çekirdek dışında kalan maddelerin hepsi
+vites	isim	[otomotiv] Motorlu araçların hızını ayarlamaya yarayan dişliler düzeni.
+vitesli	sıfat	Vitesi olan
+vitir	isim	[din] Vitir namazı
+vitray	isim	[sanat, mimarlık] Renkli camların belli bir kompozisyon düzeni içinde bir araya getirilmesi ile meydana gelen pencere süslemesi veya resim
+vitrin	isim	GörümlükSergen
+vitrincilik	isim	Vitrincinin yaptığı iş
+vitrinlemek	fiil	Vitrin durumuna getirmek.
+viya	isim	Dümeni ortaya alarak gemiyi bulunduğu doğrultuda yürütmeGemiyi belirli bir doğrultu verildikten sonra, aynı doğrultuda tutması için dümenciye verilen komut
+viya	isim	vücut sörfü
+viyabilite	isim	geçilirliköndöşem (kent düzenlenmesi alanında)yaşayabilirlik
+viyak	isim	Bebeğin ağlarken çıkardığı ses
+viyaklama	isim	Viyaklamak işi
+viyaklamak	fiil	Viyak diye ses çıkararak
+viyol	isim	Satış sırasında yumurtayı korumayı amaçlayan, atık malzemeden yapılmış özel kap
+viyola	isim	[yaylı çalgılar] yaylı çalgılar ailesinin ikinci üyesidir ve şekli kemana benzemekle beraber kemandan biraz daha büyüktür, alto
+viyolacı	isim	Viyola çalan kimse
+viyolonist	isim	Viyolacı
+viyolonsel	isim	Viyoladan büyük, kontrbastan küçük, dört sürtme telli bir orkestra çalgısı
+viyolonselci	isim	Viyolonsel yapan veya satan kimseViyolonsel çalan sanatçı
+viyolonselist	isim	Viyolonselci
+vize	isim	bazı resmî kâğıtlara "görülmüştür" anlamında konulan işaret ve bu işareti koyma işiBir şey yapmak için verilen veya alınan serbestlik:[eğitim] ara sınav[hukuk] Bir ülkeye girmek veya bir ülkeden çıkmak için yetkili makamlardan alınması gerekli izin[spor] Bir sporcunun karşılaşmalarda yer alabilmesi için her sezon lisansının federasyonca onaylanması işlemi.
+vizita	isim	vizite.
+vizite	isim	[hastane] Hekimin hastanedeki hastaları dolaşıp yoklaması.[para] Bir muayene için hekime ödenen ücret[argo, fahişelik] Hayat kadını ile müşteri arasında bedeline karşılık bir kere yaşanan cinsel ilişki.[argo, fahişelik] Hayat kadını ile birlikte olmak için geneleve ödenen ücret.
+viziyer	isim	Kasket siperi
+vizkont	isim	bazı monarşilerde konttan sonra gelen soyluluk unvanı
+vizon	isim	[sansargiller] Sansargillerden, kürkü çok beğenilen memeli türü, mink
+vizon	sıfat	vison hayvanın kürkünden yapılan, vizonlu
+vizyon	isim	Birtakım olayları görme organının yardımı olmadan (zihinsel) görme ya da algılama fenomenine ve bu fenomendeki imajlar bütünüGösterim
+vizör	isim	[sinema] Bakaç
+vişnap	isim	Vişne şurubu
+vişne	isim	[gülgiller, ağaçlar, meyveler] gülgillerden, ılıman iklimlerde yetişen bir meyve ağaç ve bu ağacın meyvesi
+vişneçürüğü	isim	[renkler, #800000] Çürük vişne rengi
+vişneçürüğü	sıfat	Bu renkte olan.
+vlog	isim	[bilişim, İnternet] video logu
+vlogcu	isim	[bilişim, İnternet] Sık sık vlog yayınlayan kimse
+vlogcu	sıfat	[bilişim, İnternet] Sık sık vlog yayınlayan
+vlogculuk	isim	[bilişim, İnternet] Vlog yayınlama hâli
+vodvil	isim	Meyhanelerde söylenen neşeli, alaylı, taşlamalı şarkıHareketli, eğlenceli bir konuya dayanan, şarkılara da yer verilen hafif güldürü
+vog	isim	[moda] Beğenilme, tutulma, rağbet, itibar
+vokabüler	isim	[dil bilimi] söz dağarcığı
+vokal	isim	[müzik] iyi işlenmiş, düzenlenmiş ses, türkücü[ses bilgisi] ünlü
+vokal	sıfat	sesle ilgili
+vokalist	isim	[müzik] Müzik türlerinde solisti arka planda destekleyen ses
+vokasyonelist	sıfat	halk olma durum
+vokasyonelizm	sıfat	halkçı olma durum
+vokatif	isim	[dil bilimi] İsmin hâllerinden olup bazı dillerde bulunan hitap hâli.
+volan	isim	[mühendislik, aletler] Bir hareketi bir mekanizmaya aktaran veya makinelerde hareketin hızını düzgün tutmaya yarayan tekerlek.[giyim] Kadın giysilerinin etek ucu, kol vb. yerlerine verev kesilmiş kumaştan yapılan süs.
+vole	isim	Havadan gelen topa, futbolda sıçrayarak ayağın üstüyle, teniste raket ile vurma
+voleybol	isim	[spor] altışar kişilik iki takım arasında, bir alan ortasında gerilmiş olan ağ üzerinden topun karşılıklı olarak elle oynanması oyunu, uçantop
+voleybolcu	isim	Voleybol oynayan kimse
+voleybolculuk	isim	Voleybolcu olma durumu
+volfram	isim	[kimya, elementler, metaller, geçiş metalleri] atom sayısı 74, atom ağırlığı 183,85 olan, 19,3 yoğunluğunda, sert ve ancak 3482 °C'de ergiyen bir element, tungsten
+voli	isim	[denizcilik] Balıkçı kayıklarının balıkları çevirmek için denize fırdolayı ağ salmalarıVurgun, kazanç, kâr
+volkan	isim	[coğrafya, volkanoloji] yanardağ
+volkanik	sıfat	Volkanla ilgili
+volkanizma	isim	[petroloji] erimiş kayalardan oluşan magmanın sırf gazdan oluşmayan bir gök cisminin yüzeyine magma ve gazın yüzeydeki çatlak ya da yanardağ ağzından yüzeye çıkması fenomen
+volkanolog	isim	[bilim insanları, meslekler, volkanoloji] volkanoloji tahsil etmiş olan tabii bilimci
+volkanoloji	isim	Volkanları inceleyen jeolojinin bir kolu.
+volt	isim	[ölçü birimleri] Elektromotor gücün veya gerilimin birimi
+volta	isim	[denizcilik] Bir halatı bir yere bir kez dolaştırma veya babalara yöntemince sarma.[denizcilik] Zincirin demire veya iki zincirin birbirine dolanması.[denizcilik] Geminin rüzgâra karşı gidebilmek için sağa sola zikzak yapması[argo] Sürekli aşağı yukarı gidip gelme, yürüme, dolaşma.[argo] gitme.
+voltaj	isim	[elektromanyetizm] gerilim
+voltajlı	sıfat	voltajı olan
+voltametre	isim	Bir elektrotta, açığa çıkan madde miktarına göre devreden geçen elektrik miktarını ölçmeye yarayan alet
+voltamper	isim	Dalgalı gerilimde, 1 voltluk bir gerilim altında 1 amperlik bir akımın ürettiği güç birimi
+voltmetre	isim	[ölçü aletleri] bir elektrik devresindeki gizil güç farkını volt cinsinden ölçmeye yarayan alet
+volân	isim	Bir hareketi bir mekanizmaya aktaran veya makinelerde hareketin hızını düzgün tutmaya yarayan tekerlekKadın giysilerinin etek ucu, kol gibi yerlerine verev kesilmiş kumaştan yapılan süs
+volüm	isim	[ses] Müzikte sesin alçaklığı veya yüksekliği.[ölçü birimleri] Hacim.
+vombat	isim	Keselilerden, Avustralya'da yaşayan, ağır gövdeli, kısa bacaklı hayvan (Phascolomys ursinus)
+vonoz	isim	[hayvan bilimi] Kolyos uskumru, sardalye gibi balıkların ufağı
+votka	isim	[alkollü içecekler] tahıl tanelerinin damıltılmasıyla elde edilin alkollü içki
+voyn	ünlem	[halk ağzı, Fethiye ağzı] "hey", "efendim" anlamında ve cümlenin sonunda kullanılan bir sevgi-saygı ifadesi
+voyvo	ünlem	[argo] Alay ederek sataşmak için söylenen bir söz
+voyvoda	isim	[tarih] Osmanlıların Eflak ve Boğdan beylerine verdikleri unvan
+voyvodalık	isim	Voyvoda egemenliğiVoyvodanın egemenliği altındaki ülke
+vualet	isim	örtü
+vuku	isim	olma, meydana gelme
+vukuat	isim	olay
+vukuf	isim	anlama, bilme, bilgi[ruh bilimi] biliş
+vukuflu	sıfat	Bilgisi olan
+vukufsuz	sıfat	Bilgisiz
+vukufsuzluk	isim	Bilgisizlik
+vulgarize	sıfat	Halk için yapılanHerkesin anlayacağı düzeyde olan
+vulger	sıfat	sıradan, her yerde rastlanan.
+vulkanizasyon	isim	[kimya] kauçuğun veya benzer polimerlerin, kükürt veya diğer eşdeğer kürleyicilerin ilavesiyle daha dayanıklı malzemelere dönüştürülmesi için kullanılan kimyasal işlem adı
+vulva	isim	[biyoloji, anatomi] kadın cinsel organlarının dış kısmı, bıtık, ferç
+vuraç	isim	rakettokaç
+vurdumduymaz	sıfat	anladığı hâlde anlamamış gibi davranan, umursamaz, aldırmaz, aldırışsız, duygusuz, duvar yüzlü
+vurdumduymazlık	isim	Aldırmazlık, aldırışsızlık, umursamazlık
+vurdurma	isim	Vurdurmak işi
+vurdurmak	fiil	Vurmasına yol açmak
+vurgu	isim	[ses bilgisi] konuşma, okuma sırasında bir hece veya sözcük üzerine diğerlerinden daha farklı olarak yapılan baskı, aksan
+vurgulama	isim	[ses bilgisi] vurgulamak işi
+vurgulamak	fiil	Vurgu ile söylemekBir yazı veya konuşmada sürekli olarak öne sürülen, önemle belirtilmek istenen düşünceye dikkati çekmek, belli bir noktayı altını çizerek belirtmekBelirlemek, damgasını vurmak
+vurgulanma	isim	vurgulanmak işi
+vurgulanmak	fiil	vurgulama işi yapılmak
+vurgulu	sıfat	vurgu ile söylenen
+vurgun	isim	kolayca ve haksız ele geçen kazançsıcak, soğuk, dolu vb. etkilerle ürünlerde görülen zararçok derinlerdeki suyun basıncı dolayısıyla iki akıntı arasında sıkışıp kalma, düzenli hava alıp verememe, birden su yüzüne çıkma vb. durumlarda dalgıcın uğradığı inme veya ölümdekompresyon hastalığı
+vurgun	sıfat	silahla yaralanmış olan[mecaz] birine veya bir şeye vurulmuş, bağlanmış, sevmiş olan, sevdalı, âşık, meftun
+vurguncu	isim	[ekonomi] ederinden daha üstün istemle mal satan kişi, alavereci, spekülatör
+vurguncu	sıfat	[ekonomi] para dalgalanmalarından yararlanarak kolay yoldan kazanç elde eden, muhtekir, ihtikârcı, spekülatöryolsuz bir biçimde kazanç elde eden
+vurgunculuk	isim	[ticaret] ileride meydana gelebilecek fiyat dalgalanmalarından yararlanarak haksız kazanç sağlama, alaverecilik, ihtikâr, ihtikârcılık, spekülasyon, spekülatörlük
+vurgunluk	isim	Vurgun olma, gönül kaptırma durumu
+vurgusuz	sıfat	[dil bilimi, ses bilgisi] vurgu ile söylenmeyen
+vurma	isim	vurmak işi
+vurmak	fiil	Elini veya elinde tuttuğu bir şeyi bir yere veya bir kimseye hızla çarpmak; çakmak, geçirmek, inmekSes çıkarmak için bir şeyi başka bir şey üzerine hızlıca çarpmakEtkisi bir yere kadar ulaşmak.Duyulmak, hissedilmekÜzerinde görünmek, üzerine düşmek, yansımak, aksetmekOlumsuz yönde etkilemekHızla değmek, çarpmak.Bir yere bir şey sürmek:
+vurmalı	sıfat	Vurularak çalınan.
+vurmalılar	isim	Eksiltme yoluyla bkz. vurmalı çalgılar.
+vurtut	isim	Silahla yaratılan kargaşalık
+vuru	isim	Yüreğin, gevşeyip kasılmasıyla olan kımıldanışı.
+vurucu	sıfat	vuran, silâh attığında hedefini vuranetkileyici
+vuruculuk	isim	Vurucu olma durumu
+vuruk	sıfat	Çarpık, çarpılmış
+vurulma	isim	vurulmak işi
+vurulmak	fiil	vurmak işine konu olmak.[sevgi] Âşık olmak, gönlünü kaptırmak, sevdalanmak.[şiddet] Ateşli silah ile yaralanmak
+vuruluş	isim	Vurulmak işi veya biçimi.
+vurunma	isim	vurunmak işi
+vurunmak	fiil	Kendine vurmakGiyinmek, koymak, örtünmek
+vuruntu	isim	Ateşleme bozukluğu sebebiyle bir motorun içinden gelen gürültü ve bu gürültüden anlaşılan çalışma düzensizliği
+vuruş	isim	vurma işi[müzik] müzikte ve müzik kuramında ölçüyü oluşturan eşit zamanlardan her birini ifade etme[mühendislik] bir kuvvetin etkileme süresi ile şiddetinin çarpımından çıkarılan nicelik
+vuruşkan	sıfat	Dövüşken
+vuruşkanlık	isim	Dövüşkenlik
+vuruşma	isim	Vuruşmak işi
+vuruşmak	fiil	[cinayet] Birbirini vurmak.[şiddet] çarpışmak.
+vuslat	isim	Sevgiliye kavuşma.
+vusub	isim	Dâim ve sürekli olmak.
+vusul	isim	Ulaşma, varma
+vuzuh	isim	açık olma durumuaydınlık[edebiyat] açıklık
+vuzuhsuz	sıfat	belirsiz
+vuzuhsuzluk	isim	belirsizlik
+vuzû	isim	abdest
+vâcibü'l-vücûd	isim	Vücudu mutlak var olan, yokluğu mümkün olmayan varlık.
+vâkıf	sıfat	Bilen, farkında olan.[eskimiş] Bir şeyi vakıf durumuna getiren.
+vâkıâ	zarf	gerçi, her ne kadar... ise de:
+vâlid	isim	(Vilâdet. den) Doğurtan. Baba
+vâris	isim	mirasçı.
+vârisli	sıfat	Mirasçısı olan.
+vârissiz	sıfat	Vârisi olmayan
+vâsi	sıfat	geniş.engin
+vücub	isim	Vâcib ve lâzım olma.Sâbit olma.Sukut ve vuku.Sübut ve temekkün cihetiyle lâzım olma. Bırakılması mümkün olmama.Güneşin batması.Muztarib olma.
+vücudiyye	isim	panteizm
+vücut	isim	[anatomi] İnsan veya hayvanda beden, baş, kol ve bacakların oluşturduğu bütün; eğin, ten[felsefe, eskimiş] Var olma
+vücutlu	sıfat	vücudu iri ve şişman olan
+vücutça	zarf	[fizyoloji] vücut bakımından, vücudun durumuna göre
+vükela	isim	(Osmanlı Devleti'nde) Bakanlar, vekiller.
+vülgarize	sıfat	Halk için yapılan
+vürut	isim	Geliş, gelme
+vüsat	isim	Genişlik
+vüzera	isim	vezirler
+vıcık	sıfat	sulanarak kıvamı gevşemiş, yumuşamış
+vıcıklama	isim	Vıcıklamak işi veya durumu
+vıcıklamak	fiil	Sulu veya yumuşak şeyleri avuç içinde ezmek, vıcık duruma getirmek
+vıcıklık	isim	Vıcık olma durumu
+vıcırdama	isim	Vıcırdamak işi veya durumu
+vıcırdamak	fiil	(serçe vb kuşlar için) Ötmek
+vıcırdaşma	isim	Vıcırdaşmak işi veya durumu
+vıcırdaşmak	fiil	Hep birlikte vıcırdamak
+vın	isim	Vınlama sesi
+vınlama	isim	Vınlamak işi
+vınlamak	fiil	[fizyoloji] dönerken veya düz bir doğrultuda hızla hareket ederken "vın" diye ses çıkarmak
+vınıltı	isim	Vınlama sesi
+vırlama	isim	Vırlamak işi veya durumu
+vırlamak	fiil	Vırıldamak
+vırvırcı	isim	Can sıkacak kadar çok konuşan kimse
+vırvırcılık	isim	Vırvırcı olma durumu
+vırıldama	isim	Vırıldamak, vırıldanmak işi
+vırıldamak	fiil	Usandıracak, sinirlendirecek biçimde durmadan konuşmak
+vırıltı	isim	Vırıldama sesi
+vız	isim	böcek uçarken veya atılan bir şey hızla geçerken çıkan ses
+vızlama	isim	Vızlamak durumu
+vızlamak	fiil	Vızıldamak
+vızıldama	isim	vızıldamak işi
+vızıldamak	fiil	[ses] "Vız" diye ses çıkarmak[mecaz] Hafif sesle ve bezdirici biçimde yakınmak, sızlanmak
+vızıldanma	isim	Vızıldanmak işi
+vızıldanmak	fiil	Yakınmak, sızlanmak
+vızıltı	isim	vızıldama sesihafif sesle ve bezdirici biçimde yakınma, sızlanma

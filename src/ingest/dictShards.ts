@@ -1,0 +1,37 @@
+// Üretildi: scripts/dict/build-dictionary.mjs — elle düzenleme.
+/* eslint-disable @typescript-eslint/no-require-imports */
+
+/** Çevrimdışı sözlüğün harf dilimleri (bkz. `offlineDict`) */
+export const DICT_SHARDS: Record<string, number> = {
+  "a": require('../../assets/dict/a.txt'),
+  "b": require('../../assets/dict/b.txt'),
+  "c": require('../../assets/dict/c.txt'),
+  "c2": require('../../assets/dict/c2.txt'),
+  "d": require('../../assets/dict/d.txt'),
+  "e": require('../../assets/dict/e.txt'),
+  "f": require('../../assets/dict/f.txt'),
+  "g": require('../../assets/dict/g.txt'),
+  "g2": require('../../assets/dict/g2.txt'),
+  "h": require('../../assets/dict/h.txt'),
+  "i": require('../../assets/dict/i.txt'),
+  "i2": require('../../assets/dict/i2.txt'),
+  "j": require('../../assets/dict/j.txt'),
+  "k": require('../../assets/dict/k.txt'),
+  "l": require('../../assets/dict/l.txt'),
+  "m": require('../../assets/dict/m.txt'),
+  "n": require('../../assets/dict/n.txt'),
+  "o": require('../../assets/dict/o.txt'),
+  "o2": require('../../assets/dict/o2.txt'),
+  "p": require('../../assets/dict/p.txt'),
+  "q": require('../../assets/dict/q.txt'),
+  "r": require('../../assets/dict/r.txt'),
+  "s": require('../../assets/dict/s.txt'),
+  "s2": require('../../assets/dict/s2.txt'),
+  "t": require('../../assets/dict/t.txt'),
+  "u": require('../../assets/dict/u.txt'),
+  "u2": require('../../assets/dict/u2.txt'),
+  "v": require('../../assets/dict/v.txt'),
+  "w": require('../../assets/dict/w.txt'),
+  "y": require('../../assets/dict/y.txt'),
+  "z": require('../../assets/dict/z.txt'),
+};

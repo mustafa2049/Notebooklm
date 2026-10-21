@@ -6,9 +6,10 @@ import { Card, Chip, Txt } from '@/ui/primitives';
 import { fontStyle } from '@/ui/theme';
 
 /**
- * TDK sözlük sonucu kartı: madde, köken, en çok 3 anlam (tür + örnek) ve
- * bulunan başka kökler. Araç panelinin Kelime sekmesi ve uzun basınca açılan
- * kelime sayfası aynı kartı kullanır.
+ * Sözlük sonucu kartı (TDK ya da internetsiz Vikisözlük): madde, köken,
+ * anlamlar (tür + örnek) ve bulunan başka kökler; altta kaynak. Araç
+ * panelinin Kelime sekmesi ve uzun basınca açılan kelime sayfası aynı kartı
+ * kullanır.
  */
 
 export type DictState =
@@ -86,7 +87,9 @@ export function DictCard({ state, onLookUp }: { state: DictState; onLookUp: (wor
         </View>
       ) : null}
       <Txt variant="dim" style={{ fontSize: 11 }}>
-        Kaynak: TDK Güncel Türkçe Sözlük (sozluk.gov.tr)
+        {result.source === 'wiktionary'
+          ? `${result.tdkUnreachable ? 'TDK’ya ulaşılamadı. ' : ''}Kaynak: Vikisözlük (uygulamada, internetsiz) · CC BY-SA 4.0`
+          : 'Kaynak: TDK Güncel Türkçe Sözlük (sozluk.gov.tr)'}
       </Txt>
     </Card>
   );
