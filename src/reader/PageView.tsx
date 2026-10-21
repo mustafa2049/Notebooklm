@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   Animated,
@@ -12,7 +12,7 @@ import {
   type TextStyle,
 } from 'react-native';
 import type { ReadingLayout } from '@/appearance/typography';
-import { focusBand, lineTops, type ParagraphBox } from '@/core/lineFocus';
+import { chunkPosition, focusBand, followStart, lineAtY, lineTops, type ParagraphBox } from '@/core/lineFocus';
 import { pageParagraphs, SAMPLE_PARAGRAPH, type Page, type PageParagraph, type PageSentence } from '@/core/pages';
 import { typeset } from '@/core/typeset';
 import type { Chunk, Token } from '@/core/types';
@@ -20,7 +20,7 @@ import { hitFromGeometry, plainIndex, tokenAtPlainIndex, type ParagraphGeometry 
 import { useSettings } from '@/store/SettingsContext';
 import { readingFontStyle } from '@/ui/theme';
 import { SyllableText } from './SyllableText';
-import { domHit, measureOrigin, textLayout } from './textHit';
+import { charMiddle, domHit, measureOrigin, textLayout } from './textHit';
 
 /**
  * Web'de yatay kaydırmayı tarayıcı kendisi yorumluyordu (ör. "geri git"
@@ -60,6 +60,7 @@ export function PageView({
   lineFocus = null,
   onFocusLines,
   onFocusMove,
+  onFollowLine,
   onCenterTap,
   onTap,
   onAreaLayout,
@@ -95,13 +96,15 @@ export function PageView({
   syllableColor?: string | null;
   /**
    * Satır odağı: bandın boyu (satır), ilk satırı (`LAST` = son satırlar) ve
-   * gizli olup olmadığı (rehber oynarken). Kapalıysa `null`.
+   * rehberi izleyip izlemediği (rehber oynarken). Kapalıysa `null`.
    */
-  lineFocus?: { size: number; start: number; hidden: boolean } | null;
+  lineFocus?: { size: number; start: number; follow: boolean } | null;
   /** Sayfadaki satır sayısı (bant hareketi için) */
   onFocusLines?: (count: number) => void;
   /** Satır odağı açıkken dokunuş sayfa yerine bandı oynatır */
   onFocusMove?: (delta: 1 | -1) => void;
+  /** Rehberi izleyen bandın ilk satırı: rehber durunca elle aynı yerden sürer */
+  onFollowLine?: (start: number) => void;
   /** Verilirse sayfanın ortasına dokunmak bunu çağırır (tam ekranda menüler) */
   onCenterTap?: () => void;
   /** Dokunma: `true` dönerse sayfa çevrilmez (ör. rehber duraklatıldı) */
@@ -246,7 +249,7 @@ export function PageView({
     }
     const delta = x < windowWidth * PREVIOUS_ZONE ? -1 : 1;
     // Satır odağında dokunuş bandı bir satır oynatır; sayfa sonunda sayfa döner
-    if (lineFocus && !lineFocus.hidden && onFocusMove) onFocusMove(delta);
+    if (lineFocus && onFocusMove) onFocusMove(delta);
     else onTurn(delta);
   };
 
@@ -304,6 +307,7 @@ export function PageView({
             syllableColor={syllableColor}
             lineFocus={lineFocus}
             onFocusLines={onFocusLines}
+            onFollowLine={onFollowLine}
             onContentHeight={onContentHeight}
             contentRef={contentRef}
             geometry={geometry}
@@ -338,6 +342,7 @@ function PageContent({
   syllableColor,
   lineFocus,
   onFocusLines,
+  onFollowLine,
   onContentHeight,
   contentRef,
   geometry,
@@ -351,8 +356,9 @@ function PageContent({
   flashSentence: number | null;
   activeChunk: number | null;
   syllableColor: string | null;
-  lineFocus: { size: number; start: number; hidden: boolean } | null;
+  lineFocus: { size: number; start: number; follow: boolean } | null;
   onFocusLines?: (count: number) => void;
+  onFollowLine?: (start: number) => void;
   onContentHeight: (height: number) => void;
   /** Telefonda kelime bulmak için: içerik alanı ve paragrafların ölçüleri */
   contentRef: React.RefObject<View | null>;
@@ -370,7 +376,24 @@ function PageContent({
   useEffect(() => {
     if (focusOn) onFocusLines?.(tops.length);
   }, [focusOn, tops.length, onFocusLines]);
-  const band = lineFocus && !lineFocus.hidden ? focusBand(tops, lineFocus.start, lineFocus.size, lineHeight) : null;
+
+  // Rehber oynarken bant, vurgulanan parçanın satırını izler (vurguyla aynı
+  // karede kaysın diye çizimden önce ölçülür)
+  const follow = Boolean(lineFocus?.follow);
+  const [activeLine, setActiveLine] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    if (!follow || activeChunk === null || !tops.length) return;
+    const position = chunkPosition(paragraphs, activeChunk);
+    const box = position ? boxes[position.paragraph] : undefined;
+    if (!position || !box) return;
+    const middle = charMiddle(geometry, PARAGRAPH_ID, String(position.paragraph), position.offset);
+    if (middle !== null) setActiveLine(lineAtY(tops, box.y + middle, lineHeight));
+  }, [follow, activeChunk, paragraphs, boxes, tops, lineHeight, geometry]);
+  const followed = follow && lineFocus && activeLine !== null ? followStart(activeLine, lineFocus.size, tops.length) : null;
+  useEffect(() => {
+    if (followed !== null) onFollowLine?.(followed);
+  }, [followed, onFollowLine]);
+  const band = lineFocus ? focusBand(tops, followed ?? lineFocus.start, lineFocus.size, lineHeight) : null;
 
   const measure = (index: number) => (event: LayoutChangeEvent) => {
     const { x, y, width, height } = event.nativeEvent.layout;

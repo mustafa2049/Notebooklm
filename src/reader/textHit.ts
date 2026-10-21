@@ -1,5 +1,6 @@
 import type React from 'react';
 import { Platform, type NativeSyntheticEvent, type TextLayoutEventData, type View } from 'react-native';
+import { lineOfIndex } from '@/core/lineFocus';
 import type { ParagraphGeometry } from '@/core/wordHit';
 
 /**
@@ -44,6 +45,41 @@ export function domHit(clientX: number, clientY: number, prefix: string): { key:
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     if (node === best.node) return { key: root.id.slice(prefix.length), index: index + best.offset };
     index += (node as Text).data.length;
+  }
+  return null;
+}
+
+/**
+ * Paragraftaki `index`. karakterin dikey ortası, paragrafın üstüne göre
+ * (satır odağı rehberi izlerken). Web'de karakter kutusundan, telefonda
+ * `onTextLayout` satırlarından; ölçü yoksa `null`.
+ */
+export function charMiddle(
+  geometry: React.MutableRefObject<Map<string, ParagraphGeometry>>,
+  prefix: string,
+  key: string,
+  index: number
+): number | null {
+  if (Platform.OS !== 'web') {
+    const lines = geometry.current.get(key)?.lines;
+    if (!lines?.length) return null;
+    const line = lines[lineOfIndex(lines.map((item) => item.text.length), index)];
+    return line.y + line.height / 2;
+  }
+  const root = typeof document === 'undefined' ? null : document.getElementById(`${prefix}${key}`);
+  if (!root) return null;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let start = 0;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const length = (node as Text).data.length;
+    if (index < start + length) {
+      const range = document.createRange();
+      range.setStart(node, index - start);
+      range.setEnd(node, index - start + 1);
+      const rect = range.getClientRects()[0];
+      return rect ? (rect.top + rect.bottom) / 2 - root.getBoundingClientRect().top : null;
+    }
+    start += length;
   }
   return null;
 }

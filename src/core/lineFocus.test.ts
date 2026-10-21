@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { bandStart, focusBand, LAST, lineTops, nextLineFocus, stepFocus } from './lineFocus';
+import {
+  bandStart,
+  chunkPosition,
+  focusBand,
+  followStart,
+  LAST,
+  lineAtY,
+  lineOfIndex,
+  lineTops,
+  nextLineFocus,
+  stepFocus,
+} from './lineFocus';
 
 describe('lineTops', () => {
   it('paragraf yüksekliğinden satırlar; paragraf aralığı korunur', () => {
@@ -53,5 +64,52 @@ describe('nextLineFocus', () => {
     expect(nextLineFocus(1)).toBe(3);
     expect(nextLineFocus(3)).toBe(0);
     expect(nextLineFocus(7)).toBe(0);
+  });
+});
+
+describe('rehberle birlikte', () => {
+  it('chunkPosition: paragraf ve ilk harfin dizini (baştaki boşluk atlanır)', () => {
+    const paragraphs = [
+      { sentences: [{ parts: [{ chunkIndex: 0, display: 'Bir bal' }, { chunkIndex: 1, display: ' arısı' }] }] },
+      {
+        sentences: [
+          { parts: [{ chunkIndex: 2, display: 'Zengin' }] },
+          { parts: [{ chunkIndex: 3, display: '  bir çiçek.' }] },
+        ],
+      },
+    ];
+    expect(chunkPosition(paragraphs, 0)).toEqual({ paragraph: 0, offset: 0 });
+    expect(chunkPosition(paragraphs, 1)).toEqual({ paragraph: 0, offset: 8 });
+    expect(chunkPosition(paragraphs, 2)).toEqual({ paragraph: 1, offset: 0 });
+    expect(chunkPosition(paragraphs, 3)).toEqual({ paragraph: 1, offset: 8 });
+    expect(chunkPosition(paragraphs, 9)).toBeNull();
+  });
+
+  it('lineOfIndex: satır uzunluklarından', () => {
+    // "Bir bal arısı " (14) + "zengin bir " (11) + "çiçek." (6)
+    expect(lineOfIndex([14, 11, 6], 0)).toBe(0);
+    expect(lineOfIndex([14, 11, 6], 13)).toBe(0);
+    expect(lineOfIndex([14, 11, 6], 14)).toBe(1);
+    expect(lineOfIndex([14, 11, 6], 30)).toBe(2);
+    expect(lineOfIndex([14, 11, 6], 99)).toBe(2);
+    expect(lineOfIndex([], 3)).toBe(0);
+  });
+
+  it('lineAtY: satırın içi ya da en yakın satır', () => {
+    const tops = [0, 30, 60, 100, 130];
+    expect(lineAtY(tops, 5, 30)).toBe(0);
+    expect(lineAtY(tops, 104, 30)).toBe(3);
+    // paragraf boşluğunda (90–100) ortası daha yakın olan satır
+    expect(lineAtY(tops, 93, 30)).toBe(2);
+    expect(lineAtY(tops, 97, 30)).toBe(3);
+    expect(lineAtY(tops, 500, 30)).toBe(4);
+    expect(lineAtY([], 10, 30)).toBe(0);
+  });
+
+  it('followStart: 1 satırda etkin satır, 3 satırda ortada, sınırlar içinde', () => {
+    expect(followStart(4, 1, 10)).toBe(4);
+    expect(followStart(4, 3, 10)).toBe(3);
+    expect(followStart(0, 3, 10)).toBe(0);
+    expect(followStart(9, 3, 10)).toBe(7);
   });
 });

@@ -61,6 +61,59 @@ export function focusBand(
   return { top: tops[first], bottom: tops[last] + lineHeight };
 }
 
+// ------------------------------------------------- rehberle birlikte
+//
+// Tempo rehberi oynarken bant, vurgulanan parçanın satırını izler: parçanın
+// ilk harfinin paragraftaki yeri bulunur, oradan satırı (telefonda
+// `onTextLayout` satırlarıyla, web'de karakter kutusuyla).
+
+/** Rehberin parçasının yeri: paragraf sırası ve çizilen metindeki ilk harfinin dizini */
+export function chunkPosition(
+  paragraphs: { sentences: { parts: { chunkIndex: number; display: string }[] }[] }[],
+  chunkIndex: number
+): { paragraph: number; offset: number } | null {
+  for (let paragraph = 0; paragraph < paragraphs.length; paragraph++) {
+    let offset = 0;
+    for (const sentence of paragraphs[paragraph].sentences) {
+      for (const part of sentence.parts) {
+        if (part.chunkIndex === chunkIndex) {
+          return { paragraph, offset: offset + (/^\s*/.exec(part.display)?.[0].length ?? 0) };
+        }
+        offset += part.display.length;
+      }
+    }
+  }
+  return null;
+}
+
+/** Telefonda: satır metinlerinin uzunluklarından paragraf içi dizinin satırı */
+export function lineOfIndex(lineLengths: number[], index: number): number {
+  let end = 0;
+  for (let i = 0; i < lineLengths.length; i++) {
+    end += lineLengths[i];
+    if (index < end) return i;
+  }
+  return Math.max(0, lineLengths.length - 1);
+}
+
+/** Web'de: karakter kutusunun üstünden (içerikteki y) satırı; dışarıdaysa en yakını */
+export function lineAtY(tops: number[], y: number, lineHeight: number): number {
+  if (!tops.length) return 0;
+  const inside = tops.findIndex((top) => y >= top && y < top + lineHeight);
+  if (inside >= 0) return inside;
+  let best = 0;
+  for (let i = 1; i < tops.length; i++) {
+    if (Math.abs(tops[i] + lineHeight / 2 - y) < Math.abs(tops[best] + lineHeight / 2 - y)) best = i;
+  }
+  return best;
+}
+
+/** Rehberi izleyen bandın ilk satırı: 1 satırlık bantta etkin satır, 3 satırlıkta ortada */
+export function followStart(activeLine: number, size: number, total: number): number {
+  const start = activeLine - Math.floor((Math.max(1, size) - 1) / 2);
+  return Math.max(0, Math.min(start, Math.max(0, total - size)));
+}
+
 /** Ayar değerleri: kapalı, 1 satır, 3 satır */
 export const LINE_FOCUS_OPTIONS = [0, 1, 3] as const;
 

@@ -1157,10 +1157,11 @@ function Reader({
             flashSentence={flashSentence}
             activeChunk={pacerChunk}
             syllableColor={syllableColor}
-            // Rehber oynarken vurgu zaten yol gösteriyor: bant gizlenir
-            lineFocus={focusSize > 0 ? { size: focusSize, start: focusLine, hidden: pacing } : null}
+            // Rehber oynarken bant vurgulanan satırı izler; durunca elle oradan sürer
+            lineFocus={focusSize > 0 ? { size: focusSize, start: focusLine, follow: pacing } : null}
             onFocusLines={onFocusLines}
             onFocusMove={moveFocus}
+            onFollowLine={setFocusLine}
             onCenterTap={immersive ? () => setChromeShown((shown) => !shown) : undefined}
             onTap={() => {
               if (!pacerOn) return false;
