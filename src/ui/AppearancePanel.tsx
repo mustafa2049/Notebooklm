@@ -251,6 +251,12 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
       </View>
 
       {section('Sayfa düzeni')}
+      <Toggle
+        label="Geniş ekranda çift sayfa"
+        hint="Tablet ve bilgisayarda (en az 900 piksel genişlik, yatay) Sayfa modunda kitap gibi yan yana iki sayfa; çevirince ikisi birden döner."
+        value={settings.twoPage}
+        onChange={(twoPage) => update({ twoPage })}
+      />
       {sub('Kenar boşluğu')}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
         {PAGE_MARGINS.map((option) => (

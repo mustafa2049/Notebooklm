@@ -17,10 +17,11 @@ import { isAiConfigured } from '@/ai';
 import { countWords } from '@/core/chunker';
 import { syllableColorFor } from '@/appearance/palettes';
 import { readingLayout, stepFontScale } from '@/appearance/typography';
-import { LAST, nextLineFocus, stepFocus } from '@/core/lineFocus';
+import { LAST, nextLineFocus } from '@/core/lineFocus';
 import { pageIndexFor, pageParagraphs } from '@/core/pages';
 import { indexFromCharOffset, indexFromRatio, progressRatio, wordsUpTo } from '@/core/progress';
 import { paragraphOfChunk, scrollParagraphs } from '@/core/scroll';
+import { pairPages, SPREAD_MIN_WIDTH, spreadPages, stepSpreadFocus } from '@/core/spreads';
 import { excerptAt } from '@/core/search';
 import { sentenceSpans, spanIndexForChunk } from '@/core/sentences';
 import { stripPunctuation } from '@/core/turkish';
@@ -278,7 +279,14 @@ function Reader({
     },
     pageMode
   );
-  const pages = pagination.pages;
+  // Geniş ekranda (yatay) çift sayfa: sayfalar sütun genişliğiyle kurulur,
+  // okuyucu bütün mantığını ikişer birleştirilmiş sayfalarla yürütür
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const spreadMode = pageMode && settings.twoPage && screenWidth >= SPREAD_MIN_WIDTH && screenWidth > screenHeight;
+  const pages = useMemo(
+    () => (spreadMode ? pairPages(pagination.pages) : pagination.pages),
+    [spreadMode, pagination.pages]
+  );
   const pageIndex = pages.length ? pageIndexFor(pages, engine.index) : 0;
   const page = pages[pageIndex];
   const pageWords = useMemo(
@@ -302,14 +310,14 @@ function Reader({
    */
   const focusSize = pageMode ? settings.lineFocus : 0;
   const [focusLine, setFocusLine] = useState(0);
-  const focusLines = useRef(0);
+  const focusLines = useRef({ left: 0, right: 0 });
   const pendingFocus = useRef<number | null>(null);
   useEffect(() => {
     setFocusLine(pendingFocus.current ?? 0);
     pendingFocus.current = null;
   }, [page?.start]);
-  const onFocusLines = useCallback((count: number) => {
-    focusLines.current = count;
+  const onFocusLines = useCallback((left: number, right: number) => {
+    focusLines.current = { left, right };
   }, []);
 
   /** Sade tam ekran: başlık ve alt çubuk metnin üstüne binen katman */
@@ -648,7 +656,8 @@ function Reader({
   /** Satır odağı bandını bir satır oynatır; sayfanın dışına çıkınca sayfa çevrilir */
   const moveFocus = useCallback(
     (delta: 1 | -1) => {
-      const step = stepFocus(focusLine, focusLines.current, Math.max(1, focusSize), delta);
+      const { left, right } = focusLines.current;
+      const step = stepSpreadFocus(focusLine, left, right, Math.max(1, focusSize), delta);
       if ('turn' in step) turnPage(step.turn);
       else setFocusLine(step.start);
     },
@@ -823,10 +832,11 @@ function Reader({
   const positionLabel = useCallback(
     (offset: number) => {
       const index = indexFromCharOffset(engine.chunks, offset);
-      if (pageMode && pages.length) return `Sayfa ${pageIndexFor(pages, index) + 1}`;
+      // Çift sayfada da tek sayfa numarası (yer imi etiketi değişmesin)
+      if (pageMode && pagination.pages.length) return `Sayfa ${pageIndexFor(pagination.pages, index) + 1}`;
       return `%${Math.round(progressRatio(engine.chunks, index) * 100)}`;
     },
-    [engine.chunks, pageMode, pages]
+    [engine.chunks, pageMode, pagination.pages]
   );
 
   const startListening = useCallback(() => {
@@ -1165,6 +1175,7 @@ function Reader({
           <PageView
             chunks={engine.chunks}
             page={page}
+            twoColumns={spreadMode}
             direction={turn.direction}
             turnId={turn.id}
             fontSize={pageFontSize}
@@ -1416,6 +1427,9 @@ function Reader({
               <PageControls
                 pageIndex={pageIndex}
                 pageCount={pages.length}
+                pageLabel={
+                  spreadMode ? `Sayfa ${spreadPages(pageIndex, pagination.pages.length)} / ${pagination.pages.length}` : undefined
+                }
                 remainingMs={pageRemainingMs}
                 finished={endReached}
                 onTurn={turnPage}

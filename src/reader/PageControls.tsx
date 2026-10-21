@@ -23,6 +23,7 @@ export interface PacerControls {
 export function PageControls({
   pageIndex,
   pageCount,
+  pageLabel,
   remainingMs,
   finished,
   onTurn,
@@ -32,6 +33,8 @@ export function PageControls({
 }: {
   pageIndex: number;
   pageCount: number;
+  /** Verilirse sayfa etiketi bu (çift sayfada "Sayfa 3–4 / 120") */
+  pageLabel?: string;
   remainingMs: number;
   finished: boolean;
   onTurn: (delta: 1 | -1) => void;
@@ -79,7 +82,7 @@ export function PageControls({
         }}
       >
         <Txt variant="dim" numberOfLines={1} style={{ fontSize: 13 }}>
-          Sayfa {pageCount > 0 ? pageIndex + 1 : 0} / {pageCount}
+          {pageLabel ?? `Sayfa ${pageCount > 0 ? pageIndex + 1 : 0} / ${pageCount}`}
         </Txt>
         {pacer ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(1) }}>

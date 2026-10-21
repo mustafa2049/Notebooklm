@@ -69,6 +69,8 @@ export interface Settings {
   immersive: boolean;
   /** Defterdeki kelimelerin altı metinde çizili (Sayfa ve Kaydırma modları) */
   markVocab: boolean;
+  /** Geniş ekranda (en az 900 px, yatay) Sayfa modunda yan yana iki sayfa */
+  twoPage: boolean;
   /** Kolay okuma önayarı açık mı (bkz. appearance/easyReading) */
   easyReading: boolean;
   /** Kolay okuma açılmadan önceki görünüm: kapatınca geri yazılır */
@@ -176,6 +178,7 @@ export const DEFAULT_SETTINGS: Settings = {
   lineFocus: 0,
   immersive: false,
   markVocab: true,
+  twoPage: true,
   easyReading: false,
   easyBackup: null,
   hyperlegible: false,

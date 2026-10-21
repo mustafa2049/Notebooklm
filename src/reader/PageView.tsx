@@ -1,9 +1,10 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   Animated,
   Platform,
   Pressable,
+  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -14,6 +15,7 @@ import {
 import type { ReadingLayout } from '@/appearance/typography';
 import { chunkPosition, focusBand, followStart, lineAtY, lineTops, type ParagraphBox } from '@/core/lineFocus';
 import { pageParagraphs, SAMPLE_PARAGRAPH, type Page, type PageParagraph, type PageSentence } from '@/core/pages';
+import { spreadBand, type Spread } from '@/core/spreads';
 import { typeset } from '@/core/typeset';
 import type { Chunk, Token } from '@/core/types';
 import { coreRanges, isVocabWord, type VocabIndex } from '@/core/vocabMarks';
@@ -33,6 +35,8 @@ const WEB_GESTURES = (Platform.OS === 'web' ? { touchAction: 'none', userSelect:
 const PREVIOUS_ZONE = 0.3;
 /** Bu kadar yatay kaydırma sayfa çevirir */
 const SWIPE_DISTANCE = 40;
+/** Çift sayfada iki sütun arası */
+const SPREAD_GUTTER = 48;
 
 /**
  * Sayfa modu: metin kitap gibi, paragraflarıyla, sayfa sayfa.
@@ -48,6 +52,7 @@ const SWIPE_DISTANCE = 40;
 export function PageView({
   chunks,
   page,
+  twoColumns = false,
   direction,
   turnId,
   fontSize,
@@ -74,7 +79,10 @@ export function PageView({
   onWordLongPress,
 }: {
   chunks: Chunk[];
-  page: Page | undefined;
+  /** Sayfa; çift sayfada iki sayfanın birleşimi (`split` sağ sayfanın başı) */
+  page: Spread | undefined;
+  /** Geniş ekranda çift sayfa: alan iki sütun, sayfalama sütun genişliğiyle */
+  twoColumns?: boolean;
   /** Son çevirmenin yönü (kayma animasyonu için) */
   direction: 1 | -1;
   /**
@@ -103,8 +111,8 @@ export function PageView({
    * rehberi izleyip izlemediği (rehber oynarken). Kapalıysa `null`.
    */
   lineFocus?: { size: number; start: number; follow: boolean } | null;
-  /** Sayfadaki satır sayısı (bant hareketi için) */
-  onFocusLines?: (count: number) => void;
+  /** Sayfadaki satır sayısı (bant hareketi için); çift sayfada sol ve sağ sütunun */
+  onFocusLines?: (left: number, right: number) => void;
   /** Satır odağı açıkken dokunuş sayfa yerine bandı oynatır */
   onFocusMove?: (delta: 1 | -1) => void;
   /** Rehberi izleyen bandın ilk satırı: rehber durunca elle aynı yerden sürer */
@@ -127,24 +135,14 @@ export function PageView({
 }) {
   const { theme } = useSettings();
   const { width: windowWidth } = useWindowDimensions();
-  // Heceleme ve kelime aralığı görünmez işaretlerle yapılıyor (bkz. core/typeset)
-  const paragraphs = useMemo(() => {
+  // Çift sayfada iki sütun: sol [start, split), sağ [split, end)
+  const split = page?.split;
+  const columns = useMemo<PageParagraphs[]>(() => {
     if (!page) return [];
-    const options = { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace };
-    const marked = (core: string) => (vocab ? isVocabWord(vocab, core) : false);
-    // Cümleler chunk parçalarıyla çiziliyor: tempo rehberi geçerli parçayı
-    // vurgulayabilsin. Satır kırılımı aynı (parçalar satır içi)
-    return pageParagraphs(chunks, page).map((paragraph) => ({
-      ...paragraph,
-      sentences: paragraph.sentences.map((sentence, sentenceIndex) => ({
-        ...sentence,
-        parts: sentence.parts.map((part, partIndex) => {
-          const display = typeset(sentenceIndex === 0 && partIndex === 0 ? part.text : ` ${part.text}`, options);
-          return { ...part, display, marks: vocab ? coreRanges(display, part.tokens, marked) : undefined };
-        }),
-      })),
-    }));
-  }, [chunks, page, layout.hyphenate, layout.extraWordSpace, vocab]);
+    const ranges = split === undefined ? [page] : [{ start: page.start, end: split }, { start: split, end: page.end }];
+    return ranges.map((range) => buildParagraphs(chunks, range, layout, vocab));
+  }, [chunks, page, split, layout, vocab]);
+  const spread = columns.length === 2;
   const markStyle = useMemo(() => vocabMarkStyle(theme.colors.accent), [theme.colors.accent]);
   const sample = useMemo(
     () => typeset(SAMPLE_PARAGRAPH, { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace }),
@@ -192,24 +190,37 @@ export function PageView({
     swiped.current = false;
   };
 
-  // ---- Uzun basılan kelime
-  const contentRef = useRef<View>(null);
-  const geometry = useRef<Map<string, ParagraphGeometry>>(new Map());
+  // ---- Uzun basılan kelime (çift sayfada sütun başına ayrı ölçüler)
+  const leftRef = useRef<View>(null);
+  const rightRef = useRef<View>(null);
+  const leftGeometry = useRef<Map<string, ParagraphGeometry>>(new Map());
+  const rightGeometry = useRef<Map<string, ParagraphGeometry>>(new Map());
   const findToken = async (point: { x: number; y: number }): Promise<Token | null> => {
     let hit: { key: string; index: number } | null = null;
+    let column = 0;
     if (Platform.OS === 'web') {
+      // Sağ sütunun kimlikleri "rpr3": önek "rp" ile anahtar "r3" olur
       hit = domHit(point.x - window.scrollX, point.y - window.scrollY, PARAGRAPH_ID);
+      if (hit?.key.startsWith('r')) {
+        column = 1;
+        hit = { ...hit, key: hit.key.slice(1) };
+      }
     } else {
-      const origin = await measureOrigin(contentRef.current);
+      const [leftOrigin, rightOrigin] = await Promise.all([
+        measureOrigin(leftRef.current),
+        spread ? measureOrigin(rightRef.current) : Promise.resolve(null),
+      ]);
+      column = rightOrigin && point.x >= rightOrigin.x ? 1 : 0;
+      const origin = column === 1 ? rightOrigin : leftOrigin;
       if (origin) {
-        hit = hitFromGeometry(geometry.current, point.x - origin.x, point.y - origin.y, {
+        hit = hitFromGeometry((column === 1 ? rightGeometry : leftGeometry).current, point.x - origin.x, point.y - origin.y, {
           fontSize,
           letterSpacing: fontSize * layout.letterSpacingEm,
           justify: layout.textAlign === 'justify',
         });
       }
     }
-    const paragraph = hit ? paragraphs[Number(hit.key)] : undefined;
+    const paragraph = hit ? columns[column]?.[Number(hit.key)] : undefined;
     if (!hit || !paragraph) return null;
     const display = paragraph.sentences.flatMap((sentence) => sentence.parts.map((part) => part.display)).join('');
     const ordinal = tokenAtPlainIndex(
@@ -271,23 +282,69 @@ export function PageView({
   const hyphenation =
     Platform.OS === 'android' && layout.hyphenate ? { android_hyphenationFrequency: 'normal' as const } : {};
 
+  // ---- Satır odağı iki sütunda: satır sayıları sütunlardan gelir, bant tek
+  // sırada (önce sol sütun) ilerler (bkz. core/spreads)
+  const hasRight = columns.length === 2;
+  const [columnLines, setColumnLines] = useState<[number, number]>([0, 0]);
+  const leftLines = useCallback((count: number) => setColumnLines((c) => (c[0] === count ? c : [count, c[1]])), []);
+  const rightLines = useCallback((count: number) => setColumnLines((c) => (c[1] === count ? c : [c[0], count])), []);
+  const focusOn = lineFocus !== null;
+  useEffect(() => {
+    if (focusOn) onFocusLines?.(columnLines[0], hasRight ? columnLines[1] : 0);
+  }, [focusOn, columnLines, hasRight, onFocusLines]);
+  const followRight = useCallback((start: number) => onFollowLine?.(columnLines[0] + start), [onFollowLine, columnLines]);
+  const columnFocus = (column: 0 | 1): ColumnFocus | null => {
+    if (!lineFocus) return null;
+    if (!hasRight) return lineFocus;
+    if (lineFocus.follow) {
+      // Rehber hangi sütundaysa bant orada; öbür sütun tümüyle karartılır
+      const active = activeChunk !== null && split !== undefined && activeChunk >= split ? 1 : 0;
+      return column === active ? lineFocus : { ...lineFocus, follow: false, dimAll: true };
+    }
+    const band = spreadBand(lineFocus.start, columnLines[0], columnLines[1], lineFocus.size);
+    return column === band.column ? { ...lineFocus, start: band.start } : { ...lineFocus, dimAll: true };
+  };
+
+  const content = (column: 0 | 1, range: Page) => (
+    <PageContent
+      key={`${range.start}-${range.end}-${layoutKey}`}
+      paragraphs={columns[column] ?? []}
+      idPrefix={column === 1 ? RIGHT_COLUMN_ID : PARAGRAPH_ID}
+      textStyle={textStyle}
+      hyphenation={hyphenation}
+      lineHeight={lineHeight}
+      paragraphGap={paragraphGap}
+      markedSentences={markedSentences}
+      flashSentence={flashSentence}
+      activeChunk={activeChunk}
+      syllableColor={syllableColor}
+      markStyle={markStyle}
+      lineFocus={columnFocus(column)}
+      onFocusLines={column === 1 ? rightLines : leftLines}
+      onFollowLine={column === 1 ? followRight : onFollowLine}
+      onContentHeight={onContentHeight}
+      contentRef={column === 1 ? rightRef : leftRef}
+      geometry={column === 1 ? rightGeometry : leftGeometry}
+    />
+  );
+
+  // Ölçüm: aynı yazı tipi ve genişlikte (çift sayfada sütun genişliğinde) örnek paragraf, görünmez
+  const sampleView = (
+    <View
+      pointerEvents="none"
+      aria-hidden
+      importantForAccessibility="no-hide-descendants"
+      style={{ position: 'absolute', left: 0, right: 0, top: 0, opacity: 0 }}
+    >
+      <Text style={textStyle} {...hyphenation} onLayout={(event) => onSampleHeight(event.nativeEvent.layout.height)}>
+        {sample}
+      </Text>
+    </View>
+  );
+
   return (
-    <View style={{ flex: 1, overflow: 'hidden' }} onLayout={onAreaLayout}>
-      {/* Ölçüm: aynı yazı tipi ve genişlikte örnek paragraf, görünmez */}
-      <View
-        pointerEvents="none"
-        aria-hidden
-        importantForAccessibility="no-hide-descendants"
-        style={{ position: 'absolute', left: 0, right: 0, top: 0, opacity: 0 }}
-      >
-        <Text
-          style={textStyle}
-          {...hyphenation}
-          onLayout={(event) => onSampleHeight(event.nativeEvent.layout.height)}
-        >
-          {sample}
-        </Text>
-      </View>
+    <View style={{ flex: 1, overflow: 'hidden' }} onLayout={twoColumns ? undefined : onAreaLayout}>
+      {twoColumns ? null : sampleView}
       <Pressable
         onPressIn={onPressIn}
         onPressOut={onPressOut}
@@ -299,34 +356,57 @@ export function PageView({
       >
         {/* Animasyonlu katman yerinde kalır; ölçülen içerik onun içinde ve
             sayfalama değişince yeniden kurulur (animasyonu bölmeden) */}
-        <Animated.View style={{ opacity, transform: [{ translateX: shift }] }}>
-          <PageContent
-            key={`${page?.start ?? -1}-${page?.end ?? -1}-${layoutKey}`}
-            paragraphs={paragraphs}
-            textStyle={textStyle}
-            hyphenation={hyphenation}
-            lineHeight={lineHeight}
-            paragraphGap={paragraphGap}
-            markedSentences={markedSentences}
-            flashSentence={flashSentence}
-            activeChunk={activeChunk}
-            syllableColor={syllableColor}
-            markStyle={markStyle}
-            lineFocus={lineFocus}
-            onFocusLines={onFocusLines}
-            onFollowLine={onFollowLine}
-            onContentHeight={onContentHeight}
-            contentRef={contentRef}
-            geometry={geometry}
-          />
+        <Animated.View
+          style={[{ opacity, transform: [{ translateX: shift }] }, twoColumns ? { flex: 1, flexDirection: 'row' } : null]}
+        >
+          {twoColumns ? (
+            <>
+              {/* Sayfalama sol sütunun ölçüsüyle: iki sütun aynı genişlikte */}
+              <View style={{ flex: 1 }} onLayout={onAreaLayout}>
+                {sampleView}
+                {page ? content(0, { start: page.start, end: split ?? page.end }) : null}
+              </View>
+              <View style={{ width: SPREAD_GUTTER, alignItems: 'center' }}>
+                <View style={{ flex: 1, width: StyleSheet.hairlineWidth, backgroundColor: theme.colors.border }} />
+              </View>
+              <View style={{ flex: 1 }}>{page && split !== undefined ? content(1, { start: split, end: page.end }) : null}</View>
+            </>
+          ) : page ? (
+            content(0, page)
+          ) : null}
         </Animated.View>
       </Pressable>
     </View>
   );
 }
 
-/** Paragraf köklerinin kimlik öneki (web'de kelime bulmak için) */
+/** Paragraf köklerinin kimlik öneki (web'de kelime bulmak için); sağ sütunda `rpr` */
 const PARAGRAPH_ID = 'rp';
+const RIGHT_COLUMN_ID = 'rpr';
+
+/**
+ * Sayfanın (ya da sütunun) paragrafları. Heceleme ve kelime aralığı görünmez
+ * işaretlerle yapılıyor (bkz. core/typeset). Cümleler chunk parçalarıyla
+ * çiziliyor: tempo rehberi geçerli parçayı vurgulayabilsin; satır kırılımı
+ * aynı (parçalar satır içi).
+ */
+function buildParagraphs(chunks: Chunk[], range: Page, layout: ReadingLayout, vocab: VocabIndex | null): PageParagraphs {
+  const options = { hyphenate: layout.hyphenate, extraWordSpace: layout.extraWordSpace };
+  const marked = (core: string) => (vocab ? isVocabWord(vocab, core) : false);
+  return pageParagraphs(chunks, range).map((paragraph) => ({
+    ...paragraph,
+    sentences: paragraph.sentences.map((sentence, sentenceIndex) => ({
+      ...sentence,
+      parts: sentence.parts.map((part, partIndex) => {
+        const display = typeset(sentenceIndex === 0 && partIndex === 0 ? part.text : ` ${part.text}`, options);
+        return { ...part, display, marks: vocab ? coreRanges(display, part.tokens, marked) : undefined };
+      }),
+    })),
+  }));
+}
+
+/** Sütunun satır odağı; `dimAll`: bant öbür sütunda, bu sütun tümüyle karartılır */
+type ColumnFocus = { size: number; start: number; follow: boolean; dimAll?: boolean };
 
 /** Sayfanın paragrafları; her parça çizilecek biçimiyle (`typeset`) */
 type PageParagraphs = (Omit<PageParagraph, 'sentences'> & {
@@ -341,6 +421,7 @@ type PageParagraphs = (Omit<PageParagraph, 'sentences'> & {
  */
 function PageContent({
   paragraphs,
+  idPrefix,
   textStyle,
   hyphenation,
   lineHeight,
@@ -358,6 +439,8 @@ function PageContent({
   geometry,
 }: {
   paragraphs: PageParagraphs;
+  /** Paragraf kimliklerinin öneki (web'de kelime bulma; sütuna göre) */
+  idPrefix: string;
   textStyle: TextStyle;
   hyphenation: object;
   lineHeight: number;
@@ -367,7 +450,7 @@ function PageContent({
   activeChunk: number | null;
   syllableColor: string | null;
   markStyle: TextStyle;
-  lineFocus: { size: number; start: number; follow: boolean } | null;
+  lineFocus: ColumnFocus | null;
   onFocusLines?: (count: number) => void;
   onFollowLine?: (start: number) => void;
   onContentHeight: (height: number) => void;
@@ -397,14 +480,15 @@ function PageContent({
     const position = chunkPosition(paragraphs, activeChunk);
     const box = position ? boxes[position.paragraph] : undefined;
     if (!position || !box) return;
-    const middle = charMiddle(geometry, PARAGRAPH_ID, String(position.paragraph), position.offset);
+    const middle = charMiddle(geometry, idPrefix, String(position.paragraph), position.offset);
     if (middle !== null) setActiveLine(lineAtY(tops, box.y + middle, lineHeight));
-  }, [follow, activeChunk, paragraphs, boxes, tops, lineHeight, geometry]);
+  }, [follow, activeChunk, paragraphs, boxes, tops, lineHeight, geometry, idPrefix]);
   const followed = follow && lineFocus && activeLine !== null ? followStart(activeLine, lineFocus.size, tops.length) : null;
   useEffect(() => {
     if (followed !== null) onFollowLine?.(followed);
   }, [followed, onFollowLine]);
-  const band = lineFocus ? focusBand(tops, followed ?? lineFocus.start, lineFocus.size, lineHeight) : null;
+  const band =
+    lineFocus && !lineFocus.dimAll ? focusBand(tops, followed ?? lineFocus.start, lineFocus.size, lineHeight) : null;
 
   const measure = (index: number) => (event: LayoutChangeEvent) => {
     const { x, y, width, height } = event.nativeEvent.layout;
@@ -424,7 +508,7 @@ function PageContent({
       {paragraphs.map((paragraph, index) => (
         <Text
           key={`${paragraph.paragraphIndex}-${index}`}
-          id={`${PARAGRAPH_ID}${index}`}
+          id={`${idPrefix}${index}`}
           {...hyphenation}
           {...textLayout(geometry, String(index))}
           onLayout={measure(index)}
@@ -461,6 +545,14 @@ function PageContent({
           ))}
         </Text>
       ))}
+      {lineFocus?.dimAll ? (
+        <View
+          pointerEvents="none"
+          aria-hidden
+          importantForAccessibility="no-hide-descendants"
+          style={{ ...shade, top: -4000, height: 12000 }}
+        />
+      ) : null}
       {band ? (
         <>
           <View
