@@ -105,8 +105,9 @@ sepya zeminde okunabilir; okuyucu, antrenman ve ölçüm ekranları bununla
   `@expo-google-fonts` paketlerinden (yalnız normal ve kalın); OpenDyslexic
   Fontsource'un WOFF dosyasından kayıpsız OTF'ye çevrildi
   (`scripts/fonts/woff-to-sfnt.mjs`, testli). Dördü de SIL Open Font
-  License 1.1 (`assets/fonts/OpenDyslexic-OFL.txt`). Tarayıcıda her yazı
-  tipinde sayfaların taşmadığı denendi; telefondaki görünümü denenmedi.
+  License 1.1 ile dağıtılıyor; OpenDyslexic'in lisans metni
+  `assets/fonts/OpenDyslexic-OFL.txt`'de. Tarayıcıda her yazı tipinde
+  sayfaların taşmadığı denendi; telefondaki görünümü denenmedi.
 
 - **Renk temaları**: Uygulamayla aynı, Koyu, Siyah (OLED), Gece (sıcak), Açık,
   Beyaz, Sepya, Yeşil. Testler her temada yazı/zemin kontrastının en az 7:1
