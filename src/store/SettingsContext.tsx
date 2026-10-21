@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { isEvening } from '@/appearance/evening';
+import { useReadingFontReady } from '@/ui/readingFonts';
 import { createReadingTheme, createTheme, type ReadingTheme, type Theme } from '@/ui/theme';
 import { DEFAULT_SETTINGS, loadSettings, saveSettings, type Settings } from '@/storage/settings';
 
@@ -72,6 +73,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     [dark, focusMode, settings.hyperlegible]
   );
 
+  // Uygulamayla gelen yazı tipleri seçilince yüklenir; o arada sistem fontu
+  const fontReady = useReadingFontReady(settings.readingFont);
+
   const readingTheme = useMemo(
     () =>
       createReadingTheme(theme, {
@@ -83,6 +87,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         focusMode,
         readingFont: settings.readingFont,
         hyperlegible: settings.hyperlegible,
+        fontReady,
       }),
     [
       theme,
@@ -95,6 +100,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       settings.customText,
       settings.readingFont,
       settings.hyperlegible,
+      fontReady,
     ]
   );
 

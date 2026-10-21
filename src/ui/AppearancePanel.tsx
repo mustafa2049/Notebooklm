@@ -31,6 +31,7 @@ import { useSettings } from '@/store/SettingsContext';
 import { ColorPicker } from './ColorPicker';
 import { EasyReadingToggle } from './EasyReadingToggle';
 import { Chip, Toggle, Txt } from './primitives';
+import { isLoadableFont, useAllReadingFonts } from './readingFonts';
 import { fontPreviewStyle, readingFontStyle, type ReadingFontId } from './theme';
 
 /**
@@ -46,6 +47,10 @@ const FONT_OPTIONS: { id: Exclude<ReadingFontId, 'auto'>; label: string }[] = [
   { id: 'sans', label: 'Sistem' },
   { id: 'serif', label: 'Tırnaklı' },
   { id: 'hyperlegible', label: 'Disleksi dostu' },
+  { id: 'lexend', label: 'Lexend' },
+  { id: 'literata', label: 'Literata' },
+  { id: 'merriweather', label: 'Merriweather' },
+  { id: 'opendyslexic', label: 'OpenDyslexic' },
 ];
 
 type PickerState = null | 'theme' | 'text';
@@ -53,6 +58,8 @@ type PickerState = null | 'theme' | 'text';
 export function AppearancePanel({ showModes = false }: { showModes?: boolean }) {
   const { theme, appTheme, readingTheme, settings, update, focusMode, setFocusMode, evening } = useSettings();
   const [picker, setPicker] = useState<PickerState>(null);
+  // Yazı tipi çipleri kendi yazı tipleriyle görünsün: panel açılınca hepsi yüklenir
+  const loadedFonts = useAllReadingFonts();
 
   const reading = readingTheme.colors;
   const layout = readingLayout(settings);
@@ -204,9 +211,14 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
       </View>
 
       {section('Yazı tipi')}
+      {sub(
+        'Lexend okumayı akıcılaştırmak için, Literata ve Merriweather ekranda uzun okuma için tasarlandı; OpenDyslexic disleksi için.'
+      )}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space(2) }}>
         {FONT_OPTIONS.map((option) => {
           const active = effectiveFont === option.id;
+          // Yüklenmemiş yazı tipiyle yazılan çip telefonda sistem fontunda takılı kalıyordu
+          const previewReady = !isLoadableFont(option.id) || loadedFonts.has(option.id);
           return (
             <Pressable
               key={option.id}
@@ -228,7 +240,7 @@ export function AppearancePanel({ showModes = false }: { showModes?: boolean }) 
                 style={{
                   color: active ? theme.colors.accent : theme.colors.textDim,
                   fontSize: 15,
-                  ...fontPreviewStyle(option.id),
+                  ...fontPreviewStyle(previewReady ? option.id : 'sans'),
                 }}
               >
                 {option.label}

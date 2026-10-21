@@ -273,7 +273,8 @@ function Reader({
       lineHeight: pageLineHeight,
       charEm: theme.readingFont.charEm,
       paragraphGap: pageParagraphGap,
-      variant: layout.key,
+      // Yazı tipi yüklenince (ilk anda sistem fontu) sayfalar yeniden ölçülsün
+      variant: `${layout.key}|${theme.readingFont.regular ?? ''}`,
     },
     pageMode
   );

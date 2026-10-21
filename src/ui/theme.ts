@@ -46,17 +46,34 @@ const SERIF_FONT = Platform.select({
   default: 'Georgia, "Times New Roman", serif',
 });
 
-export type ReadingFontId = 'auto' | 'sans' | 'serif' | 'hyperlegible';
+export type ReadingFontId =
+  | 'auto'
+  | 'sans'
+  | 'serif'
+  | 'hyperlegible'
+  | 'lexend'
+  | 'literata'
+  | 'merriweather'
+  | 'opendyslexic';
 
+// Son dördü uygulamayla geliyor ve seçilince yükleniyor (bkz. `readingFonts`).
+// `charEm` tarayıcıda Türkçe örnek metinle ölçüldü.
 const FONTS: Record<Exclude<ReadingFontId, 'auto'>, FontSet> = {
   sans: { regular: SYSTEM_FONT, bold: SYSTEM_FONT, custom: false, charEm: 0.5 },
   serif: { regular: SERIF_FONT, bold: SERIF_FONT, custom: false, charEm: 0.5 },
   hyperlegible: { regular: HYPERLEGIBLE_REGULAR, bold: HYPERLEGIBLE_BOLD, custom: true, charEm: 0.56 },
+  lexend: { regular: 'Lexend_400Regular', bold: 'Lexend_700Bold', custom: true, charEm: 0.48 },
+  literata: { regular: 'Literata_400Regular', bold: 'Literata_700Bold', custom: true, charEm: 0.48 },
+  merriweather: { regular: 'Merriweather_400Regular', bold: 'Merriweather_700Bold', custom: true, charEm: 0.48 },
+  opendyslexic: { regular: 'OpenDyslexic_400Regular', bold: 'OpenDyslexic_700Bold', custom: true, charEm: 0.7 },
 };
 
-/** `auto`: uygulamanın yazı tipi (disleksi dostu anahtarı açıksa o). */
-export function resolveReadingFont(id: ReadingFontId, hyperlegible: boolean): FontSet {
-  if (id === 'auto') return hyperlegible ? FONTS.hyperlegible : FONTS.sans;
+/**
+ * `auto`: uygulamanın yazı tipi (disleksi dostu anahtarı açıksa o). Seçilen
+ * yazı tipi henüz yüklenmediyse (`ready` false) o arada `auto` kullanılır.
+ */
+export function resolveReadingFont(id: ReadingFontId, hyperlegible: boolean, ready = true): FontSet {
+  if (id === 'auto' || !ready) return hyperlegible ? FONTS.hyperlegible : FONTS.sans;
   return FONTS[id];
 }
 
@@ -97,14 +114,14 @@ export interface ReadingTheme extends Theme {
  */
 export function createReadingTheme(
   base: Theme,
-  input: Omit<ReadingInput, 'appDark'> & { readingFont: ReadingFontId; hyperlegible: boolean }
+  input: Omit<ReadingInput, 'appDark'> & { readingFont: ReadingFontId; hyperlegible: boolean; fontReady?: boolean }
 ): ReadingTheme {
   const result = readingColors({ ...input, appDark: base.dark });
   return {
     ...base,
     dark: result.dark,
     colors: result.colors,
-    readingFont: resolveReadingFont(input.readingFont, input.hyperlegible),
+    readingFont: resolveReadingFont(input.readingFont, input.hyperlegible, input.fontReady ?? true),
     textFallback: result.textFallback,
   };
 }
