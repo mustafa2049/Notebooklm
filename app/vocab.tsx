@@ -5,16 +5,18 @@ import { useSettings } from '@/store/SettingsContext';
 import { listVocab, removeVocab, updateVocab, type VocabEntry } from '@/storage/vocab';
 import { applyReview, dueCount, sortForReview } from '@/train/review';
 import { Button, Card, Chip, Divider, IconButton, Screen, Txt } from '@/ui/primitives';
+import { VocabGame } from '@/ui/VocabGame';
 
 /**
- * Kelime defteri: liste ve tekrar.
+ * Kelime defteri: liste, tekrar ve oyun.
  *
  * Tekrar kartı kelimeyi gösterip cümlesini ve notu gizliyor; kullanıcı önce
  * hatırlamayı deniyor, sonra açıyor. "Biliyorum" dediğinde kelimenin tekrar
- * aralığı uzuyor (bkz. `src/train/review.ts`).
+ * aralığı uzuyor (bkz. `src/train/review.ts`). Oyun aynı tekrar sırasını
+ * kullanıyor (bkz. `src/train/vocabGame.ts`).
  */
 
-type Mode = 'list' | 'review';
+type Mode = 'list' | 'review' | 'game';
 
 export default function VocabScreen() {
   const router = useRouter();
@@ -92,6 +94,7 @@ export default function VocabScreen() {
                 setRevealed(false);
               }}
             />
+            <Chip label="Oyun" active={mode === 'game'} onPress={() => setMode('game')} />
           </View>
 
           {mode === 'list'
@@ -123,6 +126,16 @@ export default function VocabScreen() {
                 </Card>
               ))
             : null}
+
+          {mode === 'game' ? (
+            <VocabGame
+              entries={entries}
+              onAnswer={(updated) => {
+                void updateVocab(updated);
+                setEntries((list) => (list ? list.map((entry) => (entry.id === updated.id ? updated : entry)) : list));
+              }}
+            />
+          ) : null}
 
           {mode === 'review' ? (
             cursor >= queue.length ? (
