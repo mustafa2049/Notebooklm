@@ -25,6 +25,7 @@ export default defineConfig({
       'src/voice/**/*.test.ts',
       // Derleme betikleri (service worker listesi, sürüm notları, sözlük) ve Expo eklentileri
       'scripts/**/*.test.mjs',
+      'scripts/**/*.test.ts',
       'plugins/**/*.test.mjs',
     ],
     environment: 'node',
