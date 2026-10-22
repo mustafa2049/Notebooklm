@@ -10,6 +10,8 @@ on:
       - 'app.json'
       - 'CHANGELOG.md'
       - 'plugins/**'
+      # Yerel modüller (ör. kendi sesin motoru): derlemesi bozulmasın
+      - 'modules/**'
       - '.github/workflows/android.yml'
   workflow_dispatch:
 

@@ -1,0 +1,20 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.hizliokuma'
+version = '1.0.0'
+
+android {
+  namespace "expo.modules.pipervoice"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+dependencies {
+  // Piper ses modelini (ONNX) telefonda çalıştıran motor
+  implementation 'com.microsoft.onnxruntime:onnxruntime-android:1.31.0'
+}
