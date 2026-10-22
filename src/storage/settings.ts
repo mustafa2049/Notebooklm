@@ -122,6 +122,11 @@ export interface Settings {
   /** Kelime tekrar bildirimi (telefonda): tekrar zamanı gelen kelimeler için her gün bu saatte */
   vocabReminder: boolean;
   vocabReminderHour: number;
+  /**
+   * Dinlerken okuyan ses: boşsa cihazın sesi, doluysa içe aktarılan kendi
+   * sesin (bkz. `src/voice/`). Ses bu cihazda yoksa cihazın sesine dönülür.
+   */
+  ownVoiceId: string;
 
   // ---- AI (isteğe bağlı) -------------------------------------------------
   /**
@@ -200,6 +205,7 @@ export const DEFAULT_SETTINGS: Settings = {
   reminderMinute: 0,
   vocabReminder: false,
   vocabReminderHour: 19,
+  ownVoiceId: '',
   aiProvider: 'anthropic',
   aiApiKey: '',
   aiBaseUrl: '',

@@ -6,6 +6,8 @@ node_modules/
 # Expo
 .expo/
 dist/
+# onnxruntime-web kopyası (scripts/vendor-ort.mjs üretir)
+public/ort/
 web-build/
 expo-env.d.ts
 

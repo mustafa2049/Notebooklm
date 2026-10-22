@@ -21,6 +21,8 @@ export default defineConfig({
       'src/content/**/*.test.ts',
       'src/backup/**/*.test.ts',
       'src/appearance/**/*.test.ts',
+      // Kendi sesin: ses paketi doğrulama ve hız (motorlar tarayıcıda denenir)
+      'src/voice/**/*.test.ts',
       // Derleme betikleri (service worker listesi, sürüm notları, sözlük) ve Expo eklentileri
       'scripts/**/*.test.mjs',
       'plugins/**/*.test.mjs',

@@ -756,6 +756,7 @@ function Reader({
     text,
     spans,
     wpm: settings.wpm,
+    ownVoiceId: settings.ownVoiceId,
     onSentence: (span) => onProgress(span.charStart, progressRatio(engine.chunks, span.startChunk)),
     shouldContinue: (next) =>
       !shouldStopBefore(sleepRef.current, { now: Date.now(), charStart: next.charStart }),
@@ -1306,6 +1307,8 @@ function Reader({
         {listening && showChrome ? (
           <ListenStatus
             voice={speech.voice}
+            voiceName={speech.voiceName}
+            voiceError={speech.voiceError}
             playing={speech.playing}
             wordTracking={speech.wordTracking}
             sleep={sleep}
@@ -1618,6 +1621,7 @@ function AppearanceSheet({ visible, onClose }: { visible: boolean; onClose: () =
 const VOICE_NOTE: Record<VoiceStatus, string> = {
   checking: 'Sesler yükleniyor…',
   turkish: 'Türkçe ses',
+  own: 'Kendi sesin',
   fallback: 'Bu cihazda Türkçe ses bulunamadı; varsayılan ses kullanılıyor, telaffuz bozuk olabilir.',
   none: 'Bu cihazda seslendirme sesi bulunamadı. Sistem ayarlarından bir Türkçe ses yükleyebilirsin.',
 };
@@ -1625,6 +1629,8 @@ const VOICE_NOTE: Record<VoiceStatus, string> = {
 /** Dinleme modunun durum satırı: hangi sesle okunduğu, uyku zamanlayıcısı ve çıkış. */
 function ListenStatus({
   voice,
+  voiceName,
+  voiceError,
   playing,
   wordTracking,
   sleep,
@@ -1633,6 +1639,10 @@ function ListenStatus({
   onExit,
 }: {
   voice: VoiceStatus;
+  /** Kendi sesinle okunuyorsa sesin adı */
+  voiceName?: string;
+  /** Kendi sesin açılamadıysa nedeni (cihaz sesiyle okunur) */
+  voiceError?: string;
   playing: boolean;
   wordTracking: boolean;
   sleep: SleepTimer;
@@ -1642,7 +1652,8 @@ function ListenStatus({
   onExit: () => void;
 }) {
   const { theme } = useSettings();
-  const warn = voice === 'fallback' || voice === 'none';
+  const warn = voice === 'fallback' || voice === 'none' || Boolean(voiceError);
+  const voiceLabel = voice === 'own' && voiceName ? `Kendi sesin (${voiceName})` : VOICE_NOTE[voice];
   // Geri sayım her saniye yenilensin
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -1657,9 +1668,9 @@ function ListenStatus({
       <Txt variant="dim" style={{ fontSize: 12, color: warn ? theme.colors.warning : theme.colors.textDim }}>
         {slept
           ? 'Uyku zamanlayıcısı dinlemeyi durdurdu; kaldığın yer kaydedildi.'
-          : `${playing ? 'Dinleniyor' : 'Dinleme duraklatıldı'} · ${VOICE_NOTE[voice]} · ${
+          : `${playing ? 'Dinleniyor' : 'Dinleme duraklatıldı'} · ${voiceLabel} · ${
               wordTracking ? 'kelime kelime' : 'cümle cümle'
-            } vurgulanır`}
+            } vurgulanır${voiceError ? ` · ${voiceError}` : ''}`}
       </Txt>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space(2) }}>
         <Pressable

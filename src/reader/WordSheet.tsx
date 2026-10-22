@@ -52,7 +52,7 @@ export function WordSheet({
   onSimplify?: () => void;
   onHighlightSaved?: () => void;
 }) {
-  const { theme } = useSettings();
+  const { theme, settings } = useSettings();
   const insets = useSafeAreaInsets();
   const ai = useAi();
   const [selected, setSelected] = useState(word);
@@ -64,7 +64,7 @@ export function WordSheet({
   /** Türkçe ses yoksa ya da hiç ses yoksa kullanıcıya bir cümle */
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
   const listen = async (text: string) => {
-    const status = await speakOnce(text);
+    const status = await speakOnce(text, settings.ownVoiceId);
     setVoiceNote(
       status === 'none'
         ? 'Bu cihazda seslendirme bulunamadı.'

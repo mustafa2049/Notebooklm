@@ -34,4 +34,9 @@ export const KEYS = {
   aiUsage: `${PREFIX}/ai-usage`,
   /** Doküman başına AI çıktısı önbelleği — aynı özet için iki kez ödenmesin */
   aiCache: (id: string) => `${PREFIX}/ai/${id}`,
+  /**
+   * İçe aktarılan sesler (kendi sesin). Önekin dışında: yedeğe girmez, çünkü
+   * model dosyaları (60 MB) yedeğe girmiyor; başka cihazda yeniden eklenir.
+   */
+  voices: 'hizliokuma/voices',
 };

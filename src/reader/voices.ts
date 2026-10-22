@@ -1,4 +1,5 @@
 import * as Speech from 'expo-speech';
+import { ownVoiceFor, stopOwnVoice } from '@/voice/active';
 
 /**
  * Cihazın Türkçe sesi ve tek seferlik seslendirme.
@@ -9,10 +10,11 @@ import * as Speech from 'expo-speech';
  * sonraki istekte yeniden aranır (liste sonradan dolmuş olabilir).
  */
 
-export type VoiceStatus = 'checking' | 'turkish' | 'fallback' | 'none';
+/** `own`: içe aktarılan kendi sesin (bkz. `src/voice/`) */
+export type VoiceStatus = 'checking' | 'turkish' | 'fallback' | 'none' | 'own';
 
 export interface VoiceInfo {
-  status: Exclude<VoiceStatus, 'checking'>;
+  status: Exclude<VoiceStatus, 'checking' | 'own'>;
   /** Türkçe sesin kimliği (yoksa cihazın varsayılanı kullanılır) */
   id?: string;
 }
@@ -49,11 +51,21 @@ export async function findTurkishVoice(): Promise<VoiceInfo> {
 
 /**
  * Metni bir kez, biraz yavaş seslendirir (kelimenin okunuşu, cümlesi).
- * Süren bir seslendirme varsa keser. Bulunan sesin durumunu döndürür.
+ * Süren bir seslendirme varsa keser. Kendi sesin seçiliyse onunla okur;
+ * açılamazsa cihazın sesine döner. Kullanılan sesin durumunu döndürür.
  */
-export async function speakOnce(text: string): Promise<VoiceInfo['status']> {
+export async function speakOnce(text: string, ownVoiceId = ''): Promise<Exclude<VoiceStatus, 'checking'>> {
+  if (ownVoiceId) {
+    const { voice } = await ownVoiceFor(ownVoiceId);
+    if (voice) {
+      void Speech.stop();
+      voice.speak(text, { lengthScale: voice.slowScale(), onDone: () => undefined, onError: () => undefined });
+      return 'own';
+    }
+  }
   const voice = await findTurkishVoice();
   if (voice.status === 'none') return 'none';
+  stopOwnVoice();
   void Speech.stop();
   Speech.speak(text, { language: 'tr-TR', voice: voice.id, rate: 0.85 });
   return voice.status;
@@ -61,5 +73,6 @@ export async function speakOnce(text: string): Promise<VoiceInfo['status']> {
 
 /** Süren tek seferlik seslendirmeyi keser (sayfa kapanınca) */
 export function stopSpeaking(): void {
+  stopOwnVoice();
   void Speech.stop();
 }

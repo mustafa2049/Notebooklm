@@ -16,6 +16,7 @@ import { BackupCard } from '@/ui/BackupCard';
 import { ErrorLogCard } from '@/ui/ErrorLogCard';
 import { ExportButtons } from '@/ui/ExportButtons';
 import { InstallCard } from '@/ui/InstallCard';
+import { OwnVoiceCard } from '@/ui/OwnVoiceCard';
 import { Slider } from '@/ui/Slider';
 import {
   Button,
@@ -389,6 +390,9 @@ export default function SettingsScreen() {
           </Txt>
         )}
       </Card>
+
+      <SectionHeader title="Ses" />
+      <OwnVoiceCard />
 
       <SectionHeader
         title="Bağlantıdan okuma"

@@ -7,3 +7,7 @@
 # Paketleyicinin dosya adları içerik özeti taşıyor; içerik değişirse ad değişir
 /_expo/static/*
   Cache-Control: public, max-age=31536000, immutable
+
+# onnxruntime (kendi sesin): sürüm klasör adında, içerik değişmez
+/ort/*
+  Cache-Control: public, max-age=31536000, immutable
