@@ -4,6 +4,14 @@ Her sürümün APK'sı ve web derlemesi GitHub'daki **Releases** sayfasında
 (bkz. README → CI ve dağıtım). Yeni sürüm eskisinin üstüne güncelleme olarak
 kurulur; veriler silinmez.
 
+## 1.4.0 — 22 Ekim 2026
+
+- Kendi sesin: metinler senin sesinle, telefonda internetsiz okunabiliyor.
+  Sesin bir kez Google Colab'da eğitilir (adım adım not defteri, ücretsiz),
+  sonra Ayarlar → Ses → Ses paketi ekle. Hazır Türkçe Piper sesleri de
+  eklenebilir. Dinleyerek oku, Kelimeyi dinle ve Cümleyi dinle seçili sesi
+  kullanır; sayılar, tarihler ve kısaltmalar Türkçe okunur.
+
 ## 1.3.0 — 21 Ekim 2026
 
 - Yeni yazı tipleri: Lexend, Literata, Merriweather ve OpenDyslexic (Aa →

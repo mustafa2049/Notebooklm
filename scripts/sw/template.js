@@ -29,7 +29,7 @@ const META = '/__sw-meta';
 const SHELL = '/';
 /** Ağdan bu kadar beklenir; sonra önbellekteki kabuk açılır */
 const NAVIGATION_TIMEOUT_MS = 4000;
-/** Adında içerik özeti olan dosya (ifade `scripts/sw/precache.mjs`'ten gelir) */
+/** Adında içerik özeti olan ya da sürüm klasöründeki dosya (ifade `scripts/sw/precache.mjs`'ten gelir) */
 const HASHED = __HASHED__;
 
 const PRECACHED = new Set(PRECACHE.map(([path]) => path));

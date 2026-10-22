@@ -51,6 +51,19 @@ describe('precacheEntries', () => {
     expect(HASHED.test('/kitap-2024.png')).toBe(false);
   });
 
+  it('sürüm klasöründeki dosyalar değişmez sayılıyor (ses motoru yeni sürümde yeniden inmesin)', () => {
+    const entries = precacheEntries(
+      build({ 'ort/1.30.0/ort.wasm.min.js': 'ort', 'ort/1.30.0/ort-wasm-simd-threaded.wasm': 'wasm' }),
+    );
+    const hashed = Object.fromEntries(entries.map((entry) => [entry.url, entry.hashed]));
+    expect(hashed['/ort/1.30.0/ort.wasm.min.js']).toBe(true);
+    expect(hashed['/ort/1.30.0/ort-wasm-simd-threaded.wasm']).toBe(true);
+    // Service worker aynı ifadeyi adresin yoluna uyguluyor
+    expect(HASHED.test('/ort/1.30.0/ort-wasm-simd-threaded.mjs')).toBe(true);
+    expect(HASHED.test('/surum/1.30/x.js')).toBe(false);
+    expect(HASHED.test('/1.30.0.js')).toBe(false);
+  });
+
   it('adresleri tarayıcının istediği biçimde yazıyor ve sıralıyor', () => {
     const urls = precacheEntries(build({ 'icons/ana ekran.png': 'x' })).map((entry) => entry.url);
     expect(urls).toContain('/icons/ana%20ekran.png');

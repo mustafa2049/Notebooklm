@@ -11,3 +11,10 @@
 # onnxruntime (kendi sesin): sürüm klasör adında, içerik değişmez
 /ort/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Tarayıcı modülü ancak JavaScript türüyle yükler; türü sunucunun tahminine bırakma
+/ort/*/*.mjs
+  Content-Type: text/javascript; charset=utf-8
+
+/ort/*/*.wasm
+  Content-Type: application/wasm

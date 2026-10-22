@@ -309,13 +309,17 @@ src/
   storage/     ayarlar, kütüphane, ilerleme, istatistikler (hepsi cihazda)
   train/       egzersizler, kelime tekrarı ve kelime oyunu
   habit/       hedef, seri, rozetler, planlar, bildirimler, dışa aktarma
+  voice/       kendi sesin: ses paketleri, web ve Android motorları
   ai/          isteğe bağlı yapay zekâ sağlayıcıları
   appearance/  okuma temaları, kolay okuma, akşam tonu
   ui/          tema, yazı tipleri, ikonlar (SVG), temel bileşenler
 app/           expo-router ekranları
 assets/        classics/ (28 eser), dict/ (Vikisözlük dilimleri), fonts/, pdfjs/
-scripts/       klasikleri indirme, sözlüğü kurma, yazı tipi çevirme, service worker
+scripts/       klasikleri indirme, sözlüğü kurma, yazı tipi çevirme, service worker,
+               eğitim derlemi
 plugins/       Expo yapılandırma eklentisi (Android imzası)
+modules/       yerel Expo modülleri (piper-voice: Android ses motoru)
+voice-training/ kendi sesin eğitim seti (Colab not defteri, Python betikleri, derlem)
 ```
 
 İki tasarım kararı dikkate değer:
@@ -573,6 +577,50 @@ ya da bölüm bitince ses **cümlenin sonunda** durur, kaldığın yer (sıradak
 cümle) kaydedilir; yeniden oynatınca süresi dolmuş zamanlayıcı kendiliğinden
 kapanır (`src/habit/sleepTimer.ts`, testli).
 
+## Kendi sesin (internetsiz okuyan ses)
+
+Dinleyerek okuma ve "Kelimeyi / Cümleyi dinle" cihazın sesi yerine **senin
+sesinle** okuyabilir: sesinden bir kez küçük bir ses modeli (Piper, ~60 MB)
+eğitilir, Ayarlar → **Ses** bölümünden eklenir; sonrası telefonda ve
+tarayıcıda internetsiz ve ücretsiz.
+
+- **Eğitim** (`voice-training/`, adım adım anlatım orada): Google Colab not
+  defteri `kendi-sesim.ipynb`. 10–30 saniyelik kaydından Chatterbox
+  (açık kaynak ses klonlama) ~1.000 cümle üretir, Whisper yanlış okunanları
+  ayıklar, Türkçe dfki Piper modeli bu kayıtlarla ince ayarlanır. Ücretsiz
+  Colab'da 4–6 saat; oturum koparsa kaldığı yerden sürer.
+- **Ses paketi**: standart Piper biçimi (`.onnx` + `.onnx.json`), ikisi birlikte
+  seçilir; web'de zip de olur. Hazır Türkçe Piper sesleri de (ör.
+  `tr_TR-dfki-medium`) eklenebilir. Eklerken model açılıp örnek paragraf
+  okunur ve sesin doğal hızı ölçülür; okuma hızına göre ölçeklenir (en çok iki
+  kat). Ses listesi ve modeller yedeğe girmez (başka cihazda yeniden eklenir).
+- **Türkçe çözümleyici** (`src/core/phonemize/`, testli): metin önce söylendiği
+  gibi yazılır (sayılar, sıra sayıları, tarih, saat, yüzde, para, birim,
+  kısaltmalar, harf harf okunan kısaltmalar, Romen rakamları), sonra fonemlere
+  çevrilir: kapalı hecede gevşek ünlüler, ğ (uzatma / j), l/ɫ, g/ɟ, r/ɾ, ikiz
+  ünsüzler, şapkalı harfler ve vurgu (ek fiil -DIr, -ken, -yor, olumsuzluk gibi
+  vurguyu öne çeken ekler). Hazır Türkçe sesler espeak-ng ile eğitildiği için
+  onun Türkçe kuralları örnek alındı: dfki sesinin 1.171 cümlesinde sembol
+  uyumu %97,9 (vurgu hariç %99,8). espeak-ng (GPL) uygulamaya girmez; kendi
+  sesin de bu çözümleyicinin çıktısıyla eğitildiği için birebir uyumlu.
+- **Motor**: web'de onnxruntime-web (WASM, ayrı işçide; dosyaları
+  `npm run vendor:ort` `public/ort/<sürüm>/`'a kopyalar, service worker
+  önbelleğe alır), Android'de yerel modül `modules/piper-voice` (Kotlin +
+  onnxruntime-android; üretilen ses JS'e aktarılmaz, AudioTrack ile çalınır).
+  Cümle çalarken sıradaki iki cümle önceden üretilir. Ses yüklenirken
+  dinlemeye basılırsa yüklenmesi beklenir; açılamazsa cihazın sesine dönülür
+  ve durum satırı nedenini yazar. Kelime kelime vurgu yok (cümle cümle).
+- **Doğrulama**: tarayıcıda dfki Türkçe sesiyle — içe aktarma ~10 sn, Whisper
+  dökümü metinle neredeyse birebir, hedef 180 kelime/dk → ölçülen ~183,
+  cümleler arasında boşluk yok (ilk kısa cümleden sonra ~1 sn). Eğitim zinciri
+  bu geliştirme ortamında işlemciyle küçük ölçekte uçtan uca denendi (üretim,
+  ayıklama, iki adım eğitim, paket, web'e ekleme). **Telefonda denenmedi**:
+  modül CI'da derleniyor; çalma, hız ve gecikme cihazda doğrulanmalı. iOS yok.
+- **Lisanslar**: onnxruntime MIT. Eğitimde Chatterbox (MIT), piper1-gpl
+  (GPL-3.0; yalnız eğitimde, uygulamaya girmez), Whisper (MIT); dfki verisi
+  CC BY-NC-SA 4.0 olduğu için eğitilen ses kişisel, ticari olmayan kullanım
+  içindir. Yalnızca kendi sesini ya da izin veren birinin sesini kullan.
+
 ## Göz molası ve haftanın kartı
 
 - **Göz molası** (Ayarlar → kapalı/20/30 dk): belirlenen süre kadar okuyunca
@@ -689,11 +737,13 @@ Aynı parametreler derin bağlantıyla da çalışıyor:
 ## Çevrimdışı kullanım (web)
 
 Web sürümü ilk açılışta kendini tarayıcıya kaydediyor; sonraki açılışlarda
-**internet olmadan da** açılıyor. Kitaplar zaten cihazda (IndexedDB), önbelleğe
-alınan yalnızca uygulamanın dosyaları: ~18 MB — bunun 10,2 MB'ı internetsiz
-sözlük, 3,2 MB'ı yazı tipleri, 1,9 MB'ı PDF okuyucu, 0,5 MB'ı klasikler. İlk
-ziyarette arka planda bir kez iniyor; sonraki sürümlerde yalnızca değişen
-dosyalar iniyor (sözlük ve yazı tipleri değişmedikçe yeniden inmez).
+**internet olmadan da** açılıyor. Kitaplar ve eklenen ses modelleri zaten
+cihazda (IndexedDB), önbelleğe alınan yalnızca uygulamanın dosyaları: ~32 MB —
+bunun 14,3 MB'ı kendi sesin için ses motoru (onnxruntime-web), 10,2 MB'ı
+internetsiz sözlük, 3,2 MB'ı yazı tipleri, 1,9 MB'ı PDF okuyucu, 0,5 MB'ı
+klasikler. İlk ziyarette arka planda bir kez iniyor; sonraki sürümlerde yalnızca
+değişen dosyalar iniyor (sözlük, yazı tipleri ve ses motoru değişmedikçe
+yeniden inmez).
 
 - `npm run build:web`, `expo export`'tan sonra `scripts/generate-sw.mjs`'i
   çalıştırıyor: derleme çıktısındaki dosyalar içerik özetleriyle listelenip
@@ -709,7 +759,10 @@ dosyalar iniyor (sözlük ve yazı tipleri değişmedikçe yeniden inmez).
 - Service worker yalnızca üretim derlemesinde kaydediliyor; geliştirme
   sunucusunda kapalı.
 - `public/_headers`: `sw.js` önbelleğe alınmıyor, `/_expo/static/*` (adları
-  içerik özetli) bir yıl önbellekte.
+  içerik özetli) ve `/ort/<sürüm>/*` bir yıl önbellekte; ses motorunun `.mjs`
+  ve `.wasm` dosyalarının türü açıkça yazılı (tarayıcı modülü yanlış türle
+  yüklemiyor). Service worker da sürüm klasöründeki dosyaları değişmez sayıyor:
+  yeni uygulama sürümünde 14 MB'lık motor yeniden inmiyor.
 
 İnternet isteyenler: bağlantıdan içe aktarma, TDK sözlüğü (yoksa uygulamadaki
 Vikisözlük verisi kullanılır), kitap kapağı arama, yapay zekâ.

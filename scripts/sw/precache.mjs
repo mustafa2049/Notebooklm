@@ -12,9 +12,11 @@ export const SKIP = new Set(['sw.js', 'metadata.json', '_redirects', '_headers']
 
 /**
  * Adında içerik özeti olan dosya: içeriği değişirse adı da değişir.
- * "entry-0123…cdef.js", "font.0123…cdef.ttf", "icon.0123…cdef@2x.png"
+ * "entry-0123…cdef.js", "font.0123…cdef.ttf", "icon.0123…cdef@2x.png".
+ * Sürüm klasöründeki dosyalar da öyle: "ort/1.30.0/…" (`vendor-ort.mjs`
+ * paket sürümüyle yazıyor; sürüm değişince klasör de değişir).
  */
-export const HASHED = /[.-][0-9a-f]{20,}(@\dx)?\.\w+$/;
+export const HASHED = /[.-][0-9a-f]{20,}(@\dx)?\.\w+$|(^|\/)\d+\.\d+\.\d+\/[^/]+$/;
 
 /** Uygulama kabuğu her adreste açılan sayfa; "/" adresiyle saklanır */
 const SHELL_FILE = 'index.html';
